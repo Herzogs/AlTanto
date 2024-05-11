@@ -31,12 +31,12 @@ Proyecto final UNLaM 2024 - Tecnictura en Desarrollo Web.
 Para poder correr este proyecto lo que primero debes hacer es clonar este repositorio
 
 ``` bash
-git clone https://github.com/Herzogs/ProyectoFinalDeCarrera
+git clone https://github.com/Herzogs/AlTanto
 ```
 
 Después debes meterte en el proyecto recien clonado y realizar el npm run dev
 
 ``` bash
-cd ProyectoFinalDeCarrera
-npm run dev
+cd altanto
+npm run install-all
 ```
