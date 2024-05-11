@@ -14,7 +14,7 @@
     "start": "npm run start:backend & npm run start:frontend",
     "dev:backend": "npm run dev --prefix Backend",
     "dev:frontend": "npm run dev --prefix Frontend",
-    "dev": "npm run dev:backend & npm run dev:frontend",
+    "dev": "npm run dev:frontend & npm run dev:backend",
     "lint:backend": "npm run lint --prefix Backend",
     "lint:frontend": "npm run lint --prefix Frontend",
     "lint": "npm run lint:backend && npm run lint:frontend",

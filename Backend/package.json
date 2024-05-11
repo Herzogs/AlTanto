@@ -7,8 +7,8 @@
     "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only --env-file=.env src/server.ts",
-    "test": "cross-env NODE_ENV=test PORT=3000 jest --runInBand --forceExit --coverage",
-    "test:watch": "cross-env NODE_ENV=test PORT=3000 jest --watchAll --runInBand"
+    "test": "cross-env NODE_ENV=test PORT=3000 jest --silent --runInBand --forceExit --coverage --detectOpenHandles",
+    "test:watch": "cross-env NODE_ENV=test PORT=3000 jest --silent --watchAll --runInBand --detectOpenHandles"
   },
   "keywords": [],
   "author": "Equipo 5mentarios",
