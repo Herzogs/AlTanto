@@ -1,3 +1,5 @@
+[![Al Tanto Pipeline (Backend & Frontend)](https://github.com/Herzogs/AlTanto/actions/workflows/pipeline.yml/badge.svg)](https://github.com/Herzogs/AlTanto/actions/workflows/pipeline.yml)
+
 # Proyecto Final De Carrera
 Equipo 5comentario
 
