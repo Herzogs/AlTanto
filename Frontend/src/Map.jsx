@@ -1,7 +1,9 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import {} from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+
 
 
 
@@ -45,16 +47,13 @@ function Map({ location}) {
   */
   
   return (
-    <MapContainer center={location} zoom={19} style={{ height: '900px' }}>
+    <MapContainer center={location} zoom={19} style={{ height: '500px', width:'500px' }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker position={location}>
         <Popup>
           Ubicacion Actual
         </Popup>
       </Marker>  
-      
-      
-
     </MapContainer>
   );
 }
