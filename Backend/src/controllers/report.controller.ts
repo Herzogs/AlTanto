@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import * as reporteService from '../services/report.service';
 
-const router = express.Router();
 
 const getAllReports = async (req: Request, res: Response): Promise<Response>=> {
   try {
@@ -46,4 +45,52 @@ const getReportByUser = async (req: Request, res: Response): Promise<Response> =
   }
 };
 
-export default router;
+const createReport = async (req: Request, res: Response): Promise<Response> => {
+    try {
+        const { descripcion ,dateTime, fileId,duration ,positiveScore,negativeScore,enabled} = req.body;
+        const newReport = await reporteService.createReport(descripcion ,dateTime, fileId,duration ,positiveScore,negativeScore,enabled);
+        return res.json(newReport);
+    } catch (error:any) {
+      return res.status(500).json({ error: error.message });
+    }
+};
+
+const updateReport = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const reportId = parseInt(req.params.reportId);
+      const updatedData = req.body;
+      const [rowsUpdated, updatedReports] = await reporteService.updateReport(reportId, updatedData);
+      
+      if (rowsUpdated === 0) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+      
+      return res.json(updatedReports[0]);
+    } catch (error:any) {
+      return res.status(500).json({ error: error.message });
+    }
+};
+
+const deleteReport = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const reportId = parseInt(req.params.reportId);
+      const rowsDeleted = await reporteService.deleteReport(reportId);
+      
+      if (rowsDeleted === 0) {
+        return res.status(404).json({ error: 'Report not found' });
+      }
+      
+      return res.status(204).send();
+    } catch (error:any) {
+      return res.status(500).json({ error: error.message });
+    }
+};
+
+export {
+    getAllReports,
+    getReportsById,
+    getReportByUser,
+    createReport,
+    updateReport,
+    deleteReport,
+}
