@@ -11,7 +11,7 @@ console.log(dbName, dbPassword)
 const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     host: dbHost,
     port: dbPort,
-    dialect: dbDialect,
+    dialect: dbDialect as 'mysql',
     logging: false
 });
 
