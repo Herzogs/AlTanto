@@ -6,7 +6,6 @@ const dbName = process.env.BD_NAME_DATABASE ?? 'altanto_db'
 const dbUser = process.env.DB_USER ?? 'root'
 const dbPassword = process.env.DB_PASSWORD  ?? 'root'
 const dbDialect = process.env.DB_DIALECT ?? 'mysql'
-console.log(dbName, dbPassword)
 
 const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     host: dbHost,

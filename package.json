@@ -6,7 +6,7 @@
   "license": "ISC",
   "private": true,
   "scripts": {
-    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "install-all": "cd Backend && npm install && cd ../Frontend && npm install",
     "build:backend": "npm run build --prefix Backend",
     "build:frontend": "npm run build --prefix Frontend",
     "build": "npm run build:backend && npm run build:frontend",
