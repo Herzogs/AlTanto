@@ -36,8 +36,9 @@ const getReportByUser = async (req: Request, res: Response): Promise<Response> =
 
 const createReport = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const { descripcion, dateTime, fileId, duration, positiveScore, negativeScore, enabled } = req.body;
-        const newReport = await reportService.createReport(descripcion, dateTime, fileId, duration, positiveScore, negativeScore, enabled);
+
+        const { descripcion, categoryId, latitude, longitude} = req.body;
+        const newReport = await reportService.createReport(descripcion, categoryId, latitude, longitude);
         return res.json(newReport);
     } catch (error) {
         return res.status(500).json({ error: (error as Error).message });
@@ -47,9 +48,9 @@ const createReport = async (req: Request, res: Response): Promise<Response> => {
 const updateReport = async (req: Request, res: Response): Promise<Response> => {
     try {
         const reportId = parseInt(req.params.reportId);
-        const updatedData = req.body;
+        const {descripcion, categoryId, latitude, longitude}= req.body;
 
-        const [rowsUpdated, updatedReports] = await reportService.updateReport(reportId, updatedData);
+        const [rowsUpdated, updatedReports] = await reportService.updateReport(reportId,descripcion, categoryId, latitude, longitude );
 
         if (rowsUpdated === 0) {
             return res.status(404).json({ error: 'Report not found' });

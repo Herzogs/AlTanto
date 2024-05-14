@@ -11,7 +11,7 @@ router.get('/:userId',controller.getReportByUser);
 
 router.post('/', controller.createReport);
 
-router.post('/reportId', controller.updateReport);
+router.put('/:reportId', controller.updateReport);
 
 router.delete('/:reportId',controller.deleteReport);
 
