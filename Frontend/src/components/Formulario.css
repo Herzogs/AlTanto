@@ -1,0 +1,39 @@
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.form-container label {
+  display: block;
+}
+
+.form-container input, select{
+  display: block;
+}
+
+.form-container input[type="submit"] {
+  background-color: #4CAF50;
+  /* Color de fondo verde */
+  color: white;
+  /* Color del texto blanco */
+  padding: 12px 20px;
+  /* Relleno */
+  border: none;
+  /* Sin borde */
+  border-radius: 4px;
+  /* Bordes redondeados */
+  cursor: pointer;
+  /* Cursor de puntero */
+}
+
+.form-container input[type="submit"]:hover {
+  background-color: #45a049;
+  /* Color de fondo verde oscuro */
+}
+
+.form-container span {
+  color: red;
+  /* Color del texto rojo */
+}

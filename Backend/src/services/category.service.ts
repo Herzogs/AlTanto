@@ -1,7 +1,8 @@
 import Category from '../models/Category';
 
 async function getAllCategories(): Promise<Category[]> {
-  return await Category.findAll();
+  const categories = await Category.findAll();
+  return categories
 }
 
 async function getCategoriesById(categoryId: number): Promise<Category | null> {

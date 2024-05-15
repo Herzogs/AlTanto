@@ -1,5 +1,6 @@
 // services/reporteService.ts
 import Reporte from '../models/Report';
+import Location from '../models/Location';
 
 async function getAllReports(): Promise<Reporte[]> {
   return await Reporte.findAll();
@@ -15,8 +16,14 @@ async function getReportByUser(userId: number): Promise<Reporte[]> {
   });
 }
 
-async function createReport(descripcion : string ,dateTime :Date, fileId :string,duration:Date ,positiveScore:number,negativeScore:number,enabled:boolean): Promise<Reporte> {
-    const newReport = await Reporte.create({descripcion ,dateTime, fileId,duration ,positiveScore,negativeScore,enabled });
+async function createReport(descripcion : string ,dateTime :Date, fileId :string,duration:Date ,positiveScore:number,negativeScore:number,enabled:boolean, categoryID: string, localization: [string, string]): Promise<Reporte> {
+    await Location.create({latitude: localization[0], longitude: localization[1]});
+    const a = await Location.findOne({where: {latitude: localization[0], longitude: localization[1]}});
+    if (!a) {
+        throw new Error('Location not found');
+    }
+    const id = a.getDataValue('id');
+    const newReport = await Reporte.create({descripcion ,dateTime, fileId,duration ,positiveScore,negativeScore,enabled, categoryID, id });
     return newReport;
 }
 
