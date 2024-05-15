@@ -50,13 +50,12 @@ async function createReport(description: string, categoryId: number, latitude: s
             });
         })
         .catch((error) => {
-            console.error("Error al crear el reporte:", error);
             throw error;
         });
 }
 
 async function updateReport(reportId: number, description: string, newCategory: number, newLatitude: string, newLongitude: string): Promise<[number, Report[]]> {
-    try {
+
         const report = await Report.findByPk(reportId);
         if (!report) {
             throw new Error("El reporte especificado no existe.");
@@ -79,12 +78,7 @@ async function updateReport(reportId: number, description: string, newCategory: 
             where: {id: reportId},
             returning: true
         });
-
         return [rowsUpdated, updatedReports];
-    } catch (error) {
-        console.error("Error al actualizar el reporte:", error);
-        throw error;
-    }
 }
 
 async function deleteReport(reportId: number): Promise<number> {
