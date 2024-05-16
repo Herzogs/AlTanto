@@ -7,7 +7,7 @@
     "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only --env-file=.env src/server.ts",
-    "test": "cross-env NODE_ENV=test PORT=3000 jest --silent --runInBand --forceExit --coverage --detectOpenHandles",
+    "test": "cross-env NODE_ENV=test PORT=3000 jest --silent --runInBand --forceExit --detectOpenHandles",
     "test:watch": "cross-env NODE_ENV=test PORT=3000 DB_PORT=3306 DB_USER=root DB_HOST=localhost  BD_NAME_DATABASE=altanto_db DB_DIALECT=mysql jest --silent --watchAll --runInBand --detectOpenHandles "
   },
   "keywords": [],
