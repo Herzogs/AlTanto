@@ -36,17 +36,12 @@ const getReportByUser = async (req: Request, res: Response): Promise<Response> =
 
 const createReport = async (req: Request, res: Response): Promise<Response> => {
     try {
+        const { description, categoryId, latitude, longitude} = req.body;
         console.log(req.body);
-        const { description, category, latitude, longitude, userid, imagen} = req.body;
-        console.log(description, category, latitude, longitude, userid, imagen);
-        //const { descripcion, dateTime, fileId, duration, positiveScore, negativeScore, enabled } = req.body;
-        /*const newReport = await reportService.createReport(description, new Date(), 'imagen.filename as string' , new Date(), 0, 0, true, category, [latitude, longitude]);
-        return res.json(newReport);*/
-        return res.send('ok');
+        const newReport = await reportService.createReport(description, categoryId, latitude, longitude);
+        return res.json(newReport);
     } catch (error) {
-        //return res.status(500).json({ error: (error as Error).message });
-        return res.status(500).json({ error: 'Error' });
-        console.log(error);
+        return res.status(500).json({ error: (error as Error).message });
     }
 };
 

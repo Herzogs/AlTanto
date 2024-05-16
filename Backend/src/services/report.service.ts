@@ -1,6 +1,7 @@
 // services/reporteService.ts
 import Reporte from '../models/Report';
 import Location from '../models/Location';
+import Category from '../models/Category';
 
 async function getAllReports(): Promise<Reporte[]> {
   return await Reporte.findAll();
@@ -16,37 +17,48 @@ async function getReportByUser(userId: number): Promise<Reporte[]> {
   });
 }
 
-async function createReport(descripcion : string ,dateTime :Date, fileId :string,duration:Date ,positiveScore:number,negativeScore:number,enabled:boolean, categoryID: string, localization: [string, string]): Promise<Reporte> {
-    await Location.create({latitude: localization[0], longitude: localization[1]});
-    const a = await Location.findOne({where: {latitude: localization[0], longitude: localization[1]}});
-    if (!a) {
-        throw new Error('Location not found');
-    }
-    const id = a.getDataValue('id');
-    const newReport = await Reporte.create({descripcion ,dateTime, fileId,duration ,positiveScore,negativeScore,enabled, categoryID, id });
-    return newReport;
+async function createReport(description: string, categoryId: number, latitude: string, longitude: number): Promise<Report> {
+  const category = await Category.findByPk(categoryId);
+  if (!category) {
+    throw new Error("La categoría especificada no existe.");
+  }
+  const location = await Location.create({ latitude, longitude });
+  const newReport = await Reporte.create({
+    description,
+    fileId: null,
+    duration: null,
+    positiveScore: 0,
+    negativeScore: 0,
+    enabled: true,
+    CategoryId: category.get().id,
+    LocationId: location.get().id
+  });
+  if(!newReport) {
+    throw new Error("No se pudo crear el reporte.");
+  }
+  return newReport;
 }
 
 async function updateReport(reportId: number, updatedData: any): Promise<[number, Reporte[]]> {
-    const [rowsUpdated, updatedReports] = await Reporte.update(updatedData, {
-      where: { id: reportId },
-      returning: true
-    });
-    return [rowsUpdated, updatedReports];
+  const [rowsUpdated, updatedReports] = await Reporte.update(updatedData, {
+    where: { id: reportId },
+    returning: true
+  });
+  return [rowsUpdated, updatedReports];
 }
 
 async function deleteReport(reportId: number): Promise<number> {
-    const rowsDeleted = await Reporte.destroy({
-      where: { id: reportId }
-    });
-    return rowsDeleted;
+  const rowsDeleted = await Reporte.destroy({
+    where: { id: reportId }
+  });
+  return rowsDeleted;
 }
 
 export {
-    getAllReports,
-    getReportById,
-    getReportByUser,
-    createReport,
-    updateReport,
-    deleteReport
+  getAllReports,
+  getReportById,
+  getReportByUser,
+  createReport,
+  updateReport,
+  deleteReport
 };
