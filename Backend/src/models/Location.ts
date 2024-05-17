@@ -10,5 +10,6 @@ Location.init({
     },
     latitude: DataTypes.STRING,
     longitude: DataTypes.STRING,
-},{sequelize: dbConnection, modelName: 'Location'})
+},{sequelize: dbConnection, freezeTableName: true,
+    modelName: 'Location'})
 export default Location;

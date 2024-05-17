@@ -45,7 +45,7 @@ const createReport = async (req: Request, res: Response): Promise<Response> => {
         const newReport: IReportRequest = {
             title: validData.title,
             content: validData.content,
-            images: validData.images,
+            images: validData.images ?? '' ,
             categoryId: validData.categoryId,
             latitude: validData.latitude,
             longitude: validData.longitude,
