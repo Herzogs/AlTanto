@@ -4,6 +4,8 @@ const router = Router();
 
 router.get('/',controller.getAllZones);
 router.post('/create-zone',controller.createZone);
+router.get('/:zoneId',controller.getZoneById);
+
 
 
 export default router;

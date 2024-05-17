@@ -11,14 +11,25 @@ const getAllZones = async (_req: Request, res: Response) => {
     }
 }
 const createZone = async ( req: Request, res: Response): Promise<Response> => {
-    const newXoneReques = req.body;
+    const newZoneRequest = req.body;
     const newZone: IZoneRequest = {
-        name: newXoneReques.name,
-        latitude: newXoneReques.latitude,
-        longitude: newXoneReques.longitude
+        name: newZoneRequest.name,
+        latitude: newZoneRequest.latitude,
+        longitude: newZoneRequest.longitude
     };
     const zone = zoneService.createZone(newZone);
     return res.json(zone);
 }
+const getZoneById= async (req: Request, res: Response):Promise<Response> => {
 
-export {getAllZones, createZone}
+    try {
+        const zoneId = parseInt(req.params.zoneId);
+        const zone = await zoneService.getZoneById(zoneId);
+        return res.status(200).json(zone);
+
+    }catch (error) {
+            return res.status(400).json({ error: (error as Error).message });
+        }
+}
+
+export {getAllZones, createZone, getZoneById}

@@ -11,6 +11,7 @@ Zone.init({
         autoIncrement: true
     },
     name: { type: DataTypes.STRING, allowNull: false },
+    radio: {type: DataTypes.INTEGER, defaultValue: 200},
     dateTime: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 }, {
     sequelize: dbConnection,
