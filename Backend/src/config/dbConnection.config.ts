@@ -14,4 +14,16 @@ const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     logging: false
 });
 
+dbConnection.authenticate()
+    .then(() => {
+        console.log('Connection has been established successfully.');
+    })
+    .catch((error) => {
+        console.error('Unable to connect to the database:', error);
+    });
+
+    if (process.env.NODE_ENV === 'development') {
+        dbConnection.sync({ force: true });
+    }
+
 export default dbConnection

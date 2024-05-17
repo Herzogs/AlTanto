@@ -36,8 +36,9 @@ const getReportByUser = async (req: Request, res: Response): Promise<Response> =
 
 const createReport = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const { description, categoryId, latitude, longitude} = req.body;
-        console.log(req.body);
+        const { description, categoryId, latitude, longitude, image } = req.body;
+        
+        console.log(description, categoryId, latitude, longitude, image);
         const newReport = await reportService.createReport(description, categoryId, latitude, longitude);
         return res.json(newReport);
     } catch (error) {

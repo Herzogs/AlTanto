@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import './components/Formulario.css'
 import { getCategoryFromApi } from './services/getCategory';
 import { getLocation } from './services/getLocation';
-
+import  sendReportToBackend from './services/sendReportToBackend';
+import './components/Formulario.css'
 
 function App() {
   const [category, setCategory] = useState([]);
@@ -27,29 +27,9 @@ function App() {
     });
   }, []);
 
-  const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
-    const response = await fetch('http://localhost:3000/api/report/create-report', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        description: data.description,
-        categoryId: +data.category,
-        latitude: data.latitude,
-        longitude: data.longitude
-      })
-    });
-
-    if(response.ok){
-      alert('Reporte creado correctamente');
-    }
-  });
-
   return (
     <div className='form-container'>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(sendReportToBackend)}>
         <h2>Crear Reporte</h2>
         <label htmlFor='category'>
           Categoria:
@@ -109,8 +89,19 @@ function App() {
                 message: 'Campo requerido'
               }
             })}
-        
         />
+        </label>
+        <label htmlFor='image'>
+            Imagen:
+            <input type="file"
+                {...register('image', {
+                required: {
+                    value: true,
+                    message: 'Campo requerido'
+                }
+                })}
+            />
+            {errors.image && <span>{errors.image.message}</span>}
         </label>
 
         
