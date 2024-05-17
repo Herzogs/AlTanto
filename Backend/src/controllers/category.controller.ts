@@ -28,6 +28,7 @@ const getCategoriesById = async (req: Request, res: Response): Promise<Response>
 const createCategory = async (req: Request, res: Response): Promise<Response> => {
     try {
         const { name } = req.body;
+        console.log(req.body.name);
         const newCategory = await categoryService.createCategory(name);
         return res.json(newCategory);
     } catch (error) {

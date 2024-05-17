@@ -11,7 +11,6 @@ const firebaseConfig = {
     appId: "1:664163745038:web:fb6282046fd9be23d6ab5f"
 };
 
-// Initialize Firebase
 
 const FORM_URI = 'http://localhost:3000/api/report/create-report'
 
@@ -23,10 +22,8 @@ const sendReportToBackend = async (data) => {
     // Subir la imagen al Storage de Firebase
     const imageName = `images/${uuidv4()}`
     const storageRef = ref(storage, imageName);
+    uploadBytes(storageRef, data.image[0]);
 
-    const uploadTask = uploadBytes(storageRef, data.image[0]);
-    console.log('Imagen subida correctamente');
-    console.log(uploadTask);
     //Enviar los datos al backend
     const response = await fetch(`${FORM_URI}`, {
         method: 'POST',
@@ -34,11 +31,13 @@ const sendReportToBackend = async (data) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+            title: data.title,
+            content: data.content,
             description: data.description,
-            categoryId: +data.category,
+            categoryId: data.category,
             latitude: data.latitude,
             longitude: data.longitude,
-            image: imageName,// Utiliza la imagen en formato Base64
+            images: imageName,// Utiliza la imagen en formato Base64
         })
     });
 

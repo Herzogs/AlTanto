@@ -1,5 +1,5 @@
 import Category from '../models/Category';
-
+import { ICategory } from '../interfaces/category.interface';
 async function getAllCategories(): Promise<Category[]> {
   const categories = await Category.findAll();
   return categories
@@ -14,7 +14,7 @@ async function createCategory(name:string): Promise<Category> {
     return newCategory;
 }
 
-async function updateCategory(categoryId: number, updatedData: any): Promise<[number, Category[]]> {
+async function updateCategory(categoryId: number, updatedData: ICategory): Promise<[number, Category[]]> {
     const [rowsUpdated, updatedReports] = await Category.update(updatedData, {
       where: { id: categoryId },
       returning: true

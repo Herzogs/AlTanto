@@ -10,7 +10,7 @@ Category.init({
             primaryKey: true,
             autoIncrement: true
         },
-        name: DataTypes.STRING
+        name: { type: DataTypes.STRING, allowNull: false }
     },
     {
         sequelize: dbConnection,

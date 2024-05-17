@@ -1,6 +1,7 @@
 import Report from '../models/Report';
 import Category from "../models/Category";
 import Location from '../models/Location';
+import { IReportRequest } from 'interfaces/reports.interface';
 
 async function getAllReports(): Promise<Report[]> {
     return await Report.findAll({
@@ -31,22 +32,21 @@ async function getReportByUser(userId: number): Promise<Report[]> {
     });
 }
 
-async function createReport(description: string, categoryId: number, latitude: string, newLongitude: number): Promise<Report | void> {
-    return Category.findByPk(categoryId)
+async function createReport(newReport: IReportRequest): Promise<Report> {
+    return Category.findByPk(+newReport.categoryId)
         .then(async (category) => {
             if (!category) {
                 throw new Error("La categoría especificada no existe.");
             }
-            const location = await Location.create({latitude, longitude: newLongitude});
+            const location = await Location.create({latitude: newReport.latitude, longitude: newReport.longitude});
+            const loc = location.get({plain: true})
             return await Report.create({
-                description,
-                fileId: null,
-                duration: null,
-                positiveScore: 0,
-                negativeScore: 0,
-                enabled: true,
-                CategoryId: category.get().id,
-                LocationId: location.get().id
+                title: newReport.title,
+                content: newReport.content,
+                duration: new Date(),
+                CategoryId: newReport.categoryId,
+                LocationId: loc.id,
+                images: newReport.images
             });
         })
         .catch((error) => {

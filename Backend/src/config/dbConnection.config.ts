@@ -17,13 +17,13 @@ const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
 dbConnection.authenticate()
     .then(() => {
         console.log('Connection has been established successfully.');
+        if (process.env.NODE_ENV === 'development') {
+            dbConnection.sync({ force: true });
+        }
     })
     .catch((error) => {
         console.error('Unable to connect to the database:', error);
     });
 
-    if (process.env.NODE_ENV === 'development') {
-        dbConnection.sync({ force: true });
-    }
 
 export default dbConnection

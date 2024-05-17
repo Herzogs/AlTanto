@@ -1,5 +1,7 @@
-import { Request, Response } from 'express';
-import * as reportService from '../services/report.service';
+import { Request, Response } from 'express'
+import * as reportService from '../services/report.service'
+import { IReportRequest } from '../interfaces/reports.interface'
+import * as validateData from '../validator/report.validator'
 
 const getAllReports = async (_req: Request, res: Response): Promise<Response> => {
     try {
@@ -36,10 +38,19 @@ const getReportByUser = async (req: Request, res: Response): Promise<Response> =
 
 const createReport = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const { description, categoryId, latitude, longitude, image } = req.body;
-        
-        console.log(description, categoryId, latitude, longitude, image);
-        const newReport = await reportService.createReport(description, categoryId, latitude, longitude);
+        const validData = await validateData.createReportValidator.parseAsync(req.body);
+        if (validData instanceof Error) {
+            return res.status(400).json({ error: validData.message });
+        }
+        const newReport: IReportRequest = {
+            title: validData.title,
+            content: validData.content,
+            images: validData.images,
+            categoryId: validData.categoryId,
+            latitude: validData.latitude,
+            longitude: validData.longitude,
+        }
+        await reportService.createReport(newReport);
         return res.json(newReport);
     } catch (error) {
         return res.status(500).json({ error: (error as Error).message });

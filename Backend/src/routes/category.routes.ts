@@ -7,7 +7,7 @@ router.get('/',controller.getAllCategories);
 
 router.get('/:categoryId',controller.getCategoriesById);
 
-router.post('/',controller.createCategory);
+router.post('/create-category',controller.createCategory);
 
 router.patch('/:categoryId',controller.updateCategory);
 

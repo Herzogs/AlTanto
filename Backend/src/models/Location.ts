@@ -9,6 +9,6 @@ Location.init({
         autoIncrement: true,
     },
     latitude: DataTypes.STRING,
-    longitude: DataTypes.INTEGER,
+    longitude: DataTypes.STRING,
 },{sequelize: dbConnection, modelName: 'Location'})
 export default Location;
