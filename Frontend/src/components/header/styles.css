@@ -1,0 +1,9 @@
+.at-header {
+  background-color: var(--color-at-grey);
+  height: 60px;
+  margin-bottom: 12px;
+}
+.at-header img {
+  max-height: 36px;
+}
+

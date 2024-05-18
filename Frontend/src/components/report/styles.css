@@ -1,0 +1,33 @@
+.at-report {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.at-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.at-report-header svg {
+  font-size: 36px;
+}
+
+.at-report-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.at-report-footer small {
+  font-size: 14px;
+}
+
+@media only screen and (min-width: 768px) {
+  .at-report {
+    width: 100%;
+    max-width: 480px;
+  }
+}
