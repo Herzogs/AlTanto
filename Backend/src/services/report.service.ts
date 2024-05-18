@@ -106,19 +106,19 @@ async function searchReportWithinTheRadius(location: Location, radius: number): 
     return await findEntitiesWithinRadius(Report, location, radius);
 }
 
-const getReportsByLatLongRadius = async (lat: string, lon: string, radius: string) => {
+const getReportsByLatLongRadius = async (lat: string, lon: string, radius: string): Promise<object[] | undefined> => {
     const reports = await Report.sequelize?.query(
         `SELECT Report.id, Report.title, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.categoryId,
             Location.latitude, Location.longitude, 
             Category.name AS categoryName,
-            (6371 * acos(
+            (6371000 * acos(
                 least(1, cos(radians(:lat)) * cos(radians(Location.latitude)) * cos(radians(Location.longitude) - radians(:lon)) +
                 sin(radians(:lat)) * sin(radians(Location.latitude)))
             )) AS distancia
         FROM Location
         JOIN Report ON Location.id = Report.LocationId
         JOIN Category ON Report.CategoryId = Category.id
-        HAVING distancia < 1
+        HAVING distancia <= :radius
         ORDER BY distancia;`,
         {
             replacements: {
@@ -129,8 +129,6 @@ const getReportsByLatLongRadius = async (lat: string, lon: string, radius: strin
             type: QueryTypes.SELECT
         }
     );
-    console.log(reports);
-
     return reports; // Devuelve los reports obtenidos
 }
 

@@ -2,11 +2,12 @@ import { Router } from "express";
 import * as controller from '../controllers/report.controller';
 const router = Router();
 
+router.get('/getsectorizedreports',controller.getReportsByLatLongRadius);
+
 router.get('/',controller.getAllReports);
 
 router.get('/:reportId',controller.getReportsById);
 
-router.get('/getsectorizedreports',controller.getReportsByLatLongRadius);
 
 router.get('/:userId',controller.getReportByUser);
 
