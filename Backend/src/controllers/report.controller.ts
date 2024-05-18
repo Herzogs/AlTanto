@@ -40,18 +40,18 @@ const createReport = async (req: Request, res: Response): Promise<Response> => {
     try {
         const validData = await validateData.createReportValidator.parseAsync(req.body);
         if (validData instanceof Error) {
-            return res.status(400).json({ error: validData.message });
+            return res.status(400).json({ error: "Hay errores en los campos recibidos" });
         }
         const newReport: IReportRequest = {
             title: validData.title,
             content: validData.content,
-            images: validData.images,
+            images: validData.images ?? '',
             categoryId: validData.categoryId,
             latitude: validData.latitude,
             longitude: validData.longitude,
         }
         await reportService.createReport(newReport);
-        return res.json(newReport);
+        return res.status(201).json(newReport);
     } catch (error) {
         return res.status(500).json({ error: (error as Error).message });
     }
@@ -60,9 +60,9 @@ const createReport = async (req: Request, res: Response): Promise<Response> => {
 const updateReport = async (req: Request, res: Response): Promise<Response> => {
     try {
         const reportId = parseInt(req.params.reportId);
-        const {descripcion, categoryId, latitude, longitude}= req.body;
+        const { descripcion, categoryId, latitude, longitude } = req.body;
 
-        const [rowsUpdated, updatedReports] = await reportService.updateReport(reportId,descripcion, categoryId, latitude, longitude );
+        const [rowsUpdated, updatedReports] = await reportService.updateReport(reportId, descripcion, categoryId, latitude, longitude);
 
         if (rowsUpdated === 0) {
             return res.status(404).json({ error: 'Report not found' });

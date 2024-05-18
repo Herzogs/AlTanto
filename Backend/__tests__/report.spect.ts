@@ -1,6 +1,6 @@
 import Report from '../src/models/Report';
 import Category from '../src/models/Category';
-import Location from '../src/models/Location';
+import {Location} from '../src/models/Location';
 
 describe.skip('Report Model', () => {
     it('should create a new report', async () => {

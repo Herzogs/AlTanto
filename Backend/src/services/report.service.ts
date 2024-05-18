@@ -1,7 +1,7 @@
 import Report from '../models/Report';
 import Category from "../models/Category";
-import Location from '../models/Location';
-import { IReportRequest } from 'interfaces/reports.interface';
+import {Location ,findEntitiesWithinRadius} from '../models/Location';
+import {IReportRequest} from 'interfaces/reports.interface';
 
 async function getAllReports(): Promise<Report[]> {
     return await Report.findAll({
@@ -56,29 +56,29 @@ async function createReport(newReport: IReportRequest): Promise<Report> {
 
 async function updateReport(reportId: number, description: string, newCategory: number, newLatitude: string, newLongitude: string): Promise<[number, Report[]]> {
 
-        const report = await Report.findByPk(reportId);
-        if (!report) {
-            throw new Error("El reporte especificado no existe.");
-        }
-        const loca = await Location.findByPk(report.get().LocationId);
-        if (!loca) {
-            throw new Error("El reporte especificado no existe.");
-        }
-        await loca.update({latitude: newLatitude, longitude: newLongitude});
-        const category = await Category.findByPk(newCategory);
-        if (!category) {
-            throw new Error("La categoría especificada no existe.");
-        }
-        const [rowsUpdated, updatedReports] = await Report.update({
-            description,
-            CategoryId: newCategory,
-            Location: loca
+    const report = await Report.findByPk(reportId);
+    if (!report) {
+        throw new Error("El reporte especificado no existe.");
+    }
+    const loca = await Location.findByPk(report.get().LocationId);
+    if (!loca) {
+        throw new Error("El reporte especificado no existe.");
+    }
+    await loca.update({latitude: newLatitude, longitude: newLongitude});
+    const category = await Category.findByPk(newCategory);
+    if (!category) {
+        throw new Error("La categoría especificada no existe.");
+    }
+    const [rowsUpdated, updatedReports] = await Report.update({
+        description,
+        CategoryId: newCategory,
+        Location: loca
 
-        }, {
-            where: {id: reportId},
-            returning: true
-        });
-        return [rowsUpdated, updatedReports];
+    }, {
+        where: {id: reportId},
+        returning: true
+    });
+    return [rowsUpdated, updatedReports];
 }
 
 async function deleteReport(reportId: number): Promise<number> {
@@ -88,11 +88,16 @@ async function deleteReport(reportId: number): Promise<number> {
 
 }
 
+async function searchReportWithinTheRadius(location: Location, radius: number): Promise<Report[]> {
+  return await findEntitiesWithinRadius(Report, location, radius);
+}
+
 export {
-  getAllReports,
-  getReportById,
-  getReportByUser,
-  createReport,
-  updateReport,
-  deleteReport
+    getAllReports,
+    getReportById,
+    getReportByUser,
+    createReport,
+    updateReport,
+    deleteReport,
+    searchReportWithinTheRadius
 };
