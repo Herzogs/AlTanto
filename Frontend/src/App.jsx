@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes} from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Form from './components/Form'
 import CategoryForm from './components/CategoryForm'
 import Test from './components/Test'
@@ -10,14 +10,12 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/form" component={Form} />
-          <Route path="/category" component={CategoryForm} />
-          <Route path="/test" component={Test} />
+          <Route path="/form" element={<Form />} />
+          <Route path="/category" element={<CategoryForm />} />
+          <Route path="/test" element={<Test />} />
         </Routes>
       </BrowserRouter>
-      <h1>Al Tanto </h1>
     </>
-
   )
 }
 

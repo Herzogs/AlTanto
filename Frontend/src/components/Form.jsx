@@ -19,7 +19,6 @@ function Form() {
 
     useEffect(() => {
         const loc = getLocation();
-        console.log(loc);
         setLocation([loc[0], loc[1]]);
         const listCategories = getCategoryFromApi();
         listCategories.then((data) => {

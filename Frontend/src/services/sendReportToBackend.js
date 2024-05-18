@@ -3,18 +3,19 @@ import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDiUS_XPySIUMlJqLQpqOGYthED9QbLcTQ",
-    authDomain: "altantotest.firebaseapp.com",
-    projectId: "altantotest",
-    storageBucket: "altantotest.appspot.com",
-    messagingSenderId: "664163745038",
-    appId: "1:664163745038:web:fb6282046fd9be23d6ab5f"
+    apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTHDOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGEBUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID,
+    appId: import.meta.env.VITE_FIREBASE_APPID
 };
 
 
 const FORM_URI = 'http://localhost:3000/api/report/create-report'
 
 const sendReportToBackend = async (data) => {
+    console.log(firebaseConfig);
 
     const app = initializeApp(firebaseConfig);
     const storage = getStorage(app);
@@ -37,7 +38,7 @@ const sendReportToBackend = async (data) => {
             categoryId: data.category,
             latitude: data.latitude,
             longitude: data.longitude,
-            images: imageName,// Utiliza la imagen en formato Base64
+            images: imageName.split('/')[1],// Utiliza la imagen en formato Base64
         })
     });
 
