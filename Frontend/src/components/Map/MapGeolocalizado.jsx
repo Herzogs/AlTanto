@@ -50,7 +50,7 @@ function MapGeolocalizado({ location: initialLocation = null, filters }) {
           title: item.title,
           latitud: item.latitude,
           longitud: item.longitude,
-          tipe: 1,
+          tipe: item.categoryId,
           descripcion: item.content,
           distancia: item.distance,
         }));
