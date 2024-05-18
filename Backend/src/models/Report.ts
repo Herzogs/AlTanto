@@ -1,7 +1,7 @@
 import {DataTypes, Model} from 'sequelize';
 import dbConnection from '../config/dbConnection.config';
 import Category from './Category';
-import Location from './Location';
+import {Location} from './Location';
 
 class Report extends Model {
 }

@@ -1,6 +1,6 @@
 import {DataTypes, Model} from 'sequelize';
 import dbConnection from '../config/dbConnection.config';
-import Location from './Location';
+import {Location} from './Location';
 
 class Zone extends Model {}
 
@@ -11,7 +11,7 @@ Zone.init({
         autoIncrement: true
     },
     name: { type: DataTypes.STRING, allowNull: false },
-    radio: {type: DataTypes.INTEGER, defaultValue: 200},
+    radio: {type: DataTypes.INTEGER, defaultValue: 500},
     dateTime: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 }, {
     sequelize: dbConnection,

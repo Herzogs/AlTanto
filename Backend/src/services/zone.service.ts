@@ -1,8 +1,7 @@
 import Zone from '../models/Zone';
-import Location from '../models/Location';
+import {Location, findEntitiesWithinRadius} from '../models/Location';
 import {IZoneRequest} from "../interfaces/zone.interface";
 import Report from "../models/Report";
-import { Op } from 'sequelize';
 
 
 async function createZone(newZone: IZoneRequest): Promise<Zone> {
@@ -26,40 +25,20 @@ async function getAllZone(): Promise<Zone[]> {
         ]
     });
 }
+
 async function getZoneById(zoneId: number) {
-    const zone =await Zone.findByPk(zoneId,{
-        include:[
+    const zone = await Zone.findByPk(zoneId, {
+        include: [
             {model: Location, attributes: ['latitude', 'longitude']}
         ]
     });
     if (!zone) {
         throw new Error("Zone not found");
     }
-    const metersToDegrees = 1 / 111120;
-    const radiusInMeters = 50;
-    const radius = radiusInMeters * metersToDegrees;
-
-
-
-    const zoneSearched= await zone.get({plain: true});
-    const zoneLatitude = parseFloat(zoneSearched.Location.latitude);
-    const zoneLongitude = parseFloat(zoneSearched.Location.longitude);
-    const minLatitude = zoneLatitude - (radius / 111.12);
-    const maxLatitude = zoneLatitude + (radius / 111.12);
-    const minLongitude = zoneLongitude - (radius / (111.12 * Math.cos(zoneLatitude * (Math.PI / 180))));
-    const maxLongitude = zoneLongitude + (radius / (111.12 * Math.cos(zoneLatitude * (Math.PI / 180))));
-    const reports = await Report.findAll({
-        include: [{
-            model: Location,
-            attributes: [],
-            where: {
-                latitude: { [Op.between]: [minLatitude, maxLatitude] },
-                longitude: { [Op.between]: [minLongitude, maxLongitude] }
-            }
-        }]
-    });
-    return  reports;
+    const zoneSearched = await zone.get({plain: true});
+    //Todo: arreglar la devolucion con otros datos
+     const  reportsSearched= await findEntitiesWithinRadius(Report, zoneSearched.Location, 500000);
+return{zone:zoneSearched, reportsSearched:reportsSearched};
 }
 
-
-export {createZone, getAllZone,getZoneById}
+export {createZone, getAllZone, getZoneById}
