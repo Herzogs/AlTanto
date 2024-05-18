@@ -9,4 +9,4 @@ const createReportValidator = z.object({
   longitude: z.string().min(1).max(30),
 })
 
-export { createReportValidator }
+export {createReportValidator}
