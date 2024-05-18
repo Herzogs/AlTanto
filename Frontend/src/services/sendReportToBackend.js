@@ -23,8 +23,9 @@ const sendReportToBackend = async (data) => {
     // Subir la imagen al Storage de Firebase
     const imageName = `images/${uuidv4()}`
     const storageRef = ref(storage, imageName);
-    uploadBytes(storageRef, data.image[0]);
 
+    data.image[0] != null ? uploadBytes(storageRef, data.image[0]) : console.log("no hay imagenes");
+    
     //Enviar los datos al backend
     const response = await fetch(`${FORM_URI}`, {
         method: 'POST',
@@ -34,11 +35,10 @@ const sendReportToBackend = async (data) => {
         body: JSON.stringify({
             title: data.title,
             content: data.content,
-            description: data.description,
             categoryId: data.category,
-            latitude: data.latitude,
-            longitude: data.longitude,
-            images: imageName.split('/')[1],// Utiliza la imagen en formato Base64
+            latitude: data.latitude.toString(),
+            longitude: data.longitude.toString(),
+            images: imageName.split('/')[1] ?? '' // Utiliza la imagen en formato Base64
         })
     });
 

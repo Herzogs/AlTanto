@@ -48,7 +48,7 @@ function Map({ location, setLocation, events }) {
       <MapContainer
         center={[location.lat, location.lon]}
         zoom={15}
-        style={{ height: '700px', width: '500px' }}
+        style={{ height: '600px', width: '450px' }}
         scrollWheelZoom={false}  // zoom de ruedita
         zoomControl={true}      // bootnes de zoom en pantalla
         attributionControl={false}
