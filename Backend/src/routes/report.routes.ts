@@ -6,6 +6,8 @@ router.get('/',controller.getAllReports);
 
 router.get('/:reportId',controller.getReportsById);
 
+router.get('/getsectorizedreports',controller.getReportsByLatLongRadius);
+
 router.get('/:userId',controller.getReportByUser);
 
 router.post('/create-report',controller.createReport);
@@ -13,4 +15,5 @@ router.post('/create-report',controller.createReport);
 router.patch('/reportId', controller.updateReport);
 
 router.delete('/:reportId',controller.deleteReport);
+
 export default router;

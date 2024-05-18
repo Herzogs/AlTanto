@@ -70,15 +70,19 @@ const deleteReport = async (req: Request, res: Response): Promise<Response> => {
     try {
         const reportId = parseInt(req.params.reportId);
         const rowsDeleted = await reportService.deleteReport(reportId);
-
         if (rowsDeleted === 0) {
             return res.status(404).json({ error: 'Report not found' });
         }
-
         return res.status(204).send();
     } catch (error) {
         return res.status(500).json({ error: (error as Error).message });
     }
+};
+
+const getReportsByLatLongRadius = async (req: Request, res: Response): Promise<Response> => {
+    console.log(req.query);
+    const reports = await reportService.getReportsByLatLongRadius(req.query.lat as string,req.query.lon as string , req.query.rad as string);
+    return res.status(200).json(reports);
 };
 
 export {
@@ -88,4 +92,5 @@ export {
     createReport,
     updateReport,
     deleteReport,
-};
+    getReportsByLatLongRadius
+}

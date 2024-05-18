@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import ReactDOM from 'react-dom/client'
+import {useState} from 'react'
+//import ReactDOM from 'react-dom/client'
 import MapGeolocalizado from './Map/MapGeolocalizado';
 import LocationMarker from './Map/LocationMarker';
 import Filter from './Map/Filter.jsx'
@@ -23,7 +23,6 @@ function Map() {
   return (
     <>
       <Filter filters={filters} onFilterChange={handleFilterChange} />    
- 
       {location ? (
             <MapGeolocalizado filters={filters} location={location} />
       ) : (<LocationMarker location={location} setLocation={setLocation} />
@@ -31,7 +30,7 @@ function Map() {
       )}
     </>
   );
-};
+}
  
  
 export default Map;

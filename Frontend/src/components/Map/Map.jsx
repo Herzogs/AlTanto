@@ -1,4 +1,4 @@
-import React from 'react';
+//import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import MenuButton from './MenuButton'
@@ -10,8 +10,6 @@ import pulgarAbajo from './icons/pulgarAbajo.png';
 import icon1 from './icons/alerta.png';
 import icon2 from './icons/exclamacionAzul.png';
 import icon3 from './icons/exclamacionAmarillo.png';
-
-
 
 
 function getIcon(type) {
@@ -29,9 +27,8 @@ function getIcon(type) {
   }
 }
 
-
-
 function Map({ location, setLocation, events }) {
+
 
   const handleMarkerDragEnd = (event) => {
     const newPosition = event.target.getLatLng();
@@ -41,11 +38,11 @@ function Map({ location, setLocation, events }) {
     });
   };
 
-
   return (
     <>
 
       <MapContainer
+        id='mapa'
         center={[location.lat, location.lon]}
         zoom={15}
         style={{ height: '600px', width: '450px' }}
@@ -70,10 +67,6 @@ function Map({ location, setLocation, events }) {
         </Marker>
 
         <Circle center={[location.lat, location.lon]} radius={1000} />
-
-
-
-
 
         {events && events.map((evento) => (
           <Marker

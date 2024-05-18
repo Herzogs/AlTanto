@@ -45,7 +45,6 @@ async function findEntitiesWithinRadius<Entity extends EntityModel>(
         include: [{
             model: Location,
             attributes:['latitude', 'longitude'],
-
             where: {
                 latitude: { [Op.between]: [minLatitude * 180 / Math.PI, maxLatitude * 180 / Math.PI] },
                 longitude: { [Op.between]: [minLongitude * 180 / Math.PI, maxLongitude * 180 / Math.PI] }

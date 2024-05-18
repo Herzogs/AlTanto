@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 function LocationMarker({ setLocation }) { 
  
   useEffect(() => {
-    const getLocation = () => {
+    const getLocation = async () => {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -18,7 +18,7 @@ function LocationMarker({ setLocation }) {
       }
     };
 
-    getLocation();
+    getLocation()
   }, [setLocation]);
 }
 
