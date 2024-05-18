@@ -39,7 +39,9 @@ async function createReport(newReport: IReportRequest): Promise<Report> {
                 throw new Error("La categoría especificada no existe.");
             }
             const location = await Location.create({latitude: newReport.latitude, longitude: newReport.longitude});
+            console.log(location + ' location')
             const loc = location.get({plain: true})
+            console.log(loc + ' loc')
             return await Report.create({
                 title: newReport.title,
                 content: newReport.content,

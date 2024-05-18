@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getCategoryFromApi } from "../services/getCategory";
-import { getLocation } from "../services/getLocation";
+//import { getLocation } from "../services/getLocation";
 import sendReportToBackend from "../services/sendReportToBackend";
 import "./Form.css";
 

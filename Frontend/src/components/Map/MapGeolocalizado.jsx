@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import LocationMarker from './LocationMarker';  
-import SearchEvents from './SearchEvents';
+import { useState, useEffect } from 'react';
+//import LocationMarker from './LocationMarker';  
+//import SearchEvents from './SearchEvents';
 import 'leaflet/dist/leaflet.css';
 import Map from './Map';
 
@@ -58,10 +58,10 @@ function MapGeolocalizado({ location: initialLocation = null, filters }) {
     setFilteredEvents(resultados);
   }, [originalEvents, filters]);
   
-
+  
+  //<button onClick={() => console.log(originalEvents)}> ver data</button>
   return (
     <>  
-    <button onClick={() => console.log(originalEvents)}> ver data</button>
       <Map location={location} setLocation={setLocation} events={Object.values(filteredEvents)} />
     </>
   );

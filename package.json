@@ -34,5 +34,9 @@
   "devDependencies": {
     "cross-env": "^7.0.3",
     "eslint": "8.57.0"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^4.2.1"
   }
 }

@@ -13,5 +13,4 @@ router.post('/create-report',controller.createReport);
 router.patch('/reportId', controller.updateReport);
 
 router.delete('/:reportId',controller.deleteReport);
-
 export default router;

@@ -38,20 +38,12 @@ const getReportByUser = async (req: Request, res: Response): Promise<Response> =
 
 const createReport = async (req: Request, res: Response): Promise<Response> => {
     try {
-        const validData = await validateData.createReportValidator.parseAsync(req.body);
+        const validData = await validateData.createReportValidator.parseAsync(req.body) as IReportRequest;
         if (validData instanceof Error) {
             return res.status(400).json({ error: "Hay errores en los campos recibidos" });
         }
-        const newReport: IReportRequest = {
-            title: validData.title,
-            content: validData.content,
-            images: validData.images ?? '',
-            categoryId: validData.categoryId,
-            latitude: validData.latitude,
-            longitude: validData.longitude,
-        }
-        await reportService.createReport(newReport);
-        return res.status(201).json(newReport);
+        await reportService.createReport(validData);
+        return res.status(201).json(validData);
     } catch (error) {
         return res.status(500).json({ error: (error as Error).message });
     }
