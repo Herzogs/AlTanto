@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
-import Form from "./components/Form";
+import ReportForm from "./components/ReportForm";
 import CategoryForm from "./components/CategoryForm";
 import Test from "./components/Test";
 import Home from "./pages/Home";
@@ -14,7 +14,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/form" element={<Form />} />
+          <Route path="/form" element={<ReportForm />} />
           <Route path="/category" element={<CategoryForm />} />
           <Route path="/test" element={<Test />} />
           <Route path="/notificaciones" element={<Notifications />} />

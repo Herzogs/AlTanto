@@ -1,18 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
-//import LocationMarker from './LocationMarker';  
+import { useState, useEffect, useRef } from "react";
+//import LocationMarker from './LocationMarker';
 //import SearchEvents from './SearchEvents';
-import 'leaflet/dist/leaflet.css';
-import Map from './Map';
+import "leaflet/dist/leaflet.css";
+import Map from "./Map";
 
 async function buscarReportes(location) {
-  const API_URL = `http://localhost:3000/api/report/getsectorizedreports?lat=${location.lat}&lon=${location.lon}&rad=${500}`;
+  const API_URL = `http://localhost:3000/api/report/getsectorizedreports?lat=${
+    location.lat
+  }&lon=${location.lon}&rad=${800}`;
   try {
     const response = await fetch(`${API_URL}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-      }
-    })
+      },
+    });
 
     if (!response.ok) {
       throw new Error("Error al obtener los datos ");
@@ -20,8 +22,6 @@ async function buscarReportes(location) {
     const data = await response.json();
     console.log(data);
     return data;
-    
-
   } catch (error) {
     throw new Error(error);
   }
@@ -32,8 +32,6 @@ function MapGeolocalizado({ location: initialLocation = null, filters }) {
   const [originalEvents, setOriginalEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
 
-
-
   const [datosIniciales, setDatosIniciales] = useState();
   useEffect(() => {
     buscarReportes(location).then((data) => {
@@ -41,9 +39,8 @@ function MapGeolocalizado({ location: initialLocation = null, filters }) {
     });
   }, [location]);
 
-
   useEffect(() => {
-    buscarReportes(location) // BUSCA SIEMPRE TODO - HAY Q ARMAR UNO Q FILTRE SOLO POR LA GEO
+    buscarReportes(location)
       .then((data) => {
         const formattedData = data.map((item) => ({
           id: item.id,
@@ -61,24 +58,21 @@ function MapGeolocalizado({ location: initialLocation = null, filters }) {
       .catch((error) => console.error("Error al obtener eventos:", error));
   }, [location]);
 
-
   useEffect(() => {
-    const resultados = originalEvents.filter(evento =>
-      filters.some(filtro => filtro.id === evento.tipe && filtro.state)
+    const resultados = originalEvents.filter((evento) =>
+      filters.some((filtro) => filtro.id === evento.tipe && filtro.state)
     );
     setFilteredEvents(resultados);
   }, [originalEvents, filters]);
 
-
   //<button onClick={() => console.log(originalEvents)}> ver data</button>
   return (
     <>
-      <Map 
+      <Map
         location={location}
         setLocation={setLocation}
-        events={Object.values(filteredEvents)} 
+        events={Object.values(filteredEvents)}
       />
-     
     </>
   );
 }

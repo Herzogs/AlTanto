@@ -43,10 +43,10 @@ const sendReportToBackend = async (data) => {
     });
 
     if (response.ok) {
-        alert('Reporte creado correctamente');
+        console.log("Se envio reporte okk")
     }
     else {
-        alert('Error al crear el reporte');
+        console.log("Error en el form para enviar reporte")
     }
 }
 export default sendReportToBackend;

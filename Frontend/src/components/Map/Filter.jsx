@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Container } from 'react-bootstrap';
 
 const Filter = ({ filters, onFilterChange }) => {
   const handleCheckboxChange = (id) => {
@@ -9,18 +10,19 @@ const Filter = ({ filters, onFilterChange }) => {
   };
 
   return (
-    <div>
+    <Container>
       {filters.map((filter) => (
-        <label key={filter.id} style={{ marginRight: '10px' }}>
+        <label key={filter.id} style={{ marginRight: '12px' }}>
           <input
             type="checkbox"
             checked={filter.state}
             onChange={() => handleCheckboxChange(filter.id)}
+            style={{ marginRight: '12px' }}
           />
           {filter.description}
         </label>
       ))}
-    </div>
+    </Container>
   );
 };
 

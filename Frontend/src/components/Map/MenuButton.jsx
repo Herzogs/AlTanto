@@ -1,36 +1,25 @@
-import React, { useState } from 'react';
-
-function  MenuButton  () {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-
+import React from "react";
+import Dropdown from "react-bootstrap/Dropdown";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+function MenuButton() {
   return (
-    <div
+    <Dropdown
       style={{
-        position: 'absolute',
-        bottom: '5%',
-        right: '5%',
-        zIndex: '999',
+        position: "absolute",
+        bottom: "8%",
+        right: "2%",
+        zIndex: "999",
       }}
     >
-      {!menuOpen && (
-        <button onClick={toggleMenu}>Menu</button>
-      )}
+      <Dropdown.Toggle id="dropdown-basic" as="span" style={{ color: "none" }}>
+        <AddCircleIcon className="text-at-grey" style={{ fontSize: "50px" }} />
+      </Dropdown.Toggle>
 
-      {menuOpen && (
-        <div className="menu" style={{ padding: '10px', backgroundColor: 'white', borderRadius: '5px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
-          <button>Crear Reporte </button>
-          <button>Crar zona</button>
-          <button onClick={() => setMenuOpen(false)}>Cerrar</button>
-        </div>
-      )}
-    </div>
+      <Dropdown.Menu>
+        <Dropdown.Item href="/form">Crear reporte</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
   );
-};
+}
 
 export default MenuButton;
-

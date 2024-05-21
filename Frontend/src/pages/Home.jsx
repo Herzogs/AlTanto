@@ -6,10 +6,15 @@ import Map from "../components/Map";
 function Home() {
   return (
     <>
-      <Container>
-        <h1>Al Tanto test</h1>
-      </Container>
-      <Map />
+      <div className="top-section">
+        <Container>
+          <h1>Al Tanto</h1>
+          <p>No te pierdas nada de lo que está pasando</p>
+        </Container>
+      </div>
+      <div className="bottom-section">
+        <Map />
+      </div>
     </>
   );
 }

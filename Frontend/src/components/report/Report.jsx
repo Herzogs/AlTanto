@@ -4,7 +4,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import "./styles.css";
 
-function Report({ title, description, dtime, icon, icolor }) {
+function Report({ title, description, dtime='', icon='', icolor='' }) {
   const IconoProp = icon;
 
   return (
