@@ -1,6 +1,7 @@
 import {Request, Response} from "express";
 import * as zoneService from '../services/zone.service';
 import {IZoneRequest} from "../interfaces/zone.interface";
+import  * as zoneValidator from "../validator/zone.validator";
 
 const getAllZones = async (_req: Request, res: Response) => {
     try {
@@ -11,20 +12,18 @@ const getAllZones = async (_req: Request, res: Response) => {
     }
 }
 const createZone = async ( req: Request, res: Response): Promise<Response> => {
-    const newZoneRequest = req.body;
-    const newZone: IZoneRequest = {
-        name: newZoneRequest.name,
-        latitude: newZoneRequest.latitude,
-        longitude: newZoneRequest.longitude
-    };
-    const zone = zoneService.createZone(newZone);
+    const validData = await zoneValidator.createZone.parseAsync(req.body) as IZoneRequest;
+    const zone = zoneService.createZone(validData);
     return res.json(zone);
 }
-const getZoneById= async (req: Request, res: Response):Promise<Response> => {
 
+
+const getZoneById= async (req: Request, res: Response):Promise<Response> => {
+    console.log(req.params.zoneId);
     try {
         const zoneId = parseInt(req.params.zoneId);
         const zone = await zoneService.getZoneById(zoneId);
+        console.log(zone);
         return res.status(200).json(zone);
 
     }catch (error) {

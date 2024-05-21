@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 //import LocationMarker from './LocationMarker';
 //import SearchEvents from './SearchEvents';
 import "leaflet/dist/leaflet.css";
