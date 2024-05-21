@@ -2,13 +2,13 @@ import { useState } from 'react';
 import MapGeolocalizado from './Map/MapGeolocalizado';
 import LocationMarker from './Map/LocationMarker';
 import Filter from './Map/Filter';
+import { Button } from 'react-bootstrap';
 
 // LLAMADO A SERVICIO DE OBTENER CATEGORIAS - LO GUADO EN UN ESTADO Y LO PASO A defaultFilters
- 
-function Map({ localization = null }) {
-    console.log(localization); 
-    const [location, setLocation] = useState(localization);
 
+function Map({ localization = null, radius: initialRadius = 500}) {
+    const [location, setLocation] = useState(localization);
+    const [radius] = useState(initialRadius);
     const defaultFilters = [
         { id: 1, description: 'Seguridad', state: true },
         { id: 2, description: 'Alerta', state: true },
@@ -24,7 +24,8 @@ function Map({ localization = null }) {
         <>
             <Filter filters={filters} onFilterChange={handleFilterChange} />
             {location ? (
-                <MapGeolocalizado filters={filters} location={location} />
+                <MapGeolocalizado filters={filters} radius={radius} location={location} />
+                
             ) : (
                 <LocationMarker location={location} setLocation={setLocation} />
             )}

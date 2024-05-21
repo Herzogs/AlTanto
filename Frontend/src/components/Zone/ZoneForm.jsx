@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 
 function ZoneForm() {
-    const [coordinates, setCoordinates] = useState(null);
+    const [coordinates, setCoordinates] = useState("");
     const [showModal, setShowModal] = useState(false);
     const [visible, setVisible] = useState(false);
     const [disabled, setDisabled] = useState(true);
@@ -187,6 +187,13 @@ function ZoneForm() {
                         ))}
                     </Col>
                 </Form.Group>
+                <Form.Group as={Row} controlId="submit">
+                    <Col sm={{ span: 10, offset: 2 }}>
+                        <Button type="submit" disabled={disabled}>
+                            Salvar
+                        </Button>
+                    </Col>
+                </Form.Group>
                 {visible && coordinates && (
                     <MapContainer
                         center={coordinates}
@@ -200,13 +207,6 @@ function ZoneForm() {
                         <Circle center={coordinates} radius={parseInt(selectedRadio)} />
                     </MapContainer>
                 )}
-                <Form.Group as={Row} controlId="submit">
-                    <Col sm={{ span: 10, offset: 2 }}>
-                        <Button type="submit" disabled={disabled}>
-                            Salvar
-                        </Button>
-                    </Col>
-                </Form.Group>
             </Form>
 
             <Modal show={showModal} onHide={handleClose}>

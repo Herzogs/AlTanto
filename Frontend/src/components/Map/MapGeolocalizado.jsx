@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import "leaflet/dist/leaflet.css";
 import Map from "./Map";
 
-async function buscarReportes(location) {
+async function buscarReportes(location, radius = 800) {
   const API_URL = `http://localhost:3000/api/report/getsectorizedreports?lat=${
     location.lat
-  }&lon=${location.lon}&rad=${800}`;
+  }&lon=${location.lon}&rad=${radius}`;
+  console.log(API_URL);
   try {
     const response = await fetch(`${API_URL}`, {
       method: "GET",
@@ -27,20 +28,30 @@ async function buscarReportes(location) {
   }
 }
 
-function MapGeolocalizado({ location: initialLocation = null, filters }) {
-  const [location, setLocation] = useState(initialLocation);
+function MapGeolocalizado({ location: initialLocation = null, radius: initialRadius = 200 , filters }) {
+  console.log(initialLocation)
+  const [location, setLocation] = useState({
+    lat: initialLocation.latitude,
+    lon: initialLocation.longitude,
+  });
+  const [radius ] = useState(initialRadius);
   const [originalEvents, setOriginalEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
-
+  
+  console.log(location);
+  
   const [datosIniciales, setDatosIniciales] = useState();
   useEffect(() => {
-    buscarReportes(location).then((data) => {
+    console.log("Buscando reportes");
+    console.log("radio: "+ radius);
+    buscarReportes(location,radius).then((data) => {
       setDatosIniciales(data);
     });
+    
   }, [location]);
 
   useEffect(() => {
-    buscarReportes(location)
+    buscarReportes(location,radius)
       .then((data) => {
         const formattedData = data.map((item) => ({
           id: item.id,
@@ -65,14 +76,9 @@ function MapGeolocalizado({ location: initialLocation = null, filters }) {
     setFilteredEvents(resultados);
   }, [originalEvents, filters]);
 
-  //<button onClick={() => console.log(originalEvents)}> ver data</button>
   return (
     <>
-      <Map
-        location={location}
-        setLocation={setLocation}
-        events={Object.values(filteredEvents)}
-      />
+      <Map location={location} setLocation={setLocation} radius={radius} events={Object.values(filteredEvents)} />
     </>
   );
 }
