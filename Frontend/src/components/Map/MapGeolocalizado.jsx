@@ -28,13 +28,8 @@ async function buscarReportes(location, radius = 800) {
   }
 }
 
-function MapGeolocalizado({ location: initialLocation = null, radius: initialRadius = 200 , filters }) {
-  console.log(initialLocation)
-  const [location, setLocation] = useState({
-    lat: initialLocation.latitude,
-    lon: initialLocation.longitude,
-  });
-  const [radius ] = useState(initialRadius);
+function MapGeolocalizado({ location, radius , filters, setLocation }) {
+  console.log(location)
   const [originalEvents, setOriginalEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   
@@ -48,7 +43,7 @@ function MapGeolocalizado({ location: initialLocation = null, radius: initialRad
       setDatosIniciales(data);
     });
     
-  }, [location]);
+  }, [location, radius]);
 
   useEffect(() => {
     buscarReportes(location,radius)

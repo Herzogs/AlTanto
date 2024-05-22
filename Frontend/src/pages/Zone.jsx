@@ -28,8 +28,9 @@ function ZoneHome() {
         };
 
         fetchZone().then((data) => {
+            console.log(data.Location);
             setZona(data);
-            setLocalization(data.Location);
+            setLocalization({ lat: data.Location.latitude, lon: data.Location.longitude });
             setIsLoading(false);
         });
     }, [id]);
