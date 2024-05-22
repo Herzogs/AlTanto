@@ -10,19 +10,19 @@ const Filter = ({ filters, onFilterChange }) => {
   };
 
   return (
-    <Container>
-      {filters.map((filter) => (
-        <label key={filter.id} style={{ marginRight: '12px' }}>
-          <input
-            type="checkbox"
-            checked={filter.state}
-            onChange={() => handleCheckboxChange(filter.id)}
-            style={{ marginRight: '12px' }}
-          />
-          {filter.name}
-        </label>
-      ))}
-    </Container>
+    <Container className='container-filters'>
+    {filters.map((filter) => (
+      <label key={filter.id} className="custom-checkbox-wrapper" style={{ marginRight: '12px' }}>
+        <input
+          type="checkbox"
+          checked={filter.state}
+          onChange={() => handleCheckboxChange(filter.id)}
+          className="custom-checkbox"
+        />
+        {filter.name}
+      </label>
+    ))}
+  </Container>
   );
 };
 

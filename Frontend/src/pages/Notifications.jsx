@@ -42,9 +42,9 @@ function Notifications() {
   const getIconByType = (tipe) => {
     switch (tipe) {
       case 1:
-        return InfoIcon;
-      case 2:
         return ErrorIcon;
+      case 2:
+        return InfoIcon;
       default:
         return WarningIcon;
     }
@@ -56,7 +56,7 @@ function Notifications() {
 
   return (
     <Container>
-      <button onClick={() => { console.log(reportesObtenidos); }}>xxxx</button>
+      <h3>Mis notificaciones</h3>
       {reportesObtenidos.map((report) => (
         <Report
           key={report.id}
@@ -64,7 +64,7 @@ function Notifications() {
           title={report.title}
           description={report.content}
           icon={getIconByType(report.tipe)}
-          icolor={"#29b6f6"}
+          icolor={"#cc545d"}
           onViewDetails={() => handleViewDetails(report)}
         />
       ))}

@@ -22,6 +22,9 @@ function Report({ report, title, description, dtime='', icon='', icolor='', onVi
           {description}
         </Typography>
         <Box className="at-report-footer">
+        <Button variant="contained" color="primary" size="small" onClick={onViewDetails}>
+            Ver detalles
+          </Button>
           <Typography variant="body1" color="textSecondary" component="small">
             {dtime}
           </Typography>
@@ -31,9 +34,6 @@ function Report({ report, title, description, dtime='', icon='', icolor='', onVi
           <IconButton>
             <ThumbDownAltIcon style={{ color: "#cc545d" }} />
           </IconButton>
-          <Button variant="contained" color="primary" onClick={onViewDetails}>
-            Ver detalles
-          </Button>
         </Box>
       </CardContent>
     </Card>

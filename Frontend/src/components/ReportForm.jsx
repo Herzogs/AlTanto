@@ -229,8 +229,8 @@ function ReportForm() {
           </Col>
         </Form.Group>
 
-        <Button type="submit" className="my-4">
-          Enviar
+        <Button type="submit" variant="success" className="my-4 px-4">
+          Guardar
         </Button>
       </Form>
 

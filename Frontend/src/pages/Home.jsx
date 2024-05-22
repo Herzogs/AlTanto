@@ -5,17 +5,16 @@ import Map from "../components/Map";
 
 function Home() {
   return (
-    <>
+    <section className="container_home">
       <div className="top-section">
         <Container>
-          <h1>Al Tanto</h1>
-          <p>No te pierdas nada de lo que está pasando</p>
+          <h3>No te pierdas nada <br/> de lo que está pasando</h3>
         </Container>
       </div>
       <div className="bottom-section">
         <Map />
       </div>
-    </>
+    </section>
   );
 }
 

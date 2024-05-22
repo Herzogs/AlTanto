@@ -36,12 +36,13 @@ function Map({ location, setLocation, radius, events }) {
   };
 
   return (
-    <>
+    <section className="map-container">
       <MapContainer
         id="mapa"
+        className="map"
         center={[location.lat, location.lon]}
         zoom={15}
-        style={{ height: "380px", width: "100%" }}
+        /* style={{ height: "380px", width: "100%" }} */
         scrollWheelZoom={false} // zoom de ruedita
         zoomControl={true} // bootnes de zoom en pantalla
         attributionControl={false}
@@ -90,7 +91,7 @@ function Map({ location, setLocation, radius, events }) {
 
         <MenuButton />
       </MapContainer>
-    </>
+    </section>
   );
 }
 

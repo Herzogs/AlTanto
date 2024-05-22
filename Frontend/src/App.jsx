@@ -25,7 +25,7 @@ function App() {
           <Route path="/zonas" element={<ZoneHome />} />
           <Route path="/zonas/crear" element={<ZoneForm />} />
           <Route path="/zonas/:id" element={<Zone />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
+          <Route path="*" element={<h1 className="text-center">Estamos trabajando...</h1>} />
 
           <Route path="/reportDetail" element={<ReportDetail/>}/>
         </Routes>

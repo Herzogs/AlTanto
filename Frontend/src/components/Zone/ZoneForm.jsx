@@ -111,7 +111,7 @@ function ZoneForm() {
 
     return (
         <Container>
-            <h2 className="text-center">Crear Zona</h2>
+            <h2>Crear zona</h2>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Form.Group as={Row} controlId="name">
                     <Form.Label column sm={2}>
@@ -142,7 +142,8 @@ function ZoneForm() {
                 </Form.Group>
                 <Form.Group as={Row} controlId="address">
                     <Form.Label column sm={2}>
-                        Dirección:
+                        Dirección: <br/>
+                        <small>Calle, Número y Localidad</small>
                     </Form.Label>
                     <Col sm={10}>
                         <Form.Control
@@ -166,13 +167,13 @@ function ZoneForm() {
                 <Form.Group className="my-4" as={Row} controlId="search">
                     <Col sm={{ span: 10, offset: 2 }}>
                         <Button type="button" onClick={handleSearch}>
-                            Buscar
+                            Buscar dirección
                         </Button>
                     </Col>
                 </Form.Group>
                 <Form.Group as={Row} controlId="radio">
                     <Form.Label column sm={2}>
-                        Radio:
+                        Radio asignado a la zona:
                     </Form.Label>
                     <Col sm={10}>
                         {["250", "500", "1000"].map(value => (
@@ -189,8 +190,8 @@ function ZoneForm() {
                 </Form.Group>
                 <Form.Group className="my-4"  as={Row} controlId="submit">
                     <Col sm={{ span: 10, offset: 2 }}>
-                        <Button type="submit" disabled={disabled}>
-                            Salvar
+                        <Button className="btn-success px-4" type="submit" disabled={disabled}>
+                            Guardar
                         </Button>
                     </Col>
                 </Form.Group>
