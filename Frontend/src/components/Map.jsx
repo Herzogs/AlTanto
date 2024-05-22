@@ -6,9 +6,8 @@ import { Button } from 'react-bootstrap';
 
 // LLAMADO A SERVICIO DE OBTENER CATEGORIAS - LO GUADO EN UN ESTADO Y LO PASO A defaultFilters
 
-function Map({ localization = null, radius: initialRadius = 500}) {
-    const [location, setLocation] = useState(localization);
-    const [radius] = useState(initialRadius);
+function Map({ localization, radius = 500}) {
+    const [location, setLocation] = useState(localization)
     const defaultFilters = [
         { id: 1, description: 'Seguridad', state: true },
         { id: 2, description: 'Alerta', state: true },
@@ -24,7 +23,7 @@ function Map({ localization = null, radius: initialRadius = 500}) {
         <>
             <Filter filters={filters} onFilterChange={handleFilterChange} />
             {location ? (
-                <MapGeolocalizado filters={filters} radius={radius} location={location} />
+                <MapGeolocalizado filters={filters} radius={radius} location={location} setLocation={setLocation} />
                 
             ) : (
                 <LocationMarker location={location} setLocation={setLocation} />

@@ -26,7 +26,7 @@ function getIcon(type) {
   }
 }
 
-function Map({ location, setLocation, radius = 1000, events }) {
+function Map({ location, setLocation, radius, events }) {
   const handleMarkerDragEnd = (event) => {
     const newPosition = event.target.getLatLng();
     setLocation({
