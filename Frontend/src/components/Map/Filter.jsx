@@ -19,7 +19,7 @@ const Filter = ({ filters, onFilterChange }) => {
             onChange={() => handleCheckboxChange(filter.id)}
             style={{ marginRight: '12px' }}
           />
-          {filter.description}
+          {filter.name}
         </label>
       ))}
     </Container>

@@ -8,7 +8,6 @@ async function buscarReportes(location, radius = 800) {
   const API_URL = `http://localhost:3000/api/report/getsectorizedreports?lat=${
     location.lat
   }&lon=${location.lon}&rad=${radius}`;
-  console.log(API_URL);
   try {
     const response = await fetch(`${API_URL}`, {
       method: "GET",
@@ -21,7 +20,6 @@ async function buscarReportes(location, radius = 800) {
       throw new Error("Error al obtener los datos ");
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     throw new Error(error);
@@ -29,16 +27,12 @@ async function buscarReportes(location, radius = 800) {
 }
 
 function MapGeolocalizado({ location, radius , filters, setLocation }) {
-  console.log(location)
   const [originalEvents, setOriginalEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   
-  console.log(location);
   
   const [datosIniciales, setDatosIniciales] = useState();
   useEffect(() => {
-    console.log("Buscando reportes");
-    console.log("radio: "+ radius);
     buscarReportes(location,radius).then((data) => {
       setDatosIniciales(data);
     });

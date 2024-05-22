@@ -6,7 +6,6 @@ export const getLocation = () => {
         lat: position.coords.latitude,
         lon: position.coords.longitude,
       };
-      console.log(loc);
       return loc;
     });
   } else {
