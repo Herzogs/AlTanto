@@ -30,9 +30,10 @@ function Notifications() {
         tipe: item.CategoryId,
         title: item.title,
         content: item.content,
-        distancia: 0.1,
+        distancia: 500,
         latitude: item.Location.latitude,
-        longitude: item.Location.longitude
+        longitude: item.Location.longitude,
+        images: item?.images
       }));
       setReportesObtenidos(formattedData.reverse());
     });
