@@ -1,7 +1,7 @@
 import Zone from '../models/Zone';
-import {Location, findEntitiesWithinRadius} from '../models/Location';
+import {Location} from '../models/Location';
 import {IZoneRequest} from "../interfaces/zone.interface";
-import Report from "../models/Report";
+//import Report from "../models/Report";
 
 
 async function createZone(newZone: IZoneRequest): Promise<Zone> {
@@ -37,8 +37,8 @@ async function getZoneById(zoneId: number) {
     }
     const zoneSearched = await zone.get({plain: true});
     //Todo: arreglar la devolucion con otros datos
-     const  reportsSearched= await findEntitiesWithinRadius(Report, zoneSearched.Location, 500000);
-return{zone:zoneSearched, reportsSearched:reportsSearched};
+     //const  reportsSearched= await findEntitiesWithinRadius(Report, zoneSearched.Location, 500000);
+return{zone:zoneSearched, reports:[]};
 }
 
 export {createZone, getAllZone, getZoneById}

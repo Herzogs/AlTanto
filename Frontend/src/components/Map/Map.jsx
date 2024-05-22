@@ -26,7 +26,7 @@ function getIcon(type) {
   }
 }
 
-function Map({ location, setLocation, events }) {
+function Map({ location, setLocation, radius = 1000, events }) {
   const handleMarkerDragEnd = (event) => {
     const newPosition = event.target.getLatLng();
     setLocation({
@@ -66,7 +66,7 @@ function Map({ location, setLocation, events }) {
           {/*  <Popup>Ubicacion Actual</Popup> */}
         </Marker>
 
-        <Circle center={[location.lat, location.lon]} radius={1000} />
+        <Circle center={[location.lat, location.lon]} radius={radius} />
 
         {events &&
           events.map((evento) => (
