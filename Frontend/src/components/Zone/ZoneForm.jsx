@@ -9,7 +9,7 @@ function ZoneForm() {
     const [showModal, setShowModal] = useState(false);
     const [visible, setVisible] = useState(false);
     const [disabled, setDisabled] = useState(true);
-    const [selectedRadio, setSelectedRadio] = useState(null);
+    const [selectedRadio, setSelectedRadio] = useState("250");
     const navigate = useNavigate();
     const FORM_URI = 'http://localhost:3000/api/zone/create-zone'
 
@@ -44,7 +44,7 @@ function ZoneForm() {
 
     const handleClose = () => {
         setShowModal(false);
-        navigate("/zones");
+        navigate("/zonas");
     };
 
     const fetchCoordinates = useCallback(async (address) => {
@@ -163,7 +163,7 @@ function ZoneForm() {
                         )}
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="search">
+                <Form.Group className="my-4" as={Row} controlId="search">
                     <Col sm={{ span: 10, offset: 2 }}>
                         <Button type="button" onClick={handleSearch}>
                             Buscar
@@ -187,7 +187,7 @@ function ZoneForm() {
                         ))}
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} controlId="submit">
+                <Form.Group className="my-4"  as={Row} controlId="submit">
                     <Col sm={{ span: 10, offset: 2 }}>
                         <Button type="submit" disabled={disabled}>
                             Salvar
