@@ -9,6 +9,7 @@ import Notifications from "./pages/Notifications";
 import ZoneForm from "./components/Zone/ZoneForm";
 import ZoneHome from "./components/Zone/ZoneHome";
 import Zone from "./pages/Zone";
+import ReportDetail  from "./pages/ReportDetail";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/zonas/:id" element={<Zone />} />
           <Route path="*" element={<h1>Not Found</h1>} />
 
+          <Route path="/reportDetail" element={<ReportDetail/>}/>
         </Routes>
         <Footer />
       </BrowserRouter>
