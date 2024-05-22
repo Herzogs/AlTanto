@@ -1,10 +1,10 @@
 import React from "react";
-import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Box, IconButton, Button } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import "./styles.css";
 
-function Report({ title, description, dtime='', icon='', icolor='' }) {
+function Report({ report, title, description, dtime='', icon='', icolor='', onViewDetails }) {
   const IconoProp = icon;
 
   return (
@@ -31,6 +31,9 @@ function Report({ title, description, dtime='', icon='', icolor='' }) {
           <IconButton>
             <ThumbDownAltIcon style={{ color: "#cc545d" }} />
           </IconButton>
+          <Button variant="contained" color="primary" onClick={onViewDetails}>
+            Ver detalles
+          </Button>
         </Box>
       </CardContent>
     </Card>

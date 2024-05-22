@@ -6,6 +6,7 @@ import CategoryForm from "./components/CategoryForm";
 import Test from "./components/Test";
 import Home from "./pages/Home";
 import Notifications from "./pages/Notifications";
+import ReportDetail  from "./pages/ReportDetail";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/category" element={<CategoryForm />} />
           <Route path="/test" element={<Test />} />
           <Route path="/notificaciones" element={<Notifications />} />
+          <Route path="/reportDetail" element={<ReportDetail/>}/>
         </Routes>
         <Footer />
       </BrowserRouter>
