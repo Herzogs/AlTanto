@@ -1,15 +1,18 @@
-import React, { useEffect } from 'react';
-import { useMap, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
+import React, { useEffect } from "react";
+import { useMap, Marker, Popup } from "react-leaflet";
+import { useStore } from "../../store";
 
-const LocationMarker = ({ userLocation, setUserLocation }) => {
+const LocationMarker = () => {
   const map = useMap();
+  const { userLocation, setUserLocation } = useStore();
 
   useEffect(() => {
     if (!userLocation) {
-      map.locate({ setView: true, maxZoom: 16 }).on('locationfound', function (e) {
-        setUserLocation(e.latlng);
-      });
+      map
+        .locate({ setView: true, maxZoom: 16 })
+        .on("locationfound", function (e) {
+          setUserLocation(e.latlng);
+        });
     }
   }, [map, userLocation, setUserLocation]);
 
@@ -28,7 +31,7 @@ const LocationMarker = ({ userLocation, setUserLocation }) => {
       draggable={true}
       eventHandlers={eventHandlers}
     >
-      <Popup>You are here</Popup>
+      <Popup>Estas aquí</Popup>
     </Marker>
   ) : null;
 };
