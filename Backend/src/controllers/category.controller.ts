@@ -1,78 +1,59 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import * as categoryService from '../services/category.service';
+import * as categoryValidator from '../validator/category.validator'
+import { CategoryNotCreatedException, CategoryNotFoundException } from '../exceptions/category.exceptions';
 
-
-const getAllCategories = async (_req: Request, res: Response): Promise<Response> => {
+const getAllCategories = async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const categories = await categoryService.getAllCategories();
         return res.json(categories);
     } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
+        if (error instanceof CategoryNotFoundException) {
+            return next({ message: error.message, statusCode: error.statusCode });
+        }
+        // Para otros tipos de errores, pasar al siguiente middleware de error
+        return next((error as Error).message);
     }
 };
 
-const getCategoriesById = async (req: Request, res: Response): Promise<Response> => {
+const getCategoriesById = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    const validationResult = await categoryValidator.getCategoriesByIdValidator.safeParseAsync(req.params);
+    if (!validationResult.success) {
+        return next({ message: validationResult.error.errors[0].message, statusCode: 400 });
+    }
     try {
-        const categoryId = parseInt(req.params.categoryId);
-        const category = await categoryService.getCategoriesById(categoryId);
+        const { id } = validationResult.data as { id: string };
+        const category = await categoryService.getCategoriesById(+id);
         if (category) {
             return res.json(category);
-        } else {
-            return res.status(404).json({ error: 'Report not found' });
-        }
+        } 
     } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
+        if (error instanceof CategoryNotFoundException) {
+            return next({ message: error.message, statusCode: error.statusCode });
+        }
+        return next((error as Error).message);
     }
 };
 
-const createCategory = async (req: Request, res: Response): Promise<Response> => {
+const createCategory = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    const validationResult = await categoryValidator.createCategoryValidator.safeParseAsync(req.body);
+    if (!validationResult.success) {
+        return next({ message: validationResult.error.errors[0].message, statusCode: 400 });
+    }
+    const { name } = validationResult.data as { name: string };
     try {
-        const { name } = req.body;
-        console.log(req.body.name);
         const newCategory = await categoryService.createCategory(name);
         return res.json(newCategory);
     } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
-    }
-};
-
-const updateCategory = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const categoryId = parseInt(req.params.categoryId);
-        const updatedData = req.body;
-
-        const [rowsUpdated, updatedCategories] = await categoryService.updateCategory(categoryId, updatedData);
-
-        if (rowsUpdated === 0) {
-            return res.status(404).json({ error: 'Report not found' });
+        if (error instanceof CategoryNotCreatedException) {
+            return next({ message: error.message, statusCode: error.statusCode });
         }
-
-        return res.json(updatedCategories[0]);
-    } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
+        return next((error as Error).message);
     }
 };
 
-const deleteCategory = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const categoryId = parseInt(req.params.categoryId);
-        const rowsDeleted = await categoryService.deleteCategory(categoryId);
-
-        if (rowsDeleted === 0) {
-            return res.status(404).json({ error: 'Report not found' });
-        }
-
-        return res.status(204).send();
-    } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
-    }
-};
-
-
-export{
+export {
     getAllCategories,
     getCategoriesById,
     createCategory,
-    updateCategory,
-    deleteCategory
 }

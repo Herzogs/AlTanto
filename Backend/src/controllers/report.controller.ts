@@ -1,96 +1,114 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import * as reportService from '../services/report.service'
-import { IReportRequest } from '../interfaces/reports.interface'
-import * as validateData from '../validator/report.validator'
+import { IReportRequest, IReportWithRadius } from '../interfaces/reports.interface'
+import * as reportValidator from '../validator/report.validator'
+import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions'
 
-const getAllReports = async (_req: Request, res: Response): Promise<Response> => {
+const getAllReports = async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
         const reports = await reportService.getAllReports();
         return res.json(reports);
     } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
+        if (error instanceof ReportNotFoundException) {
+            return next({ message: error.message, statusCode: error.statusCode });
+        }
+        return next((error as Error).message);
     }
 };
 
-const getReportsById = async (req: Request, res: Response): Promise<Response> => {
+const getReportsById = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    const validationResult = await reportValidator.getReportByIdValidator.safeParseAsync(req.params);
+    if (!validationResult.success) {
+        return next({ message: validationResult.error.errors[0].message, statusCode: 400 });
+    }
     try {
-        const reportId = parseInt(req.params.reportId);
-        const report = await reportService.getReportById(reportId);
+        const { id } = validationResult.data as { id: string };
+        const report = await reportService.getReportById(+id);
         if (report) {
             return res.json(report);
-        } else {
-            return res.status(404).json({ error: 'Report not found' });
         }
     } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
+        if (error instanceof ReportNotFoundException) {
+            return next({ message: error.message, statusCode: error.statusCode });
+        }
+        return next((error as Error).message);
     }
 };
 
-const getReportByUser = async (req: Request, res: Response): Promise<Response> => {
+const getReportByUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    const validData = await reportValidator.getReportByUserIDValidator.safeParseAsync(req.body);
+    if (!validData.success) {
+        return next({ message: validData.error.errors[0].message, statusCode: 400 });
+    }
     try {
-        const userId = parseInt(req.params.userId);
-        const reports = await reportService.getReportByUser(userId);
+        const { userId } = validData.data as { userId: string };
+        const reports = await reportService.getReportByUser(+userId);
         return res.json(reports);
     } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
-    }
-};
-
-const createReport = async (req: Request, res: Response): Promise<Response> => {
-    try {
-        const validData = await validateData.createReportValidator.parseAsync(req.body) as IReportRequest;
-        if (validData instanceof Error) {
-            return res.status(400).json({ error: "Hay errores en los campos recibidos" });
+        if (error instanceof ReportNotFoundException) {
+            return next({ message: error.message, statusCode: error.statusCode });
         }
-        await reportService.createReport(validData);
-        return res.status(201).json(validData);
-    } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
+        return next((error as Error).message);
     }
 };
 
-const updateReport = async (req: Request, res: Response): Promise<Response> => {
+const createReport = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    
+    const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
+    if (!validData.success) {
+        const listofErrors = validData.error.errors.map((error) => {
+            return {
+                message: error.message,
+                path: error.path.join('.')
+
+            }
+        });
+        return next({ message: listofErrors, statusCode: 400 });
+    }
     try {
-        const reportId = parseInt(req.params.reportId);
-        const { descripcion, categoryId, latitude, longitude } = req.body;
-
-        const [rowsUpdated, updatedReports] = await reportService.updateReport(reportId, descripcion, categoryId, latitude, longitude);
-
-        if (rowsUpdated === 0) {
-            return res.status(404).json({ error: 'Report not found' });
+        const newReport: IReportRequest = {
+            ...validData.data,
+            "images": req.file?.filename as string
+        }
+        const reportCreated = await reportService.createReport(newReport);
+        return res.status(201).json(reportCreated);
+    } catch (error) {
+        if (error instanceof ReportNotCreatedException) {
+            return next({ message: error.message, statusCode: error.statusCode });
         }
 
-        return res.json(updatedReports[0]);
-    } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
+        return next((error as Error).message);
     }
 };
 
-const deleteReport = async (req: Request, res: Response): Promise<Response> => {
+const getReportsByLatLongRadius = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    const validationResult = await reportValidator.getReportByLatLongRadValidator.safeParseAsync(req.query);
+    if (!validationResult.success) {
+        const listofErrors = validationResult.error.errors.map((error) => {
+            return {
+                message: error.message,
+                path: error.path.join('.')
+
+            }
+        });
+        return next({ message: listofErrors, statusCode: 400 });
+    }
     try {
-        const reportId = parseInt(req.params.reportId);
-        const rowsDeleted = await reportService.deleteReport(reportId);
-        if (rowsDeleted === 0) {
-            return res.status(404).json({ error: 'Report not found' });
-        }
-        return res.status(204).send();
+        const coordinates: IReportWithRadius = validationResult.data as IReportWithRadius;
+        const reports = await reportService.getReportsByLatLongRadius(coordinates);
+        return res.status(200).json(reports);
     } catch (error) {
-        return res.status(500).json({ error: (error as Error).message });
+        if (error instanceof ReportNotFoundException) {
+            return next({ message: error.message, statusCode: error.statusCode });
+        }
+        return next((error as Error).message);
     }
-};
-
-const getReportsByLatLongRadius = async (req: Request, res: Response): Promise<Response> => {
-    console.log(req.query);
-    const reports = await reportService.getReportsByLatLongRadius(req.query.lat as string,req.query.lon as string , req.query.rad as string);
-    return res.status(200).json(reports);
-};
+}
 
 export {
     getAllReports,
     getReportsById,
     getReportByUser,
     createReport,
-    updateReport,
-    deleteReport,
     getReportsByLatLongRadius
 }

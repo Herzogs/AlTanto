@@ -11,7 +11,7 @@ function ZoneForm() {
     const [disabled, setDisabled] = useState(true);
     const [selectedRadio, setSelectedRadio] = useState("250");
     const navigate = useNavigate();
-    const FORM_URI = 'http://localhost:3000/api/zone/create-zone'
+    const FORM_URI = 'http://localhost:3000/api/zones'
 
 
     const {

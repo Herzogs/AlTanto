@@ -4,8 +4,5 @@ export interface IZone {
     latitude:string
     longitude:string
 }
-export interface IZoneRequest {
-    name: string;
-    longitude: string;
-    latitude: string;
-}
+
+export type IZoneRequest = Omit<IZone, 'id'>;

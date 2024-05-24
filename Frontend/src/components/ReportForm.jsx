@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getCategoryFromApi } from "../services/getCategory";
-import sendReportToBackend from "../services/sendReportToBackend";
+import sendReport from "../services/sendReport";
 import { Container, Form, Button, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./Form.css";
@@ -14,7 +14,6 @@ const buscarGeo = async () => {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         };
-        console.log(loc);
         resolve(loc);
       },
       (error) => {
@@ -69,7 +68,7 @@ function ReportForm() {
 
   const onSubmit = async (data) => {
     try {
-      await sendReportToBackend(data);
+      await sendReport(data);
       setShowModal(true);
     } catch (error) {
       console.error("Error sending report:", error);
