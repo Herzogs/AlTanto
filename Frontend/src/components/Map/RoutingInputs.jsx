@@ -1,42 +1,11 @@
 import React, { useState } from "react";
-/* import { geocodeAddress } from "../../services/getGeoAdress"; */
 import useMapClickHandler from "../../hook/useMapClickHandler";
-import { useStore } from "../../store";
+import { geocodeAddress } from "../../services/getGeoAdress";
 
 function RoutingInputs() {
   const [startAddress, setStartAddress] = useState("");
   const [endAddress, setEndAddress] = useState("");
-  const { startPoint, endPoint, setStartPoint, setEndPoint } =
-    useMapClickHandler();
-
-  const handleMapClick = (e) => {
-    if (!startPoint) {
-      setStartPoint(e.latlng);
-    } else if (!endPoint) {
-      setEndPoint(e.latlng);
-    }
-  };
-
-  const MapClickHandler = () => {
-    useMapEvents({
-      click: handleMapClick,
-    });
-    return null;
-  };
-
-  const geocodeAddress = async (address) => {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${address}`
-    );
-    const data = await response.json();
-    if (data && data.length > 0) {
-      return {
-        lat: parseFloat(data[0].lat),
-        lng: parseFloat(data[0].lon),
-      };
-    }
-    return null;
-  };
+  const { setStartPoint, setEndPoint } = useMapClickHandler();
 
   const handleSetPoints = async () => {
     const startCoords = await geocodeAddress(startAddress);
