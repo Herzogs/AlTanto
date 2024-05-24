@@ -8,18 +8,32 @@ export interface IReport {
     positiveScore: number;
     negativeScore: number;
     enabled: boolean;
-    category: IReportCategory;
-    location: ILocation;
+    categoryId: number;
+    locationId: number;
+}
+
+export interface IReportResponse {
+    id: number;
+    title: string;
+    content: string;
+    dateTime: Date;
+    file: string;
+    duration: Date;
+    positiveScore: number;
+    negativeScore: number;
+    enabled: boolean;
+    category: IReportCategory | null;
+    location: ILocation | null;
 }
 
 export interface ILocation {
-    id: number;
+    id?: number;
     latitude: number;
     longitude: number;
 }
 
-export interface IReportCategory{
-    id: number;
+export interface IReportCategory {
+    id?: number;
     name: string;
 
 }
@@ -31,4 +45,10 @@ export interface IReportRequest {
     categoryId: string;
     latitude: string;
     longitude: string;
+}
+
+export interface IReportWithRadius {
+    lat: string
+    lon: string
+    rad: string
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import WarningIcon from "@mui/icons-material/Warning";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 async function buscarTodosLosReportes() {
   try {
-    const response = await fetch(`http://localhost:3000/api/report`);
+    const response = await fetch(`http://localhost:3000/api/reports`);
     if (!response.ok) {
       throw new Error("Error al obtener los datos");
     }
@@ -31,8 +31,8 @@ function Notifications() {
         title: item.title,
         content: item.content,
         distancia: 500,
-        latitude: item.Location.latitude,
-        longitude: item.Location.longitude,
+        latitude: item.location.latitude,
+        longitude: item.location.longitude,
         images: item?.images
       }));
       setReportesObtenidos(formattedData.reverse());

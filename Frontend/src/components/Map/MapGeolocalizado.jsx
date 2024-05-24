@@ -5,9 +5,7 @@ import "leaflet/dist/leaflet.css";
 import Map from "./Map";
 
 async function buscarReportes(location, radius = 800) {
-  const API_URL = `http://localhost:3000/api/report/getsectorizedreports?lat=${
-    location.lat
-  }&lon=${location.lon}&rad=${radius}`;
+  const API_URL = `http://localhost:3000/api/reports/filterBy?lat=${location.lat}&lon=${location.lon}&rad=${radius}`;
   try {
     const response = await fetch(`${API_URL}`, {
       method: "GET",

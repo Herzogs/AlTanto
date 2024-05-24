@@ -7,7 +7,7 @@ function ZoneHome() {
   useEffect(() => {
     const fetchZones = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/zone");
+        const response = await fetch("http://localhost:3000/api/zones");
         const data = await response.json();
         setZones(data);
       } catch (error) {

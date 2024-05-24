@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/api/category';
+const API_URL = 'http://localhost:3000/api/categories';
 
 export const getCategoryFromApi = async () => {
     try {

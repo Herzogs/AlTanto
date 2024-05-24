@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Map from "../components/Map";
-import { Container } from "react-bootstrap";
+import Map from "../Map";
 
 function ZoneHome() {
   const [localization, setLocalization] = useState({ lat: 0, lon: 0 });
@@ -14,12 +13,13 @@ function ZoneHome() {
     const fetchZone = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`http://localhost:3000/api/zone/${id}`);
+        const response = await fetch(`http://localhost:3000/api/zones/${id}`);
+        console.log(response);
         if (!response.ok) {
           setError("No se pudo obtener la zona");
         }
         const data = await response.json();
-        return data.zone;
+        return data;
       } catch (error) {
         setError(error.message);
         console.error(error);
@@ -30,8 +30,8 @@ function ZoneHome() {
       console.log(data.Location);
       setZona(data);
       setLocalization({
-        lat: data.Location.latitude,
-        lon: data.Location.longitude,
+        lat: data.location.latitude,
+        lon: data.location.longitude,
       });
       setIsLoading(false);
     });

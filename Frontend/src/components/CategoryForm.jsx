@@ -1,10 +1,7 @@
-import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { getCategoryFromApi } from '../services/getCategory';
 
 function CategoryForm() {
-    const [category, setCategory] = useState([])
-    const [status, setStatus] = useState(false)
+   
 
     const { register, handleSubmit, formState: { errors } } = useForm(
         {
@@ -13,16 +10,9 @@ function CategoryForm() {
             }
         });
 
-    useEffect(() => {
-        const listCategories = getCategoryFromApi();
-        listCategories.then((data) => {
-            setCategory(data);
-        });
-    }, [status]);
-
-    const sendReportToBackend = (data) => {
+    const sendCategory = (data) => {
         console.log(data);
-        const response = fetch('http://localhost:3000/api/category/create-category', {
+        const response = fetch('http://localhost:3000/api/categories', {
             method: 'POST',
             body: JSON.stringify({name: data.name}),
             headers: {
@@ -31,7 +21,6 @@ function CategoryForm() {
         });
         response.then((res) => {
             if (res.status === 201) {
-                setStatus(!status);
                 alert('Categoria creada');
             } else {
                 alert('Error al crear categoria');
@@ -41,7 +30,7 @@ function CategoryForm() {
 
     return (
         <div className='form-container'>
-            <form onSubmit={handleSubmit(sendReportToBackend)}>
+            <form onSubmit={handleSubmit(sendCategory)}>
                 <h2>Crear Categoria</h2>
                 <label htmlFor='name'>
                     Name:
@@ -61,23 +50,6 @@ function CategoryForm() {
                 </label>
                 <input type="submit" value="Enviar" />
             </form>
-
-            <section className='tableCategories'>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {category.map((cat) => (
-                            <tr key={cat.id}>
-                                <td>{cat.name}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </section>
         </div>
     );
 }

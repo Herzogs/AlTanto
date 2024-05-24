@@ -2,7 +2,6 @@ import { useState , useEffect } from 'react';
 import MapGeolocalizado from './Map/MapGeolocalizado';
 import LocationMarker from './Map/LocationMarker';
 import Filter from './Map/Filter';
-import { Button } from 'react-bootstrap';
 import {getCategoryFromApi} from '../services/getCategory'
 
 

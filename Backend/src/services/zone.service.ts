@@ -1,44 +1,26 @@
 import Zone from '../models/Zone';
-import {Location} from '../models/Location';
-import {IZoneRequest} from "../interfaces/zone.interface";
-//import Report from "../models/Report";
+import {IZone, IZoneRequest} from "../interfaces/zone.interface";
+import * as zoneRepository from '../repository/zone.repository';
+import transformData from '../utilities/transformData.utilities';
+import { ZoneNotCreatedException, ZoneNotFoundException } from '../exceptions/zone.exceptions';
 
 
-async function createZone(newZone: IZoneRequest): Promise<Zone> {
-    const location = await Location.create({latitude: newZone.latitude, longitude: newZone.longitude});
-    const locationCreated = location.get({plain: true});
-    const zone = await Zone.create({
-        name: newZone.name,
-        LocationId: locationCreated.id
-    })
-    console.log(zone.get({plain: true}))
-    if (!zone) {
-        throw new Error("Zone could not be created");
-    }
-    return zone;
+const createZone = async (newZone: IZoneRequest): Promise<IZone> => {
+    const zoneCreated = await zoneRepository.default.create(newZone);
+    if (!zoneCreated) throw new ZoneNotCreatedException("Zone not created");
+    return zoneCreated;
 }
 
-async function getAllZone(): Promise<Zone[]> {
-    return await Zone.findAll({
-        include: [
-            {model: Location, attributes: ['latitude', 'longitude']}
-        ]
-    });
+const getAllZone = async (): Promise<Zone[]> => {
+    const listOfZones = await zoneRepository.default.getAllZone();
+    if (!listOfZones) throw new ZoneNotFoundException("Zones not found");
+    return listOfZones.map(transformData);
 }
 
-async function getZoneById(zoneId: number) {
-    const zone = await Zone.findByPk(zoneId, {
-        include: [
-            {model: Location, attributes: ['latitude', 'longitude']}
-        ]
-    });
-    if (!zone) {
-        throw new Error("Zone not found");
-    }
-    const zoneSearched = await zone.get({plain: true});
-    //Todo: arreglar la devolucion con otros datos
-     //const  reportsSearched= await findEntitiesWithinRadius(Report, zoneSearched.Location, 500000);
-return{zone:zoneSearched, reports:[]};
+const getZoneById = async (zoneId: number) => {
+    const zoneSearched = await zoneRepository.default.getZoneById(zoneId);
+    if (!zoneSearched) throw new ZoneNotFoundException("Zone not found");
+    return transformData(zoneSearched);
 }
 
 export {createZone, getAllZone, getZoneById}
