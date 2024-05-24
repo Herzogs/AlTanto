@@ -1,16 +1,20 @@
-export const getLocation = () => {
+const getLocation = () => {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Geolocalización no soportada"));
+    }
 
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition((position) => {
-      const loc = {
-        lat: position.coords.latitude,
-        lon: position.coords.longitude,
-      };
-      return loc;
-    });
-  } else {
-    console.error("Geolocation is not supported by this browser.");
-    return alert("error geo");
-  }
-  
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const userLocation = { lat: latitude, lng: longitude };
+        resolve(userLocation);
+      },
+      (error) => {
+        reject(new Error(`Error al obtener la ubicación del usuario: ${error.message}`));
+      }
+    );
+  });
 };
+
+export default getLocation;

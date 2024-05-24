@@ -12,6 +12,7 @@ const useStore = create((set) => ({
   endPoint: null,
   setStartPoint: (point) => set({ startPoint: point }),
   setEndPoint: (point) => set({ endPoint: point }),
+  
   routeCoordinates: [],
   setRouteCoordinates: (coordinates) => set({ routeCoordinates: coordinates }),
 }));

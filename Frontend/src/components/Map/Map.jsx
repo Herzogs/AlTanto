@@ -5,47 +5,18 @@ import LocationMarker from "./LocationMarker";
 import RadiusCircle from "./RadiusCircle";
 import Routing from "./Routing";
 import RoutingInputs from "./RoutingInputs";
+import useMapClickHandler from "../../hook/useMapClickHandler";
 
 const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
-  const [startPoint, setStartPoint] = useState(null);
-  const [endPoint, setEndPoint] = useState(null);
-
-  const handleMapClick = (e) => {
-    if (!startPoint) {
-      setStartPoint(e.latlng);
-    } else if (!endPoint) {
-      setEndPoint(e.latlng);
-    }
-  };
-
-  const MapClickHandler = () => {
-    useMapEvents({
-      click: handleMapClick,
-    });
-    return null;
-  };
-
-  const geocodeAddress = async (address) => {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${address}`
-    );
-    const data = await response.json();
-    if (data && data.length > 0) {
-      return {
-        lat: parseFloat(data[0].lat),
-        lng: parseFloat(data[0].lon),
-      };
-    }
-    return null;
-  };
-
-
+  const { startPoint, endPoint, MapClickHandler } = useMapClickHandler();
 
   return (
-    <div>
+    <section>
+      {/* INPUT FORM RECORIDO */}
+      {routingMode && <RoutingInputs />}
       <MapContainer
-        center={[51.505, -0.09]}
-        zoom={13}
+        center={[-34.67055556, -58.56277778]}
+        zoom={15}
         style={{ height: "400px", width: "100%" }}
       >
         <TileLayer
@@ -56,6 +27,7 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
         {userLocation && !routingMode && (
           <RadiusCircle center={userLocation} radius={radiusZone} />
         )}
+        {/* ROUTING PARA RECORIDO */}
         {routingMode && (
           <>
             <MapClickHandler />
@@ -63,8 +35,7 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
           </>
         )}
       </MapContainer>
-      <RoutingInputs />
-    </div>
+    </section>
   );
 };
 
