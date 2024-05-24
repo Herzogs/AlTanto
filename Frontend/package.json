@@ -16,11 +16,13 @@
     "@mui/material": "^5.15.18",
     "bootstrap": "^5.3.3",
     "firebase": "^10.12.0",
+    "leaflet-routing-machine": "^3.2.12",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.4",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@testing-library/react": "15.0.7",

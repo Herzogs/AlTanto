@@ -1,25 +1,36 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useMap, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 
-function LocationMarker({ setLocation }) { 
- 
+const LocationMarker = ({ userLocation, setUserLocation }) => {
+  const map = useMap();
+
   useEffect(() => {
-    const getLocation = async () => {
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setLocation({ lat: position.coords.latitude, lon: position.coords.longitude });},
-          (error) => {
-            setLocation({ lat: -34.67055556, lon: -58.56277778 });         
-               console.error("Error getting user location:", error.message);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
-    };
+    if (!userLocation) {
+      map.locate({ setView: true, maxZoom: 16 }).on('locationfound', function (e) {
+        setUserLocation(e.latlng);
+      });
+    }
+  }, [map, userLocation, setUserLocation]);
 
-    getLocation()
-  }, [setLocation]);
-}
+  const eventHandlers = {
+    dragend(event) {
+      const marker = event.target;
+      const position = marker.getLatLng();
+      setUserLocation(position);
+      map.setView(position, map.getZoom());
+    },
+  };
+
+  return userLocation ? (
+    <Marker
+      position={userLocation}
+      draggable={true}
+      eventHandlers={eventHandlers}
+    >
+      <Popup>You are here</Popup>
+    </Marker>
+  ) : null;
+};
 
 export default LocationMarker;

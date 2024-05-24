@@ -1,19 +1,26 @@
-//import React from "react";
 import { Container } from "react-bootstrap";
-//import { Link } from "react-router-dom";
-import Map from "../components/Map";
+import { useStore } from "../store/index";
+import MapComponent from "../components/map/MapComponent";
 
 function Home() {
+  const {
+    routingMode,
+    setRoutingMode,
+    setStartPoint,
+    setEndPoint,
+    setReports,
+  } = useStore();
+
+  const handleToggleRoutingMode = () => {
+    setRoutingMode(!routingMode);
+    setStartPoint(null);
+    setEndPoint(null);
+    setReports([]);
+  };
+
   return (
     <section className="container_home">
-      <div className="top-section">
-        <Container>
-          <h3>No te pierdas nada <br/> de lo que está pasando</h3>
-        </Container>
-      </div>
-      <div className="bottom-section">
-        <Map />
-      </div>
+      <MapComponent />
     </section>
   );
 }
