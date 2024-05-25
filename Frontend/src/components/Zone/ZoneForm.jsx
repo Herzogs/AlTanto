@@ -4,6 +4,8 @@ import { Container, Form, Button, Row, Col, Modal, FormCheck } from "react-boots
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
 
+//TODO EMPROLIJAR
+
 function ZoneForm() {
     const [coordinates, setCoordinates] = useState("");
     const [showModal, setShowModal] = useState(false);

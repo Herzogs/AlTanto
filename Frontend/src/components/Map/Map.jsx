@@ -1,22 +1,27 @@
-import React, { useState } from "react";
-import { MapContainer, TileLayer, useMapEvents } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import React from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { useStore } from "../../store";
 import LocationMarker from "./LocationMarker";
 import RadiusCircle from "./RadiusCircle";
-import Routing from "./Routing";
-import RoutingInputs from "./RoutingInputs";
+import Routing from "../routs/Routing";
+import RoutingInputs from "../routs/RoutingInputs";
+import MenuButton from "./MenuButton";
 import useMapClickHandler from "../../hook/useMapClickHandler";
+import "leaflet/dist/leaflet.css";
 
 const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
-  const { startPoint, endPoint, MapClickHandler } = useMapClickHandler();
+  const { MapClickHandler } = useMapClickHandler();
+  const { startPoint, endPoint, reports } = useStore();
 
   return (
     <section>
       {/* INPUT FORM RECORIDO */}
       {routingMode && <RoutingInputs />}
       <MapContainer
-        center={[-34.67055556, -58.56277778]}
+        center={userLocation ? [userLocation.lat, userLocation.lng] : [0, 0]}
         zoom={15}
+        minZoom={12}
+        maxZoom={20}
         style={{ height: "400px", width: "100%" }}
       >
         <TileLayer
@@ -27,6 +32,20 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
         {userLocation && !routingMode && (
           <RadiusCircle center={userLocation} radius={radiusZone} />
         )}
+        {!routingMode &&
+          reports &&
+          reports.map((report) => (
+            <Marker
+              key={report.id}
+              position={[report.latitude, report.longitude]}
+            >
+              <Popup>
+                <strong>{report.title}</strong>
+                <br />
+                {report.content}
+              </Popup>
+            </Marker>
+          ))}
         {/* ROUTING PARA RECORIDO */}
         {routingMode && (
           <>
@@ -35,6 +54,7 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
           </>
         )}
       </MapContainer>
+      <MenuButton />
     </section>
   );
 };

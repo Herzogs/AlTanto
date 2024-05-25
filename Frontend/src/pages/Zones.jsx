@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 
-function ZoneHome() {
+//TODO EMPROLIJAR
+
+function Zones() {
   const [zones, setZones] = useState([]);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ function ZoneHome() {
     <Container>
       <h1>Mis Zonas</h1>
 
-      <a className="btn btn-success px-4 fw-bold" href="/zonas/crear">
+      <a className="btn btn-success px-4 fw-bold" href="/form/zona">
         Crear nueva zona
       </a>
 
@@ -48,4 +50,4 @@ function ZoneHome() {
   );
 }
 
-export default ZoneHome;
+export default Zones;

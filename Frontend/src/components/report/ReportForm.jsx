@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { getCategoryFromApi } from "../services/getCategory";
-import sendReport from "../services/sendReport";
 import { Container, Form, Button, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import "./Form.css";
+import { getCategoryFromApi } from "../../services/getCategory";
+import sendReport from "../../services/sendReport";
 
 const buscarGeo = async () => {
   return new Promise((resolve, reject) => {

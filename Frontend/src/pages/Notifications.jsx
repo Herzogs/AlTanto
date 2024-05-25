@@ -51,7 +51,7 @@ function Notifications() {
   };
 
   const handleViewDetails = (report) => {
-    navigate("/reportDetail", { state: { report } });
+    navigate("/report", { state: { report } });
   };
 
   return (

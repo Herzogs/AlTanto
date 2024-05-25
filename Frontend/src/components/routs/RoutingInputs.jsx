@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import useMapClickHandler from "../../hook/useMapClickHandler";
 import { geocodeAddress } from "../../services/getGeoAdress";
+import { useStore } from "../../store";
 
 function RoutingInputs() {
+  const { setStartPoint, setEndPoint } = useStore();
   const [startAddress, setStartAddress] = useState("");
   const [endAddress, setEndAddress] = useState("");
-  const { setStartPoint, setEndPoint } = useMapClickHandler();
 
   const handleSetPoints = async () => {
     const startCoords = await geocodeAddress(startAddress);

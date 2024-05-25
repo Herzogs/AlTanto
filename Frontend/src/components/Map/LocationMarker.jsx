@@ -1,6 +1,16 @@
 import React, { useEffect } from "react";
 import { useMap, Marker, Popup } from "react-leaflet";
 import { useStore } from "../../store";
+import L from "leaflet";
+import iconuser from "../../assets/user-icon.png"; 
+
+const userIcon = new L.Icon({
+  iconUrl: iconuser,
+  iconSize: [28, 42], 
+  iconAnchor: [13, 40], 
+  popupAnchor: [0, -32],
+  zIndex: 9999 
+});
 
 const LocationMarker = () => {
   const map = useMap();
@@ -30,6 +40,8 @@ const LocationMarker = () => {
       position={userLocation}
       draggable={true}
       eventHandlers={eventHandlers}
+      zIndexOffset={999}
+      icon={userIcon}
     >
       <Popup>Estas aquí</Popup>
     </Marker>

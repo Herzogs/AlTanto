@@ -11,13 +11,13 @@ function Footer() {
   const isActive = (path) => {
 
     if (path === "/") {
-      return location.pathname === path || location.pathname.startsWith("/form") ? "active" : "";
+      return location.pathname === path || location.pathname.startsWith("/form/") ? "active" : "";
     }
     if (path === "/zonas") {
       return location.pathname === path || location.pathname.startsWith("/zonas/") ? "active" : "";
     }
     if (path === "/notificaciones") {
-      return location.pathname === path || location.pathname === "/reportDetail" ? "active" : "";
+      return location.pathname === path || location.pathname === "/report" ? "active" : "";
     }
     return location.pathname === path ? "active" : "";
   };

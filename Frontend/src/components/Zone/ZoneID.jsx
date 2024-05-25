@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Map from "../Map";
+import Map from "../map/Map";
+import { useStore } from "../../store";
+import useReports from "../../hook/useReports";
+
+//TODO EMPROLIJAR
 
 function ZoneHome() {
-  const [localization, setLocalization] = useState({ lat: 0, lon: 0 });
+  const {
+    userLocation,
+    setUserLocation,
+    radiusZone,
+    setRadiusZone
+  } = useStore();
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [zona, setZona] = useState({});
@@ -27,15 +37,23 @@ function ZoneHome() {
     };
 
     fetchZone().then((data) => {
-      console.log(data.Location);
-      setZona(data);
-      setLocalization({
+      setRadiusZone(data.radio);
+      setUserLocation({
         lat: data.location.latitude,
-        lon: data.location.longitude,
+        lng: data.location.longitude,
       });
+      setZona(data)
       setIsLoading(false);
     });
   }, [id]);
+
+  const { fetchReports } = useReports();
+
+  useEffect(() => {
+    if (userLocation) {
+      fetchReports();
+    }
+  }, [userLocation, radiusZone]);
 
   if (isLoading) {
     return <div>Cargando...</div>;
@@ -51,7 +69,8 @@ function ZoneHome() {
         <h2 className="text-center w-100">{zona.name}</h2>
       </div>
       <div className="bottom-section">
-        <Map localization={localization} radius={zona.radio} />
+        <Map userLocation={userLocation} radius={radiusZone} />
+
       </div>
     </section>
   );

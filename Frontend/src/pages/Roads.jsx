@@ -9,10 +9,14 @@ function Roads() {
     radiusZone,
     routingMode,
     setRoutingMode,
+    setStartPoint,
+    setEndPoint
   } = useStore();
 
   useEffect(() => {
     setUserLocation(null);
+    setStartPoint(null)
+    setEndPoint(null)
     setRoutingMode(true);
   }, [setRoutingMode]);
 

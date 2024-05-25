@@ -17,14 +17,10 @@ const useMapClickHandler = () => {
     useMapEvents({
       click: handleMapClick,
     });
-    return null
+    return null;
   };
 
   return {
-    startPoint,
-    endPoint,
-    setStartPoint,
-    setEndPoint,
     MapClickHandler,
   };
 };
