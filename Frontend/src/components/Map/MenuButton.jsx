@@ -16,8 +16,10 @@ function MenuButton() {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item href="/form/reporte">Crear reporte</Dropdown.Item>
+        <Dropdown.Item href="/form/reporte">Reporte Manual</Dropdown.Item>
+        <Dropdown.Item href="/form/reportAutomatic">Reporte Automatio</Dropdown.Item>
       </Dropdown.Menu>
+      
     </Dropdown>
   );
 }

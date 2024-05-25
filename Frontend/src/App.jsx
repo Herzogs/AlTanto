@@ -11,6 +11,7 @@ import CategoryForm from "@/components/category/CategoryForm";
 import ZoneForm from "@/components/Zone/ZoneForm";
 import ZoneID from "@/components/Zone/ZoneID";
 import ReportDetail from "@/components/report/ReportDetail";
+import ReportAutomatic from "@/components/ReportAutomatic/ReportAutomaticForm";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/recorridos" element={<Roads />} />
           <Route path="/form/reporte" element={<ReportForm />} />
+          <Route path="/form/reportAutomatic" element={<ReportAutomatic />} />
           <Route path="/form/categoria" element={<CategoryForm />} />
           <Route path="/zonas" element={<Zones />} />
           <Route path="/form/zona" element={<ZoneForm />} />
