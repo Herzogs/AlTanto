@@ -50,8 +50,8 @@ function Notifications() {
     }
   };
 
-  const handleViewDetails = (report) => {
-    navigate("/report", { state: { report } });
+  const handleViewDetails = (id) => {
+    navigate(`/reportes/${id}`);
   };
 
   return (
@@ -65,7 +65,7 @@ function Notifications() {
           description={report.content}
           icon={getIconByType(report.tipe)}
           icolor={"#cc545d"}
-          onViewDetails={() => handleViewDetails(report)}
+          onViewDetails={() => handleViewDetails(report.id)}
         />
       ))}
     </Container>

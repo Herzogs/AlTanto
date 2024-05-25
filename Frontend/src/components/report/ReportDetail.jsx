@@ -1,37 +1,49 @@
+import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Map from "../Map/Map";
 import { useStore } from "../../store";
-import { useEffect } from "react";
+import { fetchReportById } from "../../services/getReport";
 
-// TODO NO FUNCIONA EL CENTER MAP PERO SI LO MARCA
 function ReportDetail() {
-  const location = useLocation();
-  const report = location.state?.report || {};
-
-  const { title, content, latitude, longitude, images } = report;
+  const { id } = useParams();
+  const [report, setReport] = useState(null);
   const { userLocation, setUserLocation, setReports } = useStore();
 
   useEffect(() => {
-    if (report) {
-      setUserLocation(null);
-      setReports(null);
-      setUserLocation({ lat: +latitude, lng: +longitude });
-    }
-  }, [report]);
+    const getReport = async () => {
+      try {
+        const data = await fetchReportById(id);
+        setReport(data);
+        setUserLocation({ lat: +data.location.latitude, lng: +data.location.longitude });
+      } catch (error) {
+        console.error("Error fetching report:", error);
+      }
+    };
+
+    getReport();
+  }, [id, setUserLocation]);
+
+  if (!report) {
+    return <div>Cargando...</div>;
+  }
+
+  const { title, content, location, images } = report;
 
   return (
     <section className="container_home">
-      <button onClick={() => console.log(userLocation)}>VEER</button>
       <div className="top-section">
         <Container>
           <h2>Detalle del reporte</h2>
-          <p>Titulo: {title}</p>
+          <p>Título: {title}</p>
           <p>Descripción: {content}</p>
-          <img
-            src={`http://localhost:3000/static/images/${images}`}
-            style={{ maxWidth: "420px" }}
-          ></img>
+          {images && (
+            <img
+              src={`http://localhost:3000/static/images/${images}`}
+              style={{ maxWidth: "400px" }}
+              alt="Imagen del reporte"
+            />
+          )}
         </Container>
       </div>
       <div className="bottom-section">

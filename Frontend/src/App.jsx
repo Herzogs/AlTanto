@@ -26,7 +26,7 @@ const App = () => {
           <Route path="/form/zona" element={<ZoneForm />} />
           <Route path="/zonas/:id" element={<ZoneID />} />
           <Route path="/notificaciones" element={<Notifications />} />
-          <Route path="/report" element={<ReportDetail />} />
+          <Route path="/reportes/:id" element={<ReportDetail />} />
           <Route
             path="*"
             element={<h1 className="text-center">Estamos trabajando...</h1>}
