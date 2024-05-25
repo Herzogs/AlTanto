@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Map from "../map/Map";
-import { useStore } from "../../store";
-import useReports from "../../hook/useReports";
+import Map from "../Map/Map.jsx";
+import { useStore } from "@/store";
+import useReports from "@/hook/useReports";
 
 //TODO EMPROLIJAR
 

@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
-import Map from "../map/Map";
+import Map from "../Map/Map";
 import { useStore } from "../../store";
 import { useEffect } from "react";
 
