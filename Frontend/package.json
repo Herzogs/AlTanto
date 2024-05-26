@@ -20,8 +20,10 @@
     "leaflet-routing-machine": "^3.2.12",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.4",
+    "react-webcam": "^7.2.0",
     "uuid": "^9.0.1",
     "zustand": "^4.5.2"
   },

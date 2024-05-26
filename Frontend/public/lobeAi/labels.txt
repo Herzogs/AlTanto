@@ -1,2 +1,6 @@
-arbol sobre calle y auto
-choque
+arbol caido
+calle inundada
+none
+puerta violentada
+robo auto
+robo rueda
