@@ -45,7 +45,7 @@ const ImagenDetection = async (photo) => {
 
     let title = categories[maxProbabilityIndex]; // la categoria detectada se convierte en titulo para machear con los filtos de la bd
     console.log("titulo resultado " + title);
-    const response = title === 'none' ? { title: '', category: '', idCategory: null } : { title, category: 'seguridad', idCategory: 1 };
+    const response = title === 'arbol bien' ? { title: '', category: '', idCategory: 0 } : { title, category: 'seguridad', idCategory: 1 };
 
     return response;
   } catch (error) {

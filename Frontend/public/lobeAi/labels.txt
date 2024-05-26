@@ -1,6 +1,2 @@
+arbol bien
 arbol caido
-calle inundada
-none
-puerta violentada
-robo auto
-robo rueda
