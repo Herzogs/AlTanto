@@ -7,8 +7,6 @@ import Report from "../components/report/Report";
 import { useNavigate } from "react-router-dom";
 
 const WEATHER_API_KEY = '4450218ff88ddcaf2ed7c2d62de96b91';
-const LATITUD = '-34.67445030222908';
-const LONGITUD = '-58.60940914063706'; 
 
 const weatherDescriptionMap = {
   "shower rain": "Alerta de lluvia fuerte",
@@ -31,16 +29,16 @@ async function getReports() {
   }
 }
 
-async function getWeatherAlerts() {
+async function getWeatherAlerts(latitude, longitude) {
   try {
-    const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${LATITUD}&lon=${LONGITUD}&appid=${WEATHER_API_KEY}&lang=en&units=metric`);
+    const response = await fetch(`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}&lang=en&units=metric`);
     if (!response.ok) {
       throw new Error("Error al obtener las alertas meteorológicas");
     }
     const data = await response.json();
     console.log(data);
 
-    const alertCriteria = ["shower rain", "rain", "thunderstorm", "snow", "mist"];
+    const alertCriteria = ["shower rain", "rain", "thunderstorm", "snow", "mist","clear sky"];
 
     const filteredAlerts = data.weather.filter(item =>
       alertCriteria.includes(item.description.toLowerCase())
@@ -60,42 +58,55 @@ async function getWeatherAlerts() {
 
 function Notifications() {
   const [reports, setReports] = useState([]);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
-      const reports = await getReports();
-      //const weatherAlerts = await getWeatherAlerts();
+      const reportsData = await getReports();
+      setReports(reportsData);
 
-      const formattedReports = reports.map((item) => ({
-        id: item.id,
-        tipe: item.CategoryId,
-        title: item.title,
-        content: item.content,
-        distancia: 500,
-        latitude: item.location.latitude,
-        longitude: item.location.longitude,
-        images: item?.images,
-      }));
-
-      // const formattedWeatherAlerts = weatherAlerts.map((alerta, index) => ({
-      //   id: `alerta-meteo-${index}`,
-      //   tipe: 3, 
-      //   title: "Alerta de clima",
-      //   content: alerta.description,
-      //   distancia: 0, 
-      //   latitude: LATITUD,
-      //   longitude: LONGITUD,
-      //   images: [],
-      //   iconUrl: alerta.iconUrl
-      // }));
-
-      // setReports([...formattedReports.reverse(), ...formattedWeatherAlerts]);
-      setReports([...formattedReports.reverse()]);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            setLatitude(position.coords.latitude);
+            setLongitude(position.coords.longitude);
+          },
+          error => {
+            console.error("Error getting geolocation:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
     }
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    async function fetchWeather() {
+      if (latitude !== null && longitude !== null) {
+        // const weatherAlerts = await getWeatherAlerts(latitude, longitude);
+        // const formattedWeatherAlerts = weatherAlerts.map((alerta, index) => ({
+        //   id: `alerta-meteo-${index}`,
+        //   tipe: 3, 
+        //   title: "Alerta de clima",
+        //   content: alerta.description,
+        //   distancia: 0, 
+        //   latitude: latitude,
+        //   longitude: longitude,
+        //   images: [],
+        //   iconUrl: alerta.iconUrl
+        // }));
+  
+        // setReports(prevReports => [...prevReports, ...formattedWeatherAlerts]);
+      }
+    }
+  
+    fetchWeather();
+  }, [latitude, longitude]);
 
   const getIconByType = (tipe) => {
     switch (tipe) {
