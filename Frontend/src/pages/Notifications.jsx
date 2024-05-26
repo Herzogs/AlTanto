@@ -38,7 +38,7 @@ async function getWeatherAlerts(latitude, longitude) {
     const data = await response.json();
     console.log(data);
 
-    const alertCriteria = ["shower rain", "rain", "thunderstorm", "snow", "mist","clear sky"];
+    const alertCriteria = ["shower rain", "rain", "thunderstorm", "snow", "mist"];
 
     const filteredAlerts = data.weather.filter(item =>
       alertCriteria.includes(item.description.toLowerCase())
