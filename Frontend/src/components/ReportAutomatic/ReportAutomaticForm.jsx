@@ -2,12 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { isMobile } from 'react-device-detect';
 import ImagenDetection from '../../services/ImagenDetection';
+import FormComponent from './FormComponent';
 
 const App = () => {
   const [cameraActive, setCameraActive] = useState(true);
   const [photo, setPhoto] = useState(null);
   const [analisis, setAnalisis] = useState({});
   const [isProcessing, setIsProcessing] = useState(false);
+
+
 
   const webcamRef = useRef(null);
 
@@ -86,12 +89,8 @@ const App = () => {
             <p>Procesando...</p>
           ) : (
             analisis && Object.keys(analisis).length > 0 && analisis.idCategory !== 0 ? (
-              <div>
-                <h2>Resultado del Análisis:</h2>
-                <p>Título: {analisis.title}</p>
-                <p>Categoría: {analisis.category}</p>
-                <p>ID de Categoría: {analisis.idCategory}</p>
-              </div>
+            <FormComponent analisis={analisis} photo={photo}></FormComponent>
+   
             ) : (
               <p>Intente nuevamente.</p>
             )

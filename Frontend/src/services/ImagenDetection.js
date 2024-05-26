@@ -1,5 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 
+
 const ImagenDetection = async (photo) => {
   const modelPath = '/lobeAi/model.json';
   const labelsPath = '/lobeAi/labels.txt';
@@ -39,12 +40,15 @@ const ImagenDetection = async (photo) => {
     const tensor = await preprocessImage(photo);
     const predictions = await model.predict(tensor).array();
     const resultArray = predictions[0];
-
     // Encontrar la categoría con la mayor probabilidad
     const maxProbabilityIndex = resultArray.indexOf(Math.max(...resultArray));
 
     let title = categories[maxProbabilityIndex]; // la categoria detectada se convierte en titulo para machear con los filtos de la bd
     console.log("titulo resultado " + title);
+    // tomo arbol bien como que esta mal, no tiene que reconocerlo
+    // daria un reintente
+    // falta toda la logica de machear con la bd
+    
     const response = title === 'arbol bien' ? { title: '', category: '', idCategory: 0 } : { title, category: 'seguridad', idCategory: 1 };
 
     return response;
