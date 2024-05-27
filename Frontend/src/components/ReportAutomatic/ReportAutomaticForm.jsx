@@ -101,7 +101,7 @@ const App = () => {
       <div className="buttons" style={styles.buttons}>
         {cameraActive ? (
           <>
-            <button onClick={capturePhoto}>Capturar</button>
+            <button onClick={capturePhoto} >Capturar</button>
             <label htmlFor="upload" >Subir</label>
             <input
               id="upload"
@@ -114,7 +114,6 @@ const App = () => {
         ) : (
           <>
             <button onClick={clearPhoto}>Reintentar</button>
-            <button onClick={capturePhoto}>Generar</button>
           </>
         )}
       </div>

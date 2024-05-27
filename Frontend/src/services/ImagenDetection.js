@@ -4,6 +4,7 @@ import * as tf from '@tensorflow/tfjs';
 const ImagenDetection = async (photo) => {
   const modelPath = '/lobeAi/model.json';
   const labelsPath = '/lobeAi/labels.txt';
+  let idCategory="";
 
   try {
     // Cargar el modelo
@@ -39,17 +40,30 @@ const ImagenDetection = async (photo) => {
     // Preprocesar y analizar la imagen
     const tensor = await preprocessImage(photo);
     const predictions = await model.predict(tensor).array();
+
     const resultArray = predictions[0];
-    // Encontrar la categoría con la mayor probabilidad
+    console.log(" probabilidades "+resultArray);
+
+    // Encontrar la categoría con la mayor probabilidad. 
     const maxProbabilityIndex = resultArray.indexOf(Math.max(...resultArray));
+    console.log(" maxProbabilityIndex "+maxProbabilityIndex);
+
+    const umbral = 0.7;
+    if (maxProbabilityIndex < umbral) {
+      return { title: 'none', idCategory: 0 } // menor a 70% lo saca. En el front da un reintente
+    }
+
 
     let title = categories[maxProbabilityIndex]; // la categoria detectada se convierte en titulo para machear con los filtos de la bd
-    console.log("titulo resultado " + title);
-    // tomo arbol bien como que esta mal, no tiene que reconocerlo
-    // daria un reintente
-    // falta toda la logica de machear con la bd
-    
-    const response = title === 'arbol bien' ? { title: '', category: '', idCategory: 0 } : { title, category: 'seguridad', idCategory: 1 };
+    let category = "";
+    if (title == "Robo ventanilla automovil" || title == "Robo neumatico" || title == "Puerta Violentada"|| title == "Choque automovilistico") {
+      idCategory = 1;
+    }
+    if (title == "Calle  Inundada" || title == "Arbol Caido") {
+      idCategory = 2;
+    }
+
+    const response = { title , idCategory: idCategory };
 
     return response;
   } catch (error) {

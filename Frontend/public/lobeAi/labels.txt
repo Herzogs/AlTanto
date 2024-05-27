@@ -1,2 +1,7 @@
-arbol bien
-arbol caido
+Arbol Caido
+Calle  Inundada
+Choque automovilistico
+Puerta Violentada
+Robo neumatico
+Robo ventanilla automovil
+none

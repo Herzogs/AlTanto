@@ -26,19 +26,16 @@ function ReportForm({ analisis , photo}) {
     }, []);
 
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm({
+
+     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
         defaultValues: {
-            description: "",
+            title: analisis.title || "",
+            category: analisis.idCategory || "",
             latitude: "",
             longitude: "",
-        },
+            image: photo || ""
+        }
     });
-
     useEffect(() => {
         const listCategories = getCategoryFromApi();
         listCategories.then((data) => {
@@ -109,7 +106,7 @@ function ReportForm({ analisis , photo}) {
                                 },
                             })}
                             value={analisis.idCategory || ""}
-                            onChange={(e) => setValue("category", e.target.value)} // Establece el valor del campo controlado por el formulario
+                            onChange={(e) => setValue("category", e.target.value)}
                         >
                             <option value="">Seleccione una categoría</option>
                             {category.map((cat) => (
