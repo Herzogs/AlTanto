@@ -4,28 +4,12 @@ import { Container, Form, Button, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { getCategoryFromApi } from "@/services/getCategory";
 import sendReport from "@/services/sendReport";
-
-const buscarGeo = async () => {
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const loc = {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        };
-        resolve(loc);
-      },
-      (error) => {
-        console.error("Error getting geolocation:", error);
-        reject(error);
-      }
-    );
-  });
-};
+import { useStore } from "../../store";
 
 function ReportForm() {
+  const { userLocation } = useStore();
+
   const [category, setCategory] = useState([]);
-  const [location, setLocation] = useState({});
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
@@ -43,26 +27,17 @@ function ReportForm() {
   });
 
   useEffect(() => {
-    const fetchGeoLocation = async () => {
-      try {
-        const miGeo = await buscarGeo();
-        setLocation(miGeo);
-        reset({
-          content: "",
-          latitude: miGeo.lat,
-          longitude: miGeo.lon,
-        });
-      } catch (error) {
-        console.error("Error setting location:", error);
-      }
-    };
+    reset({
+      content: "",
+      latitude: userLocation.lat,
+      longitude: userLocation.lng,
+    });
 
     const listCategories = getCategoryFromApi();
     listCategories.then((data) => {
       setCategory(data);
     });
 
-    fetchGeoLocation();
   }, [reset]);
 
   const onSubmit = async (data) => {

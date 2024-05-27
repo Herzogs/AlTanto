@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
@@ -13,11 +12,19 @@ import ZoneID from "@/components/Zone/ZoneID";
 import ReportDetail from "@/components/report/ReportDetail";
 import ReportAutomatic from "@/components/ReportAutomatic/ReportAutomaticForm";
 
+import { useStore } from "./store/";
+
 const App = () => {
+  const { userLocation } = useStore();
   return (
     <main>
       <BrowserRouter>
         <Header />
+        {userLocation && (
+          <button onClick={() => console.log(userLocation)}>
+            userLocation ver
+          </button>
+        )}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/recorridos" element={<Roads />} />
