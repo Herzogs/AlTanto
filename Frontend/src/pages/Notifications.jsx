@@ -3,7 +3,7 @@ import { Container } from "react-bootstrap";
 import WarningIcon from "@mui/icons-material/Warning";
 import ErrorIcon from "@mui/icons-material/Error";
 import InfoIcon from "@mui/icons-material/Info";
-import Report from "@/components/report/Report";
+import Report from "@components/report/Report";
 import { useNavigate } from "react-router-dom";
 
 async function buscarTodosLosReportes() {

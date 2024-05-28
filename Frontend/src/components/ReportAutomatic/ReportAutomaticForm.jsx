@@ -1,14 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
-import { isMobile } from 'react-device-detect';
-import ImagenDetection from '../../services/ImagenDetection';
-import FormComponent from './FormComponent';
+//import { isMobile } from 'react-device-detect';
+import ImagenDetection from '@services/ImagenDetection';
+import FormComponent from '@components/ReportAutomatic/FormComponent';
+import { useStore } from '@store';
 
 const App = () => {
   const [cameraActive, setCameraActive] = useState(true);
   const [photo, setPhoto] = useState(null);
   const [analisis, setAnalisis] = useState({});
   const [isProcessing, setIsProcessing] = useState(false);
+  const { userLocation, setUserLocation } = useStore();
 
 
 

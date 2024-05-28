@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, Typography, Box, IconButton, Button } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";

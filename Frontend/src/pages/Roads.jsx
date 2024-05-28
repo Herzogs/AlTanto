@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useStore } from "@/store";
-import Map from "@/components/Map/Map";
+import { useStore } from "@store";
+import Map from "@components/Map/Map";
 
 function Roads() {
   const {

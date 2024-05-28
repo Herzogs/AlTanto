@@ -1,6 +1,5 @@
-import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import logo from "../../assets/logo-altanto.png";
+import logo from "@assets/logo-altanto.png";
 import ListIcon from "@mui/icons-material/List";
 
 import Dropdown from "react-bootstrap/Dropdown";

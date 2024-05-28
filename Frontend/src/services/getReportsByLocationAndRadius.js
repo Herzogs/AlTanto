@@ -1,4 +1,4 @@
-export async function getReports(location, radius) {
+export async function getReportsBy(location, radius) {
   const API_URL = `http://localhost:3000/api/reports/filterBy?lat=${location.lat}&lon=${location.lng}&rad=${radius}`;
   try {
     const response = await fetch(`${API_URL}`, {

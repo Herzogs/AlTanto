@@ -12,34 +12,29 @@ import ZoneID from "@/components/Zone/ZoneID";
 import ReportDetail from "@/components/report/ReportDetail";
 import ReportAutomatic from "@/components/ReportAutomatic/ReportAutomaticForm";
 
-import { useStore } from "./store/";
+const routes = [
+  { path: "/", element: <Home /> },
+  { path: "/recorridos", element: <Roads /> },
+  { path: "/form/reporte", element: <ReportForm /> },
+  { path: "/form/reportAutomatic", element: <ReportAutomatic /> },
+  { path: "/form/categoria", element: <CategoryForm /> },
+  { path: "/zonas", element: <Zones /> },
+  { path: "/form/zona", element: <ZoneForm /> },
+  { path: "/zonas/:id", element: <ZoneID /> },
+  { path: "/notificaciones", element: <Notifications /> },
+  { path: "/reportes/:id", element: <ReportDetail /> },
+  { path: "*", element: <h1 className="text-center">Estamos trabajando en ello...</h1> }
+];
 
 const App = () => {
-  const { userLocation } = useStore();
   return (
     <main>
       <BrowserRouter>
         <Header />
-        {userLocation && (
-          <button onClick={() => console.log(userLocation)}>
-            userLocation ver
-          </button>
-        )}
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/recorridos" element={<Roads />} />
-          <Route path="/form/reporte" element={<ReportForm />} />
-          <Route path="/form/reportAutomatic" element={<ReportAutomatic />} />
-          <Route path="/form/categoria" element={<CategoryForm />} />
-          <Route path="/zonas" element={<Zones />} />
-          <Route path="/form/zona" element={<ZoneForm />} />
-          <Route path="/zonas/:id" element={<ZoneID />} />
-          <Route path="/notificaciones" element={<Notifications />} />
-          <Route path="/reportes/:id" element={<ReportDetail />} />
-          <Route
-            path="*"
-            element={<h1 className="text-center">Estamos trabajando...</h1>}
-          />
+          {routes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
         </Routes>
         <Footer />
       </BrowserRouter>

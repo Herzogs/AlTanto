@@ -1,5 +1,6 @@
-import create from "zustand";
-import { persist, devtools } from 'zustand/middleware';
+import {create} from "zustand";
+import { persist } from 'zustand/middleware';
+import { mountStoreDevtool } from 'simple-zustand-devtools';
 
 const useStore = create(
   persist(
@@ -23,9 +24,29 @@ const useStore = create(
       setRouteCoordinates: (coordinates) => set({ routeCoordinates: coordinates }),
     }),
     {
-      name: 'store', // Nombre para el almacenamiento en localStorage
+      name: 'store',
     }
   )
 );
 
-export { useStore };
+const automaticReport = create(
+  persist(
+    (set) => ({
+      automaticReport: {
+        
+      },
+      setAutomaticReport: (report) => set({ automaticReport: report }),
+    }),
+    {
+      name: 'automaticReport',
+    }
+  )
+);
+
+if (import.meta.env.VITE_ENV === 'development') {
+  mountStoreDevtool('Store', useStore);
+  mountStoreDevtool('AutomaticReport', automaticReport);
+}
+
+
+export { useStore, automaticReport };

@@ -1,13 +1,18 @@
+import axios from "axios";
+
 export const geocodeAddress = async (address) => {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${address}`
+  try {
+    console.log(address)
+    const response = await axios.get(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
     );
-    const data = await response.json();
+    
+    const data = await response.data;
     if (data && data.length > 0) {
-      return {
-        lat: parseFloat(data[0].lat),
-        lng: parseFloat(data[0].lon),
-      };
+      return data[0];
     }
-    return null;
-  };
+    return [];
+  } catch (error) {
+    throw new Error("Error al obtener la dirección");
+  }
+};

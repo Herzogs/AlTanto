@@ -1,15 +1,14 @@
-import React from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { useStore } from "../../store";
-import LocationMarker from "./LocationMarker";
-import RadiusCircle from "./RadiusCircle";
-import Routing from "../routs/Routing";
-import RoutingInputs from "../routs/RoutingInputs";
-import MenuButton from "./MenuButton";
-import useMapClickHandler from "../../hook/useMapClickHandler";
+import { useStore } from "@store";
+import LocationMarker from "@components/Map/LocationMarker";
+import RadiusCircle from "@components/Map/RadiusCircle";
+import Routing from "@components/routs/Routing";
+import RoutingInputs from "@components/routs/RoutingInputs";
+import MenuButton from "@components/Map/MenuButton";
+import useMapClickHandler from "@hook/useMapClickHandler";
 import "leaflet/dist/leaflet.css";
 
-const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
+const Map = ({ userLocation, radiusZone = 500, routingMode = false, zoneMode = false, noDrag = false }) => {  
   const { MapClickHandler } = useMapClickHandler();
   const { startPoint, endPoint, reports } = useStore();
 
@@ -28,11 +27,11 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <LocationMarker />
+        <LocationMarker noDrag={noDrag} />
         {userLocation && !routingMode && (
           <RadiusCircle center={userLocation} radius={radiusZone} />
         )}
-        {!routingMode &&
+        {!zoneMode && !routingMode &&
           reports &&
           reports.map((report) => (
             <Marker
@@ -54,7 +53,7 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false }) => {
           </>
         )}
       </MapContainer>
-      <MenuButton />
+      {!zoneMode && (<MenuButton />)}
     </section>
   );
 };

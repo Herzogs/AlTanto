@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getCategoryFromApi } from "@/services/getCategory";
-import sendReport from "@/services/sendReport";
-import getLocation from '../../services/getLocation'
+import { getCategoryFromApi } from "@services/getCategory";
+import sendReport from "@services/sendReport";
+import { useStore } from "@store";
 
 
 //import { useStore }  from "../../store";
@@ -12,18 +12,10 @@ import getLocation from '../../services/getLocation'
 
 function ReportForm({ analisis , photo}) {
     const [category, setCategory] = useState([]);
-    const [location, setLocation] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const obtenerUbicacion = async () => {
-            const userLocation = await getLocation();
-            setLocation(userLocation);
-        };
-        obtenerUbicacion();
-        console.log(location)
-    }, []);
+    const { userLocation } = useStore();
+    
 
 
     const {
@@ -129,8 +121,8 @@ function ReportForm({ analisis , photo}) {
 
 
 
-                <input type="hidden" {...register("latitude")} value={location?.lat || ""} />
-                <input type="hidden" {...register("longitude")} value={location?.lon || ""} />  
+                <input type="hidden" {...register("latitude")} value={userLocation.lat || ""} />
+                <input type="hidden" {...register("longitude")} value={userLocation.lng || ""} />  
                 <input type="hidden" {...register("image")} value={photo} />
 
        

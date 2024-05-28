@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Container } from "react-bootstrap";
-import { useStore } from "@/store";
-import Map from "@/components/Map/Map";
-import useReports from "@/hook/useReports";
+import { useStore } from "@store";
+import Map from "@components/Map/Map";
+import useReports from "@hook/useReports";
 
 
 function Home() {

@@ -1,22 +1,14 @@
 import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
-
-//TODO EMPROLIJAR
+import getZone from "@services/getZone";
 
 function Zones() {
   const [zones, setZones] = useState([]);
 
   useEffect(() => {
-    const fetchZones = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/zones");
-        const data = await response.json();
-        setZones(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchZones();
+    getZone().then((data) => {
+      setZones(data);
+    });
   }, []);
 
   return (

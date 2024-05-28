@@ -1,6 +1,7 @@
 import Zone from '../models/Zone';
 import { Location } from '../models/Location';
 import { IZone, IZoneRequest } from '../interfaces/zone.interface';
+import { ZoneNotCreatedException, ZoneNotFoundException } from '../exceptions/zone.exceptions';
 
 class ZoneRepository {
     static async create(newZone: IZoneRequest): Promise<IZone> {
@@ -13,7 +14,7 @@ class ZoneRepository {
             LocationId: location.id
         })
         if (!zone) {
-            throw new Error("Zone not created");
+            throw new ZoneNotCreatedException("Zone not created");
         }
         return zone.get({ plain: true });
     }
@@ -26,7 +27,7 @@ class ZoneRepository {
             attributes: { exclude: [ 'LocationId'] }
         });
         if (!listOfZones) {
-            throw new Error("Zones not found");
+            throw new ZoneNotFoundException("Zones not found");
         }
         return listOfZones.map((zone) => zone.get({ plain: true }));
     }
@@ -39,7 +40,7 @@ class ZoneRepository {
             attributes: { exclude: ['LocationId'] }
         });
         if (!zone) {
-            throw new Error("Zone not found");
+            throw new ZoneNotFoundException("Zone not found");
         }
         const zoneSearched = await zone.get({ plain: true });
         return zoneSearched as IZone;

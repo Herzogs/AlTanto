@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { getCategoryFromApi } from "@/services/getCategory";
-import sendReport from "@/services/sendReport";
-import { useStore } from "../../store";
+import sendReport from "@services/sendReport";
+import { useStore } from "@store";
 
 function ReportForm() {
   const { userLocation } = useStore();

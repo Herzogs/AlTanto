@@ -2,20 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Modal, FormCheck } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Circle } from "react-leaflet";
-
-//TODO EMPROLIJAR
+import Map from "@components/Map/Map.jsx";
+import { geocodeAddress } from "@services/getGeoAdress";
+import { useStore } from "@store";
+import saveZone from "../../services/saveZone";
 
 function ZoneForm() {
-    const [coordinates, setCoordinates] = useState("");
-    const [showModal, setShowModal] = useState(false);
+    
     const [visible, setVisible] = useState(false);
     const [disabled, setDisabled] = useState(true);
     const [selectedRadio, setSelectedRadio] = useState("250");
+    
+    const { userLocation, setUserLocation } = useStore();
     const navigate = useNavigate();
-    const FORM_URI = 'http://localhost:3000/api/zones'
-
-
+    
     const {
         register,
         handleSubmit,
@@ -33,43 +33,33 @@ function ZoneForm() {
     const address = watch("address");
 
     useEffect(() => {
-        if (address) {
-            setDisabled(false);
-        } else {
-            setDisabled(true);
-        }
+        setDisabled(address ? false : true);
     }, [address]);
 
     useEffect(() => {
         register("radio");
     }, [register]);
 
-    const handleClose = () => {
-        setShowModal(false);
-        navigate("/zonas");
-    };
-
-    const fetchCoordinates = useCallback(async (address) => {
-        try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
-            const data = await response.json();
-            if (data && data.length > 0) {
-                const { lat, lon } = data[0];
-                setCoordinates([parseFloat(lat), parseFloat(lon)]);
-                setVisible(true);
-            } else {
-                setCoordinates(null);
-            }
-        } catch (error) {
-            setCoordinates(null);
-        }
-    }, []);
+    const fetchCoordinates = useCallback(() => {
+        geocodeAddress(address).then((data) => {
+            if (!data) throw new Error("Error al obtener la dirección");
+            const { lat, lon } = data;
+            setUserLocation({ lat: +lat, lng: +lon });
+            setVisible(true);
+        })
+    }, [address, setUserLocation]);
 
     const handleSearch = () => {
         if (address) {
-            fetchCoordinates(address);
+            fetchCoordinates();
         }
     };
+
+    const [showModal, setShowModal] = useState(false);
+
+    const handleClose = () => {
+        setShowModal(false);
+    }
 
     const handleCheckboxChange = (value) => {
         setSelectedRadio(value);
@@ -77,38 +67,12 @@ function ZoneForm() {
     };
 
     const onSubmit = async (data) => {
-        const { name, address, radio } = data;
-        if (!coordinates) return;
+       try{
+        await saveZone(data, userLocation);
 
-        const [latitude, longitude] = coordinates;
-        const zone = {
-            name,
-            address,
-            latitude,
-            longitude,
-            radio,
-        };
-
-        console.log(zone);
-        const response = await fetch(`${FORM_URI}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: zone.name,
-                latitude: zone.latitude.toString(),
-                longitude: zone.longitude.toString(),
-                radio: zone.radio
-            })
-        });
-
-        if (response.ok) {
-            setShowModal(true);
-        }else{
-            alert("Error al guardar la zona");
-        }
-
+       }catch(error){
+           console.log(error.message);
+       }
     };
 
     return (
@@ -197,18 +161,8 @@ function ZoneForm() {
                         </Button>
                     </Col>
                 </Form.Group>
-                {visible && coordinates && (
-                    <MapContainer
-                        center={coordinates}
-                        zoom={13}
-                        style={{ height: "400px", width: "100%" }}
-                    >
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <Marker position={coordinates} />
-                        <Circle center={coordinates} radius={parseInt(selectedRadio)} />
-                    </MapContainer>
+                {visible && userLocation && (
+                    <Map userLocation={userLocation} radiusZone={selectedRadio} zoneMode={true} />
                 )}
             </Form>
 

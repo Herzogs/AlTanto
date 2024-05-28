@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Map from "../Map/Map.jsx";
-import { useStore } from "@/store";
-import useReports from "@/hook/useReports";
+import Map from "@components/Map/Map.jsx";
+import { useStore } from "@store";
+import useReports from "@hook/useReports";
+import getZone from "@services/getZone";
+import { Modal, Button } from "react-bootstrap";
 
 //TODO EMPROLIJAR
 
@@ -14,38 +16,31 @@ function ZoneHome() {
     setRadiusZone
   } = useStore();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(null);
   const [zona, setZona] = useState({});
   const { id } = useParams();
 
   useEffect(() => {
-    const fetchZone = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(`http://localhost:3000/api/zones/${id}`);
-        console.log(response);
-        if (!response.ok) {
-          setError("No se pudo obtener la zona");
-        }
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        setError(error.message);
-        console.error(error);
-      }
-    };
 
-    fetchZone().then((data) => {
-      setRadiusZone(data.radio);
-      setUserLocation({
-        lat: data.location.latitude,
-        lng: data.location.longitude,
+    try {
+      if (!id) throw new Error("El id de la zona no es válido");
+      getZone(id).then((data) => {
+        setRadiusZone(data.radio);
+        setUserLocation({
+          lat: data.location.latitude,
+          lng: data.location.longitude,
+        });
+        setZona(data)
+      }).catch((error) => {
+        setError(error.message);
+        setShowModal(true);
       });
-      setZona(data)
-      setIsLoading(false);
-    });
-  }, [id]);
+    } catch (error) {
+      setError(error.message);
+      setShowModal(true);
+    }
+  }, [id, setRadiusZone]);
 
   const { fetchReports } = useReports();
 
@@ -55,13 +50,10 @@ function ZoneHome() {
     }
   }, [userLocation, radiusZone]);
 
-  if (isLoading) {
-    return <div>Cargando...</div>;
-  }
+  const handleClose = () => {
+    setShowModal(false);
+}
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   return (
     <section className="container_home">
@@ -70,8 +62,18 @@ function ZoneHome() {
       </div>
       <div className="bottom-section">
         <Map userLocation={userLocation} radius={radiusZone} />
-
       </div>
+      {!error && (<Modal show={showModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Error</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>{error}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="success" onClick={handleClose}>
+            Continuar
+          </Button>
+        </Modal.Footer>
+      </Modal>)}
     </section>
   );
 }
