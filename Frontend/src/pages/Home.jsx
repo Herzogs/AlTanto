@@ -28,6 +28,8 @@ function Home() {
     setRoutingMode(false);
   }, [setRoutingMode]);
 
+  console.log(userLocation);
+  
   return (
     <section className="container_home">
       <div className="top-section">

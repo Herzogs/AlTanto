@@ -1,5 +1,6 @@
 import Dropdown from "react-bootstrap/Dropdown";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Link } from "react-router-dom";
 function MenuButton() {
   return (
     <Dropdown
@@ -15,10 +16,13 @@ function MenuButton() {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item href="/form/reporte">Reporte Manual</Dropdown.Item>
-        <Dropdown.Item href="/form/reporte/automatico">Reporte Automatico</Dropdown.Item>
+        <Dropdown.Item>
+          <Link to="/form/reporte">Reporte Manual</Link>
+        </Dropdown.Item>
+        <Dropdown.Item>
+          <Link to="/form/reporte/automatico">Reporte Automatico</Link>
+        </Dropdown.Item>
       </Dropdown.Menu>
-      
     </Dropdown>
   );
 }
