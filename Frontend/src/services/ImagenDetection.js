@@ -1,10 +1,9 @@
 import * as tf from '@tensorflow/tfjs';
 
-
 const ImagenDetection = async (photo) => {
   const modelPath = '/lobeAi/model.json';
   const labelsPath = '/lobeAi/labels.txt';
-  let idCategory="";
+  let idCategory = "";
 
   try {
     // Cargar el modelo
@@ -26,7 +25,7 @@ const ImagenDetection = async (photo) => {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, 224, 224);
           const imageData = ctx.getImageData(0, 0, 224, 224);
-          const tensor = tf.browser.fromPixels(imageData).toFloat().expandDims();
+          const tensor = tf.browser.fromPixels(imageData).toFloat().expandDims(0).div(tf.scalar(255));
           resolve(tensor);
         };
         img.onerror = (error) => {
@@ -42,28 +41,23 @@ const ImagenDetection = async (photo) => {
     const predictions = await model.predict(tensor).array();
 
     const resultArray = predictions[0];
-    console.log(" probabilidades "+resultArray);
+    console.log("Probabilidades:", resultArray);
 
-    // Encontrar la categoría con la mayor probabilidad. 
+    // Encontrar la categoría con la mayor probabilidad
     const maxProbabilityIndex = resultArray.indexOf(Math.max(...resultArray));
-    console.log(" maxProbabilityIndex "+maxProbabilityIndex);
+    console.log("maxProbabilityIndex:", maxProbabilityIndex);
 
-    const umbral = 0.7;
-    if (maxProbabilityIndex < umbral) {
-      return { title: 'none', idCategory: 0 } // menor a 70% lo saca. En el front da un reintente
-    }
-
-
-    let title = categories[maxProbabilityIndex]; // la categoria detectada se convierte en titulo para machear con los filtos de la bd
+    let title = categories[maxProbabilityIndex]; // La categoría detectada se convierte en título para machear con los filtros de la BD
+    console.log("Título:", title);
     let category = "";
-    if (title == "Robo ventanilla automovil" || title == "Robo neumatico" || title == "Puerta Violentada"|| title == "Choque automovilistico") {
+    if (title == "Choque Automovilistico") {
       idCategory = 1;
     }
-    if (title == "Calle  Inundada" || title == "Arbol Caido") {
-      idCategory = 2;
+    if (title == "none2") {
+      idCategory = 0;
     }
 
-    const response = { title , idCategory: idCategory };
+    const response = { title, idCategory };
 
     return response;
   } catch (error) {
