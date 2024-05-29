@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
+import { Container, Form, Button, Row, Col, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getCategoryFromApi } from "@services/getCategory";
+import { getCategoryFromApi } from "@/services/getCategory";
 import sendReport from "@services/sendReport";
-import { useStore, automaticReport } from "@store";
-import ModalAT from "@components/modal/ModalAT";
+import { useStore} from "@store";
 
 function ReportForm() {
   const { userLocation } = useStore();
-  const { title, category: autoCategory, idCategory, file, setTitle, setCategory, setIdCategory, setFile } = automaticReport();
-  console.log(typeof file)
-  const [categories, setCategories] = useState([]);
+
+  const [category, setCategory] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
@@ -22,31 +20,25 @@ function ReportForm() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      title: title || "",
-      content: "",
-      category: idCategory || "",
-      latitude: userLocation ? userLocation.lat : "",
-      longitude: userLocation ? userLocation.lng : "",
-      image: file || null,
+      description: "",
+      latitude: "",
+      longitude: "",
     },
   });
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      const data = await getCategoryFromApi();
-      setCategories(data);
-    };
-    fetchCategories();
-
     reset({
-      title: title || "",
       content: "",
-      category: idCategory || "",
-      latitude: userLocation ? userLocation.lat : "",
-      longitude: userLocation ? userLocation.lng : "",
-      image: file || null,
+      latitude: userLocation.lat,
+      longitude: userLocation.lng,
     });
-  }, [reset, title, idCategory, file, userLocation]);
+
+    const listCategories = getCategoryFromApi();
+    listCategories.then((data) => {
+      setCategory(data);
+    });
+
+  }, [reset]);
 
   const onSubmit = async (data) => {
     try {
@@ -60,11 +52,6 @@ function ReportForm() {
   const handleClose = () => {
     setShowModal(false);
     navigate("/");
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setFile(file);
   };
 
   return (
@@ -88,7 +75,6 @@ function ReportForm() {
                   value: 50,
                   message: "Máximo 50 caracteres",
                 },
-                onChange: (e) => setTitle(e.target.value),
               })}
             />
             {errors.title && (
@@ -139,11 +125,10 @@ function ReportForm() {
                   value: true,
                   message: "Campo requerido",
                 },
-                onChange: (e) => setIdCategory(e.target.value),
               })}
             >
               <option value="">Seleccione una categoría</option>
-              {categories.map((cat) => (
+              {category.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>
@@ -208,16 +193,11 @@ function ReportForm() {
             Imagen:
           </Form.Label>
           <Col sm={10}>
-            {file && (
-              <Image src={URL.createObjectURL(file)} alt="Report" style={{ width: "100px", height: "100px" }}/>
-            )}
-
-            {!file && (
-              <Form.Control
-              type="file"
-              {...register("image")}
-              onChange={handleImageChange}
-            />
+            <Form.Control type="file" {...register("image")} />
+            {errors.image && (
+              <Form.Control.Feedback type="invalid">
+                {errors.image.message}
+              </Form.Control.Feedback>
             )}
           </Col>
         </Form.Group>
@@ -227,13 +207,17 @@ function ReportForm() {
         </Button>
       </Form>
 
-      <ModalAT
-        title="Reporte enviado"
-        message="El reporte se ha generado correctamente."
-        showModal={showModal}
-        handleClose={handleClose}
-        handleAccept={handleClose}
-      />
+      <Modal show={showModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Reporte enviado</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>El reporte se ha generado correctamente.</Modal.Body>
+        <Modal.Footer>
+          <Button variant="success" onClick={handleClose}>
+            Continuar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

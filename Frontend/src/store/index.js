@@ -30,17 +30,17 @@ const useStore = create(
 );
 
 const automaticReport = create(
-  persist(
+  
     (set) => ({
-      automaticReport: {
-        
-      },
-      setAutomaticReport: (report) => set({ automaticReport: report }),
-    }),
-    {
-      name: 'automaticReport',
-    }
-  )
+      title: null,
+      setTitle : (title) => set({ title: title }),
+      category: null,
+      setCategory : (category) => set({ category: category }),
+      idCategory: null,
+      setIdCategory : (id) => set({ idCategory: id }),
+      file: null,
+      setFile : (file) => set({ file: file }),
+    })
 );
 
 if (import.meta.env.VITE_ENV === 'development') {

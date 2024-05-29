@@ -16,7 +16,7 @@ function MenuButton() {
 
       <Dropdown.Menu>
         <Dropdown.Item href="/form/reporte">Reporte Manual</Dropdown.Item>
-        <Dropdown.Item href="/form/reportAutomatic">Reporte Automatio</Dropdown.Item>
+        <Dropdown.Item href="/form/reporte/automatico">Reporte Automatico</Dropdown.Item>
       </Dropdown.Menu>
       
     </Dropdown>

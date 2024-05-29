@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import getZone from "@services/getZone";
+import { Link } from "react-router-dom";
 
 function Zones() {
   const [zones, setZones] = useState([]);
@@ -27,12 +28,9 @@ function Zones() {
             {zones.map((zone) => (
               <div className="zonas-item" key={zone.id}>
                 <h5>{zone.name}</h5>
-                <a
-                  className="btn btn-sm  btn-primary"
-                  href={`/zonas/${zone.id}`}
-                >
+                <Link to={`/zonas/${zone.id}`} className="btn btn-sm btn-primary">
                   Ver detalle
-                </a>
+                </Link>
               </div>
             ))}
           </article>

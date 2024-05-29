@@ -1,22 +1,22 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Header from "@/components/header/Header";
-import Footer from "@/components/footer/Footer";
-import Home from "@/pages/Home";
-import Roads from "@/pages/Roads";
-import Zones from "@/pages/Zones";
-import Notifications from "@/pages/Notifications";
-import ReportForm from "@/components/report/ReportForm";
-import CategoryForm from "@/components/category/CategoryForm";
-import ZoneForm from "@/components/Zone/ZoneForm";
-import ZoneID from "@/components/Zone/ZoneID";
-import ReportDetail from "@/components/report/ReportDetail";
-import ReportAutomatic from "@/components/ReportAutomatic/ReportAutomaticForm";
+import Header from "@components/header/Header";
+import Footer from "@components/footer/Footer";
+import Home from "@pages/Home";
+import Roads from "@pages/Roads";
+import Zones from "@pages/Zones";
+import Notifications from "@pages/Notifications";
+import ReportForm from "@components/report/ReportForm";
+import CategoryForm from "@components/category/CategoryForm";
+import ZoneForm from "@components/Zone/ZoneForm";
+import ZoneID from "@components/Zone/ZoneID";
+import ReportDetail from "@components/report/ReportDetail";
+import CaptureImage from "@components/ReportAutomatic/CaptureImage";
 
 const routes = [
   { path: "/", element: <Home /> },
   { path: "/recorridos", element: <Roads /> },
   { path: "/form/reporte", element: <ReportForm /> },
-  { path: "/form/reportAutomatic", element: <ReportAutomatic /> },
+  { path: "/form/reporte/automatico", element: <CaptureImage /> },
   { path: "/form/categoria", element: <CategoryForm /> },
   { path: "/zonas", element: <Zones /> },
   { path: "/form/zona", element: <ZoneForm /> },

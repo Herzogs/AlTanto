@@ -162,7 +162,7 @@ function ZoneForm() {
                     </Col>
                 </Form.Group>
                 {visible && userLocation && (
-                    <Map userLocation={userLocation} radiusZone={selectedRadio} zoneMode={true} />
+                    <Map userLocation={userLocation} radiusZone={selectedRadio} zoneMode={true} noDrag={true}/>
                 )}
             </Form>
 

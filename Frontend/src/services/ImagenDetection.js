@@ -44,7 +44,7 @@ const ImagenDetection = async (photo) => {
     const maxProbabilityIndex = resultArray.indexOf(Math.max(...resultArray));
 
     let title = categories[maxProbabilityIndex]; // la categoria detectada se convierte en titulo para machear con los filtos de la bd
-    console.log("titulo resultado " + title);
+    console.log("titulo resultado =====> " + title);
     // tomo arbol bien como que esta mal, no tiene que reconocerlo
     // daria un reintente
     // falta toda la logica de machear con la bd

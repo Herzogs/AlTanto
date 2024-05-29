@@ -22,6 +22,11 @@ function ZoneHome() {
   const { id } = useParams();
 
   useEffect(() => {
+    setUserLocation(null)
+  }, []);
+
+
+  useEffect(() => {
 
     try {
       if (!id) throw new Error("El id de la zona no es válido");
@@ -50,6 +55,7 @@ function ZoneHome() {
     }
   }, [userLocation, radiusZone]);
 
+  
   const handleClose = () => {
     setShowModal(false);
 }
@@ -61,7 +67,7 @@ function ZoneHome() {
         <h2 className="text-center w-100">{zona.name}</h2>
       </div>
       <div className="bottom-section">
-        <Map userLocation={userLocation} radius={radiusZone} />
+        {zona && <Map userLocation={userLocation} radius={radiusZone} />}
       </div>
       {!error && (<Modal show={showModal} onHide={handleClose}>
         <Modal.Header closeButton>
