@@ -5,4 +5,6 @@ const router = Router();
 
 router.post('/register', controller.createUSer);
 router.post('/validate-code',controller.confirmUser)
+router.get('/login',controller.login)
+
 export default router;

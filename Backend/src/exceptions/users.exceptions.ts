@@ -1,10 +1,16 @@
 import ApiError from "../utilities/apiError";
-import {HttpStatusCode} from "axios";
+import { HttpStatusCode } from "axios";
 
 class UserNotCreatedException extends ApiError {
-    constructor(message: string= "User not created") {
-        super(message, HttpStatusCode.BadRequest);
+    constructor();
+    constructor(message: string);
+    constructor(message: string, statusCode: HttpStatusCode);
+    constructor(message?: string, statusCode?: HttpStatusCode) {
+        message = message || "User not created";
+        statusCode = statusCode || HttpStatusCode.BadRequest;
+        super(message, statusCode);
     }
 }
 
-export {UserNotCreatedException}
+export { UserNotCreatedException };
+
