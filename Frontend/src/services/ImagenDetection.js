@@ -3,8 +3,8 @@ import * as tf from '@tensorflow/tfjs';
 const ImagenDetection = async (photo) => {
   const modelPath = '/lobeAi/model.json';
   const labelsPath = '/lobeAi/labels.txt';
-  let idCategory = 0;
   let title = "none";
+  let category = "none";
 
   try {
     // Cargar el modelo
@@ -51,34 +51,24 @@ const ImagenDetection = async (photo) => {
     console.log("maxProbability:", maxProbability);
 
     if (maxProbability < 0.7 || maxProbability > 1) {
-      return { title: "none", idCategory: 0 };
+      return { title: "none", category: "none" };
     }
 
-    title = categories[maxProbabilityIndex]; // La categoría detectada se convierte en título para machear con los filtros de la BD
+    // extraigo la categoria dle modelo_
+    const detectedLabel = categories[maxProbabilityIndex];
+    const [detectedTitle, detectedCategory] = detectedLabel.split('_');
+    title = detectedTitle;
+    category = detectedCategory;
     console.log("Título:", title);
+    console.log("Categoría:", category);
 
-    switch (title) {
-      case "Choque Automovilistico":
-        idCategory = 1;
-        break;
-      case "Robo neumatico":
-        idCategory = 2;
-        break;
-      case "none":
-        idCategory = 0;
-        console.log("se busco y no se encontro");
-        break;
-      default:
-        idCategory = 0;
-        break;
-    }
 
-    const response = { title, idCategory };
+    const response = { title,  category };
 
     return response;
   } catch (error) {
     console.error('Error en la detección de la imagen:', error);
-    return { title: "none", idCategory: 0 };
+    return { title: "none", category: "none" };
   }
 };
 

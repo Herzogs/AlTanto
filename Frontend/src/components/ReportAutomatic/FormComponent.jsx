@@ -10,7 +10,7 @@ import getLocation from '../../services/getLocation'
 //import { useStore }  from "../../store";
 
 
-function ReportForm({ analisis , photo}) {
+function ReportForm({ analisis, photo }) {
     const [category, setCategory] = useState([]);
     const [location, setLocation] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -27,7 +27,7 @@ function ReportForm({ analisis , photo}) {
 
 
 
-     const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
         defaultValues: {
             title: analisis.title || "",
             category: analisis.idCategory || "",
@@ -98,14 +98,14 @@ function ReportForm({ analisis , photo}) {
                     <Col sm={10}>
                         <Form.Control
                             as="select"
-                            isInvalid={errors.category}
+                            isInvalid={!!errors.category}
                             {...register("category", {
                                 required: {
                                     value: true,
                                     message: "Campo requerido",
                                 },
                             })}
-                            value={analisis.idCategory || ""}
+                            value={analisis.category || ""}
                             onChange={(e) => setValue("category", e.target.value)}
                         >
                             <option value="">Seleccione una categoría</option>
@@ -126,11 +126,13 @@ function ReportForm({ analisis , photo}) {
 
 
 
+
+
                 <input type="hidden" {...register("latitude")} value={location?.lat || ""} />
-                <input type="hidden" {...register("longitude")} value={location?.lon || ""} />  
+                <input type="hidden" {...register("longitude")} value={location?.lon || ""} />
                 <input type="hidden" {...register("image")} value={photo} />
 
-       
+
                 <Button type="submit" variant="success" className="my-4 px-4">
                     Reportar
                 </Button>

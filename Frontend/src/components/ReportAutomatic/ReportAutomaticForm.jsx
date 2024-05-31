@@ -88,7 +88,7 @@ const App = () => {
           {isProcessing ? (
             <p>Procesando...</p>
           ) : (
-            analisis && Object.keys(analisis).length > 0 && analisis.idCategory !== 0 ? (
+            analisis && Object.keys(analisis).length > 0 && analisis.title !== 'none' ? (
             <FormComponent analisis={analisis} photo={photo}></FormComponent>
    
             ) : (
