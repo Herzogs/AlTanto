@@ -39,6 +39,7 @@
     "eslint": "8.57.0"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.587.0",
     "axios": "^1.7.2",
     "jsonwebtoken": "^9.0.2",
     "jwk-to-pem": "^2.0.5",

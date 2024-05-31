@@ -31,9 +31,7 @@ const confirmUser = async (email: string, confirmationCode: string): Promise<voi
         Username: email,
         Pool: userPool,
     };
-
     const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-
     try {
         await new Promise<void>((resolve, reject) => {
             cognitoUser.confirmRegistration(confirmationCode, true, (err, result) => {
@@ -78,6 +76,7 @@ const login = async (email: string, password: string): Promise<string> => {
         });
     });
 };
+
 
 
 export {createUser, confirmUser, login};
