@@ -7,7 +7,6 @@ class UserRepository {
                 name: user.name,
                 lastName: user.lastName,
                 email: user.email,
-                password: user.password,
                 phoneNumber: user.phoneNumber,
                 username: user.username,
                 rol: user.rol,
@@ -15,6 +14,13 @@ class UserRepository {
         );
     }
 
+    static async deleteUser(email: string) {
+        await User.destroy({
+            where: {
+                email: email
+            }
+        });
+    }
 }
 
 export default UserRepository;

@@ -1,9 +1,9 @@
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
+import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js';
 import {promisify} from 'util';
 import {IUserCognito} from '../interfaces/user.interface';
 import * as process from 'node:process';
 import {UserNotCreatedException} from "../exceptions/users.exceptions";
-import {AuthenticationDetails, CognitoUser} from "amazon-cognito-identity-js";
 
 const poolData = {
     UserPoolId: process.env.USER_POOL_ID as string,
