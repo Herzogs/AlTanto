@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { Container } from "react-bootstrap";
-import { useStore } from "@store";
+import { useStore, automaticReport } from "@store";
 import Map from "@components/Map/Map";
 import useReports from "@hook/useReports";
-
 
 function Home() {
   const {
@@ -13,7 +12,12 @@ function Home() {
     setRoutingMode,
     reports,
     setReports,
+    setOldUserLocation,
+    setDistance
   } = useStore();
+
+  const { setFile, setTitle, setCategory, setIdCategory } = automaticReport();
+
 
   const { fetchReports } = useReports();
 
@@ -25,11 +29,16 @@ function Home() {
 
   useEffect(() => {
     setUserLocation(null);
+    setOldUserLocation(null);
+    setDistance(0);
+    setFile(null);
+    setTitle(null);
+    setCategory(null);
+    setIdCategory(null);
     setRoutingMode(false);
+
   }, [setRoutingMode]);
 
-  console.log(userLocation);
-  
   return (
     <section className="container_home">
       <div className="top-section">

@@ -9,10 +9,11 @@ import ModalAT from "@components/modal/ModalAT";
 
 function ReportForm() {
   const { userLocation } = useStore();
-  const { title, category: autoCategory, idCategory, file, setTitle, setCategory, setIdCategory, setFile } = automaticReport();
-  console.log(typeof file)
+  const { title, idCategory, file, setFile } = automaticReport();
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [titleModal, setTitleModal] = useState("");
+  const [messageModal, setMessageModal] = useState("");
   const navigate = useNavigate();
 
   const {
@@ -32,34 +33,28 @@ function ReportForm() {
   });
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      const data = await getCategoryFromApi();
+    getCategoryFromApi().then((data) => {
       setCategories(data);
-    };
-    fetchCategories();
+    }).catch((error) => {
+      setTitleModal("Error al cargar las categorías");
+      setMessageModal(error.message);
+      setShowModal(true);
+    })
+  }, []);
 
-    reset({
-      title: title || "",
-      content: "",
-      category: idCategory || "",
-      latitude: userLocation ? userLocation.lat : "",
-      longitude: userLocation ? userLocation.lng : "",
-      image: file || null,
-    });
-  }, [reset, title, idCategory, file, userLocation]);
+  useEffect(() => reset({ image: file || null, }), [reset, file]);
 
   const onSubmit = async (data) => {
     try {
       await sendReport(data);
-      setShowModal(true);
+      setTitleModal("Reporte enviado");
+      setMessageModal("El reporte se ha generado correctamente.");
     } catch (error) {
-      console.error("Error sending report:", error);
+      setTitleModal("Error al enviar el reporte");
+      setMessageModal("Ha ocurrido un error al enviar el reporte.");
+    } finally {
+      setShowModal(true);
     }
-  };
-
-  const handleClose = () => {
-    setShowModal(false);
-    navigate("/");
   };
 
   const handleImageChange = (e) => {
@@ -138,13 +133,12 @@ function ReportForm() {
                 required: {
                   value: true,
                   message: "Campo requerido",
-                },
-                onChange: (e) => setIdCategory(e.target.value),
+                }
               })}
             >
               <option value="">Seleccione una categoría</option>
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
+                <option key={cat.id} value={cat.id} selected={idCategory === cat.id}>
                   {cat.name}
                 </option>
               ))}
@@ -209,15 +203,14 @@ function ReportForm() {
           </Form.Label>
           <Col sm={10}>
             {file && (
-              <Image src={URL.createObjectURL(file)} alt="Report" style={{ width: "100px", height: "100px" }}/>
+              <Image src={URL.createObjectURL(file)} alt="Report" style={{ width: "100px", height: "100px" }} />
             )}
-
             {!file && (
               <Form.Control
-              type="file"
-              {...register("image")}
-              onChange={handleImageChange}
-            />
+                type="file"
+                {...register("image")}
+                onChange={handleImageChange}
+              />
             )}
           </Col>
         </Form.Group>
@@ -228,11 +221,11 @@ function ReportForm() {
       </Form>
 
       <ModalAT
-        title="Reporte enviado"
-        message="El reporte se ha generado correctamente."
+        title={titleModal}
+        message={messageModal}
         showModal={showModal}
-        handleClose={handleClose}
-        handleAccept={handleClose}
+        handleClose={() => setShowModal(false)}
+        handleAccept={() => navigate("/")}
       />
     </Container>
   );

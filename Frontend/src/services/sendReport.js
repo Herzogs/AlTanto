@@ -10,11 +10,9 @@ const sendReport = async (data) => {
         formData.append('categoryId', data.category);
         formData.append('latitude', data.latitude.toString());
         formData.append('longitude', data.longitude.toString());
+        if (data.image)
+            formData.append('image', data.image);
         
-        // Añadir la imagen si está presente
-        if (data.image && data.image.length > 0) {
-            formData.append('image', data.image[0]);
-        }
 
         const response = await axios.post(FORM_URI, formData, {
             headers: {

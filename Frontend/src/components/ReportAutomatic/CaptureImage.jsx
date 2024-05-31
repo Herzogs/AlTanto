@@ -72,17 +72,8 @@ const CaptureImage = () => {
     }
   };
 
-  const handleClose = () => {
-    navigate("/form/reporte");
-  };
-
-  const handleAccept = () => {
-    setShowModal(false);
-    setAccept(true);
-  };
-
   useEffect(() => {
-    if (captureMode === 'capture' || captureMode === 'upload') {
+    if (['capture', 'upload'].includes(captureMode)) {
       setAccept(false);
     }
   }, [captureMode]);
@@ -91,10 +82,13 @@ const CaptureImage = () => {
     <>
       <ModalAT
         title="Servicio Automatico"
-        message="usted debe aceptar el uso de nuestro servicio de terceros"
+        message="usted debe aceptar el uso de nuestro servicio de inteligencia artificial para continuar."
         showModal={showModal}
-        handleClose={handleClose}
-        handleAccept={handleAccept}
+        handleClose={() => navigate("/form/reporte")}
+        handleAccept={() => {
+          setShowModal(false);
+          setAccept(true);
+        }}
       />
       <div className="app">
         <h2>Capture el incidente</h2>

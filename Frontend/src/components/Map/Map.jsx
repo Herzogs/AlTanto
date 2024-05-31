@@ -7,10 +7,18 @@ import RoutingInputs from "@components/routs/RoutingInputs";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
 import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
 
 const Map = ({ userLocation, radiusZone = 500, routingMode = false, zoneMode = false, noDrag = false }) => {  
   const { MapClickHandler } = useMapClickHandler();
-  const { startPoint, endPoint, reports } = useStore();
+  const { startPoint, endPoint, reports, distance, setReports } = useStore();
+
+  function isPointInCircle(lat, lng, userLocation, radiusZone) {
+    const distance = Math.sqrt(Math.pow(lat - userLocation.lng, 2) + Math.pow(lng - userLocation.lat, 2));
+    return distance <= radiusZone;
+  }
+
+ 
 
   return (
     <section>
