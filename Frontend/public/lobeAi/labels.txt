@@ -1,2 +1,3 @@
-Choque
-none2
+Choque Automovilistico
+Robo neumatico
+none
