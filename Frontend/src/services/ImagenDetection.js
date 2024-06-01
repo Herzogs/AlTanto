@@ -1,9 +1,10 @@
 import * as tf from '@tensorflow/tfjs';
 
-
 const ImagenDetection = async (photo) => {
   const modelPath = '/lobeAi/model.json';
   const labelsPath = '/lobeAi/labels.txt';
+  let title = "none";
+  let category = "none";
 
   try {
     // Cargar el modelo
@@ -25,7 +26,7 @@ const ImagenDetection = async (photo) => {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, 224, 224);
           const imageData = ctx.getImageData(0, 0, 224, 224);
-          const tensor = tf.browser.fromPixels(imageData).toFloat().expandDims();
+          const tensor = tf.browser.fromPixels(imageData).toFloat().expandDims(0).div(tf.scalar(255));
           resolve(tensor);
         };
         img.onerror = (error) => {
@@ -39,22 +40,35 @@ const ImagenDetection = async (photo) => {
     // Preprocesar y analizar la imagen
     const tensor = await preprocessImage(photo);
     const predictions = await model.predict(tensor).array();
-    const resultArray = predictions[0];
-    // Encontrar la categoría con la mayor probabilidad
-    const maxProbabilityIndex = resultArray.indexOf(Math.max(...resultArray));
 
-    let title = categories[maxProbabilityIndex]; // la categoria detectada se convierte en titulo para machear con los filtos de la bd
-    console.log("titulo resultado =====> " + title);
-    // tomo arbol bien como que esta mal, no tiene que reconocerlo
-    // daria un reintente
-    // falta toda la logica de machear con la bd
-    
-    const response = title === 'arbol bien' ? { title: '', category: '', idCategory: 0 } : { title, category: 'seguridad', idCategory: 1 };
+    const resultArray = predictions[0];
+    console.log("Probabilidades:", resultArray);
+
+    // Encontrar la categoría con la mayor probabilidad
+    const maxProbability = Math.max(...resultArray);
+    const maxProbabilityIndex = resultArray.indexOf(maxProbability);
+    console.log("maxProbabilityIndex:", maxProbabilityIndex);
+    console.log("maxProbability:", maxProbability);
+
+    if (maxProbability < 0.7 || maxProbability > 1) {
+      return { title: "none", category: "none" };
+    }
+
+    // extraigo la categoria dle modelo_
+    const detectedLabel = categories[maxProbabilityIndex];
+    const [detectedTitle, detectedCategory] = detectedLabel.split('_');
+    title = detectedTitle;
+    category = detectedCategory;
+    console.log("Título:", title);
+    console.log("Categoría:", category);
+
+
+    const response = { title,  category };
 
     return response;
   } catch (error) {
-    console.error('Error al realizar la inferencia:', error);
-    throw error;
+    console.error('Error en la detección de la imagen:', error);
+    return { title: "none", category: "none" };
   }
 };
 

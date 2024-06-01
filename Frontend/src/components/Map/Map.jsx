@@ -1,14 +1,21 @@
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { useStore } from "@store";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
 import Routing from "@components/routs/Routing";
 import RoutingInputs from "@components/routs/RoutingInputs";
+import PopupAT from "@components/Map/PopupAT";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
 import "leaflet/dist/leaflet.css";
 
-const Map = ({ userLocation, radiusZone = 500, routingMode = false, zoneMode = false, noDrag = false }) => {  
+const Map = ({
+  userLocation,
+  radiusZone = 500,
+  routingMode = false,
+  zoneMode = false,
+  noDrag = false,
+}) => {
   const { MapClickHandler } = useMapClickHandler();
   const { startPoint, endPoint, reports } = useStore();
 
@@ -31,18 +38,15 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false, zoneMode = f
         {userLocation && !routingMode && (
           <RadiusCircle center={userLocation} radius={radiusZone} />
         )}
-        {!zoneMode && !routingMode &&
+        {!zoneMode &&
+          !routingMode &&
           reports &&
           reports.map((report) => (
             <Marker
               key={report.id}
               position={[report.latitude, report.longitude]}
             >
-              <Popup>
-                <strong>{report.title}</strong>
-                <br />
-                {report.content}
-              </Popup>
+              <PopupAT report={report} />
             </Marker>
           ))}
         {/* ROUTING PARA RECORIDO */}
@@ -53,7 +57,7 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false, zoneMode = f
           </>
         )}
       </MapContainer>
-      {!zoneMode && (<MenuButton />)}
+      {!zoneMode && <MenuButton />}
     </section>
   );
 };

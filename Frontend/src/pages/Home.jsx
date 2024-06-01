@@ -3,18 +3,15 @@ import { Container } from "react-bootstrap";
 import { useStore } from "@store";
 import Map from "@components/Map/Map";
 import useReports from "@hook/useReports";
-
+import { analyzeImageFromUrl } from "@services/computerVision";
 
 function Home() {
   const {
     userLocation,
     setUserLocation,
     radiusZone,
-    setRoutingMode,
-    reports,
-    setReports,
+    setRoutingMode
   } = useStore();
-
   const { fetchReports } = useReports();
 
   useEffect(() => {
@@ -28,8 +25,6 @@ function Home() {
     setRoutingMode(false);
   }, [setRoutingMode]);
 
-  console.log(userLocation);
-  
   return (
     <section className="container_home">
       <div className="top-section">
@@ -37,6 +32,7 @@ function Home() {
           <h3>
             No te pierdas nada <br /> de lo que está pasando
           </h3>
+          <button onClick={() => analyzeImageFromUrl()}>USAR IA</button>
         </Container>
       </div>
       <div className="bottom-section">
