@@ -16,6 +16,7 @@ class ReportRepository {
         if (!listOfReports) {
             return [];
         }
+        console.log(listOfReports.map((report) => report.get({ plain: true })));
         return listOfReports.map((report) => report.get({ plain: true }));
     }
 

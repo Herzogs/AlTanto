@@ -3,38 +3,50 @@ import { useMap } from 'react-leaflet';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet-routing-machine';
 import L from 'leaflet';
+import { useStore } from '@store';
 
-const Routing = ({ startPoint, endPoint }) => {
+/*
+createMarker: (i, waypoint) => {
+          return L.marker(waypoint.latLng, {
+            draggable: true,
+          })
+          .on('dragend', function (e) {
+            const latLng = e.target.getLatLng();
+            if (i === 0) {
+              startPoint.lat = latLng.lat;
+              startPoint.lon = latLng.lng;
+            } else if (i === 1) {
+              endPoint.lat = latLng.lat;
+              endPoint.lon = latLng.lng;
+            }
+          });
+        },*/
+
+const Routing = ({ startPoint, endPoint, numberPoints }) => {
   const map = useMap();
-
+  const { setRouteCoordinates } = useStore()
+  
   useEffect(() => {
     if (startPoint && endPoint) {
       const routingControl = L.Routing.control({
         waypoints: [
-          L.latLng(startPoint.lat, startPoint.lng),
-          L.latLng(endPoint.lat, endPoint.lng),
+          L.latLng(startPoint.lat, startPoint.lon),
+          L.latLng(endPoint.lat, endPoint.lon),
         ],
+        addWaypoints: false,
         routeWhileDragging: false,
         show: false,
-        createMarker: (i, waypoint, n) => {
-          return L.marker(waypoint.latLng, {
-            draggable: true,
-          }).on('dragend', function (e) {
-            const latLng = e.target.getLatLng();
-            if (i === 0) {
-              startPoint.lat = latLng.lat;
-              startPoint.lng = latLng.lng;
-            } else if (i === 1) {
-              endPoint.lat = latLng.lat;
-              endPoint.lng = latLng.lng;
-            }
-          });
-        },
-      }).addTo(map);
+      })
+      .on('routesfound', function(e) {
+        const routes = e.routes;
+        const coordinates = routes[0].coordinates.map(coord => [coord.lat, coord.lng]);
+        setRouteCoordinates(coordinates);
+      })
+      .addTo(map);
 
       return () => map.removeControl(routingControl);
     }
-  }, [map, startPoint, endPoint]);
+  }, [map, startPoint, endPoint, setRouteCoordinates, numberPoints]);
 
   return null;
 };

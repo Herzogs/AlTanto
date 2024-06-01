@@ -1,17 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Container, Form, Button, Row, Col, Modal, FormCheck } from "react-bootstrap";
+import { Container, Form, Button, Row, Col, FormCheck } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Map from "@components/Map/Map.jsx";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore } from "@store";
-import saveZone from "../../services/saveZone";
+import saveZone from "@services/saveZone";
+import ModalAT from "@components/modal/ModalAT";
 
 function ZoneForm() {
     
     const [visible, setVisible] = useState(false);
     const [disabled, setDisabled] = useState(true);
     const [selectedRadio, setSelectedRadio] = useState("250");
+    const [titleModal, setTitleModal] = useState("");
+    const [messageModal, setMessageModal] = useState("");
     
     const { userLocation, setUserLocation } = useStore();
     const navigate = useNavigate();
@@ -57,9 +60,6 @@ function ZoneForm() {
 
     const [showModal, setShowModal] = useState(false);
 
-    const handleClose = () => {
-        setShowModal(false);
-    }
 
     const handleCheckboxChange = (value) => {
         setSelectedRadio(value);
@@ -69,10 +69,16 @@ function ZoneForm() {
     const onSubmit = async (data) => {
        try{
         await saveZone(data, userLocation);
-
+        setTitleModal("Zona creada");
+        setMessageModal("La zona ha sido creada con éxito");
        }catch(error){
            console.log(error.message);
+              setTitleModal("Error");
+                setMessageModal("Ha ocurrido un error al intentar crear la zona");
+       }finally{
+           setShowModal(true);
        }
+       
     };
 
     return (
@@ -166,17 +172,13 @@ function ZoneForm() {
                 )}
             </Form>
 
-            <Modal show={showModal} onHide={handleClose}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Zona Enviada</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Se ha guardado correctamente la zona.</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="success" onClick={handleClose}>
-                        Continuar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <ModalAT
+                title={titleModal}
+                message={messageModal}
+                showModal={showModal}
+                handleClose={() => setShowModal(false)}
+                handleAccept={() => navigate("/zonas")}
+      />
         </Container>
     );
 }

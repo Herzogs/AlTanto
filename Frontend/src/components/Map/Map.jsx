@@ -7,18 +7,14 @@ import RoutingInputs from "@components/routs/RoutingInputs";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
 import "leaflet/dist/leaflet.css";
-import { useEffect } from "react";
+import 'react-leaflet-markercluster/dist/styles.min.css';
+import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 
-const Map = ({ userLocation, radiusZone = 500, routingMode = false, zoneMode = false, noDrag = false }) => {  
+
+const Map = ({ userLocation, radiusZone = 500, routingMode = false, zoneMode = false, noDrag = false }) => {
+
   const { MapClickHandler } = useMapClickHandler();
-  const { startPoint, endPoint, reports, distance, setReports } = useStore();
-
-  function isPointInCircle(lat, lng, userLocation, radiusZone) {
-    const distance = Math.sqrt(Math.pow(lat - userLocation.lng, 2) + Math.pow(lng - userLocation.lat, 2));
-    return distance <= radiusZone;
-  }
-
- 
+  const { startPoint, endPoint, reports } = useStore();
 
   return (
     <section>
@@ -39,29 +35,33 @@ const Map = ({ userLocation, radiusZone = 500, routingMode = false, zoneMode = f
         {userLocation && !routingMode && (
           <RadiusCircle center={userLocation} radius={radiusZone} />
         )}
-        {!zoneMode && !routingMode &&
-          reports &&
-          reports.map((report) => (
-            <Marker
-              key={report.id}
-              position={[report.latitude, report.longitude]}
-            >
-              <Popup>
-                <strong>{report.title}</strong>
-                <br />
-                {report.content}
-              </Popup>
-            </Marker>
-          ))}
+        {!zoneMode && (
+          <MarkerClusterGroup showCoverageOnHover={false}>
+            {reports &&
+              reports.map((report) => (
+                <Marker
+                  key={report._id}
+                  position={[report.latitude, report.longitude]}
+                >
+                  <Popup>
+                    <strong>{report.title}</strong>
+                    <br />
+                    {report.content}
+                  </Popup>
+                </Marker>
+              ))}
+          </MarkerClusterGroup>)
+        }
+
         {/* ROUTING PARA RECORIDO */}
         {routingMode && (
           <>
             <MapClickHandler />
-            <Routing startPoint={startPoint} endPoint={endPoint} />
+            <Routing startPoint={startPoint} endPoint={endPoint} numberPoints={6} />
           </>
         )}
       </MapContainer>
-      {!zoneMode && (<MenuButton />)}
+      {!zoneMode && !routingMode && (<MenuButton />)}
     </section>
   );
 };

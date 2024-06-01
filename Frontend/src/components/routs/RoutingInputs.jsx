@@ -2,6 +2,18 @@ import { useState } from "react";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore } from "@store";
 
+const InputField = ({type, value, setValue, placeholder }) => {
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+    />
+  );
+}
+
+
 function RoutingInputs() {
   const { setStartPoint, setEndPoint } = useStore();
   const [startAddress, setStartAddress] = useState("");
@@ -16,19 +28,10 @@ function RoutingInputs() {
 
   return (
     <article className="my-3">
-      <input
-        type="text"
-        placeholder="Enter start address"
-        value={startAddress}
-        onChange={(e) => setStartAddress(e.target.value)}
-      />
-      <input
-        type="text"
-        placeholder="Enter end address"
-        value={endAddress}
-        onChange={(e) => setEndAddress(e.target.value)}
-      />
+      <InputField type="text" value={startAddress} setValue={setStartAddress} placeholder="Enter start address" />
+      <InputField type="text" value={endAddress} setValue={setEndAddress} placeholder="Enter end address" />
       <button onClick={handleSetPoints}>Setear puntos</button>
+
     </article>
   );
 }

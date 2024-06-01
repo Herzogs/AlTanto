@@ -7,13 +7,14 @@ function useReports() {
   const fetchReports = async () => {
     if (userLocation) {
       
-      if (oldUserLocation) {
+      /*if (oldUserLocation) {
         const dist = userLocation.distanceTo(oldUserLocation);
         if (dist < 100) {
           return;
         }
         setDistance(dist);
       }
+      */
       try {
         const response = await getReportsBy(userLocation, radiusZone);
         setReports(response);

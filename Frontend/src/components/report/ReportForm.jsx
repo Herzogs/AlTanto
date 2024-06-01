@@ -46,6 +46,7 @@ function ReportForm() {
 
   const onSubmit = async (data) => {
     try {
+      
       await sendReport(data);
       setTitleModal("Reporte enviado");
       setMessageModal("El reporte se ha generado correctamente.");
@@ -82,8 +83,7 @@ function ReportForm() {
                 maxLength: {
                   value: 50,
                   message: "Máximo 50 caracteres",
-                },
-                onChange: (e) => setTitle(e.target.value),
+                }
               })}
             />
             {errors.title && (

@@ -7,11 +7,11 @@ export async function getReportsBy(location, radius) {
         "Content-Type": "application/json",
       },
     });
-
     if (!response.ok) {
       throw new Error("Error al obtener los datos ");
     }
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     throw new Error(error);

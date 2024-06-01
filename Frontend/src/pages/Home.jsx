@@ -13,7 +13,8 @@ function Home() {
     reports,
     setReports,
     setOldUserLocation,
-    setDistance
+    setDistance,
+    setRouteCoordinates,
   } = useStore();
 
   const { setFile, setTitle, setCategory, setIdCategory } = automaticReport();
@@ -36,6 +37,7 @@ function Home() {
     setCategory(null);
     setIdCategory(null);
     setRoutingMode(false);
+    setRouteCoordinates(null);
 
   }, [setRoutingMode]);
 
