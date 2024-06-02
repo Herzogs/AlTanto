@@ -2,7 +2,7 @@ import React from "react";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import { Popup } from "react-leaflet";
-import { Box, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 
 function PopupAT({ report }) {

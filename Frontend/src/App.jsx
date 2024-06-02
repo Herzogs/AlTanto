@@ -23,22 +23,25 @@ const routes = [
   { path: "/zonas/:id", element: <ZoneID /> },
   { path: "/notificaciones", element: <Notifications /> },
   { path: "/reportes/:id", element: <ReportDetail /> },
-  { path: "*", element: <h1 className="text-center">Estamos trabajando en ello...</h1> }
+  {
+    path: "*",
+    element: <h1 className="text-center">Estamos trabajando en ello...</h1>,
+  },
 ];
 
 const App = () => {
   return (
-    <main>
-      <BrowserRouter>
-        <Header />
+    <BrowserRouter>
+      <Header />
+      <main>
         <Routes>
           {routes.map((route) => (
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
         </Routes>
-        <Footer />
-      </BrowserRouter>
-    </main>
+      </main>
+      <Footer />
+    </BrowserRouter>
   );
 };
 

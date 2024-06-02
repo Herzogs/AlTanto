@@ -1,17 +1,15 @@
 import { useEffect } from "react";
-import { Container } from "react-bootstrap";
-import { useStore } from "@store";
+import { Col, Container, Row } from "react-bootstrap";
 import Map from "@components/Map/Map";
+import SliderAT from "../components/slider/SliderAT";
+
+import { useStore } from "@store";
 import useReports from "@hook/useReports";
-import { analyzeImageFromUrl } from "@services/computerVision";
+import CardHome from "../components/cards/CardHome";
 
 function Home() {
-  const {
-    userLocation,
-    setUserLocation,
-    radiusZone,
-    setRoutingMode
-  } = useStore();
+  const { userLocation, setUserLocation, radiusZone, setRoutingMode, reports } =
+    useStore();
   const { fetchReports } = useReports();
 
   useEffect(() => {
@@ -27,17 +25,22 @@ function Home() {
 
   return (
     <section className="container_home">
-      <div className="top-section">
-        <Container>
-          <h3>
-            No te pierdas nada <br /> de lo que está pasando
-          </h3>
-          <button onClick={() => analyzeImageFromUrl()}>USAR IA</button>
-        </Container>
-      </div>
-      <div className="bottom-section">
-        <Map userLocation={userLocation} />
-      </div>
+      <Container fluid className="h-100">
+        <Row className="h-100">
+          <Col lg={4}>
+            <CardHome />
+          </Col>
+
+          <Col lg={8}>
+            <h3>Reportes</h3>
+            <SliderAT reports={reports} />
+          </Col>
+
+          <Col className="h-map pb-footer">
+            <Map userLocation={userLocation} />
+          </Col>
+        </Row>
+      </Container>
     </section>
   );
 }

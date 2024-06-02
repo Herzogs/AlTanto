@@ -1,23 +1,18 @@
-import { useRef, useState, useEffect } from 'react';
-import Webcam from 'react-webcam';
-import processingImage from '@services/processImage';
-import { Form, Button, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { automaticReport } from '@store';
-import ModalAT from '@components/modal/ModalAT';
-import './CaptureImage.css';
+import { useRef, useState, useEffect } from "react";
+import Webcam from "react-webcam";
+import processingImage from "@services/processImage";
+import { Form, Button, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { automaticReport } from "@store";
+import ModalAT from "@components/modal/ModalAT";
+import "./CaptureImage.css";
 
 const CaptureImage = () => {
   const [showModal, setShowModal] = useState(true);
   const [captureMode, setCaptureMode] = useState(null);
   const [accept, setAccept] = useState(false);
 
-  const {
-    setTitle,
-    setCategory,
-    setIdCategory,
-    setFile,
-  } = automaticReport();
+  const { setTitle, setCategory, setIdCategory, setFile } = automaticReport();
 
   const webcamRef = useRef(null);
   const navigate = useNavigate();
@@ -25,11 +20,11 @@ const CaptureImage = () => {
   const videoConstraints = {
     width: 400,
     height: 400,
-    facingMode: 'user',
+    facingMode: "user",
   };
 
   const dataURLtoFile = (dataurl, filename) => {
-    const [header, base64] = dataurl.split(',');
+    const [header, base64] = dataurl.split(",");
     const mime = header.match(/:(.*?);/)[1];
     const bstr = atob(base64);
     let n = bstr.length;
@@ -48,7 +43,7 @@ const CaptureImage = () => {
       setTitle(result.title);
       setCategory(result.category);
       setIdCategory(result.idCategory);
-      setFile(file || dataURLtoFile(imageSrc, 'photo.jpg'));
+      setFile(file || dataURLtoFile(imageSrc, "photo.jpg"));
       navigate("/form/reporte");
     } catch (error) {
       console.error("Error en el procesamiento de la imagen", error);
@@ -82,30 +77,23 @@ const CaptureImage = () => {
   };
 
   useEffect(() => {
-    if (captureMode === 'capture' || captureMode === 'upload') {
+    if (captureMode === "capture" || captureMode === "upload") {
       setAccept(false);
     }
   }, [captureMode]);
 
   return (
     <>
-      <ModalAT
-        title="Servicio Automatico"
-        message="usted debe aceptar el uso de nuestro servicio de terceros"
-        showModal={showModal}
-        handleClose={handleClose}
-        handleAccept={handleAccept}
-      />
       <div className="app">
         <h2>Capture el incidente</h2>
         <p>Desea capturar la imagen o subir una imagen ya capturada</p>
-        {accept && (
-          <div className="buttons">
-            <Button onClick={() => setCaptureMode('capture')}>Capturar</Button>
-            <Button onClick={() => setCaptureMode('upload')}>Subir</Button>
-          </div>
-        )}
-        {captureMode === 'capture' && (
+
+        <div className="buttons">
+          <Button onClick={() => setCaptureMode("capture")}>Capturar</Button>
+          <Button onClick={() => setCaptureMode("upload")}>Subir</Button>
+        </div>
+
+        {captureMode === "capture" && (
           <>
             <Webcam
               audio={false}
@@ -117,12 +105,18 @@ const CaptureImage = () => {
             <Button onClick={capturePhoto}>Capturar</Button>
           </>
         )}
-        {captureMode === 'upload' && (
+        {captureMode === "upload" && (
           <Form>
             <Form.Group as={Row} controlId="image">
-              <Form.Label column sm={2}>Subir:</Form.Label>
+              <Form.Label column sm={2}>
+                Subir:
+              </Form.Label>
               <Col sm={10}>
-                <Form.Control type="file" accept="image/*" onChange={handleFileUpload} />
+                <Form.Control
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                />
               </Col>
             </Form.Group>
           </Form>

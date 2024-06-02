@@ -55,12 +55,12 @@ function ZoneHome() {
     <>
       {!loading && (
         <section className="container_home">
-          <div className="top-section">
-            <h2 className="text-center w-100">{zona.name}</h2>
-          </div>
-          <div className="bottom-section">
+          <h2 className="text-center mt-4 mb-5">{zona.name}</h2>
+
+          <div className="h-map">
             <Map userLocation={userLocation} radius={radiusZone} />
           </div>
+
           {!error && (
             <ModalAT
               title="Encontramos un error"

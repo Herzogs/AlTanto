@@ -20,19 +20,21 @@ const Map = ({
   const { startPoint, endPoint, reports } = useStore();
 
   return (
-    <section>
+    <section className="h-100" style={{ position: "relative"}}> 
       {/* INPUT FORM RECORIDO */}
       {routingMode && <RoutingInputs />}
       <MapContainer
         center={userLocation ? [userLocation.lat, userLocation.lng] : [0, 0]}
         zoom={15}
         minZoom={12}
-        maxZoom={20}
-        style={{ height: "400px", width: "100%" }}
+        maxZoom={18}
+        style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+         attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
+         /* url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>' */
         />
         <LocationMarker noDrag={noDrag} />
         {userLocation && !routingMode && (
