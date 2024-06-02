@@ -19,7 +19,7 @@ const LocationMarker = ({noDrag = false}) => {
   useEffect(() => {
     if (!userLocation) {
       map
-        .locate({ setView: true, maxZoom: 16 })
+        .locate({ setView: true, maxZoom: 20 })
         .on("locationfound", function (e) {
           setUserLocation(e.latlng);
         });

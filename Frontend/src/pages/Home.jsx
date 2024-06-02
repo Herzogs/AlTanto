@@ -1,24 +1,30 @@
 import { useEffect } from "react";
-import { Container } from "react-bootstrap";
-import { useStore, automaticReport } from "@store";
+import { Col, Container, Row } from "react-bootstrap";
 import Map from "@components/Map/Map";
+import SliderAT from "../components/slider/SliderAT";
+
+import { useStore, automaticReport } from "@store";
 import useReports from "@hook/useReports";
+import CardHome from "../components/cards/CardHome";
 
 function Home() {
-  const {
-    userLocation,
-    setUserLocation,
-    radiusZone,
-    setRoutingMode,
-    reports,
-    setReports,
+  const { 
+    userLocation, 
+    setUserLocation, 
+    radiusZone, 
+    setRoutingMode, 
+    reports, 
+    setRouteCoordinates, 
     setOldUserLocation,
     setDistance,
-    setRouteCoordinates,
   } = useStore();
 
-  const { setFile, setTitle, setCategory, setIdCategory } = automaticReport();
-
+  const {
+    setFile,
+    setTitle,
+    setCategory,
+    setIdCategory,
+  } = automaticReport();
 
   const { fetchReports } = useReports();
 
@@ -43,16 +49,22 @@ function Home() {
 
   return (
     <section className="container_home">
-      <div className="top-section">
-        <Container>
-          <h3>
-            No te pierdas nada <br /> de lo que está pasando
-          </h3>
-        </Container>
-      </div>
-      <div className="bottom-section">
-        <Map userLocation={userLocation} />
-      </div>
+      <Container fluid className="h-100">
+        <Row className="h-100">
+          <Col lg={4}>
+            <CardHome />
+          </Col>
+
+          <Col lg={8}>
+            <h3>Reportes</h3>
+            <SliderAT reports={reports} />
+          </Col>
+
+          <Col className="h-map pb-footer">
+            <Map userLocation={userLocation} />
+          </Col>
+        </Row>
+      </Container>
     </section>
   );
 }

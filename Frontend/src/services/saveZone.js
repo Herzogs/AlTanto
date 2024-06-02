@@ -3,7 +3,7 @@ import axios from "axios";
 const FORM_URI = "http://localhost:3000/api/zones";
 
 const saveZone = async (data, coordinates) => {
-    console.log(data, coordinates);
+    
     try {
         if(!data || !coordinates) throw new Error("Error al guardar la zona");
         const { name, radio } = data;

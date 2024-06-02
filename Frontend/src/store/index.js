@@ -23,8 +23,8 @@ const useStore = create(
       setReports: (reports) => set({ reports: reports }),
 
       startPoint: null,
-      endPoint: null,
       setStartPoint: (point) => set({ startPoint: point }),
+      endPoint: null,
       setEndPoint: (point) => set({ endPoint: point }),
 
       routeCoordinates: [],

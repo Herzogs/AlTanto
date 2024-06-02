@@ -15,7 +15,10 @@ function ReportDetail() {
       try {
         const data = await fetchReportById(id);
         setReport(data);
-        setUserLocation({ lat: +data.location.latitude, lng: +data.location.longitude });
+        setUserLocation({
+          lat: +data.location.latitude,
+          lng: +data.location.longitude,
+        });
       } catch (error) {
         console.error("Error fetching report:", error);
       }
@@ -32,19 +35,23 @@ function ReportDetail() {
 
   return (
     <section className="container_home">
-      <div className="top-section">
-        <Container>
-          <h2>Detalle del reporte</h2>
-          <p>Título: {title}</p>
+      <Container fluid className="h-100">
+        <article className="text-center mb-5">
+          <h2 className="my-4">Detalle del reporte</h2>
+          <h5>Título: {title}</h5>
           <p>Descripción: {content}</p>
           {images && (
-            <Image src={`http://localhost:3000/static/images/${images}`} style={{ maxWidth: "400px" }} alt="Imagen del reporte" />
+            <Image
+              src={`http://localhost:3000/static/images/${images}`}
+              style={{ width: "100%", maxWidth: "600px" }}
+              alt="Imagen del reporte"
+            />
           )}
-        </Container>
-      </div>
-      <div className="bottom-section">
-        <Map userLocation={userLocation} noDrag={true} zoneMode={true} />
-      </div>
+        </article>
+        <div className="h-map pb-footer">
+          <Map userLocation={userLocation} noDrag={true} zoneMode={true} />
+        </div>
+      </Container>
     </section>
   );
 }

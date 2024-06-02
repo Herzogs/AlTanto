@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore } from "@store";
+import PropTypes from "prop-types";
 
 const InputField = ({type, value, setValue, placeholder }) => {
   return (
@@ -13,6 +14,12 @@ const InputField = ({type, value, setValue, placeholder }) => {
   );
 }
 
+InputField.propTypes = {
+  type: PropTypes.string,
+  value: PropTypes.string,
+  setValue: PropTypes.func,
+  placeholder: PropTypes.string,
+};
 
 function RoutingInputs() {
   const { setStartPoint, setEndPoint } = useStore();

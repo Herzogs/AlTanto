@@ -40,6 +40,7 @@ const Routing = ({ startPoint, endPoint, numberPoints }) => {
       .on('routesfound', function(e) {
         const routes = e.routes;
         const coordinates = routes[0].coordinates.map(coord => [coord.lat, coord.lng]);
+        console.log(coordinates);
         setRouteCoordinates(coordinates);
       })
       .addTo(map);
