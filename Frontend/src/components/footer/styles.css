@@ -5,7 +5,7 @@
   position: fixed;
   background-color: var(--color-at-black);
   bottom: 0px;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .at-footer a {
