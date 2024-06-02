@@ -8,7 +8,7 @@ import PopupAT from "@components/Map/PopupAT";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
 import "leaflet/dist/leaflet.css";
-import 'react-leaflet-markercluster/dist/styles.min.css';
+import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 
 

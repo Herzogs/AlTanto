@@ -4,6 +4,7 @@ import ListIcon from "@mui/icons-material/List";
 
 import Dropdown from "react-bootstrap/Dropdown";
 import "./styles.css";
+import { Link } from "@mui/material";
 
 function Header() {
   return (
@@ -25,10 +26,16 @@ function Header() {
                   style={{ fontSize: "32px" }}
                 />
               </Dropdown.Toggle>
-
               <Dropdown.Menu>
-                <Dropdown.Item href="/perfil">Perfil</Dropdown.Item>
-                <Dropdown.Item href="/logout">Cerrar sesión</Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/login">Inicio sesión</Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/perfil">Perfil</Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <Link to="/cursos">Cerrar sesión</Link>
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Col>
