@@ -1,19 +1,17 @@
-export async function getReportsBy(location, radius) {
+import axios from "axios";
+
+const getReportsBy = async(location, radius) => {
   const API_URL = `http://localhost:3000/api/reports/filterBy?lat=${location.lat}&lon=${location.lng}&rad=${radius}`;
   try {
-    const response = await fetch(`${API_URL}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
+    const response = await axios.get(`${API_URL}`);
+    if (!response.status === 200) {
       throw new Error("Error al obtener los datos ");
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     throw new Error(error);
   }
 }
+
+export default getReportsBy;

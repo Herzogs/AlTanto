@@ -15,7 +15,6 @@ function Roads() {
     setEndPoint,
     routeCoordinates,
     setReports,
-    reports,
     setRouteCoordinates,
   } = useStore();
 
@@ -26,15 +25,15 @@ function Roads() {
     setRoutingMode(true);
     setReports([]);
     setRouteCoordinates(null);
-  }, [setRoutingMode]);
+  }, []);
 
   const apiKey = import.meta.env.VITE_OPEN_ROUTE_SERVICE_API_KEY;
 
   useEffect(() => {
     if (routeCoordinates && routeCoordinates.length >= 1) {
       const arrayOfReports = [];
-      const uniqueIds = new Set(); // Para rastrear IDs únicos
-      const segmentSize = 4; // Número de coordenadas por segmento
+      const uniqueIds = new Set();
+      const segmentSize =  routeCoordinates.length / 2;
 
       setUserLocation({ lat: routeCoordinates[0][0], lng: routeCoordinates[0][1] });
 
@@ -64,9 +63,8 @@ function Roads() {
               }
             });
           }
-          console.log(arrayOfReports);
         }
-        setReports(arrayOfReports); // Establecer los reportes una vez al final
+        setReports(arrayOfReports);
       };
 
       fetchReports();
