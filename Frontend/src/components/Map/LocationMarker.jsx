@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useMap, Marker, Popup } from "react-leaflet";
-import { useStore } from "../../store";
+import { useStore } from "@store";
 import L from "leaflet";
-import iconuser from "../../assets/user-icon.png"; 
+import iconuser from "@assets/user-icon.png"; 
 
 const userIcon = new L.Icon({
   iconUrl: iconuser,
@@ -12,14 +12,14 @@ const userIcon = new L.Icon({
   zIndex: 9999 
 });
 
-const LocationMarker = () => {
+const LocationMarker = ({noDrag = false}) => {
   const map = useMap();
   const { userLocation, setUserLocation } = useStore();
 
   useEffect(() => {
     if (!userLocation) {
       map
-        .locate({ setView: true, maxZoom: 16 })
+        .locate({ setView: true, maxZoom: 20 })
         .on("locationfound", function (e) {
           setUserLocation(e.latlng);
         });
@@ -38,7 +38,7 @@ const LocationMarker = () => {
   return userLocation ? (
     <Marker
       position={userLocation}
-      draggable={true}
+      draggable={noDrag == false ? true : false}
       eventHandlers={eventHandlers}
       zIndexOffset={999}
       icon={userIcon}

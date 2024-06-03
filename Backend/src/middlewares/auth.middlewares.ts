@@ -5,7 +5,7 @@ import {verifyJWT} from "../config/jwt.config";
 export const auth = async (req: Request, _res: Response, next: NextFunction) => {
     const authorizationHeader = req.headers.authorization;
     if (!authorizationHeader) {
-        return next({message: "No authorized", statusCode: 401});
+        return next({message: "No autorizado", statusCode: 401});
     }
     const authorization = authorizationHeader.split(' ')[1];
     try {

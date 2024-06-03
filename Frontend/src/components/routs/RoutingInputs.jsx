@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { geocodeAddress } from "../../services/getGeoAdress";
-import { useStore } from "../../store";
+import { useState } from "react";
+import { geocodeAddress } from "@services/getGeoAdress";
+import { useStore } from "@store";
 
 function RoutingInputs() {
   const { setStartPoint, setEndPoint } = useStore();

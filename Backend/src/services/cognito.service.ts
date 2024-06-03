@@ -45,7 +45,7 @@ const confirmUser = async (email: string, confirmationCode: string): Promise<voi
             });
         });
     } catch (error) {
-        throw new Error('Error confirming user registration');
+        throw new Error('Error confirming auth registration');
     }
 };
 

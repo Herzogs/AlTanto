@@ -32,6 +32,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         return res.status(200).json(jwt);
 
     } catch (error) {
+        console.log("aca estamos ")
         return next({message: (error as Error).message, statusCode: 401});
     }
 }

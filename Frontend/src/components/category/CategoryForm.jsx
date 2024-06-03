@@ -12,7 +12,6 @@ function CategoryForm() {
   });
 
   const sendCategory = (data) => {
-    console.log(data);
     const response = fetch("http://localhost:3000/api/categories", {
       method: "POST",
       body: JSON.stringify({ name: data.name }),
@@ -21,7 +20,7 @@ function CategoryForm() {
       },
     });
     response.then((res) => {
-      if (res.status === 201) {
+      if (res.status === 200) {
         alert("Categoria creada");
       } else {
         alert("Error al crear categoria");
