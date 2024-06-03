@@ -23,14 +23,10 @@ const alertaRepository = new AlertaRepository();
 const estacionMeteorologicaRepository = new EstacionMeteorologicaRepository();
 // demora par que se creen las tablas
 setTimeout(() => {
-    //initializeSubtesAlertaModel(tipoNotificacionRepo, alertaRepository);
-    //initializeColectivosAlertaModel(tipoNotificacionRepo, alertaRepository);
+    initializeSubtesAlertaModel(tipoNotificacionRepo, alertaRepository);
+    initializeColectivosAlertaModel(tipoNotificacionRepo, alertaRepository);
     initializeClimaClimaModel(estacionMeteorologicaRepository, pronosticoRepository);
   }, 10000); // 5000 milisegundos = 5 segundos
 
 
-
-  //CREATE USER 'root2'@'localhost' IDENTIFIED BY 'root2';
-  //GRANT ALL PRIVILEGES ON *.* TO 'root2'@'localhost';
-  //FLUSH PRIVILEGES;
 

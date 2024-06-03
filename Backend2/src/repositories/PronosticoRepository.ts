@@ -24,7 +24,6 @@ export class PronosticoRepository implements IPronosticoRepository {
       const existingPronostico = await Pronostico.findOne({
         where: {
           estacionMeteorologicaLid: pronostico.estacionMeteorologicaLid,
-          timeOfDay: pronostico.timeOfDay,
           forecastType: pronostico.forecastType,
         },
       });
