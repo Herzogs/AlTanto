@@ -32,8 +32,8 @@ async function initializeClimaClimaModel(estacionMeteorologicaRepository : Estac
                     longitud,
                     zoom                   
                 };                          
-             estacionMeteorologicaRepository.create(newEstacion)
-             
+             estacionMeteorologicaRepository.create(newEstacion);
+                         
                 
             }
         } 

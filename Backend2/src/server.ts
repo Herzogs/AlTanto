@@ -20,8 +20,8 @@ const alertaRepository = new AlertaRepository();
 const estacionMeteorologicaRepository = new EstacionMeteorologicaRepository();
 // demora par que se creen las tablas
 setTimeout(() => {
-    initializeSubtesAlertaModel(tipoNotificacionRepo, alertaRepository);
-    initializeColectivosAlertaModel(tipoNotificacionRepo, alertaRepository);
+    //initializeSubtesAlertaModel(tipoNotificacionRepo, alertaRepository);
+    //initializeColectivosAlertaModel(tipoNotificacionRepo, alertaRepository);
     initializeClimaClimaModel(estacionMeteorologicaRepository);
   }, 10000); // 5000 milisegundos = 5 segundos
 

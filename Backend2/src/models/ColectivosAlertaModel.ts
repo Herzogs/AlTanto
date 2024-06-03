@@ -3,7 +3,7 @@ import ColectivosCapitalApiServices from '../services/ColectivosCapitalApiServic
 import { TipoNotificacionRepository } from '../repositories/TipoNotificacionRepository';
 import { AlertaRepository } from '../repositories/AlertaRepository';
 
-
+// const arraySinPRoblemas =  {"_entity":[],"_header":{"_gtfs_realtime_version":"1.0","_incrementality":0,"_timestamp":1717427291,"extensionObject":null},"extensionObject":null} ;
 async function initializeColectivosAlertaModel(tipoNotificacionRepo: TipoNotificacionRepository , alertaRepository: AlertaRepository ) {
 
     try {
