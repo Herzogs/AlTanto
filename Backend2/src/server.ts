@@ -1,5 +1,5 @@
 // server.ts
-import initializeModels from './database/modelsInitializer';
+import initializeModels from './database/ModelsInitializer';
 import dbConnection from './database/Database';
 
 import { TipoNotificacionRepository } from './repositories/TipoNotificacionRepository';

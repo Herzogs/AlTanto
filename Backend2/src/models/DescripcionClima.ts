@@ -8,7 +8,7 @@ class DescripcionClima extends Model {
   public iconoNoche!: string;
   public leyenda!: string;
 
-  public static async initialize() {
+  static async initializeData() {
     const descripcionClimaData = [
       { numero: 0, iconoDia: 'day-sunny', iconoNoche: 'night-clear', leyenda: 'Despejado' },
       { numero: 1, iconoDia: 'day-sunny-overcast', iconoNoche: 'night-alt-cloudy', leyenda: 'Algo nublado' },
@@ -30,10 +30,14 @@ class DescripcionClima extends Model {
       { numero: 17, iconoDia: 'day-snow-thunderstorm', iconoNoche: 'night-snow-thunderstorm', leyenda: 'Nubosidad Variable. Probable nieve' },
       { numero: 18, iconoDia: 'cloudy', iconoNoche: 'cloudy', leyenda: 'Desmejorando' },
       { numero: 19, iconoDia: null, iconoNoche: null, leyenda: 'Cielo nublado. Nevadas. Niebla. Ventisca' },
-      { numero: 20, iconoDia: 'strong-wind', iconoNoche: 'strong-wind', leyenda: 'Ventoso' },
+      { numero: 20, iconoDia: 'strong-wind', iconoNoche: 'strong-wind', leyenda: 'Ventoso' }
     ];
-  
-    await DescripcionClima.bulkCreate(descripcionClimaData);
+
+    try {
+      await DescripcionClima.bulkCreate(descripcionClimaData);
+    } catch (error) {
+      console.error('falo insert descripcionClima:', error);
+    }
   }
 }
 
@@ -64,5 +68,10 @@ DescripcionClima.init(
     timestamps: false,
   }
 );
+
+// Llama a initializeData directamente después de la definición de la clase
+DescripcionClima.addHook('afterSync', async () => {
+  await DescripcionClima.initializeData();
+});
 
 export default DescripcionClima;
