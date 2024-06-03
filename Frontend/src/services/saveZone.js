@@ -1,6 +1,6 @@
-import axios from "axios";
+import axiosInstance from "@interceptors/axiosConfig";
 
-const FORM_URI = "http://localhost:3000/api/zones";
+const FORM_URI = "/zones";
 
 const saveZone = async (data, coordinates) => {
     
@@ -14,7 +14,7 @@ const saveZone = async (data, coordinates) => {
             longitude: coordinates.lng.toString(),
             radio,
         };
-        const response = await axios.post(FORM_URI, zone);
+        const response = await axiosInstance.post(FORM_URI, zone);
         if(response.status !== 201) throw new Error("Error al guardar la zona");
         return response.data;
     } catch (error) {

@@ -1,6 +1,6 @@
 import { Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
+
 
 function ModalAT({ title, message, showModal, setShowModal, url }) {
   const navigate = useNavigate();
@@ -24,13 +24,5 @@ function ModalAT({ title, message, showModal, setShowModal, url }) {
     </Modal>
   );
 }
-
-ModalAT.propTypes = {
-  title: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
-  showModal: PropTypes.bool.isRequired,
-  setShowModal: PropTypes.func.isOptional,
-  url: PropTypes.string.isRequired,
-};
 
 export default ModalAT;

@@ -1,6 +1,6 @@
-import axios from "axios";
+import axiosInstance from "@interceptors/axiosConfig";
 
-const FORM_URI = 'http://localhost:3000/api/reports';
+const FORM_URI = '/reports';
 
 const sendReport = async (data) => {
     try {
@@ -12,9 +12,8 @@ const sendReport = async (data) => {
         formData.append('longitude', data.longitude.toString());
         if (data.image)
             formData.append('image', data.image);
-        
 
-        const response = await axios.post(FORM_URI, formData, {
+        const response = await axiosInstance.post(FORM_URI, formData, {
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'multipart/form-data',

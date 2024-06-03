@@ -2,6 +2,12 @@ import { create } from "zustand";
 import { persist } from 'zustand/middleware';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
+const removeStores = () => {
+  localStorage.removeItem('store')
+  localStorage.removeItem('userStore');
+  localStorage.removeItem('automaticReport');
+}
+
 const useStore = create(
   persist(
     (set) => ({
@@ -37,23 +43,51 @@ const useStore = create(
 );
 
 const automaticReport = create(
-
-  (set) => ({
-    title: null,
-    setTitle: (title) => set({ title: title }),
-    category: null,
-    setCategory: (category) => set({ category: category }),
-    idCategory: null,
-    setIdCategory: (id) => set({ idCategory: id }),
-    file: null,
-    setFile: (file) => set({ file: file }),
+  persist(
+    (set) => ({
+      title: null,
+      setTitle: (title) => set({ title: title }),
+      category: null,
+      setCategory: (category) => set({ category: category }),
+      idCategory: null,
+      setIdCategory: (id) => set({ idCategory: id }),
+      file: null,
+      setFile: (file) => set({ file: file }),
+    }),
+    {
+    name: 'automaticReport'
   })
+);
+
+const userStore = create(
+  persist(
+    (set) => ({
+      user: {
+        name: null,
+        lastName: null,
+        email: null,
+      },
+      setUser: (user) => set({
+        user: {
+          name: user.name,
+          email: user.email,
+          lastName: user.lastName
+        }
+      }),
+      token: null,
+      setToken: (token) => set({ token: token }),
+    }),
+    {
+      name: 'userStore',
+    }
+  )
 );
 
 if (import.meta.env.VITE_ENV === 'development') {
   mountStoreDevtool('Store', useStore);
   mountStoreDevtool('AutomaticReport', automaticReport);
+  mountStoreDevtool('UserStore', userStore);
 }
 
 
-export { useStore, automaticReport };
+export { useStore, automaticReport, userStore, removeStores };

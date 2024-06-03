@@ -15,7 +15,7 @@ fs.readdirSync(routesPath)
     .forEach(async file => {
         const subRoutes = (await import(`./${file}`)).default
         const route = file.replace('.routes.ts', '')
-        //console.log(`Adding route /${route}`)
+        console.log(`Adding route /${route}`)
         router.use(`/${route}`, subRoutes)
     })
 

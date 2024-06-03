@@ -11,13 +11,17 @@ import ZoneForm from "@components/Zone/ZoneForm";
 import ZoneID from "@components/Zone/ZoneID";
 import ReportDetail from "@components/report/ReportDetail";
 import CaptureImage from "@components/ReportAutomatic/CaptureImage";
-import Login from "@components/auth/login";
+import Login from "@components/auth/Login";
+import Logout from "@components/auth/Logout";
+import Register from "@components/auth/Register";
+import { AuthGuard } from "./guards/auth.guard";
 
 const nonProtectedRoutes = [
   { path: "/", element: <Home /> },
- //{ path: "/register", element: <Register /> },
-//{ path: "/verification", element: <Verification /> },
-  { path: "/login", element: <Login /> },
+  { path: "/auth/registro", element: <Register /> },
+  { path: "/auth/logout", element: <Logout /> },
+  //{ path: "/auth/verification", element: <Verification /> },
+  { path: "/auth/login", element: <Login /> },
   { path: "*", element: <h1 className="text-center">Estamos trabajando en ello...</h1> },
 ];
 
@@ -47,10 +51,13 @@ const App = () => {
           {nonProtectedRoutes.map((route) => (
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
-          {/* Rutas que requieren autenticación */}
-          {protectedRoutes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
-          ))}
+
+          <Route element={<AuthGuard />}>
+            {/* Rutas que requieren autenticación */}
+            {protectedRoutes.map((route) => (
+              <Route key={route.path} path={route.path} element={route.element} />
+            ))}
+          </Route>
         </Routes>
       </main>
       <Footer />

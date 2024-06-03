@@ -1,7 +1,7 @@
 import User from "../models/User";
 import {IUser} from "../interfaces/user.interface";
 import userRepository from "../repository/user.repository";
-import {UserNotCreatedException} from "../exceptions/users.exceptions";
+import {UserNotCreatedException, UserNotFoundException} from "../exceptions/users.exceptions";
 import * as cognitoService from '../services/cognito.service'
 import {Error} from "sequelize";
 
@@ -18,4 +18,12 @@ const createUser = async (user: IUser): Promise<User> => {
 
 };
 
-export default {createUser};
+const getUserByEmail = async (email: string): Promise<IUser> => {
+    const userSearched = await userRepository.getUserByEmail(email);
+    if (userSearched === null) {
+        throw new UserNotFoundException("User not found.");
+    }
+    return userSearched.get({plain: true}) as IUser;
+}
+
+export {createUser, getUserByEmail};

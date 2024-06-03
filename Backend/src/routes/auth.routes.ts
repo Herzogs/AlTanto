@@ -7,7 +7,7 @@ const router = Router();
 
 router.post('/register',validateData(createUser), controller.createUSer);
 router.post('/validate-code', controller.confirmUser)
-router.get('/login',validateData(login),controller.login)
+router.post('/login',validateData(login),controller.login)
 
 
 export default router;

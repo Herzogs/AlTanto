@@ -1,12 +1,13 @@
 import { Col, Container, Row } from "react-bootstrap";
 import logo from "@assets/logo-altanto.png";
 import ListIcon from "@mui/icons-material/List";
-
+import { userStore } from "@store";
 import Dropdown from "react-bootstrap/Dropdown";
 import "./styles.css";
 import { Link } from "@mui/material";
 
 function Header() {
+  const { token } = userStore();
   return (
     <section className="at-header">
       <Container fluid className="h-100">
@@ -27,15 +28,23 @@ function Header() {
                 />
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item>
-                  <Link to="/login">Inicio sesión</Link>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <Link to="/perfil">Perfil</Link>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <Link to="/cursos">Cerrar sesión</Link>
-                </Dropdown.Item>
+                {token && (
+                  <>
+                    <Dropdown.Item>
+                      <Link to="/perfil">Perfil</Link>
+                    </Dropdown.Item>
+                    <Dropdown.Item>
+                      <Link to="/auth/logout">Cerrar sesión</Link>
+                    </Dropdown.Item>
+                  </>
+
+                )}
+                {!token && (
+                  <Dropdown.Item>
+                    <Link to="/auth/login">Inicio sesión</Link>
+                  </Dropdown.Item>
+                )}
+
               </Dropdown.Menu>
             </Dropdown>
           </Col>
