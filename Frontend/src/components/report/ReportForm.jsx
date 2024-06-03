@@ -10,7 +10,7 @@ import ModalAT from "@components/modal/ModalAT";
 function ReportForm() {
   const { userLocation } = useStore();
   const { title, category: autoCategory, idCategory, file, setTitle, setCategory, setIdCategory, setFile } = automaticReport();
-  console.log(typeof file)
+  console.log("asddasd")
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ function ReportForm() {
     handleSubmit,
     reset,
     formState: { errors },
+    getValues 
   } = useForm({
     defaultValues: {
       title: title || "",
@@ -50,7 +51,14 @@ function ReportForm() {
 
   const onSubmit = async (data) => {
     try {
-      await sendReport(data);
+      // Necesitas crear un FormData para manejar el archivo correctamente
+      const formData = new FormData();
+      Object.keys(data).forEach(key => {
+        formData.append(key, data[key]);
+      });
+      formData.append('image', file);
+
+      await sendReport(formData);
       setShowModal(true);
     } catch (error) {
       console.error("Error sending report:", error);
@@ -65,6 +73,7 @@ function ReportForm() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setFile(file);
+    reset({ ...getValues(), image: file });
   };
 
   return (
@@ -80,10 +89,7 @@ function ReportForm() {
               type="text"
               isInvalid={errors.title}
               {...register("title", {
-                required: {
-                  value: true,
-                  message: "Campo requerido",
-                },
+                required: "Campo requerido",
                 maxLength: {
                   value: 50,
                   message: "Máximo 50 caracteres",
@@ -108,10 +114,7 @@ function ReportForm() {
               type="text"
               isInvalid={errors.content}
               {...register("content", {
-                required: {
-                  value: true,
-                  message: "Campo requerido",
-                },
+                required: "Campo requerido",
                 maxLength: {
                   value: 50,
                   message: "Máximo 50 caracteres",
@@ -135,10 +138,7 @@ function ReportForm() {
               as="select"
               isInvalid={errors.category}
               {...register("category", {
-                required: {
-                  value: true,
-                  message: "Campo requerido",
-                },
+                required: "Campo requerido",
                 onChange: (e) => setIdCategory(e.target.value),
               })}
             >
@@ -166,10 +166,7 @@ function ReportForm() {
               type="text"
               isInvalid={errors.latitude}
               {...register("latitude", {
-                required: {
-                  value: true,
-                  message: "Campo requerido",
-                },
+                required: "Campo requerido",
               })}
             />
             {errors.latitude && (
@@ -189,10 +186,7 @@ function ReportForm() {
               type="text"
               isInvalid={errors.longitude}
               {...register("longitude", {
-                required: {
-                  value: true,
-                  message: "Campo requerido",
-                },
+                required: "Campo requerido",
               })}
             />
             {errors.longitude && (
@@ -209,16 +203,13 @@ function ReportForm() {
           </Form.Label>
           <Col sm={10}>
             {file && (
-              <Image src={URL.createObjectURL(file)} alt="Report" style={{ width: "100px", height: "100px" }}/>
+              <Image src={URL.createObjectURL(file)} alt="Report" style={{ width: "100px", height: "100px" }} />
             )}
-
-            {!file && (
-              <Form.Control
+            <Form.Control
               type="file"
               {...register("image")}
               onChange={handleImageChange}
             />
-            )}
           </Col>
         </Form.Group>
 

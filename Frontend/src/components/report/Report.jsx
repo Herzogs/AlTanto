@@ -9,14 +9,6 @@ function Report({ report, title, description, dtime='', icon='', icolor='', onVi
   return (
     <Card variant="outlined" className="at-report">
       <CardContent>
-        <Box className="at-report-header">
-          <Typography variant="h6" component="h4">
-            {title}
-          </Typography>
-          <IconButton style={{ color: icolor }}>
-            <IconoProp />
-          </IconButton>
-        </Box>
         <Typography variant="body1" color="textSecondary" component="p">
           {description}
         </Typography>

@@ -3,7 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 const ImagenDetection = async (photo) => {
   const modelPath = '/lobeAi/model.json';
   const labelsPath = '/lobeAi/labels.txt';
-  let title = "none";
+  let title = "";
   let category = "none";
 
   try {
@@ -68,7 +68,7 @@ const ImagenDetection = async (photo) => {
     return response;
   } catch (error) {
     console.error('Error en la detección de la imagen:', error);
-    return { title: "none", category: "none" };
+    return { title: "", category: "none" };
   }
 };
 
