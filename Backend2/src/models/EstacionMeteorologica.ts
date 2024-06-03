@@ -5,15 +5,15 @@ import dbConnection from '../database/Database';
 
 class EstacionMeteorologica extends Model {
   public id!: number;
-  public dist!: number;
-  public lid!: number;
-  public fid!: number;
-  public int_number!: number;
-  public name!: string;
-  public province!: string;
-  public latitud!: string;
-  public longitud!: string;
-  public zoom!: number;
+  public dist!: number | null;
+  public lid!: number | null;
+  public fid!: number | null;
+  public int_number!: number | null;
+  public name!: string | null;
+  public province!: string | null;
+  public latitud!: string | null;
+  public longitud!: string | null;
+  public zoom!: number | null;
 }
 
 EstacionMeteorologica.init(
@@ -25,39 +25,39 @@ EstacionMeteorologica.init(
     },
     dist: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
     lid: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
     fid: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
     int_number: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
     province: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
     latitud: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
     longitud: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
     zoom: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Permitir valores nulos
     },
   },
   {
@@ -65,6 +65,12 @@ EstacionMeteorologica.init(
     modelName: 'EstacionMeteorologica',
     tableName: 'estaciones_meteorologicas',
     timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ['lid'],
+      },
+    ],
   }
 );
 

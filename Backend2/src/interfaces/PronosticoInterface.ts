@@ -1,4 +1,4 @@
-interface IPronostico {
+export interface IPronostico {
   id?: number;
   date?: Date;
   timeOfDay?: 'morning' | 'afternoon' | 'evening' | 'night';

@@ -1,7 +1,10 @@
+// models/Pronostico.ts
 import { DataTypes, Model } from 'sequelize';
 import dbConnection from '../database/Database';
+import PronosticoInterface from '../interfaces/PronosticoInterface';
+import EstacionMeteorologica from './EstacionMeteorologica';
 
-class Pronostico extends Model {
+class Pronostico extends Model implements PronosticoInterface {
   public id!: number;
   public date!: Date;
   public timeOfDay!: 'morning' | 'afternoon' | 'evening' | 'night';
@@ -14,6 +17,7 @@ class Pronostico extends Model {
   public windSpeed!: number | null;
   public windDeg!: string | null;
   public forecastType!: 'today' | 'tomorrow';
+  public estacionMeteorologicaLid!: number;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -28,11 +32,11 @@ Pronostico.init(
     },
     date: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
+      allowNull: true,
     },
     timeOfDay: {
       type: DataTypes.ENUM('morning', 'afternoon', 'evening', 'night'),
-      allowNull: false,
+      allowNull: true,
     },
     temp: {
       type: DataTypes.INTEGER,
@@ -78,6 +82,14 @@ Pronostico.init(
       type: DataTypes.ENUM('today', 'tomorrow'),
       allowNull: false,
     },
+    estacionMeteorologicaLid: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: EstacionMeteorologica,
+        key: 'lid',
+      },
+    },
   },
   {
     sequelize: dbConnection,
@@ -86,5 +98,11 @@ Pronostico.init(
     timestamps: false,
   }
 );
+
+Pronostico.belongsTo(EstacionMeteorologica, {
+  foreignKey: 'estacionMeteorologicaLid',
+  targetKey: 'lid',
+});
+
 
 export default Pronostico;

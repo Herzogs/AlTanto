@@ -12,7 +12,7 @@ export class EstacionMeteorologicaRepository implements IEstacionMeteorologicaRe
   }
 
   async create(data: EstacionInput): Promise<EstacionMeteorologica> {
-    const existingStation = await EstacionMeteorologica.findOne({ where: { int_number: data.int_number } });
+    const existingStation = await EstacionMeteorologica.findOne({ where: { lid: data.lid } });
     if (existingStation) {
       return existingStation;
     }

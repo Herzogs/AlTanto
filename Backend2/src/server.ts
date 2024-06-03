@@ -4,7 +4,10 @@ import dbConnection from './database/Database';
 
 import { TipoNotificacionRepository } from './repositories/TipoNotificacionRepository';
 import { AlertaRepository } from './repositories/AlertaRepository';
+import PronosticoRepository from './repositories/PronosticoRepository';
 import {EstacionMeteorologicaRepository} from './repositories/EstacionMeteorologicaRepository';
+
+
 
 import initializeSubtesAlertaModel from './models/SubtesAlertaModel'; // Importa el modelo SubtesAlertaModel
 import initializeColectivosAlertaModel from './models/ColectivosAlertaModel';
@@ -14,7 +17,7 @@ import  initializeClimaClimaModel from './models/ClimaModel'
 initializeModels();
 
 // para inyectar
-
+const pronosticoRepository = new PronosticoRepository();
 const tipoNotificacionRepo = new TipoNotificacionRepository();
 const alertaRepository = new AlertaRepository();
 const estacionMeteorologicaRepository = new EstacionMeteorologicaRepository();
@@ -22,7 +25,7 @@ const estacionMeteorologicaRepository = new EstacionMeteorologicaRepository();
 setTimeout(() => {
     //initializeSubtesAlertaModel(tipoNotificacionRepo, alertaRepository);
     //initializeColectivosAlertaModel(tipoNotificacionRepo, alertaRepository);
-    initializeClimaClimaModel(estacionMeteorologicaRepository);
+    initializeClimaClimaModel(estacionMeteorologicaRepository, pronosticoRepository);
   }, 10000); // 5000 milisegundos = 5 segundos
 
 

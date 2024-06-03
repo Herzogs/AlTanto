@@ -1,8 +1,8 @@
-import  Pronostico  from '../models/Pronostico';
-import IPronosticoRepository from './IPronosticoRepository'
+// src/repositories/PronosticoRepository.ts
+import Pronostico from '../models/Pronostico';
+import { IPronosticoRepository } from './IPronosticoRepository';
 
-// Clase del repositorio de Pronostico
-class PronosticoRepository implements IPronosticoRepository {
+export class PronosticoRepository implements IPronosticoRepository {
   public async findOneByDateAndTime(date: Date, timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night', forecastType: 'today' | 'tomorrow'): Promise<Pronostico | null> {
     try {
       const pronostico = await Pronostico.findOne({
@@ -23,7 +23,7 @@ class PronosticoRepository implements IPronosticoRepository {
     try {
       const existingPronostico = await Pronostico.findOne({
         where: {
-          date: pronostico.date,
+          estacionMeteorologicaLid: pronostico.estacionMeteorologicaLid,
           timeOfDay: pronostico.timeOfDay,
           forecastType: pronostico.forecastType,
         },
