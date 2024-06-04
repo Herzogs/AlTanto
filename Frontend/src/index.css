@@ -120,7 +120,7 @@ h6 {
 }
 
 .zonas-item {
-  width: 160px;
+  min-width: 160px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -31,15 +31,14 @@ function ReportDetail() {
     return <div>Cargando...</div>;
   }
 
-  const { title, content, images } = report;
+  const { content, images } = report;
 
   return (
     <section className="container_home">
       <Container fluid className="h-100">
         <article className="text-center mb-5">
           <h2 className="my-4">Detalle del reporte</h2>
-          <h5>Título: {title}</h5>
-          <p>Descripción: {content}</p>
+          <h5>Descripción: {content}</h5>
           {images && (
             <Image
               src={`http://localhost:3000/static/images/${images}`}

@@ -12,7 +12,7 @@ const CaptureImage = () => {
   const [captureMode, setCaptureMode] = useState(null);
   const [accept, setAccept] = useState(false);
 
-  const { setTitle, setCategory, setIdCategory, setFile } = automaticReport();
+  const { setContent, setCategory, setIdCategory, setFile } = automaticReport();
 
   const webcamRef = useRef(null);
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ const CaptureImage = () => {
   const processImageAndNavigate = async (imageSrc, file = null) => {
     try {
       const result = await processingImage(imageSrc);
-      setTitle(result.title);
+      setContent(result.content);
       setCategory(result.category);
       setIdCategory(result.idCategory);
       setFile(file || dataURLtoFile(imageSrc, "photo.jpg"));

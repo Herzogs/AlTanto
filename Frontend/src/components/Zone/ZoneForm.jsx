@@ -14,7 +14,7 @@ function ZoneForm() {
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
 
-  const {userLocation, setUserLocation, setReports } = useStore();
+  const { userLocation, setUserLocation, setReports } = useStore();
 
   const {
     register,
@@ -33,7 +33,7 @@ function ZoneForm() {
   const address = watch("address");
 
   useEffect(() => {
-    setReports(null)
+    setReports(null);
     setDisabled(address ? false : true);
   }, [address]);
 
@@ -63,7 +63,6 @@ function ZoneForm() {
       fetchCoordinates();
     }
   };
-
 
   const handleCheckboxChange = (value) => {
     setSelectedRadio(value);
@@ -159,13 +158,15 @@ function ZoneForm() {
         </Form.Group>
         <Form.Group className="my-4" as={Row} controlId="submit">
           <Col sm={12}>
-            <Button
-              className="btn-success px-4"
-              type="submit"
-              disabled={disabled}
-            >
-              Guardar
-            </Button>
+            {visible && userLocation && (
+              <Button
+                className="btn-success px-4"
+                type="submit"
+                disabled={disabled}
+              >
+                Guardar
+              </Button>
+            )}
           </Col>
         </Form.Group>
       </Form>

@@ -40,8 +40,8 @@ const useStore = create(
 const automaticReport = create(
   persist(
     (set) => ({
-      title: null,
-      setTitle: (title) => set({ title: title }),
+      content: null,
+      setContent: (content) => set({ content: content }),
       category: null,
       setCategory: (category) => set({ category: category }),
       idCategory: null,

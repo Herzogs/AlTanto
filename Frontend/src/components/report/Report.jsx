@@ -28,10 +28,9 @@ function Report({ report }) {
   return (
     <article className="at-report">
       <div className="at-report-header">
-        <h5>{report.title}</h5>
+        <h5>{report.content}</h5>
         {getIcon(report.categoryId)}
       </div>
-      <p>{report.content}</p>
       <div className="at-report-footer">
         <Button
           variant="contained"

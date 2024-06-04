@@ -13,7 +13,6 @@ function ReportForm() {
     title,
     idCategory,
     file,
-    setTitle,
     setIdCategory,
     setFile,
   } = automaticReport();
@@ -22,7 +21,6 @@ function ReportForm() {
   const [showModal, setShowModal] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: title || "",
     content: "",
     category: idCategory || "",
     latitude: userLocation ? userLocation.lat : "",
@@ -44,7 +42,6 @@ function ReportForm() {
     
     // Update form data only when necessary
     if (!title && !idCategory && !file) {
-      setValue("title", formData.title);
       setValue("content", formData.content);
       setValue("category", formData.category);
       setValue("latitude", formData.latitude);
@@ -67,14 +64,12 @@ function ReportForm() {
 
   const resetForm = () => {
     setFormData({
-      title: "",
       content: "",
       category: "",
       latitude: userLocation ? userLocation.lat : "",
       longitude: userLocation ? userLocation.lng : "",
       image: null,
     });
-    setTitle("");
     setIdCategory("");
     setFile(null);
   };
@@ -93,26 +88,6 @@ function ReportForm() {
     <Container>
       <h2 className="my-4">Crear Reporte</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Form.Group as={Row} controlId="title">
-          <Form.Label className="mt-3 mb-2">Título:</Form.Label>
-          <Col sm={12}>
-            <Form.Control
-              type="text"
-              isInvalid={errors.title}
-              {...register("title", {
-                required: "Campo requerido",
-                maxLength: { value: 50, message: "Máximo 50 caracteres" },
-                onChange: (e) => setTitle(e.target.value),
-              })}
-              value={formData.title}
-              onChange={handleInputChange}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.title?.message}
-            </Form.Control.Feedback>
-          </Col>
-        </Form.Group>
-
         <Form.Group as={Row} controlId="content">
           <Form.Label className="mt-3 mb-2">Descripción:</Form.Label>
           <Col sm={12}>

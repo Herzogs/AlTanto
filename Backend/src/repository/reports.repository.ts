@@ -83,6 +83,7 @@ class ReportRepository {
             FROM Location
             JOIN Report ON Location.id = Report.LocationId
             JOIN Category ON Report.CategoryId = Category.id
+            WHERE Report.enabled = true
             HAVING distancia <= :radius
             ORDER BY distancia;`,
             {

@@ -21,7 +21,7 @@ function Home() {
 
   const {
     setFile,
-    setTitle,
+    setContent,
     setCategory,
     setIdCategory,
   } = automaticReport();
@@ -39,7 +39,7 @@ function Home() {
     setOldUserLocation(null);
     setDistance(0);
     setFile(null);
-    setTitle(null);
+    setContent(null);
     setCategory(null);
     setIdCategory(null);
     setRoutingMode(false);
