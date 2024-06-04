@@ -16,8 +16,8 @@ function ValidationCodeForm() {
     const onSubmit = async (data) => {
         try {
             const response = await validateCode(data); // Llama al servicio de validación de código con los datos del formulario
-            setTitle("Validación de código");
-            setMessage(response.message);
+            setTitle("Validación correcta");
+            setMessage("Sera redirigido a la home del sitio");
         } catch (error) {
             setTitle("Error");
             setMessage(error.message);

@@ -39,7 +39,7 @@ function Zones() {
           </article>
         </>
       ) : (
-        <h4>Todavia no tienes Zonas guardadas</h4>
+        <h4 className="text-center mt-5">Todavia no tienes Zonas guardadas</h4>
       )}
     </Container>
   );
