@@ -82,6 +82,36 @@ const removeUserFromGroup = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
+const findGroupByNameController = async(req: Request, res: Response): Promise<Response> => {
+    const { groupName } = req.body;
+    try {
+        const group = await groupService.findGroupByName(groupName);
+
+        if (!group) {
+            return res.status(404).json({ message: 'Grupo no encontrado' });
+        }
+
+        return res.json(group);
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};
+
+const getGroupsByUserIdController = async (req: Request, res: Response): Promise<Response> => {
+    const { userId } = req.params; 
+    try {
+        const groups = await groupService.getGroupsByUserId(Number(userId));
+
+        if (!groups || groups.length === 0) {
+            return res.status(404).json({ message: 'No se encontraron grupos para este usuario' });
+        }
+
+        return res.json(groups);
+    } catch (error) {
+        return res.status(500).json({ message: (error as Error).message });
+    }
+};
+
 export {
     getAllGroups,
     getGroupById,
@@ -89,5 +119,7 @@ export {
     updateGroupName,
     deleteGroup,
     addUserToGroup,
-    removeUserFromGroup
+    removeUserFromGroup,
+    findGroupByNameController,
+    getGroupsByUserIdController
 };

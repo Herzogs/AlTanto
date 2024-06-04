@@ -1,4 +1,4 @@
-import * as GroupRepository from '../repository/group.repository';
+import GroupRepository from '../repository/group.repository';
 import { GroupNotCreatedException, GroupNotFoundException, UserNotFoundException } from '../exceptions/group.exceptions';
 import { IGroup } from '../interfaces/group.interface';
 import { GroupUser } from '../models/GroupUser';
@@ -45,6 +45,22 @@ async function removeUserFromGroup(groupId: number, userId: number): Promise<boo
     return removed;
 };
 
+
+async function findGroupByName(name: string): Promise<IGroup | null> {
+    const group = await GroupRepository.findByName(name);
+    return group;
+    
+}
+
+async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
+    try {
+        const groups = await GroupRepository.getGroupsByUserId(userId);
+        return groups;
+    } catch (error) {
+        throw new Error('Error al obtener los grupos del usuario');
+    }
+}
+
 export{
     getAllGroups,
     getGroupById,
@@ -52,5 +68,7 @@ export{
     updateGroupName,
     deleteGroup,
     addUserToGroup,
-    removeUserFromGroup
+    removeUserFromGroup,
+    findGroupByName,
+    getGroupsByUserId
 }
