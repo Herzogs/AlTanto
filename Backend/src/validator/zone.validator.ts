@@ -22,6 +22,8 @@ const createZoneValidator = z.object({
         message: 'Radio must be a string',
         required_error: 'Radio is required'
     }).min(3).max(4),
+    email: z.string()
+        .email('Invalid email format detected'),
 }).strict();
 
 const getZoneByIdValidator = z.object({

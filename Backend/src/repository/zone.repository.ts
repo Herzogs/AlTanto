@@ -1,22 +1,39 @@
 import Zone from '../models/Zone';
-import { Location } from '../models/Location';
-import { IZone, IZoneRequest } from '../interfaces/zone.interface';
-import { ZoneNotCreatedException, ZoneNotFoundException } from '../exceptions/zone.exceptions';
+import {Location} from '../models/Location';
+import {IZone, IZoneRequest} from '../interfaces/zone.interface';
+import {ZoneNotCreatedException, ZoneNotFoundException} from '../exceptions/zone.exceptions';
 
 class ZoneRepository {
-    static async create(newZone: IZoneRequest): Promise<IZone> {
+    static async create(newZone: IZoneRequest, userId: number): Promise<any> {
         const locationSearched = await Location.findOrCreate({
             where: { latitude: newZone.latitude, longitude: newZone.longitude },
         })
-        const location = locationSearched[0].get({ plain: true });
-        const zone = await Zone.create({
-            name: newZone.name,
-            LocationId: location.id
-        })
-        if (!zone) {
-            throw new ZoneNotCreatedException("Zone not created");
+        console.log("repos zone 11");
+        try {
+            const location = locationSearched[0].get({ plain: true });
+            const zoneSearched= await Zone.findOne({
+                where:{UserId:userId, name:newZone.name},
+            })
+            if (zoneSearched){
+                throw new ZoneNotCreatedException("repeated zone name");
+            }
+            const zone = await Zone.create({
+                name: newZone.name,
+                LocationId: location.id,
+                UserId:userId,
+            })
+            console.log("repos zone 19");
+            if (!zone) {
+                console.log("repos zone 21");
+                throw new ZoneNotCreatedException("Zone not created");
+            }
+            return zone.get({ plain: true });
+        }catch (eror){
+            console.log((eror as Error).message);
+
         }
-        return zone.get({ plain: true });
+
+
     }
 
     static async getAllZone(): Promise<IZone[]> {

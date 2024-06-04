@@ -7,8 +7,11 @@ import {Error} from "sequelize";
 
 const createUser = async (user: IUser): Promise<User> => {
     try {
+        console.log("User 10" ,user)
         const userCreated = await userRepository.create(user);
       await cognitoService.createUser(user);
+        console.log("User 13" ,userCreated)
+        console.log("User 13" ,userCreated)
         return userCreated;
     } catch (error) {
         console.log((error as Error).message)
