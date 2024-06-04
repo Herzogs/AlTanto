@@ -11,6 +11,10 @@ import "leaflet/dist/leaflet.css";
 import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 
+import CategoryFilter from '@components/Map/CategoryFilter';
+import { useState } from 'react';
+
+
 
 const Map = ({
   userLocation,
@@ -22,8 +26,22 @@ const Map = ({
   const { MapClickHandler } = useMapClickHandler();
   const { startPoint, endPoint, reports } = useStore();
 
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  // Filtra los reportes basados en las categorías seleccionadas
+  const filteredReports = selectedCategories.length === 0
+    ? reports
+    : reports.filter(report => selectedCategories.includes(report.CategoryId));
+
+    console.log("Filtered Reports: ", filteredReports);
+
   return (
-    <section className="h-100" style={{ position: "relative"}}> 
+
+
+    <section className="h-100" style={{ position: "relative" }}>
+
+      {/* Filtro de categorías */}
+      <CategoryFilter selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories} />
+
       {/* INPUT FORM RECORIDO */}
       {routingMode && <RoutingInputs />}
       <MapContainer
@@ -34,14 +52,31 @@ const Map = ({
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
-         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-         attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
+
         <LocationMarker noDrag={noDrag} />
         {userLocation && !routingMode && (
           <RadiusCircle center={userLocation} radius={radiusZone} />
         )}
-        {reports && (
+
+        {filteredReports.length > 0 ? (
+          <MarkerClusterGroup>
+            {filteredReports.map((report) => (
+              <Marker
+                key={report.id}
+                position={[report.latitude, report.longitude]}
+              >
+                <PopupAT report={report} />
+              </Marker>
+            ))}
+          </MarkerClusterGroup>
+        ) : (
+          <p>No reports available for the selected categories.</p>
+        )}
+
+        {/*     {reports && (
           <MarkerClusterGroup>
             {reports.map((report) => (
               <Marker
@@ -52,7 +87,9 @@ const Map = ({
               </Marker>
             ))}
           </MarkerClusterGroup>
-        )}
+        )} */}
+
+
         {/* ROUTING PARA RECORIDO */}
         {routingMode && (
           <>
