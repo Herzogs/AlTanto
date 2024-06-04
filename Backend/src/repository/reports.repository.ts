@@ -14,11 +14,10 @@ class ReportRepository {
                 { model: Location, attributes: ['latitude', 'longitude'] }
             ],
             attributes: { exclude: ['CategoryId', 'LocationId'] }
-        });
+        })
         if (!listOfReports) {
             return [];
         }
-        console.log(listOfReports.map((report) => report.get({ plain: true })));
         return listOfReports.map((report) => report.get({ plain: true }));
     }
 
@@ -63,9 +62,7 @@ class ReportRepository {
         })
         const location = locationSearched[0].get({ plain: true });
         const reporCreated = await Report.create({
-            title: newReport.title,
             content: newReport.content,
-            duration: new Date(),
             CategoryId: newReport.categoryId,
             LocationId: location.id,
             images: newReport.images
@@ -76,7 +73,7 @@ class ReportRepository {
     static async getByLatLongRadius(zoneWithRadius: IReportWithRadius): Promise<object[] | null> {
         const { lat, lon, rad } = zoneWithRadius;
         const reports = await Report.sequelize?.query(
-            `SELECT Report.id, Report.title, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.categoryId,
+            `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.categoryId,
                 Location.latitude, Location.longitude, 
                 Category.name AS categoryName,
                 (6371000 * acos(
