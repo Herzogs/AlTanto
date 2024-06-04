@@ -5,7 +5,7 @@ import { auth } from "../middlewares/auth.middlewares";
 const router = Router();
 
 
-router.get('/user/:userId', auth, groupController.getGroupsByUserIdController);
+router.get('/user/:userId', auth, groupController.getGroupsByUserId);
 
 router.post('/', auth, groupController.createGroup);
 

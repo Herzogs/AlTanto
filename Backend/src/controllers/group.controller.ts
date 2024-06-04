@@ -82,7 +82,7 @@ const removeUserFromGroup = async (req: Request, res: Response, next: NextFuncti
     }
 };
 
-const findGroupByNameController = async(req: Request, res: Response): Promise<Response> => {
+const findGroupByName = async(req: Request, res: Response): Promise<Response> => {
     const { groupName } = req.body;
     try {
         const group = await groupService.findGroupByName(groupName);
@@ -97,7 +97,7 @@ const findGroupByNameController = async(req: Request, res: Response): Promise<Re
     }
 };
 
-const getGroupsByUserIdController = async (req: Request, res: Response): Promise<Response> => {
+const getGroupsByUserId = async (req: Request, res: Response): Promise<Response> => {
     const { userId } = req.params; 
     try {
         const groups = await groupService.getGroupsByUserId(Number(userId));
@@ -120,6 +120,6 @@ export {
     deleteGroup,
     addUserToGroup,
     removeUserFromGroup,
-    findGroupByNameController,
-    getGroupsByUserIdController
+    findGroupByName,
+    getGroupsByUserId
 };
