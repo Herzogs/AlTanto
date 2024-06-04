@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import loginUser from "@services/login.js";
 import { userStore } from "@store";
 import ModalAT from "@components/modal/ModalAT";
+import { Link } from "react-router-dom";
 function LoginForm() {
   const [showModal, setShowModal] = useState(false);
   const [titleModal, setTitleModal] = useState("");
@@ -75,6 +76,9 @@ function LoginForm() {
         <button type="submit" className="btn btn-primary">
           Iniciar Sesión
         </button>
+        <Link className="btn btn-secondary ms-3" to="/auth/registro">
+          Registrarse
+        </Link>
       </form>
       <ModalAT
         title={titleModal}

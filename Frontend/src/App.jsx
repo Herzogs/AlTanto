@@ -20,7 +20,6 @@ import ValidationCodeForm from "@components/auth/CodeForm.jsx";
 import LoginForm from "@components/auth/LoginForm.jsx";
 
 const nonProtectedRoutes = [
-  { path: "/", element: <Home /> },
   { path: "/auth/registro", element: <RegisterForm /> },
   { path: "/auth/logout", element: <Logout /> },
   { path: "/auth/verificacion", element: <ValidationCodeForm /> },
@@ -30,6 +29,7 @@ const nonProtectedRoutes = [
 
 // Define las rutas que requieren autenticación
 const protectedRoutes = [
+  { path: "/", element: <Home /> },
   { path: "/recorridos", element: <Roads /> },
   { path: "/form/reporte", element: <ReportForm /> },
   { path: "/form/reporte/automatico", element: <CaptureImage /> },

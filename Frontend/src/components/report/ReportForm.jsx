@@ -6,17 +6,10 @@ import sendReport from "@services/sendReport";
 import { useStore, automaticReport } from "@store";
 import ModalAT from "@components/modal/ModalAT";
 
-
 function ReportForm() {
   const { userLocation } = useStore();
-  const {
-    title,
-    idCategory,
-    file,
-    setIdCategory,
-    setFile,
-  } = automaticReport();
-  
+  const { idCategory, file, setIdCategory, setFile } = automaticReport();
+
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -39,16 +32,16 @@ function ReportForm() {
     getCategoryFromApi().then((data) => {
       setCategories(data);
     });
-    
+
     // Update form data only when necessary
-    if (!title && !idCategory && !file) {
+    if (!idCategory && !file) {
       setValue("content", formData.content);
       setValue("category", formData.category);
       setValue("latitude", formData.latitude);
       setValue("longitude", formData.longitude);
       setValue("image", formData.image);
     }
-  }, [formData, title, idCategory, file, setValue]);
+  }, [formData, idCategory, file, setValue]);
 
   const onSubmit = async (data) => {
     try {
@@ -59,7 +52,7 @@ function ReportForm() {
       console.log("Reporte enviado");
     } catch (error) {
       console.log(error);
-    } 
+    }
   };
 
   const resetForm = () => {
@@ -88,6 +81,36 @@ function ReportForm() {
     <Container>
       <h2 className="my-4">Crear Reporte</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form.Group as={Row} controlId="category">
+          <Form.Label className="mt-3 mb-2">Categoría:</Form.Label>
+          <Col sm={12}>
+            <Form.Control
+              as="select"
+              isInvalid={errors.category}
+              {...register("category", {
+                required: "Campo requerido",
+                onChange: (e) => setIdCategory(e.target.value),
+              })}
+              value={formData.category}
+              onChange={handleInputChange}
+            >
+              <option value="">Seleccione una categoría</option>
+              {categories.map((cat) => (
+                <option
+                  key={cat.id}
+                  value={cat.id}
+                  selected={idCategory === cat.id}
+                >
+                  {cat.name}
+                </option>
+              ))}
+            </Form.Control>
+            <Form.Control.Feedback type="invalid">
+              {errors.category?.message}
+            </Form.Control.Feedback>
+          </Col>
+        </Form.Group>
+
         <Form.Group as={Row} controlId="content">
           <Form.Label className="mt-3 mb-2">Descripción:</Form.Label>
           <Col sm={12}>
@@ -104,32 +127,6 @@ function ReportForm() {
             />
             <Form.Control.Feedback type="invalid">
               {errors.content?.message}
-            </Form.Control.Feedback>
-          </Col>
-        </Form.Group>
-
-        <Form.Group as={Row} controlId="category">
-          <Form.Label className="mt-3 mb-2">Categoría:</Form.Label>
-          <Col sm={12}>
-            <Form.Control
-              as="select"
-              isInvalid={errors.category}
-              {...register("category", {
-                required: "Campo requerido",
-                onChange: (e) => setIdCategory(e.target.value),
-              })}
-              value={formData.category}
-              onChange={handleInputChange}
-            >
-              <option value="">Seleccione una categoría</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id} selected={idCategory === cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </Form.Control>
-            <Form.Control.Feedback type="invalid">
-              {errors.category?.message}
             </Form.Control.Feedback>
           </Col>
         </Form.Group>
@@ -199,7 +196,6 @@ function ReportForm() {
         setShowModal={setShowModal}
         url={"/"}
       />
-
     </Container>
   );
 }

@@ -12,7 +12,7 @@ interface IJwtPayload {
 
 const generateToken = (email: string): string => {
     const payload: IJwtPayload = { email };
-    return jwt.sign(payload, SECRET_KEY, { expiresIn: '30m' });
+    return jwt.sign(payload, SECRET_KEY, { expiresIn: '120m' });
 };
 
 const verifyJWT = async (token: string): Promise<IJwtPayload> => {
