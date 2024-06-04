@@ -3,10 +3,12 @@ import Category from '../models/Category';
 import { Location } from '../models/Location';
 import { IReportRequest, IReportResponse, IReportWithRadius } from '../interfaces/reports.interface';
 import { QueryTypes } from 'sequelize';
+import { Op } from 'sequelize';
 
 class ReportRepository {
     static async getAll(): Promise<Report[]> {
         const listOfReports = await Report.findAll({
+            where: { enabled: true },
             include: [
                 { model: Category, attributes: ['id', 'name'] },
                 { model: Location, attributes: ['latitude', 'longitude'] }
@@ -99,6 +101,19 @@ class ReportRepository {
             return null;
         }
         return reports;
+    }
+
+    static async disableOldReport(): Promise<number> {
+        const numberOfReportsDisabled = await Report.update({ enabled: false }, {
+            where: {
+                dateTime: {
+                    //[Op.lte]: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000) // > 2 days
+                    [Op.lte]: new Date(new Date().getTime() - 1 * 60 * 60 * 1000) //  > 1 hour
+
+                }
+            }
+        });
+        return numberOfReportsDisabled[0];
     }
 
 }
