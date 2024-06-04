@@ -11,10 +11,10 @@ import "leaflet/dist/leaflet.css";
 import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import MarkerClusterGroup from '@changey/react-leaflet-markercluster';
 
-import CategoryFilter from '@components/Map/CategoryFilter';
-import { useState } from 'react';
 
-
+// dudas con esto. porque no usan el
+import CategoryFilter, { categories } from '@components/Map/CategoryFilter';
+import { useState, useEffect } from 'react';
 
 const Map = ({
   userLocation,
@@ -27,12 +27,14 @@ const Map = ({
   const { startPoint, endPoint, reports } = useStore();
 
   const [selectedCategories, setSelectedCategories] = useState([]);
-  // Filtra los reportes basados en las categorías seleccionadas
-  const filteredReports = selectedCategories.length === 0
-    ? reports
-    : reports.filter(report => selectedCategories.includes(report.CategoryId));
+  useEffect(() => {
+    setSelectedCategories(categories.map(category => category.id));
+  }, []);
 
-    console.log("Filtered Reports: ", filteredReports);
+  const filteredReports = (reports && reports.length > 0)
+  ? reports.filter(report => selectedCategories.includes(report.categoryId))
+  : [];
+
 
   return (
 
@@ -61,7 +63,7 @@ const Map = ({
           <RadiusCircle center={userLocation} radius={radiusZone} />
         )}
 
-        {filteredReports.length > 0 ? (
+        {filteredReports && filteredReports.length > 0 ? (
           <MarkerClusterGroup>
             {filteredReports.map((report) => (
               <Marker
@@ -76,18 +78,6 @@ const Map = ({
           <p>No reports available for the selected categories.</p>
         )}
 
-        {/*     {reports && (
-          <MarkerClusterGroup>
-            {reports.map((report) => (
-              <Marker
-                key={report.id}
-                position={[report.latitude, report.longitude]}
-              >
-                <PopupAT report={report} />
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
-        )} */}
 
 
         {/* ROUTING PARA RECORIDO */}
