@@ -7,14 +7,16 @@ import { useStore, automaticReport } from "@store";
 import useReports from "@hook/useReports";
 import CardHome from "../components/cards/CardHome";
 
+import CategoryFilter from "../components/Map/CategoryFilter";
+
 function Home() {
-  const { 
-    userLocation, 
-    setUserLocation, 
-    radiusZone, 
-    setRoutingMode, 
-    reports, 
-    setRouteCoordinates, 
+  const {
+    userLocation,
+    setUserLocation,
+    radiusZone,
+    setRoutingMode,
+    reports,
+    setRouteCoordinates,
     setOldUserLocation,
     setDistance,
   } = useStore();
@@ -61,8 +63,9 @@ function Home() {
           </Col>
 
           <Col className="h-map pb-footer">
-            <Map userLocation={userLocation} />
+            <Map userLocation={userLocation} CategoryFilterComponent={CategoryFilter} />
           </Col>
+
         </Row>
       </Container>
     </section>

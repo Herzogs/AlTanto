@@ -1,14 +1,27 @@
-// Map/CategoryFilter.jsx
+// CategoryFilter.jsx
 
-import {  useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
-
-
 import { getCategoryFromApi } from '../../services/getCategory';
 
-const categories =  await getCategoryFromApi();
-
 const CategoryFilter = ({ selectedCategories, setSelectedCategories }) => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const fetchedCategories = await getCategoryFromApi();
+        setCategories(fetchedCategories);
+        // Inicializar selectedCategories con todos los id de las categorías
+        setSelectedCategories(fetchedCategories.map(category => category.id));
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   const handleCheckboxChange = (id) => {
     setSelectedCategories((prevSelected) => {
       if (prevSelected.includes(id)) {
@@ -19,28 +32,22 @@ const CategoryFilter = ({ selectedCategories, setSelectedCategories }) => {
     });
   };
 
-  useEffect(() => {
-    setSelectedCategories(categories.map(category => category.id));
-  }, []);
-
   return (
     <Form className="row category-filter-container">
-    {categories.map((category) => (
-      <div key={category.id} className="col">
-        <Form.Check
-          type="checkbox"
-          id={`category-${category.id}`}
-          label={category.name}
-          checked={selectedCategories.includes(category.id)}
-          onChange={() => handleCheckboxChange(category.id)}
-          className="category-checkbox"
-        />
-      </div>
-    ))}
-  </Form>
+      {categories.map((category) => (
+        <div key={category.id} className="col">
+          <Form.Check
+            type="checkbox"
+            id={`category-${category.id}`}
+            label={category.name}
+            checked={selectedCategories.includes(category.id)}
+            onChange={() => handleCheckboxChange(category.id)}
+            className="category-checkbox"
+          />
+        </div>
+      ))}
+    </Form>
   );
 };
 
 export default CategoryFilter;
-export { categories }; 
-
