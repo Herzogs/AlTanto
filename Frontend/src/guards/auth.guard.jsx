@@ -2,10 +2,10 @@ import { userStore } from "@store"
 import { Navigate, Outlet } from "react-router-dom"
 
 export const AuthGuard = () => {
-    const { user } = userStore()
+    const { token } = userStore()
     
-    if (user.id === null) {
-        return <Navigate to="/login" />
+    if (token === null) {
+        return <Navigate to="/auth/login" />
     }
     
     return <Outlet />

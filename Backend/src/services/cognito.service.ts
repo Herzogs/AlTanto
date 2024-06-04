@@ -4,6 +4,7 @@ import {promisify} from 'util';
 import {IUserCognito} from '../interfaces/user.interface';
 import * as process from 'node:process';
 import {UserNotCreatedException} from "../exceptions/users.exceptions";
+import {generateToken} from "../config/jwt.config";
 
 const poolData = {
     UserPoolId: process.env.USER_POOL_ID as string,
@@ -44,7 +45,7 @@ const confirmUser = async (email: string, confirmationCode: string): Promise<voi
             });
         });
     } catch (error) {
-        throw new Error('Error confirming user registration');
+        throw new Error('Error confirming auth registration');
     }
 };
 
@@ -65,9 +66,9 @@ const login = async (email: string, password: string): Promise<string> => {
 
     return new Promise<string>((resolve, reject) => {
         cognitoUser.authenticateUser(authenticationDetails, {
-            onSuccess: (session) => {
-                const accessToken = session.getAccessToken().getJwtToken();
-                resolve(accessToken);
+            onSuccess: () => {
+                const jwt = generateToken(userData.Username);
+                resolve(jwt);
             },
             onFailure: (err) => {
                 console.error(`Login failed: ${err}`);
@@ -76,7 +77,6 @@ const login = async (email: string, password: string): Promise<string> => {
         });
     });
 };
-
 
 
 export {createUser, confirmUser, login};

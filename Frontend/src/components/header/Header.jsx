@@ -4,7 +4,7 @@ import ListIcon from "@mui/icons-material/List";
 import { userStore } from "@store";
 import Dropdown from "react-bootstrap/Dropdown";
 import "./styles.css";
-import { Link } from "@mui/material";
+import { Link } from "react-router-dom";
 
 function Header() {
   const { token } = userStore();
@@ -30,19 +30,21 @@ function Header() {
               <Dropdown.Menu>
                 {token && (
                   <>
-                    <Dropdown.Item>
-                      <Link to="/perfil">Perfil</Link>
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                      <Link to="/auth/logout">Cerrar sesión</Link>
-                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/perfil">Perfil</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/auth/logout">Cerrar sesión</Dropdown.Item>
                   </>
 
                 )}
                 {!token && (
-                  <Dropdown.Item>
-                    <Link to="/auth/login">Inicio sesión</Link>
-                  </Dropdown.Item>
+                  <>
+                    <Dropdown.Item as={Link} to="/auth/login">
+                      Inicio sesión
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/auth/registro">
+                      Registro
+                    </Dropdown.Item>
+                  </>
+
                 )}
 
               </Dropdown.Menu>

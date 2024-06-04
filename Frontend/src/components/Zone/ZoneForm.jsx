@@ -10,9 +10,10 @@ import ModalAT from "@components/modal/ModalAT";
 function ZoneForm() {
   const [visible, setVisible] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  const [selectedRadio, setSelectedRadio] = useState("250");
-  const { userLocation, setUserLocation } = useStore();
+  const [selectedRadio, setSelectedRadio] = useState("500");
+  const {userLocation, setUserLocation } = useStore();
   const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState("");
 
   const {
     register,
@@ -24,7 +25,7 @@ function ZoneForm() {
     defaultValues: {
       name: "",
       address: "",
-      radio: "",
+      radio: "500", // Valor por defecto para el radio
     },
   });
 
@@ -38,13 +39,21 @@ function ZoneForm() {
     register("radio");
   }, [register]);
 
-  const fetchCoordinates = useCallback(() => {
-    geocodeAddress(address).then((data) => {
-      if (!data) throw new Error("Error al obtener la dirección");
+  const fetchCoordinates = useCallback(async () => {
+    try {
+      const data = await geocodeAddress(address);
       const { lat, lon } = data;
-      setUserLocation({ lat: +lat, lng: +lon });
+      if (isNaN(lat) || isNaN(lon)) {
+        throw new Error("Coordenadas inválidas");
+      }
+      setUserLocation({ lat, lng: lon });
       setVisible(true);
-    });
+      setError("");
+    } catch (error) {
+      setError(error.message);
+      setUserLocation(null);
+      setVisible(false);
+    }
   }, [address, setUserLocation]);
 
   const handleSearch = () => {
@@ -125,9 +134,10 @@ function ZoneForm() {
         </Form.Group>
         <Form.Group className="my-4" as={Row} controlId="search">
           <Col sm={12}>
-            <Button type="button" onClick={handleSearch}>
+            <Button type="button" onClick={handleSearch} disabled={disabled}>
               Buscar dirección
             </Button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="radio">

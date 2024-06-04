@@ -2,11 +2,6 @@ import { create } from "zustand";
 import { persist } from 'zustand/middleware';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 
-const removeStores = () => {
-  localStorage.removeItem('store')
-  localStorage.removeItem('userStore');
-  localStorage.removeItem('automaticReport');
-}
 
 const useStore = create(
   persist(
@@ -90,4 +85,4 @@ if (import.meta.env.VITE_ENV === 'development') {
 }
 
 
-export { useStore, automaticReport, userStore, removeStores };
+export { useStore, automaticReport, userStore };

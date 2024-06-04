@@ -19,8 +19,6 @@ function ReportForm() {
   
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [titleModal, setTitleModal] = useState("");
-  const [messageModal, setMessageModal] = useState("");
 
   const [formData, setFormData] = useState({
     title: title || "",
@@ -57,14 +55,16 @@ function ReportForm() {
   const onSubmit = async (data) => {
     try {
       await sendReport(data);
-      setTitleModal("Reporte enviado");
-      setMessageModal("El reporte se ha generado correctamente.");
-    } catch (error) {
-      setTitleModal("Error al enviar el reporte");
-      setMessageModal("Ha ocurrido un error al enviar el reporte.");
-    } finally {
-      setShowModal(true);
+     
       resetForm();
+      console.log("Reporte enviado");
+      setShowModal(true);
+
+      console.log("Reporte enviado");
+    } catch (error) {
+      console.log("Reporte no enviado");
+    } finally {
+      console.log("Reporte enviado");
     }
   };
 
@@ -221,8 +221,8 @@ function ReportForm() {
       </Form>
 
       <ModalAT
-        title={titleModal}
-        message={messageModal}
+        title={"Reporte Enviado"}
+        message={"test"}
         show={showModal}
         setShowModal={setShowModal}
         url="/"

@@ -10,4 +10,5 @@ router.post('/validate-code', controller.confirmUser)
 router.post('/login',validateData(login),controller.login)
 
 
+
 export default router;

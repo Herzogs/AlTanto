@@ -28,6 +28,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     const email = req.body.email;
     const password = req.body.password;
     try {
+        console.log(email,password)
         const jwt = await cognitoService.login(email, password);
         const user = await userService.getUserByEmail(email);
         return res.status(200).send({
@@ -42,6 +43,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         });
 
     } catch (error) {
+        console.log("aca estamos ")
         return next({message: (error as Error).message, statusCode: 401});
     }
 }

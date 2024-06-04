@@ -45,7 +45,7 @@ const Map = ({
           <MarkerClusterGroup>
             {reports.map((report) => (
               <Marker
-                key={report._id}
+                key={report.id}
                 position={[report.latitude, report.longitude]}
               >
                 <PopupAT report={report} />

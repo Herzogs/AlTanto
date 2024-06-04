@@ -7,7 +7,7 @@ export const getCategoryFromApi = async () => {
     if(response.status !== 200) {
       throw new Error("Error fetching categories");
     }
-    const data = await response.json();
+    const data = await response.data;
     return data;
   } catch (error) {
     console.error("Error fetching categories:", error);

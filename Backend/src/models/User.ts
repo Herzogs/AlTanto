@@ -39,7 +39,7 @@ User.init({
     sequelize: dbConnection,
     freezeTableName: true,
     modelName: 'User',
-    timestamps: true,
+    timestamps: false,
     indexes: [
         {
             unique: true,

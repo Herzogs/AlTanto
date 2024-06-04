@@ -4,11 +4,16 @@ import { useNavigate } from "react-router-dom"
 
 function Logout() {
 
-  const { removeStores } = userStore()
+  const { setToken, setUser } = userStore()
   const navigate = useNavigate()
 
   useEffect(()=>{
-    removeStores()
+    setToken(null)
+    setUser( {
+      name: null,
+      lastName: null,
+      email: null,
+    })
     navigate('/')
   },[])
   return null;

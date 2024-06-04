@@ -11,17 +11,20 @@ import ZoneForm from "@components/Zone/ZoneForm";
 import ZoneID from "@components/Zone/ZoneID";
 import ReportDetail from "@components/report/ReportDetail";
 import CaptureImage from "@components/ReportAutomatic/CaptureImage";
-import Login from "@components/auth/Login";
+
 import Logout from "@components/auth/Logout";
-import Register from "@components/auth/Register";
+
 import { AuthGuard } from "./guards/auth.guard";
+import RegisterForm from "@components/auth/RegisterForm.jsx";
+import ValidationCodeForm from "@components/auth/CodeForm.jsx";
+import LoginForm from "@components/auth/LoginForm.jsx";
 
 const nonProtectedRoutes = [
   { path: "/", element: <Home /> },
-  { path: "/auth/registro", element: <Register /> },
+  { path: "/auth/registro", element: <RegisterForm /> },
   { path: "/auth/logout", element: <Logout /> },
-  //{ path: "/auth/verification", element: <Verification /> },
-  { path: "/auth/login", element: <Login /> },
+  { path: "/auth/verificacion", element: <ValidationCodeForm /> },
+  { path: "/auth/login", element: <LoginForm /> },
   { path: "*", element: <h1 className="text-center">Estamos trabajando en ello...</h1> },
 ];
 
@@ -37,8 +40,6 @@ const protectedRoutes = [
   { path: "/notificaciones", element: <Notifications /> },
   { path: "/reportes/:id", element: <ReportDetail /> },
 ];
-
-//<Route key={route.path} path={route.path} element={route.element} />
 
 const App = () => {
 
