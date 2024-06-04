@@ -21,6 +21,18 @@ class UserRepository {
             }
         });
     }
+
+    static async getUserByEmail(email: string) {
+        const userSearched = await User.findOne({
+            where: {
+                email: email
+            }
+        });
+        if (userSearched === null) {
+            return null;
+        }
+        return userSearched;
+    }
 }
 
 export default UserRepository;

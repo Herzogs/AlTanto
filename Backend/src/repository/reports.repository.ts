@@ -3,16 +3,18 @@ import Category from '../models/Category';
 import { Location } from '../models/Location';
 import { IReportRequest, IReportResponse, IReportWithRadius } from '../interfaces/reports.interface';
 import { QueryTypes } from 'sequelize';
+import { Op } from 'sequelize';
 
 class ReportRepository {
     static async getAll(): Promise<Report[]> {
         const listOfReports = await Report.findAll({
+            where: { enabled: true },
             include: [
                 { model: Category, attributes: ['id', 'name'] },
                 { model: Location, attributes: ['latitude', 'longitude'] }
             ],
             attributes: { exclude: ['CategoryId', 'LocationId'] }
-        });
+        })
         if (!listOfReports) {
             return [];
         }
@@ -45,6 +47,8 @@ class ReportRepository {
         if (!listOfReports) {
             return [];
         }
+
+
         return listOfReports.map((report) => report.get({ plain: true }));
     }
 
@@ -58,9 +62,7 @@ class ReportRepository {
         })
         const location = locationSearched[0].get({ plain: true });
         const reporCreated = await Report.create({
-            title: newReport.title,
             content: newReport.content,
-            duration: new Date(),
             CategoryId: newReport.categoryId,
             LocationId: location.id,
             images: newReport.images
@@ -71,7 +73,7 @@ class ReportRepository {
     static async getByLatLongRadius(zoneWithRadius: IReportWithRadius): Promise<object[] | null> {
         const { lat, lon, rad } = zoneWithRadius;
         const reports = await Report.sequelize?.query(
-            `SELECT Report.id, Report.title, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.categoryId,
+            `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.categoryId,
                 Location.latitude, Location.longitude, 
                 Category.name AS categoryName,
                 (6371000 * acos(
@@ -81,6 +83,7 @@ class ReportRepository {
             FROM Location
             JOIN Report ON Location.id = Report.LocationId
             JOIN Category ON Report.CategoryId = Category.id
+            WHERE Report.enabled = true
             HAVING distancia <= :radius
             ORDER BY distancia;`,
             {
@@ -96,6 +99,18 @@ class ReportRepository {
             return null;
         }
         return reports;
+    }
+
+    static async disableOldReport(): Promise<number> {
+        const numberOfReportsDisabled = await Report.update({ enabled: false }, {
+            where: {
+                createAt: {
+                    //[Op.lte]: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000) // > 2 days
+                    [Op.lte]: new Date(new Date().getTime() - 5 * 60 * 1000) //  > 1 hour
+                }
+            }
+        });
+        return numberOfReportsDisabled[0];
     }
 
 }

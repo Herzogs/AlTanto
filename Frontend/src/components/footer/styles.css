@@ -3,9 +3,9 @@
   height: 60px;
   display: flex;
   position: fixed;
-  background-color: var(--color-at-grey);
+  background-color: var(--color-at-black);
   bottom: 0px;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .at-footer a {
@@ -13,7 +13,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  border-right: 1px solid #03030370;
+  border-right: 1px solid var(--color-at-grey);;
 }
 
 .at-footer a:last-child {

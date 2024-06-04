@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useMapEvents } from "react-leaflet";
 import { useStore } from "../store";
 

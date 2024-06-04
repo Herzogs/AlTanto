@@ -12,5 +12,13 @@ class UserNotCreatedException extends ApiError {
     }
 }
 
-export { UserNotCreatedException };
+class UserNotFoundException extends ApiError {
+    constructor(message?: string, statusCode?: HttpStatusCode) {
+        message = message || "User not found";
+        statusCode = statusCode || HttpStatusCode.NotFound;
+        super(message, statusCode);
+    }
+}
+
+export { UserNotCreatedException, UserNotFoundException };
 

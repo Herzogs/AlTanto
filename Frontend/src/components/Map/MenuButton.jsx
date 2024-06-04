@@ -1,22 +1,20 @@
-import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { Link } from "react-router-dom";
+
 function MenuButton() {
   return (
-    <Dropdown
-      style={{
-        position: "absolute",
-        bottom: "40%",
-        right: "2%",
-        zIndex: "999",
-      }}
-    >
-      <Dropdown.Toggle id="dropdown-basic" as="span" style={{ color: "none" }}>
-        <AddCircleIcon className="text-at-grey" style={{ fontSize: "50px" }} />
+    <Dropdown className="menu-button">
+      <Dropdown.Toggle id="dropdown-basic" as="span">
+        <AddCircleIcon className="menu-button_icon" />
       </Dropdown.Toggle>
-
       <Dropdown.Menu>
-        <Dropdown.Item href="/form/reporte">Crear reporte</Dropdown.Item>
+        <Dropdown.Item as={Link} to="/form/reporte">
+          Reporte Manual
+        </Dropdown.Item>
+        <Dropdown.Item as={Link} to="/form/reporte/automatico">
+          Reporte Automático
+        </Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   );

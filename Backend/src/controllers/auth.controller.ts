@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {IUser} from "../interfaces/user.interface";
 import * as cognitoService from "../services/cognito.service";
-import userService from "../services/user.service";
+import * as userService from "../services/user.service";
 
 const createUSer = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -28,10 +28,22 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     const email = req.body.email;
     const password = req.body.password;
     try {
+        console.log(email,password)
         const jwt = await cognitoService.login(email, password);
-        return res.status(200).json(jwt);
+        const user = await userService.getUserByEmail(email);
+        return res.status(200).send({
+            message: "Login success",
+            token: jwt,
+            user: {
+                email: user.email,
+                name: user.name,
+                lastName: user.lastName
+            }
+        
+        });
 
     } catch (error) {
+        console.log("aca estamos ")
         return next({message: (error as Error).message, statusCode: 401});
     }
 }
