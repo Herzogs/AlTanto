@@ -41,4 +41,4 @@ function manejarError(error: any) {
     process.exit(1);
 }
 
-export default climaMananaServices();
+export default climaMananaServices;

@@ -25,6 +25,7 @@ export class PronosticoRepository implements IPronosticoRepository {
         where: {
           estacionMeteorologicaLid: pronostico.estacionMeteorologicaLid,
           forecastType: pronostico.forecastType,
+          timeOfDay: pronostico.timeOfDay,
         },
       });
 

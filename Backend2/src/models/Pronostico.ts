@@ -35,7 +35,7 @@ Pronostico.init(
       allowNull: true,
     },
     timeOfDay: {
-      type: DataTypes.ENUM('morning', 'afternoon', 'evening', 'night'),
+      type: DataTypes.ENUM('morning', 'afternoon', 'evening', 'night','today'),
       allowNull: true,
     },
     temp: {
