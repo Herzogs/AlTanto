@@ -11,6 +11,7 @@ import CategoryForm from "@/components/category/CategoryForm";
 import ZoneForm from "@/components/Zone/ZoneForm";
 import ZoneID from "@/components/Zone/ZoneID";
 import ReportDetail from "@/components/report/ReportDetail";
+import GroupsList from "@/components/Group/Group"; 
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/zonas" element={<Zones />} />
           <Route path="/form/zona" element={<ZoneForm />} />
           <Route path="/zonas/:id" element={<ZoneID />} />
+          <Route path="/grupos" element={<GroupsList />} />
           <Route path="/notificaciones" element={<Notifications />} />
           <Route path="/reportes/:id" element={<ReportDetail />} />
           <Route
