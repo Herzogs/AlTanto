@@ -4,9 +4,9 @@ import validateCode from "@services/sendCodeRegister.js";
 import ModalAT from "@components/modal/ModalAT";
 
 function ValidationCodeForm() {
-    const { showModal, setShowModal } = useState(false);
-    const { title, setTitle } = useState("");
-    const { message, setMessage } = useState("");
+    const [ showModal, setShowModal ] = useState(false);
+    const [ title, setTitle ] = useState("");
+    const [ message, setMessage ] = useState("");
     const {
         register,
         handleSubmit,

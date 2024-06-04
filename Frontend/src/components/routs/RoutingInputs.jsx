@@ -25,19 +25,28 @@ function RoutingInputs() {
   const { setStartPoint, setEndPoint } = useStore();
   const [startAddress, setStartAddress] = useState("");
   const [endAddress, setEndAddress] = useState("");
+  const [error, setError] = useState(false)
 
   const handleSetPoints = async () => {
-    const startCoords = await geocodeAddress(startAddress);
-    const endCoords = await geocodeAddress(endAddress);
-    setStartPoint(startCoords);
-    setEndPoint(endCoords);
+    try {
+      const startCoords = await geocodeAddress(startAddress);
+      const endCoords = await geocodeAddress(endAddress);
+      setStartPoint(startCoords);
+      setEndPoint(endCoords);
+      setError(false)
+    } catch (error) {
+      console.error("Error al obtener coordenadas:", error);
+      setError(true)
+    }
   };
+  
 
   return (
     <article className="my-3">
       <InputField type="text" value={startAddress} setValue={setStartAddress} placeholder="Enter start address" />
       <InputField type="text" value={endAddress} setValue={setEndAddress} placeholder="Enter end address" />
       <button onClick={handleSetPoints}>Setear puntos</button>
+      {error && <p className="text-danger fw-bold my-4">Error al obtener las direcciones</p>}
 
     </article>
   );

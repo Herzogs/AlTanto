@@ -11,9 +11,10 @@ function ZoneForm() {
   const [visible, setVisible] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [selectedRadio, setSelectedRadio] = useState("500");
-  const {userLocation, setUserLocation } = useStore();
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
+
+  const {userLocation, setUserLocation, setReports } = useStore();
 
   const {
     register,
@@ -32,6 +33,7 @@ function ZoneForm() {
   const address = watch("address");
 
   useEffect(() => {
+    setReports(null)
     setDisabled(address ? false : true);
   }, [address]);
 
@@ -169,7 +171,7 @@ function ZoneForm() {
       </Form>
 
       {visible && userLocation && (
-        <div className="h-map">
+        <div className="h-map pb-footer">
           <Map
             userLocation={userLocation}
             radiusZone={selectedRadio}

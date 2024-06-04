@@ -6,6 +6,7 @@ import sendReport from "@services/sendReport";
 import { useStore, automaticReport } from "@store";
 import ModalAT from "@components/modal/ModalAT";
 
+
 function ReportForm() {
   const { userLocation } = useStore();
   const {
@@ -55,17 +56,13 @@ function ReportForm() {
   const onSubmit = async (data) => {
     try {
       await sendReport(data);
-     
-      resetForm();
-      console.log("Reporte enviado");
       setShowModal(true);
-
+      resetForm();
+      console.log(showModal);
       console.log("Reporte enviado");
     } catch (error) {
-      console.log("Reporte no enviado");
-    } finally {
-      console.log("Reporte enviado");
-    }
+      console.log(error);
+    } 
   };
 
   const resetForm = () => {
@@ -221,12 +218,13 @@ function ReportForm() {
       </Form>
 
       <ModalAT
-        title={"Reporte Enviado"}
-        message={"test"}
-        show={showModal}
+        title="Reporte guardado"
+        message="Se registraron correctamente los datos."
+        showModal={showModal}
         setShowModal={setShowModal}
-        url="/"
+        url={"/"}
       />
+
     </Container>
   );
 }

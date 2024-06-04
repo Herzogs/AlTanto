@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { userStore } from '@/store';
-import { UseNavigate } from 'react-router-dom';
 
-const navigate = UseNavigate();
 // Crear una instancia de Axios
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL, // Reemplaza con tu URL base
@@ -37,8 +35,7 @@ axiosInstance.interceptors.response.use(
   error => {
     // Si la respuesta contiene un error 401, redirigimos al usuario al home
     if (error.response && error.response.status === 401) {
-      // Usar el hook useHistory de react-router-dom para redirigir
-      navigate('/auth/login')
+      console.log(error.response)
     }
     return Promise.reject(error);
   }
