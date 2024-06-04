@@ -4,9 +4,10 @@ import {IZoneRequest} from "../interfaces/zone.interface";
 import * as zoneValidator from "../validator/zone.validator";
 import {ZoneNotFoundException, ZoneNotCreatedException} from "../exceptions/zone.exceptions";
 
-const getAllZones = async (_req: Request, res: Response, next: NextFunction) => {
+const getAllZones = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const zones = await zoneService.getAllZone();
+        const userEmail= req.body.email;
+        const zones = await zoneService.getAllZone(userEmail);
         return res.json(zones);
     } catch (error) {
         if (error instanceof ZoneNotFoundException) {
@@ -35,13 +36,15 @@ const createZone = async (req: Request, res: Response, next: NextFunction): Prom
 }
 
 const getZoneById = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+
     const validData = await zoneValidator.getZoneByIdValidator.safeParseAsync(req.params);
+    const userEmail= req.body.email;
     if (!validData.success) {
         return next({message: validData.error.errors[0].message, statusCode: 400});
     }
     try {
         const {id} = validData.data as { id: string };
-        const zone = await zoneService.getZoneById(+id);
+        const zone = await zoneService.getZoneById(+id, userEmail);
         console.log(zone);
         return res.status(200).json(zone);
 

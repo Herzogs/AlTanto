@@ -6,9 +6,9 @@ import {auth} from "../middlewares/auth.middlewares";
 
 const router = Router();
 
-router.get('/',  controller.getAllZones);
+router.get('/', auth, controller.getAllZones);
 router.post('/',auth, validateData(createZoneValidator), controller.createZone);
-router.get('/:id', controller.getZoneById);
+router.get('/:id',auth, controller.getZoneById);
 
 
 export default router;

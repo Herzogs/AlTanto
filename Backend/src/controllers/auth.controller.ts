@@ -9,7 +9,6 @@ const createUSer = async (req: Request, res: Response, next: NextFunction) => {
         const newUserDatabase = await userService.createUser(newUser);
         res.status(201).json(newUserDatabase);
     } catch (error) {
-        console.log("que paso", (error as Error).message);
         next(error);
     }
 }
@@ -40,11 +39,9 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
                 name: user.name,
                 lastName: user.lastName
             }
-        
         });
 
     } catch (error) {
-        console.log("aca estamos ")
         return next({message: (error as Error).message, statusCode: 401});
     }
 }

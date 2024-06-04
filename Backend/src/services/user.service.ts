@@ -5,7 +5,7 @@ import {UserNotCreatedException, UserNotFoundException} from "../exceptions/user
 import * as cognitoService from '../services/cognito.service'
 import {Error} from "sequelize";
 
-const createUser = async (user: IUser): Promise<User> => {
+const createUser = async (user: IUser): Promise<User|null> => {
     try {
         console.log("User 10" ,user)
         const userCreated = await userRepository.create(user);

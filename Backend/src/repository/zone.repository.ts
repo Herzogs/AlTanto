@@ -6,29 +6,28 @@ import {ZoneNotCreatedException, ZoneNotFoundException} from '../exceptions/zone
 class ZoneRepository {
     static async create(newZone: IZoneRequest, userId: number): Promise<any> {
         const locationSearched = await Location.findOrCreate({
-            where: { latitude: newZone.latitude, longitude: newZone.longitude },
+            where: {latitude: newZone.latitude, longitude: newZone.longitude},
         })
-        console.log("repos zone 11");
         try {
-            const location = locationSearched[0].get({ plain: true });
-            const zoneSearched= await Zone.findOne({
-                where:{UserId:userId, name:newZone.name},
+            const location = locationSearched[0].get({plain: true});
+            const zoneSearched = await Zone.findOne({
+                where: {UserId: userId, name: newZone.name},
             })
-            if (zoneSearched){
+            if (zoneSearched) {
                 throw new ZoneNotCreatedException("repeated zone name");
             }
             const zone = await Zone.create({
                 name: newZone.name,
                 LocationId: location.id,
-                UserId:userId,
+                UserId: userId,
             })
             console.log("repos zone 19");
             if (!zone) {
                 console.log("repos zone 21");
                 throw new ZoneNotCreatedException("Zone not created");
             }
-            return zone.get({ plain: true });
-        }catch (eror){
+            return zone.get({plain: true});
+        } catch (eror) {
             console.log((eror as Error).message);
 
         }
@@ -36,31 +35,42 @@ class ZoneRepository {
 
     }
 
-    static async getAllZone(): Promise<IZone[]> {
-        const listOfZones = await Zone.findAll({
-            include: [
-                { model: Location, attributes: ['latitude', 'longitude'] }
-            ],
-            attributes: { exclude: [ 'LocationId'] }
-        });
-        if (!listOfZones) {
-            throw new ZoneNotFoundException("Zones not found");
+    static async getAllZone(userId: number): Promise<IZone[] | null> {
+        try {
+            const listOfZones = await Zone.findAll({
+                where: {UserId: userId},
+                include: [
+                    {model: Location, attributes: ['latitude', 'longitude']}
+                ],
+                attributes: {exclude: ['LocationId']}
+            });
+            return listOfZones.map((zone) => zone.get({plain: true}));
+        } catch (error) {
+            console.log((error as Error).message);
+            return null;
         }
-        return listOfZones.map((zone) => zone.get({ plain: true }));
+
     }
 
-    static async getZoneById(zoneId: number): Promise<IZone> {
-        const zone = await Zone.findByPk(zoneId, {
-            include: [
-                { model: Location, attributes: ['latitude', 'longitude'] }
-            ],
-            attributes: { exclude: ['LocationId'] }
-        });
-        if (!zone) {
-            throw new ZoneNotFoundException("Zone not found");
+    static async getZoneById(zoneId: number, userId: number): Promise<IZone|null> {
+        try {
+            const zoneSearched = await Zone.findOne({
+                where: { UserId: userId, id: zoneId },
+                include: [
+                    { model: Location, attributes: ['latitude', 'longitude'] }
+                ],
+                attributes: { exclude: ['LocationId'] }
+            });
+
+            if (!zoneSearched) {
+                throw new ZoneNotFoundException("Zone not found");
+            }
+          return  zoneSearched.get({ plain: true }) as IZone;
+
+        } catch (error) {
+            console.error((error as Error).message);
+            return null;
         }
-        const zoneSearched = await zone.get({ plain: true });
-        return zoneSearched as IZone;
     }
 }
 
