@@ -3,7 +3,6 @@ import { useStore } from "@store";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
 import Routing from "@components/routs/Routing";
-import RoutingInputs from "@components/routs/RoutingInputs";
 import PopupAT from "@components/Map/PopupAT";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
@@ -18,20 +17,29 @@ const Map = ({
   routingMode = false,
   zoneMode = false,
   noDrag = false,
+  startPoint = null,
+  endPoint = null,
+  fetchingReport = false,
 }) => {
+
+
+  
   const { MapClickHandler } = useMapClickHandler();
-  const { startPoint, endPoint, reports } = useStore();
+  
+  const { reports } = useStore();
+
 
   return (
     <section className="h-100" style={{ position: "relative"}}> 
-      {/* INPUT FORM RECORIDO */}
-      {routingMode && <RoutingInputs />}
+
+     
       <MapContainer
         center={userLocation ? [userLocation.lat, userLocation.lng] : [0, 0]}
         zoom={15}
         minZoom={12}
         maxZoom={18}
         style={{ height: "100%", width: "100%" }}
+        
       >
         <TileLayer
          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
@@ -54,10 +62,10 @@ const Map = ({
           </MarkerClusterGroup>
         )}
         {/* ROUTING PARA RECORIDO */}
-        {routingMode && (
+        {routingMode && startPoint && endPoint && (
           <>
-            <MapClickHandler />
-            <Routing startPoint={startPoint} endPoint={endPoint} numberPoints={6} />
+            {/*<MapClickHandler />*/}
+            <Routing startPoint={startPoint} endPoint={endPoint} />
           </>
         )}
       </MapContainer>

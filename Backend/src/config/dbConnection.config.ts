@@ -11,14 +11,17 @@ const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     host: dbHost,
     port: dbPort,
     dialect: dbDialect as 'mysql',
-    logging: false
+    timezone: '-03:00',
+    logging: false,
 });
 
 dbConnection.authenticate()
     .then(() => {
         console.log('Connection has been established successfully.');
         if (process.env.CREATE_TABLE === 'true') {
-            dbConnection.sync({ force: true });
+            dbConnection.sync({ 
+                force: true,
+            });
         }
     })
     .catch((error) => {

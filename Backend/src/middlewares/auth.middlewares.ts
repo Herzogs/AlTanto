@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {verifyJWT} from "../config/jwt.config";
+import {verifyJWT} from "../utilities/jwt.utilities";
 
 
 export const auth = async (req: Request, _res: Response, next: NextFunction) => {
