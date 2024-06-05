@@ -33,6 +33,15 @@ class UserRepository {
         }
         return userSearched;
     }
+
+    static async getUserByUsername(username: string): Promise<User | null> {
+        const userSearched = await User.findOne({
+            where: {
+                username: username
+            }
+        });
+        return userSearched;
+    }
 }
 
 export default UserRepository;
