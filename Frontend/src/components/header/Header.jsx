@@ -31,6 +31,7 @@ function Header() {
                 {token && (
                   <>
                     <Dropdown.Item as={Link} to="/perfil">Perfil</Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/grupos">Grupo</Dropdown.Item>
                     <Dropdown.Item as={Link} to="/auth/logout">Cerrar sesión</Dropdown.Item>
                   </>
 

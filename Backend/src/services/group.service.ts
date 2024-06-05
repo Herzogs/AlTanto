@@ -2,6 +2,7 @@ import GroupRepository from '../repository/group.repository';
 import { GroupNotCreatedException, GroupNotFoundException, UserNotFoundException } from '../exceptions/group.exceptions';
 import { IGroup } from '../interfaces/group.interface';
 import { GroupUser } from '../models/GroupUser';
+import { IGroupDetails } from '../interfaces/groupDetail.interface';
 
 async function getAllGroups(): Promise<IGroup[]> {
     const groups = await GroupRepository.getAll();
@@ -39,17 +40,30 @@ async function addUserToGroup(groupId: number, userId: number): Promise<GroupUse
     return groupUser;
 };
 
+async function addUserToGroupWithCode(groupId: number, userId: number, groupCode: string): Promise<GroupUser> {
+    const group = await GroupRepository.getGroupById(groupId);
+    if (!group) {
+        throw new Error('Group not found');
+    }
+    if (group.groupCode !== groupCode) {
+        throw new Error('Invalid group code');
+    }
+    return await GroupRepository.addUser(groupId, userId);
+};
+
 async function removeUserFromGroup(groupId: number, userId: number): Promise<boolean>{
     const removed = await GroupRepository.removeUser(groupId, userId);
     if (!removed) throw new UserNotFoundException('User not found in group');
     return removed;
 };
 
-
-async function findGroupByName(name: string): Promise<IGroup | null> {
-    const group = await GroupRepository.findByName(name);
-    return group;
-    
+async function findGroupsByName(name: string): Promise<IGroup[]> {
+    try {
+        const groups = await GroupRepository.findByName(name);
+        return groups;
+    } catch (error) {
+        throw new Error(`Error en el servicio al buscar grupos por nombre`);
+    }
 }
 
 async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
@@ -61,6 +75,13 @@ async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
     }
 }
 
+async function getGroupDetailsById(groupId: number): Promise<IGroupDetails> {
+    const group = await GroupRepository.getGroupById(groupId);
+    const members = await GroupRepository.getGroupMembers(groupId);
+    return { ...group, members } as IGroupDetails;
+}
+
+
 export{
     getAllGroups,
     getGroupById,
@@ -69,6 +90,8 @@ export{
     deleteGroup,
     addUserToGroup,
     removeUserFromGroup,
-    findGroupByName,
-    getGroupsByUserId
+    findGroupsByName,
+    getGroupsByUserId,
+    getGroupDetailsById,
+    addUserToGroupWithCode
 }

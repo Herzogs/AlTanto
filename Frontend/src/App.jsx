@@ -11,6 +11,9 @@ import ZoneForm from "@components/Zone/ZoneForm";
 import ZoneID from "@components/Zone/ZoneID";
 import ReportDetail from "@components/report/ReportDetail";
 import CaptureImage from "@components/ReportAutomatic/CaptureImage";
+import GroupsList from "@components/Group/Group";
+import GroupsDetail from "@components/Group/GroupDetail";
+import GroupSearch from '@components/Group/GroupSearch';
 
 import Logout from "@components/auth/Logout";
 
@@ -48,6 +51,22 @@ const App = () => {
       <Header />
       <main>
         <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/recorridos" element={<Roads />} />
+          <Route path="/form/reporte" element={<ReportForm />} />
+          <Route path="/form/categoria" element={<CategoryForm />} />
+          <Route path="/zonas" element={<Zones />} />
+          <Route path="/form/zona" element={<ZoneForm />} />
+          <Route path="/zonas/:id" element={<ZoneID />} />
+          <Route path="/grupos" element={<GroupsList />} />
+          <Route path="/grupos/:id" element={<GroupsDetail />} />
+          <Route path="/group-search" element={<GroupSearch />} />
+          <Route path="/notificaciones" element={<Notifications />} />
+          <Route path="/reportes/:id" element={<ReportDetail />} />
+          <Route
+            path="*"
+            element={<h1 className="text-center">Estamos trabajando...</h1>}
+          />
           {/* Rutas que no requieren autenticación */}
           {nonProtectedRoutes.map((route) => (
             <Route key={route.path} path={route.path} element={route.element} />

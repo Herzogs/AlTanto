@@ -1,26 +1,29 @@
-import  Group  from '../models/Group';
-import { GroupUser } from '../models/GroupUser'; 
-import  User  from '../models/User';
+import Group from '../models/Group';
+import { GroupUser } from '../models/GroupUser';
+import User from '../models/User';
 import { IGroup } from '../interfaces/group.interface';
 
-class GroupRepository{
-
-    static async getAll(): Promise<IGroup[]>{
-        const groups = await Group.findAll({ include: [{ model: User, as: 'members' }] });
+class GroupRepository {
+    static async getAll(): Promise<IGroup[]> {
+        const groups = await Group.findAll({
+            include: [{ model: User, as: 'members', through: { attributes: [] } }]
+        });
         return groups.map(group => group.toJSON());
-    };
-    
-    static async getById(id: number): Promise<IGroup | null>{
-        const group = await Group.findByPk(id, { include: [{ model: User, as: 'members' }] });
+    }
+
+    static async getById(id: number): Promise<IGroup | null> {
+        const group = await Group.findByPk(id, {
+            include: [{ model: User, as: 'members', through: { attributes: [] } }]
+        });
         return group ? group.toJSON() : null;
-    };
-    
-    static async create(name: string, ownerId: number): Promise<IGroup>{
+    }
+
+    static async create(name: string, ownerId: number): Promise<IGroup> {
         const newGroup = await Group.create({ name, ownerId });
         return newGroup.toJSON();
-    };
-    
-    static async updateName(id: number, name: string): Promise<IGroup | null>{
+    }
+
+    static async updateName(id: number, name: string): Promise<IGroup | null> {
         const group = await Group.findByPk(id);
         if (group) {
             group.name = name;
@@ -28,34 +31,34 @@ class GroupRepository{
             return group.toJSON();
         }
         return null;
-    };
-    
-    static async remove(id: number): Promise<boolean>{
+    }
+
+    static async remove(id: number): Promise<boolean> {
         const group = await Group.findByPk(id);
         if (group) {
             await group.destroy();
             return true;
         }
         return false;
-    };
-    
-    static async addUser(groupId: number, userId: number): Promise<GroupUser>{
+    }
+
+    static async addUser(groupId: number, userId: number): Promise<GroupUser> {
         return await GroupUser.create({ groupId, userId });
-    };
+    }
     
-    static async removeUser(groupId: number, userId: number): Promise<boolean>{
+    static async removeUser(groupId: number, userId: number): Promise<boolean> {
         const groupUser = await GroupUser.findOne({ where: { groupId, userId } });
         if (groupUser) {
             await groupUser.destroy();
             return true;
         }
         return false;
-    };
-    
-    static async findByName(name: string): Promise<Group | null>{
+    }
+
+    static async findByName(name: string): Promise<IGroup[]> {
         try {
-            const group = await Group.findOne({ where: { name } });
-            return group;
+            const groups = await Group.findAll({ where: { name } });
+            return groups;
         } catch (error) {
             throw new Error(`Error buscando el grupo por nombre`);
         }
@@ -63,17 +66,30 @@ class GroupRepository{
 
     static async getGroupsByUserId(userId: number): Promise<Group[]> {
         try {
-            const groups = await Group.findAll({
-                include: [{ association: 'members', where: { userId } }] // Busca los grupos asociados al usuario con el ID dado
-            });
-    
+            const groupUsers: GroupUser[] = await GroupUser.findAll({ where: { userId } });
+            const groupIds = groupUsers.map(groupUser => groupUser.getDataValue('groupId'));
+            const groups = await Group.findAll({ where: { id: groupIds } });
             return groups;
         } catch (error) {
             throw new Error('Error al obtener los grupos del usuario');
         }
     }
-    
-}
 
+    static async getGroupById(groupId: number): Promise<IGroup> {
+        const group = await Group.findByPk(groupId, {
+            include: [{ model: User, as: 'members', through: { attributes: [] } }]
+        });
+        if (!group) throw new Error('Group not found');
+        return group.toJSON();
+    }
+
+    static async getGroupMembers(groupId: number): Promise<any> {
+        const groupUsers = await GroupUser.findAll({
+            where: { groupId },
+            include: [{ model: User }],
+        });
+        return groupUsers;
+    }
+}
 
 export default GroupRepository;
