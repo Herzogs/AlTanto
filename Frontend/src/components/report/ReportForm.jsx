@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
 import { getCategoryFromApi } from "@services/getCategory";
-import sendReport from "@services/sendReport";
+import { sendReport } from "@services/sendData";
 import { useStore, automaticReport } from "@store";
 import ModalAT from "@components/modal/ModalAT";
 
@@ -176,11 +176,13 @@ function ReportForm() {
                 style={{ width: "100px", height: "100px" }}
               />
             )}
-            <Form.Control
-              type="file"
-              {...register("image")}
-              onChange={handleImageChange}
-            />
+            {!file &&
+              <Form.Control
+                type="file"
+                {...register("image")}
+                onChange={handleImageChange}
+              />
+            }
           </Col>
         </Form.Group>
 

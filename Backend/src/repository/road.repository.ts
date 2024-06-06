@@ -16,9 +16,9 @@ class RoadRepository {
 
     static async getById(id: number): Promise<Road | null> {
         const roadSearched = await Road.findByPk(id);
-        
+
         if (!roadSearched) {
-          return null;
+            return null;
         }
         const road = roadSearched.get({ plain: true });
 
@@ -26,13 +26,13 @@ class RoadRepository {
         const coordinatesDestiny = await Location.findByPk(road.destination);
         road.origin = coordinatesOrigin;
         road.destination = coordinatesDestiny;
-        
-       return road;
-      }
+
+        return road;
+    }
 
     static async create(road: IRoad): Promise<Road | null | unknown> {
 
-    const locationSearchedOrigin = await Location.findOrCreate({
+        const locationSearchedOrigin = await Location.findOrCreate({
             where: { latitude: road.origin.lat, longitude: road.origin.lng }
         })
 
@@ -66,7 +66,7 @@ class RoadRepository {
             return [];
         }
         const aux = []
-        const roads= listOfRoad.map((Road) => Road.get({ plain: true }));
+        const roads = listOfRoad.map((Road) => Road.get({ plain: true }));
         for (const road of roads) {
             const coordinatesOrigin = await Location.findByPk(road.origin);
             const coordinatesDestiny = await Location.findByPk(road.destination);

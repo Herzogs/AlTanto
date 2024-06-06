@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Container, Button, Form, Row, Col } from "react-bootstrap";
 import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
-import axiosInstance from "@interceptors/axiosConfig";
+import { sendRoute } from "@services/sendData";
 
 
 function RoutForm() {
@@ -61,31 +61,20 @@ function RoutForm() {
 
   const onSubmit = async (data) => {
     try {
-      const res = await axiosInstance.post("/road", {
-        "name": data.name,
-        "addressOrigin": startAddress,
-        "addressDestiny": endAddress,
-        "origin": {
-          "lat": startPoint.lat.toString(),
-          "lng": startPoint.lon.toString()
-        },
-        "destination": {
-          "lat": endPoint.lat.toString(),
-          "lng": endPoint.lon.toString()
-        },
-        "distance": useStore.getState().distance,
-        "duration": useStore.getState().time,
-        "user": userStore.getState().user.id
+      const response = await sendRoute({
+        data,
+        startAddress,
+        endAddress,
+        startPoint,
+        endPoint,
+        distance: useStore.getState().distance,
+        time: useStore.getState().time,
+        id: userStore.getState().user.id
       });
 
-      if (res.status !== 201) {
-        console.error("Error al guardar la ruta");
-        setTitle("Error al guardar la ruta");
-        setMessage(res.message);
-      } else {
-        setTitle("Ruta guardada");
-        setMessage("Se registraron correctamente los datos.");
-      }
+      setTitle(response.title);
+      setMessage(response.message);
+      
     } catch (error) {
       console.error("Error al guardar la ruta", error);
       setTitle("Error al guardar la ruta");
@@ -99,33 +88,6 @@ function RoutForm() {
     <Container className="h-100">
       <h2 className="my-4">Crear Ruta</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Form.Group as={Row} controlId="name">
-          <Form.Label className="mt-3 mb-2" column>
-            Nombre:
-          </Form.Label>
-          <Col sm={12}>
-            <Form.Control
-              type="text"
-              isInvalid={!!errors.name}
-              {...register("name", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 50,
-                  message: "Máximo 50 caracteres",
-                },
-                minLength: {
-                  value: 3,
-                  message: "Mínimo 3 caracteres",
-                },
-              })}
-            />
-            {errors.name && (
-              <Form.Control.Feedback type="invalid">
-                {errors.name.message}
-              </Form.Control.Feedback>
-            )}
-          </Col>
-        </Form.Group>
         <Form.Group as={Row} controlId="origin">
           <Form.Label className="mt-3 mb-2" column>
             Dirección origen:
@@ -178,7 +140,7 @@ function RoutForm() {
             <Button
               type="button"
               onClick={handleSetPoints}
-              disabled={startAddress === ""}
+              disabled={startAddress === "" || endAddress === ""}
             >
               Ver Ruta
             </Button>
@@ -199,21 +161,49 @@ function RoutForm() {
             )}
           </Col>
         </Form.Group>
+        {visible && <Form.Group as={Row} controlId="name">
+          <Form.Label className="mt-3 mb-2" column>
+            Nombre:
+          </Form.Label>
+          <Col sm={12}>
+            <Form.Control
+              type="text"
+              isInvalid={!!errors.name}
+              {...register("name", {
+                required: "Campo requerido",
+                maxLength: {
+                  value: 50,
+                  message: "Máximo 50 caracteres",
+                },
+                minLength: {
+                  value: 3,
+                  message: "Mínimo 3 caracteres",
+                },
+              })}
+            />
+            {errors.name && (
+              <Form.Control.Feedback type="invalid">
+                {errors.name.message}
+              </Form.Control.Feedback>
+            )}
+          </Col>
+        </Form.Group>
+        }
       </Form>
 
       {visible && userLocation && (
-          <div className="h-map pb-footer">
-            <Map
-              userLocation={userLocation}
-              radiusZone={500}
-              startPoint={startPoint}
-              endPoint={endPoint}
-              zoneMode={true}
-              noDrag={true}
-              routingMode={true}
-            />
-          </div>
-        )}
+        <div className="h-map pb-footer mt-2">
+          <Map
+            userLocation={userLocation}
+            radiusZone={500}
+            startPoint={startPoint}
+            endPoint={endPoint}
+            zoneMode={true}
+            noDrag={true}
+            routingMode={true}
+          />
+        </div>
+      )}
 
 
       <ModalAT

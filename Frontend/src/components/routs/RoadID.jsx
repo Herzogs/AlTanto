@@ -8,6 +8,7 @@ import ModalAT from "@components/modal/ModalAT";
 import { useParams } from "react-router-dom";
 import L from "leaflet";
 import "leaflet-routing-machine";
+import { formatDuration, formatDistance } from "@/utilities/conversion"
 
 function RoadID() {
   const [showModal, setShowModal] = useState(false);
@@ -99,8 +100,8 @@ function RoadID() {
             <h5>Nombre: {name}</h5>
             <h5>Origen: {addressOrigin}</h5>
             <h5>Destino: {addressDestination}</h5>
-            <h5>Distancia: {distance} m</h5>
-            <h5>Duración: {duration} s</h5>
+            <h5>Distancia: {formatDistance(distance)}</h5>
+            <h5>Duración: {formatDuration(duration)}</h5>
           </div>
         </div>
         {origin && destination && (

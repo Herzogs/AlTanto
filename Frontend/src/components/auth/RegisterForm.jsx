@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import registerUser from "@services/saveUser.js";
+import {registerUser} from "@services/sendData";
 import { useState } from "react";
 import ModalAT from "@components/modal/ModalAT";
 
