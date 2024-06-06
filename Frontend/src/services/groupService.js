@@ -70,3 +70,13 @@ export const removeUserFromGroup = async ({ groupId, userId }) => {
   }
 };
 
+export const deleteGroup = async (groupId) => {
+  try {
+      const response = await axiosInstance.delete(`/group/${groupId}`);
+      return response.data;
+  } catch (error) {
+      console.error('Error deleting group:', error);
+      throw new Error('Failed to delete group.');
+  }
+};
+
