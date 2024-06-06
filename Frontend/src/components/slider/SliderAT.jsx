@@ -9,7 +9,7 @@ function SliderAT({ reports }) {
   return (
     <>
       {reports && reports.length > 0 ? (
-        reports.length < 3 ? (
+        reports.length < 2 ? (
           <div className="d-flex gap-3">
             {reports.map((report) => (
               <Report key={report.id} report={report} />

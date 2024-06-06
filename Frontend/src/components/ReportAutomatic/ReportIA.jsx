@@ -42,7 +42,7 @@ function categorizeDescription(description) {
       }
     }
   }
-  return { id: 4, name: "ALERTA", tags: [] };
+  return { id: 4, name: "Alerta", tags: [] };
 }
 
 
