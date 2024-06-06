@@ -1,85 +1,76 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Container, Form, Button, Image, Row, Col } from "react-bootstrap";
+import { Container, Form, Button, Image } from "react-bootstrap";
+import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
-import { useForm } from "react-hook-form";
 import sendReport from "@services/sendReport";
+import { getCategoryFromApi } from "@services/getCategory";
+import { useStore } from "@store";
 
-const categories = {
-  SEGURIDAD: ["seguridad", "robo", "vidrio", "pinchada", "llanta"],
-  TRANSPORTE: ["accidente", "colectivo", "transporte", "trafico"],
-  "VIA PUBLICA": ["árbol", "caído", "vereda", "bache", "rampa"],
-  ALERTA: ["alerta", "emergencia"],
-};
+const categories = [
+  {
+    id: 1,
+    name: "Seguridad",
+    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta"],
+  },
+  {
+    id: 2,
+    name: "Transporte",
+    tags: ["accidente", "colectivo", "transporte", "trafico", "tirada"],
+  },
+  {
+    id: 3,
+    name: "Via publica",
+    tags: ["árbol", "caído", "vereda", "bache", "rampa"],
+  },
+  {
+    id: 4,
+    name: "Alerta",
+  },
+];
 
 function categorizeDescription(description) {
   const words = description.toLowerCase().split(" ");
-  for (const [category, keywords] of Object.entries(categories)) {
-    for (const keyword of keywords) {
-      if (words.includes(keyword)) {
-        return category;
+  
+  for (const categoryObj of categories) {
+    const categoryTags = categoryObj.tags || []; 
+  
+    for (const tag of categoryTags) {
+      if (words.includes(tag.toLowerCase())) {
+        console.log(categoryObj)
+        return categoryObj;
       }
     }
   }
-  return "ALERTA";
+  return { id: 4, name: "ALERTA", tags: [] };
 }
+
 
 function ReportIA() {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("ALERTA");
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState([]);
   const videoRef = useRef(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+
+  const { userLocation, setReports } = useStore();
   const [showModal, setShowModal] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    setFile(selectedFile);
-    setPreviewUrl(URL.createObjectURL(selectedFile));
-  };
-
-  const handleCategoryChange = (event) => {
-    setCategory(event.target.value);
-  };
-
-  const handleDescriptionChange = (event) => {
-    setDescription(event.target.value);
-  };
-
-  const analizeImage = async () => {
-    if (!file) return;
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/api/analyze-image",
-        {image: file},
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      const description = response.data.description;
-      setDescription(description);
-      setCategory(categorizeDescription(description));
-    } catch (error) {
-      console.error("Error analyzing image:", error);
-    }
-  };
-
   useEffect(() => {
-    if (description) {
-      setCategory(categorizeDescription(description));
+    setReports(null);
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const fetchedCategories = await getCategoryFromApi();
+      setCategories(fetchedCategories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
     }
-  }, [description]);
+  };
 
   const handleOpenCamera = () => {
     setFile(null);
@@ -113,17 +104,51 @@ function ReportIA() {
     });
   };
 
-  const onSubmit = async (data) => {
-    console.log(data)
-   /*  try {
-      await sendReport(data);
-      setShowModal(true);
-      resetForm();
-      console.log(showModal);
-      console.log("Reporte enviado");
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    setPreviewUrl(URL.createObjectURL(selectedFile));
+  };
+
+  const handleDescriptionChange = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const analizeImage = async () => {
+    if (!file) return;
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/analyze-image",
+        { image: file },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      const description = response.data.description;
+      setDescription(description);
+      setCategory(categorizeDescription(description));
     } catch (error) {
-      console.log(error);
-    } */
+      console.error("Error analyzing image:", error);
+    }
+  };
+
+  const onSubmit = async () => {
+    const reportData = {
+      category: category.id,
+      content: description,
+      latitude: userLocation.lat,
+      longitude: userLocation.lng,
+      image: [file],
+    };
+    try {
+      await sendReport(reportData);
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error sending report:", error);
+    }
   };
 
   return (
@@ -131,7 +156,7 @@ function ReportIA() {
       <h2>Generar reporte automático</h2>
       <p>
         Usaremos un servicio de <strong>Inteligencia Artificial</strong> para
-        obtener un detalle de la imagen que envies.
+        obtener un detalle de la imagen que envíes.
       </p>
 
       <Form.Control
@@ -183,39 +208,48 @@ function ReportIA() {
       >
         Analizar imagen
       </Button>
-
       {description && (
         <div className="mt-5 pb-footer">
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <Form.Group controlId="category">
-              <Form.Label className="fw-bold h5">Categoría:</Form.Label>
-              <Form.Control
-                as="select"
-                value={category}
-                onChange={handleCategoryChange}
-              >
-                {Object.keys(categories).map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
+          <Form.Group controlId="category">
+            <Form.Label className="fw-bold h5">Categoría:</Form.Label>
+            <Form.Control
+              as="select"
+              value={category}
+              onChange={(e) => {
+                const selectedCategory = categories.find(cat => cat.id === parseInt(e.target.value));
+                setCategory(selectedCategory);
+              }}
+            >
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </Form.Control>
+          </Form.Group>
 
-            <Form.Group controlId="description">
-              <Form.Label className="fw-bold h5 mt-4">Descripción:</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={description}
-                onChange={handleDescriptionChange}
-              ></Form.Control>
-            </Form.Group>
+          <Form.Group controlId="description">
+            <Form.Label className="fw-bold h5 mt-4">Descripción:</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              value={description}
+              onChange={handleDescriptionChange}
+            ></Form.Control>
+          </Form.Group>
 
-            <Button type="submit" variant="success" className="my-4 px-4">
-              Guardar reporte
-            </Button>
-          </Form>
+          {description && userLocation && (
+            <div style={{ height: "300px", marginTop: "16px" }}>
+              <Map userLocation={userLocation} zoneMode={true} noDrag={true} />
+            </div>
+          )}
+
+          <Button variant="success" className="my-4 px-4" onClick={onSubmit}>
+            Guardar reporte
+          </Button>
         </div>
       )}
 
