@@ -149,6 +149,10 @@ a {
 }
 
 /* NUEVA UI */
+.container-md_stop{
+  max-width: 768px !important;
+}
+
 .pb-footer {
   padding-bottom: 76px;
 }
