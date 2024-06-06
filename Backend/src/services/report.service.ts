@@ -2,6 +2,7 @@ import transformData from '../utilities/transformData.utilities';
 import * as reportRepository from '../repository/reports.repository';
 import { IReportRequest, IReportResponse, IReportWithRadius } from '../interfaces/reports.interface';
 import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions';
+import userRepository from "../repository/user.repository";
 
 const getAllReports = async (): Promise<IReportResponse[]> => {
     const listOfReports = await reportRepository.default.getAll();
@@ -22,7 +23,11 @@ const getReportByUser = async (userId: number): Promise<IReportResponse[]> => {
 }
 
 const createReport = async (newReport: IReportRequest): Promise<IReportResponse | string> => {
-    const reportCreated = await reportRepository.default.create(newReport);
+
+    const userSearched = await userRepository.getUserByEmail(newReport.email);
+    const newUser = userSearched?.get({plain: true})
+    console.log(newUser, " service Aca esta mi user 29 ")
+    const reportCreated = await reportRepository.default.create(newReport, newUser.id);
     if (!reportCreated) throw new ReportNotCreatedException("Report not created.");
     return reportCreated;
 }

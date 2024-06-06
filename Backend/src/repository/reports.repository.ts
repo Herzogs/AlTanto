@@ -52,22 +52,35 @@ class ReportRepository {
         return listOfReports.map((report) => report.get({ plain: true }));
     }
 
-    static async create(newReport: IReportRequest): Promise<IReportResponse | null> {
+    static async create(newReport: IReportRequest, userId:number): Promise<IReportResponse | null> {
         const categorySearch = await Category.findByPk(newReport.categoryId);
+        console.log("Repo 57");
         if (!categorySearch) {
             return null
         }
+        console.log("Repo 61");
         const locationSearched = await Location.findOrCreate({
             where: { latitude: newReport.latitude, longitude: newReport.longitude },
         })
         const location = locationSearched[0].get({ plain: true });
-        const reporCreated = await Report.create({
-            content: newReport.content,
-            CategoryId: newReport.categoryId,
-            LocationId: location.id,
-            images: newReport.images
-        });
-        return reporCreated.get({ plain: true }) as IReportResponse;
+        console.log("Repo 66",userId);
+        try {
+            const reporCreated = await Report.create({
+
+                content: newReport.content,
+                UserId: userId,
+                CategoryId: newReport.categoryId,
+                LocationId: location.id,
+                images: newReport.images
+            });
+            console.log("Repo 75");
+            return reporCreated.get({ plain: true }) as IReportResponse;
+        }catch (error){
+            console.log((error as Error).message);
+            return null;
+        }
+
+
     }
 
     static async getByLatLongRadius(zoneWithRadius: IReportWithRadius): Promise<object[] | null> {

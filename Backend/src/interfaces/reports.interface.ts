@@ -9,6 +9,7 @@ export interface IReport {
     enabled: boolean;
     categoryId: number;
     locationId: number;
+
 }
 
 export interface IReportResponse {
@@ -43,6 +44,7 @@ export interface IReportRequest {
     categoryId: string;
     latitude: string;
     longitude: string;
+    email: string;
 }
 
 export interface IReportWithRadius {

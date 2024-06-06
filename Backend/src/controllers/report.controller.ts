@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from 'express'
+import {NextFunction, Request, Response} from 'express'
 import * as reportService from '../services/report.service'
-import { IReportRequest, IReportWithRadius } from '../interfaces/reports.interface'
+import {IReportRequest, IReportWithRadius} from '../interfaces/reports.interface'
 import * as reportValidator from '../validator/report.validator'
-import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions'
+import {ReportNotCreatedException, ReportNotFoundException} from '../exceptions/reports.exceptions'
 
 const getAllReports = async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
@@ -53,23 +53,29 @@ const getReportByUser = async (req: Request, res: Response, next: NextFunction):
 };
 
 const createReport = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    
-    const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
-    if (!validData.success) {
-        const listofErrors = validData.error.errors.map((error) => {
-            return {
-                message: error.message,
-                path: error.path.join('.')
+console.log("controller 56");
+   // const validData = req.body;
 
-            }
-        });
-        return next({ message: listofErrors, statusCode: 400 });
-    }
+   // // const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
+   //   if (!validData.success) {
+   //       const listofErrors = validData.error.errors.map((error) => {
+   //         return {
+   //               message: error.message,
+   //               path: error.path.join('.')
+   //
+   //           }
+   //       });
+   //       return next({ message: listofErrors, statusCode: 400 });
+   //   }
+    const validData= req.body;
+console.log(validData);
     try {
+
         const newReport: IReportRequest = {
-            ...validData.data,
+            ...validData,
             "images": req.file?.filename as string
         }
+        console.log("controller 77", newReport);
         const reportCreated = await reportService.createReport(newReport);
         return res.status(201).json(reportCreated);
     } catch (error) {

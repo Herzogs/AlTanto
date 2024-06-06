@@ -22,7 +22,8 @@ const createReportValidator = z.object({
     required_error: 'Longitude is required',
   }).min(1, { message: 'Longitude must be at least 1 character long' })
     .max(30, { message: 'Longitude must be at most 30 characters long' }),
-
+  email: z.string()
+      .email('Invalid email format detected'),
   image: z.object({
     adImage: z.array(z.any()).optional().refine((files) => {
       if (!files || files.length === 0) return true; // Es opcional
