@@ -6,7 +6,7 @@ const createZoneValidator = z.object({
         required_error: 'Name is required'
     })
     .min(3)
-    .max(255)
+    .max(100)
     .trim(),
     latitude: z.string(
         {

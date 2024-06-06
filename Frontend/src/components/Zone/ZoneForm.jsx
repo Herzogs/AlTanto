@@ -6,6 +6,8 @@ import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore } from "@store";
 import {saveZone} from "@services/sendData";
 import ModalAT from "@components/modal/ModalAT";
+import ZoneFormScheme from "@schemes/zoneform.scheme";
+import { zodResolver } from "@hookform/resolvers/zod"; // Import the zodResolver function
 
 function ZoneForm() {
   const [visible, setVisible] = useState(false);
@@ -13,6 +15,8 @@ function ZoneForm() {
   const [selectedRadio, setSelectedRadio] = useState("500");
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
 
   const { userLocation, setUserLocation, setReports } = useStore();
 
@@ -28,10 +32,10 @@ function ZoneForm() {
       address: "",
       radio: "500", // Valor por defecto para el radio
     },
+    resolver: zodResolver(ZoneFormScheme)
   });
 
-  const address = watch("address");
-
+  const { address } = watch()
   useEffect(() => {
     setReports(null);
     setDisabled(address ? false : true);
@@ -71,10 +75,14 @@ function ZoneForm() {
 
   const onSubmit = async (data) => {
     try {
-      await saveZone(data, userLocation);
-      setShowModal(true);
+      const response = await saveZone(data, userLocation);
+      setTitle(response.title);
+      setMessage(response.message);
     } catch (error) {
-      console.log(error.message);
+      setTitle("Error al guardar la zona");
+      setMessage(error.message);
+    } finally {
+      setShowModal(true);
     }
   };
 
@@ -90,17 +98,7 @@ function ZoneForm() {
             <Form.Control
               type="text"
               isInvalid={!!errors.name}
-              {...register("name", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 50,
-                  message: "Máximo 50 caracteres",
-                },
-                minLength: {
-                  value: 3,
-                  message: "Mínimo 5 caracteres",
-                },
-              })}
+              {...register("name")}
             />
             {errors.name && (
               <Form.Control.Feedback type="invalid">
@@ -118,13 +116,7 @@ function ZoneForm() {
             <Form.Control
               type="text"
               isInvalid={!!errors.address}
-              {...register("address", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 120,
-                  message: "Máximo 120 caracteres",
-                },
-              })}
+              {...register("address")}
             />
             {errors.address && (
               <Form.Control.Feedback type="invalid">
@@ -183,8 +175,8 @@ function ZoneForm() {
       )}
 
       <ModalAT
-        title="Zona guardada"
-        message="Se registraron correctamente los datos."
+        title={title}
+        message={message}
         showModal={showModal}
         setShowModal={setShowModal}
         url={"/zonas"}

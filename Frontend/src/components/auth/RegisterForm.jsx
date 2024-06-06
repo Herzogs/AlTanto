@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import {registerUser} from "@services/sendData";
 import { useState } from "react";
 import ModalAT from "@components/modal/ModalAT";
+import { zodResolver } from "@hookform/resolvers/zod";
+import createUser from "@schemes/registerform.scheme";
 
 function RegisterForm() {
   const {
@@ -17,6 +19,7 @@ function RegisterForm() {
       phoneNumber: "",
       email: "",
     },
+    resolver: zodResolver(createUser)
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -51,10 +54,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("name", {
-              required: "Campo requerido",
-              maxLength: { value: 50, message: "Máximo 50 caracteres" },
-            })}
+            {...register("name")}
             className={`form-control ${errors.name ? "is-invalid" : ""}`}
           />
           {errors.name && (
@@ -67,10 +67,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("lastName", {
-              required: "Campo requerido",
-              maxLength: { value: 50, message: "Máximo 50 caracteres" },
-            })}
+            {...register("lastName")}
             className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
           />
           {errors.lastName && (
@@ -83,10 +80,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("username", {
-              required: "Campo requerido",
-              maxLength: { value: 50, message: "Máximo 50 caracteres" },
-            })}
+            {...register("username")}
             className={`form-control ${errors.username ? "is-invalid" : ""}`}
           />
           {errors.username && (
@@ -99,15 +93,7 @@ function RegisterForm() {
           </label>
           <input
             type="password"
-            {...register("password", {
-              required: "Campo requerido",
-              minLength: { value: 8, message: "Mínimo 8 caracteres" },
-              pattern: {
-                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]/,
-                message:
-                  "Debe contener al menos una mayúscula, una minúscula y un número",
-              },
-            })}
+            {...register("password")}
             className={`form-control ${errors.password ? "is-invalid" : ""}`}
           />
           {errors.password && (
@@ -120,14 +106,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("phoneNumber", {
-              required: "Campo requerido",
-              pattern: {
-                value: /^[0-9]{8,15}$/,
-                message:
-                  "Debe ser un número de teléfono válido (mínimo 8 dígitos)",
-              },
-            })}
+            {...register("phoneNumber")}
             className={`form-control ${errors.phoneNumber ? "is-invalid" : ""}`}
           />
           {errors.phoneNumber && (
@@ -140,13 +119,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("email", {
-              required: "Campo requerido",
-              pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: "Debe ser una dirección de correo electrónico válida",
-              },
-            })}
+            {...register("email")}
             className={`form-control ${errors.email ? "is-invalid" : ""}`}
           />
           {errors.email && (

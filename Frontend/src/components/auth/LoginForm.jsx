@@ -4,6 +4,9 @@ import loginUser from "@services/login.js";
 import { userStore } from "@store";
 import ModalAT from "@components/modal/ModalAT";
 import { Link } from "react-router-dom";
+import {zodResolver} from '@hookform/resolvers/zod';
+import loginForm from '@schemes/loginform.scheme';
+
 function LoginForm() {
   const [showModal, setShowModal] = useState(false);
   const [titleModal, setTitleModal] = useState("");
@@ -13,7 +16,9 @@ function LoginForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(loginForm),
+  });
 
   const onSubmit = async (data) => {
     try {
@@ -41,13 +46,7 @@ function LoginForm() {
           </label>
           <input
             type="email"
-            {...register("email", {
-              required: "Campo requerido",
-              pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: "Debe ser una dirección de correo electrónico válida",
-              },
-            })}
+            {...register("email")}
             className={`form-control ${errors.email ? "is-invalid" : ""}`}
           />
           {errors.email && (
@@ -60,13 +59,7 @@ function LoginForm() {
           </label>
           <input
             type="password"
-            {...register("password", {
-              required: "Campo requerido",
-              minLength: {
-                value: 8,
-                message: "La contraseña debe tener al menos 8 caracteres",
-              },
-            })}
+            {...register("password")}
             className={`form-control ${errors.password ? "is-invalid" : ""}`}
           />
           {errors.password && (
