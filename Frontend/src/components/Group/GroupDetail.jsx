@@ -38,7 +38,7 @@ function GroupDetail() {
         }
     };
 
-    const handleInviteUser = async () => {
+    const handleInviteUser = () => {
         const { phoneNumber } = foundUser;
         if (!phoneNumber) {
             setError('El usuario no tiene un número de teléfono registrado.');
@@ -46,19 +46,11 @@ function GroupDetail() {
         }
 
         const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nCódigo del grupo: ${groupDetails.groupCode}\n\n¡Únete a nosotros en WhatsApp!`;
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(inviteMessage)}`;
 
-        try {
-            await axios.post('http://localhost:3000/api/whatsapp/send', {
-                to: phoneNumber,
-                message: inviteMessage
-            });
-
-            alert('Invitación enviada por WhatsApp');
-        } catch (error) {
-            setError('Error al enviar la invitación por WhatsApp');
-        }
+        window.open(whatsappUrl, '_blank');
     };
-
+    
     const handleLeaveGroup = async (groupId, userIdToRemove) => {
         try {
             await removeUserFromGroup({ groupId, userId: userIdToRemove });

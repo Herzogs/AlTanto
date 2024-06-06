@@ -51,7 +51,6 @@ export const findGroupByName = async (groupName) => {
 
 export const addUserToGroupWithCode = async ({ groupId, userId, groupCode }) => {
   try {
-    console.log(groupId + " " + userId + " " + groupCode)
     const response = await axiosInstance.post(`${baseURL}/group/${groupId}/add-user`, { groupId, userId, groupCode });
     return response.data;
   } catch (error) {

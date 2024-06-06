@@ -4,7 +4,6 @@ const baseURL = 'http://localhost:3000/api';
 
 export const getUserByUsername = async (username) => {
     try {
-      console.log(username)
         const response = await axiosInstance.get(`${baseURL}/user/${username}`); 
         return response.data; 
     } catch (error) {

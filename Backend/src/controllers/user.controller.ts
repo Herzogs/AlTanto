@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import * as userService from '../services/user.service';
 
 const getUserByUsername = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    console.log("en back")
     const { username } = req.params;
     try {
         const user = await userService.getUserByUsername(username);
