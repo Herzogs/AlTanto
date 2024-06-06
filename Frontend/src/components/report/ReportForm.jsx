@@ -1,24 +1,26 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
+import { Container, Form, Button, Row, Col} from "react-bootstrap";
 import { getCategoryFromApi } from "@services/getCategory";
 import { sendReport } from "@services/sendData";
-import { useStore, automaticReport } from "@store";
+import { useStore } from "@store";
 import ModalAT from "@components/modal/ModalAT";
+import { zodResolver } from "@hookform/resolvers/zod";
+import ReportFormScheme from "@schemes/reportForm.scheme";
 
 function ReportForm() {
   const { userLocation } = useStore();
-  const { idCategory, file, setIdCategory, setFile } = automaticReport();
+  
 
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   const [formData, setFormData] = useState({
     content: "",
-    category: idCategory || "",
+    category: "",
     latitude: userLocation ? userLocation.lat : "",
     longitude: userLocation ? userLocation.lng : "",
-    image: file || null,
+    image: null,
   });
 
   const {
@@ -26,7 +28,7 @@ function ReportForm() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm({resolver: zodResolver(ReportFormScheme)});
 
   useEffect(() => {
     getCategoryFromApi().then((data) => {
@@ -34,14 +36,14 @@ function ReportForm() {
     });
 
     // Update form data only when necessary
-    if (!idCategory && !file) {
+    
       setValue("content", formData.content);
       setValue("category", formData.category);
       setValue("latitude", formData.latitude);
       setValue("longitude", formData.longitude);
       setValue("image", formData.image);
-    }
-  }, [formData, idCategory, file, setValue]);
+    
+  }, [formData, setValue]);
 
   const onSubmit = async (data) => {
     try {
@@ -63,18 +65,11 @@ function ReportForm() {
       longitude: userLocation ? userLocation.lng : "",
       image: null,
     });
-    setIdCategory("");
-    setFile(null);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setFile(file);
   };
 
   return (
@@ -87,10 +82,7 @@ function ReportForm() {
             <Form.Control
               as="select"
               isInvalid={errors.category}
-              {...register("category", {
-                required: "Campo requerido",
-                onChange: (e) => setIdCategory(e.target.value),
-              })}
+              {...register("category")}
               value={formData.category}
               onChange={handleInputChange}
             >
@@ -99,7 +91,6 @@ function ReportForm() {
                 <option
                   key={cat.id}
                   value={cat.id}
-                  selected={idCategory === cat.id}
                 >
                   {cat.name}
                 </option>
@@ -118,10 +109,7 @@ function ReportForm() {
               as="textarea"
               rows={3}
               isInvalid={errors.content}
-              {...register("content", {
-                required: "Campo requerido",
-                maxLength: { value: 50, message: "Máximo 50 caracteres" },
-              })}
+              {...register("content")}
               value={formData.content}
               onChange={handleInputChange}
             />
@@ -138,9 +126,7 @@ function ReportForm() {
             <Form.Control
               type="text"
               isInvalid={errors.latitude}
-              {...register("latitude", {
-                required: "Campo requerido",
-              })}
+              {...register("latitude")}
               value={formData.latitude}
               onChange={handleInputChange}
             />
@@ -154,9 +140,7 @@ function ReportForm() {
             <Form.Control
               type="text"
               isInvalid={errors.longitude}
-              {...register("longitude", {
-                required: "Campo requerido",
-              })}
+              {...register("longitude")}
               value={formData.longitude}
               onChange={handleInputChange}
             />
@@ -169,20 +153,15 @@ function ReportForm() {
         <Form.Group as={Row} controlId="image">
           <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>
           <Col sm={12}>
-            {file && (
-              <Image
-                src={URL.createObjectURL(file)}
-                alt="Report"
-                style={{ width: "100px", height: "100px" }}
-              />
-            )}
-            {!file &&
-              <Form.Control
+            <Form.Control
                 type="file"
                 {...register("image")}
-                onChange={handleImageChange}
+                
+                isInvalid={errors.image}
               />
-            }
+              <Form.Control.Feedback type="invalid">
+              {errors.image?.message}
+            </Form.Control.Feedback>
           </Col>
         </Form.Group>
 

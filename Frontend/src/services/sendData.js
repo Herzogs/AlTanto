@@ -80,10 +80,21 @@ const saveZone = async (data, coordinates) => {
       radio,
     };
     const response = await axiosInstance.post(FORM_URI_ZONE, zone);
-    if (response.status !== 201) throw new Error("Error al guardar la zona");
-    return response.data;
+    if (response.status !== 201)
+      return {
+        title: "Error al guardar la zona",
+        message: response.message,
+      };
+
+    return {
+      title: "Zona guardada",
+      message: "Se registraron correctamente los datos.",
+    };
   } catch (error) {
-    throw new Error(error.message);
+    return {
+      title: "Error al guardar la zona",
+      message: error.message,
+    };
   }
 }
 
