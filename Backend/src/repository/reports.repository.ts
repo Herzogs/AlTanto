@@ -4,6 +4,7 @@ import { Location } from '../models/Location';
 import { IReportRequest, IReportResponse, IReportWithRadius } from '../interfaces/reports.interface';
 import { QueryTypes } from 'sequelize';
 import { Op } from 'sequelize';
+import User from "../models/User";
 
 class ReportRepository {
     static async getAll(): Promise<Report[]> {
@@ -53,6 +54,10 @@ class ReportRepository {
     }
 
     static async create(newReport: IReportRequest): Promise<IReportResponse | null> {
+        const userSearched= await User.findOne({where:{  email: newReport.email}})
+        if(!userSearched) return null;
+        const userId= userSearched.get({ plain: true });
+
         const categorySearch = await Category.findByPk(newReport.categoryId);
         if (!categorySearch) {
             return null
@@ -65,7 +70,8 @@ class ReportRepository {
             content: newReport.content,
             CategoryId: newReport.categoryId,
             LocationId: location.id,
-            images: newReport.images
+            images: newReport.images,
+            UserId: userId.id,
         });
         return reporCreated.get({ plain: true }) as IReportResponse;
     }
@@ -112,7 +118,6 @@ class ReportRepository {
         });
         return numberOfReportsDisabled[0];
     }
-
 }
 
 export default ReportRepository;

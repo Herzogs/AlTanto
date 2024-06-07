@@ -3,6 +3,7 @@ import * as reportService from '../services/report.service'
 import { IReportRequest, IReportWithRadius } from '../interfaces/reports.interface'
 import * as reportValidator from '../validator/report.validator'
 import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions'
+import { AuthenticatedRequest } from '../middlewares/auth.middlewares';
 
 const getAllReports = async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
@@ -52,15 +53,13 @@ const getReportByUser = async (req: Request, res: Response, next: NextFunction):
     }
 };
 
-const createReport = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    
+const createReport = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response | void> => {
     const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
     if (!validData.success) {
         const listofErrors = validData.error.errors.map((error) => {
             return {
                 message: error.message,
                 path: error.path.join('.')
-
             }
         });
         return next({ message: listofErrors, statusCode: 400 });
@@ -68,6 +67,7 @@ const createReport = async (req: Request, res: Response, next: NextFunction): Pr
     try {
         const newReport: IReportRequest = {
             ...validData.data,
+            email: req.usuarioPP as string,
             "images": req.file?.filename as string
         }
         const reportCreated = await reportService.createReport(newReport);
@@ -76,7 +76,6 @@ const createReport = async (req: Request, res: Response, next: NextFunction): Pr
         if (error instanceof ReportNotCreatedException) {
             return next({ message: error.message, statusCode: error.statusCode });
         }
-
         return next((error as Error).message);
     }
 };
