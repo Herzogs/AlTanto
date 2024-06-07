@@ -40,16 +40,25 @@ async function addUserToGroup(groupId: number, userId: number): Promise<GroupUse
     return groupUser;
 };
 
-async function addUserToGroupWithCode(groupId: number, userId: number, groupCode: string): Promise<GroupUser> {
-    const group = await GroupRepository.getGroupById(groupId);
+async function addUserToGroupWithCode(groupId: number | null, userId: number, groupCode: string): Promise<GroupUser> {
+    let group: IGroup | null = null;
+
+    if (groupId !== null) {
+        group = await GroupRepository.getGroupById(groupId);
+    } else {
+        group = await GroupRepository.getGroupByGroupCode(groupCode);
+    }
     if (!group) {
         throw new Error('Group not found');
     }
     if (group.groupCode !== groupCode) {
         throw new Error('Invalid group code');
     }
-    return await GroupRepository.addUser(groupId, userId);
-};
+    if (!group.id) {
+        throw new Error('Group ID is undefined or null');
+    }
+    return await GroupRepository.addUser(group.id, userId);
+}
 
 async function removeUserFromGroup(groupId: number, userId: number): Promise<boolean>{
     const removed = await GroupRepository.removeUser(groupId, userId);

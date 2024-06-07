@@ -83,6 +83,12 @@ class GroupRepository {
         return group.toJSON();
     }
 
+    static async getGroupByGroupCode(groupCode: string): Promise<IGroup> {
+        const group = await Group.findOne({ where: { groupCode} })
+        if (!group) throw new Error('Group not found');
+        return group.toJSON();
+    }
+
     static async getGroupMembers(groupId: number): Promise<any> {
         const groupUsers = await GroupUser.findAll({
             where: { groupId },

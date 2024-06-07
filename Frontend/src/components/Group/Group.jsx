@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { getGroupsByUserId, createGroup, findGroupByName } from "@/services/groupService";
+import { getGroupsByUserId, createGroup, findGroupByName, addUserToGroupWithCode } from "@/services/groupService";
 import { useNavigate } from "react-router-dom";
 import { userStore } from "@/store";
 
 function Group() {
   const [groupName, setGroupName] = useState("");
   const [searchName, setSearchName] = useState("");
+  const [groupCode, setGroupCode] = useState("");
   const [groups, setGroups] = useState([]);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -52,6 +53,17 @@ function Group() {
     }
   };
 
+  const handleJoinGroupByCode = async () => {
+    try {
+      await addUserToGroupWithCode({ userId, groupCode });
+      const userGroups = await getGroupsByUserId(userId);
+      setGroups(userGroups);
+      setGroupCode(""); 
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   return (
     <div>
       <h2>Crear Grupo</h2>
@@ -80,6 +92,17 @@ function Group() {
         onChange={(e) => setSearchName(e.target.value)}
       />
       <button onClick={handleSearchGroup}>Buscar Grupo</button>
+
+      <h3>Unirse a un Grupo por Código</h3>
+      <input
+        type="text"
+        value={groupCode}
+        onChange={(e) => setGroupCode(e.target.value)}
+        placeholder="Ingrese el código del grupo"
+      />
+      <button onClick={handleJoinGroupByCode}>Unirse al Grupo</button>
+
+      {error && <p>Error: {error}</p>}
     </div>
   );
 }

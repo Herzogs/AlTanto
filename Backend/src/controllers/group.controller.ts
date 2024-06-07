@@ -70,7 +70,7 @@ const deleteGroup = async (req: Request, res: Response, next: NextFunction): Pro
 };
 
 const addUserToGroupWithCode = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const { groupId, userId, groupCode } = req.body; 
+    const { groupId = null, userId, groupCode } = req.body; 
     const groupUser = await groupService.addUserToGroupWithCode(groupId, userId, groupCode);
     return res.json(groupUser);
 };
