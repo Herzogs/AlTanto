@@ -8,12 +8,13 @@ const VALIDATION_URI = "/auth/validate-code";
 
 const sendReport = async (data) => {
   try {
+    console.log(data)
     const formData = new FormData();
     formData.append("content", data.content);
     formData.append("categoryId", data.category);
     formData.append("latitude", data.latitude.toString());
     formData.append("longitude", data.longitude.toString());
-    if (data && data.image) formData.append("image", data.image[0]);
+    if (data && data.image) formData.append("image", data.image);
 
     const response = await axiosInstance.post(FORM_URI_REPORT, formData, {
       headers: {
