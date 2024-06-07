@@ -10,6 +10,7 @@ export const auth = async (req: Request, _res: Response, next: NextFunction) => 
     const authorization = authorizationHeader.split(' ')[1];
     try {
         await verifyJWT(authorization);
+        
         next();
     } catch (error) {
         console.error("error", (error as Error).message);

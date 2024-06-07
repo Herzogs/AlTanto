@@ -23,10 +23,7 @@ function obtenerElementosAlAzar(segmento, cantidad) {
 }
 
 const fetchReports = async (routeCoordinates, numSegments) => {
-    console.log("entre acá");
-    console.log(routeCoordinates.length);
-    console.log(numSegments);
-
+    
     let segments = dividirEnSegmentos(routeCoordinates, numSegments);
     let puntosSeleccionados = segments.flatMap(segmento => obtenerElementosAlAzar(segmento, 3));
 

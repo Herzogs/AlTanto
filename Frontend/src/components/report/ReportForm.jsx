@@ -47,7 +47,6 @@ function ReportForm() {
   const onSubmit = async (data) => {
     data.image = file;
 
-    console.log(data);
     try {
       await sendReport(data);
       setShowModal(true);

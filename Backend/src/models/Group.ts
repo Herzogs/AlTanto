@@ -7,16 +7,16 @@ interface GroupAttributes {
     id: number;
     name: string;
     ownerId: number;
-    codigoGrupo: string;
+    groupCode: string;
 }
 
-interface GroupCreationAttributes extends Optional<GroupAttributes, 'id' | 'codigoGrupo'> {}
+interface GroupCreationAttributes extends Optional<GroupAttributes, 'id' | 'groupCode'> {}
 
 class Group extends Model<GroupAttributes, GroupCreationAttributes> implements GroupAttributes {
     public id!: number;
     public name!: string;
     public ownerId!: number;
-    public codigoGrupo!: string;
+    public groupCode!: string;
 }
 
 Group.init({
@@ -37,7 +37,7 @@ Group.init({
             key: 'id'
         }
     },
-    codigoGrupo: {
+    groupCode: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,

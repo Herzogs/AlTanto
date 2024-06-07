@@ -1,6 +1,5 @@
 import express from 'express';
 import router from './routes/index.routes';
-import imageAnalysisRouter from './routes/imageAnalysis.routes'; //  IA
 import cors from 'cors';
 import errorHandler from './middlewares/errorHandler.middleware';
 //import { disableOldReport } from './cron/disableOldReport.cron'
@@ -17,7 +16,6 @@ server.use(cors({
 }));
 
 server.use('/api',router)
-server.use('/api', imageAnalysisRouter); // IA
 server.use(errorHandler)
 const app = server.listen(process.env.PORT, ()=>{
     console.log(`Server is running on port ${process.env.PORT}`)

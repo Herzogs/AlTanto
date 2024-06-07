@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Map from "@components/Map/Map";
 import SliderAT from "@components/slider/SliderAT";
-import { useStore, automaticReport } from "@store";
+import { useStore, automaticReport} from "@store";
 import useReports from "@hook/useReports";
 import CardHome from "@components/cards/CardHome";
 

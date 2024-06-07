@@ -3,15 +3,24 @@ import PinDropIcon from "@mui/icons-material/PinDrop";
 import ForkRightIcon from "@mui/icons-material/ForkRight";
 import GroupsIcon from "@mui/icons-material/Groups";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import {userStore} from '@store'
 import { Link } from "react-router-dom";
 
 function CardHome() {
+
+  const {name, lastName} = userStore.getState().user
     
   return (
     <article className="card-home">
       <div className="d-flex mb-3">
         <AccountCircleIcon style={{ fontSize: "32px", marginRight: "12px" }} />
-        <h3>Nombre Usuario</h3>
+        {name && lastName ? (
+          <h4>
+            {name} {lastName}
+          </h4>
+        ) : (
+          <h4>Invitado</h4>
+        )}
       </div>
 
       <h5>

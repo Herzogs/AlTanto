@@ -5,17 +5,13 @@ import { auth } from "../middlewares/auth.middlewares";
 
 const router = Router();
 
-
-
 router.get('/filterBy', controller.getReportsByLatLongRadius);
 
-router.get('/', controller.getAllReports);
+router.get('/', auth, controller.getAllReports);
 
+router.get('/:id', auth, controller.getReportsById);
 
-router.get('/:id', controller.getReportsById);
-
-
-router.get('/:userId', controller.getReportByUser);
+router.get('/:userId', auth, controller.getReportByUser);
 
 router.post('/', auth, upload.single("image"), controller.createReport);
 

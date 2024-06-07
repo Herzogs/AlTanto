@@ -8,7 +8,6 @@ const VALIDATION_URI = "/auth/validate-code";
 
 const sendReport = async (data) => {
   try {
-    console.log(data)
     const formData = new FormData();
     formData.append("content", data.content);
     formData.append("categoryId", data.category);
