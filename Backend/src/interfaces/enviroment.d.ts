@@ -17,6 +17,9 @@ declare global {
             AWS_REGION: string
             CRON_TIME: string
             CRON_TIME_TEST: string
+            GOOGLE_TRANSLATE_API_KEY: string
+            CV_ENDPOINT: string
+            CV_KEY: string
         }
     }
 }

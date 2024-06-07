@@ -22,7 +22,7 @@ class ZoneRepository {
             userId: newZone.userId
 
         })
-        console.log(zone.get({ plain: true }))
+        
         if (!zone) {
             throw new ZoneNotCreatedException("Zone not created");
         }

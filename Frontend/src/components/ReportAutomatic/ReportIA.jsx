@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import { useState, useEffect, useRef } from "react";
+import axiosInstance from "@interceptors/axiosConfig";
 import { Container, Form, Button, Image } from "react-bootstrap";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
@@ -11,7 +11,7 @@ const categories = [
   {
     id: 1,
     name: "Seguridad",
-    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta"],
+    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta","palanca"],
   },
   {
     id: 2,
@@ -116,8 +116,8 @@ function ReportIA() {
   const analizeImage = async () => {
     if (!file) return;
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/analyze-image",
+      const response = await axiosInstance.post(
+        "/imageAnalysis",
         { image: file },
         {
           headers: {
@@ -190,7 +190,7 @@ function ReportIA() {
           <Image
             src={previewUrl}
             alt="Vista previa"
-            style={{ width: "100%", maxHeight: "400px" }}
+            style={{ width: "100%", maxHeight: "300px" }}
             fluid
           />
           <p>{file.name}</p>

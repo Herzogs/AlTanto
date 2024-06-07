@@ -31,4 +31,4 @@ Group.belongsTo(User, { as: 'owner', foreignKey: 'ownerId' });
 Group.belongsToMany(User, { through: GroupUser, as: 'members', foreignKey: 'groupId' });
 User.belongsToMany(Group, { through: GroupUser, as: 'groups', foreignKey: 'userId' });
 
-export { Group, GroupUser };
+export { Group, GroupUser ,User };

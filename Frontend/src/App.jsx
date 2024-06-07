@@ -18,12 +18,15 @@ import ValidationCodeForm from "@components/auth/CodeForm.jsx";
 import LoginForm from "@components/auth/LoginForm.jsx";
 import RoadID from "@components/routs/RoadID";
 import ReportIA from "@components/ReportAutomatic/ReportIA";
+import Group from "@components/group/Group";
+import GroupDetail from "@components/group/GroupDetail";
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
   { path: "/auth/logout", element: <Logout /> },
   { path: "/auth/verificacion", element: <ValidationCodeForm /> },
   { path: "/auth/login", element: <LoginForm /> },
+  { path: "/", element: <Home /> },
   {
     path: "*",
     element: <h1 className="text-center">Estamos trabajando en ello...</h1>,
@@ -32,7 +35,6 @@ const nonProtectedRoutes = [
 
 // Define las rutas que requieren autenticación
 const protectedRoutes = [
-  { path: "/", element: <Home /> },
   { path: "/recorridos", element: <Roads /> },
   { path: "/recorridos/:id", element: <RoadID /> },
   { path: "/form/ruta", element: <RoutForm /> },
@@ -44,6 +46,8 @@ const protectedRoutes = [
   { path: "/zonas/:id", element: <ZoneID /> },
   { path: "/notificaciones", element: <Notifications /> },
   { path: "/reportes/:id", element: <ReportDetail /> },
+  { path: "/grupos", element: <Group /> },
+  { path: "/grupos/:id", element: <GroupDetail /> },
 ];
 
 const App = () => {
