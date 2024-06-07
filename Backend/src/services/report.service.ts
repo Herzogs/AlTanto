@@ -17,7 +17,7 @@ const getReportById = async (reportId: number): Promise<IReportResponse> => {
 
 const getReportByUser = async (userId: number): Promise<IReportResponse[]> => {
     const listOfReports = await reportRepository.default.getByUser(userId);
-    if (!listOfReports) throw new ReportNotFoundException("Report not found for user.");
+    if (!listOfReports) throw new ReportNotFoundException("Report not found for auth.");
     return listOfReports.map(transformData);
 }
 

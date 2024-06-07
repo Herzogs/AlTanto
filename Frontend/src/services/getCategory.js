@@ -1,9 +1,13 @@
-const API_URL = "http://localhost:3000/api/categories";
+import axiosInstance from "@interceptors/axiosConfig";
+const API_URL = "/categories";
 
 export const getCategoryFromApi = async () => {
   try {
-    const response = await fetch(`${API_URL}`);
-    const data = await response.json();
+    const response = await axiosInstance.get(API_URL);
+    if(response.status !== 200) {
+      throw new Error("Error fetching categories");
+    }
+    const data = await response.data;
     return data;
   } catch (error) {
     console.error("Error fetching categories:", error);

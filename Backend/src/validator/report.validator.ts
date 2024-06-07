@@ -3,11 +3,6 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB en bytes
 const ACCEPTED_IMAGE_MIME_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const createReportValidator = z.object({
-  title: z.string({
-    required_error: 'Title is required',
-  }).min(1, { message: 'Title must be at least 1 character long' })
-    .max(255, { message: 'Title must be at most 255 characters long' }),
-  
   content: z.string({
     required_error: 'Content is required',
   }).min(1, { message: 'Content must be at least 1 character long' })
@@ -36,7 +31,7 @@ const createReportValidator = z.object({
       if (!files || files.length === 0) return true; // Es opcional
       return ACCEPTED_IMAGE_MIME_TYPES.includes(files[0].type);
     }, "Only .jpg, .jpeg, .png and .webp formats are supported.")
-  }).optional().nullable() // Agrega el .nullable() aquí
+  }).optional().nullable()
 }).strict();
 
 

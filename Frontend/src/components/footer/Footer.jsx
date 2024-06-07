@@ -1,4 +1,3 @@
-import React from "react";
 import HomeIcon from "@mui/icons-material/Home";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import ForkRightIcon from "@mui/icons-material/ForkRight";
@@ -15,6 +14,9 @@ function Footer() {
     }
     if (path === "/zonas") {
       return location.pathname === path || location.pathname.startsWith("/zonas/") ? "active" : "";
+    }
+    if (path === "/recorridos") {
+      return location.pathname === path || location.pathname.startsWith("/recorridos/") ? "active" : "";
     }
     if (path === "/notificaciones") {
       return location.pathname === path || location.pathname.startsWith("/reportes/") ? "active" : "";

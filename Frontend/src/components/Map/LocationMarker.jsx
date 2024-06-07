@@ -14,12 +14,12 @@ const userIcon = new L.Icon({
 
 const LocationMarker = ({noDrag = false}) => {
   const map = useMap();
-  const { userLocation, setUserLocation } = useStore();
+  const { userLocation, setUserLocation, setOldUserLocation } = useStore();
 
   useEffect(() => {
     if (!userLocation) {
       map
-        .locate({ setView: true, maxZoom: 16 })
+        .locate({ setView: true, maxZoom: 20 })
         .on("locationfound", function (e) {
           setUserLocation(e.latlng);
         });
@@ -30,6 +30,7 @@ const LocationMarker = ({noDrag = false}) => {
     dragend(event) {
       const marker = event.target;
       const position = marker.getLatLng();
+      setOldUserLocation(userLocation);
       setUserLocation(position);
       map.setView(position, map.getZoom());
     },

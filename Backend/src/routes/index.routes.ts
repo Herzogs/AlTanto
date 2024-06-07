@@ -9,7 +9,7 @@ const routesPath = path.join(__dirname, './')
 // Read all files in the current directory and filter only the ones that end with .routes.ts
 // Then, for each file, import the default export and add it to the router
 // The route will be the file name without the .routes.ts extension
-// For example, if we have a file named user.routes.ts, the route will be /user
+// For example, if we have a file named auth.routes.ts, the route will be /auth
 fs.readdirSync(routesPath)
   .filter(file => file.endsWith('.routes.ts') && file !== 'index.routes.ts')
     .forEach(async file => {

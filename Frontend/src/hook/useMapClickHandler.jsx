@@ -1,5 +1,5 @@
 import { useMapEvents } from "react-leaflet";
-import { useStore } from "@store";
+import { useStore } from "../store";
 
 const useMapClickHandler = () => {
   const { startPoint, endPoint, setStartPoint, setEndPoint } = useStore();

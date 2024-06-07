@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Map from "@components/Map/Map.jsx";
 import { useStore } from "@store";
 import useReports from "@hook/useReports";
 import getZone from "@services/getZone";
 import ModalAT from "@components/modal/ModalAT";
+import CategoryFilter from "@components/Map/CategoryFilter";
 
 function ZoneHome() {
   const { userLocation, setUserLocation, radiusZone, setRadiusZone } =
@@ -15,6 +17,7 @@ function ZoneHome() {
   const [loading, setLoading] = useState(true);
   const [zona, setZona] = useState({});
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -47,27 +50,23 @@ function ZoneHome() {
     }
   }, [userLocation, radiusZone]);
 
-  const handleClose = () => {
-    setShowModal(false);
-  };
-
   return (
     <>
       {!loading && (
         <section className="container_home">
-          <div className="top-section">
-            <h2 className="text-center w-100">{zona.name}</h2>
+          <h2 className="text-center mt-4 mb-5">{zona.name}</h2>
+
+          <div className="h-map">
+            <Map userLocation={userLocation} radius={radiusZone} CategoryFilterComponent={CategoryFilter} />
           </div>
-          <div className="bottom-section">
-            <Map userLocation={userLocation} radius={radiusZone} />
-          </div>
+
           {!error && (
             <ModalAT
               title="Encontramos un error"
               message={error}
               showModal={showModal}
-              handleClose={handleClose}
-              handleAccept={handleClose}
+              handleClose={()=> navigate("/zonas")}
+              handleAccept={()=> navigate("/zonas")}
             />
           )}
         </section>

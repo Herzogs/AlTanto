@@ -24,15 +24,15 @@ html {
   overflow-x: hidden;
 }
 
-html, body, #root {
+html,
+body,
+main,
+#root {
   height: 100%;
   margin: 0;
   padding: 0;
-}
-main {
-  height: 100%;
-  background-color: var(--color-white);
-  padding-bottom: 60px;
+  color: var(--color-at-white);
+  background-color: var(--color-at-grey);
 }
 body {
   margin: 0;
@@ -40,10 +40,6 @@ body {
   font-family: "Lato", sans-serif;
   line-height: 1.5;
   font-size: 16px;
-  overflow-x: hidden;
-  height: 100%;
-  overscroll-behavior-y: none;
-  background-color: var(--color-white);
 }
 img {
   height: auto;
@@ -51,7 +47,7 @@ img {
   margin: 0;
 }
 a {
-  color: inherit;
+  color: inherit !important;
   text-decoration: none;
 }
 h1 {
@@ -87,49 +83,27 @@ h6 {
   color: var(--color-at-grey);
 }
 
+.shadow-at {
+  box-shadow: 0px 3px 4px 2px rgba(17, 17, 17, 0.15),
+    0px 2px 4px 0px rgba(68, 71, 72, 0.15);
+}
 
 /* ESTILOS HOME */
 .container_home {
-  display: flex;
-  flex-direction: column;
   width: 100%;
   height: 100%;
 }
 
-.top-section {
-  flex: 0 0 20%;
-  display: flex;
-  align-items: center;
-}
-
-.bottom-section {
-  flex: 0 0 80%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding-bottom: 60px;
-}
-
-.map-container{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.map {
-  flex: 1;
-}
-
 /* ESTILOS FILTROS */
-.container-filters{
+.container-filters {
   display: flex;
   column-gap: 12px;
   margin-bottom: 12px;
 }
 
 .custom-checkbox {
-  transform: scale(1.5); 
-  margin-right: 12px; 
+  transform: scale(1.5);
+  margin-right: 12px;
 }
 
 .custom-checkbox-wrapper {
@@ -138,16 +112,15 @@ h6 {
 }
 
 /* ZONAS */
-.container_zonas-item{
+.container_zonas-item {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   justify-content: center;
-
 }
 
-.zonas-item{
-  width: 160px;
+.zonas-item {
+  min-width: 160px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -159,20 +132,101 @@ h6 {
   padding: 12px;
 }
 
-.zonas-item h5{
+.zonas-item h5 {
   text-transform: uppercase;
 }
 
-.zonas-item a{
+.zonas-item a {
   text-decoration: none;
 }
 
-label{
+label {
   font-weight: 600;
 }
 
-a{
+a {
   text-decoration: none !important;
+}
+
+/* NUEVA UI */
+.container-md_stop{
+  max-width: 768px !important;
+}
+
+.pb-footer {
+  padding-bottom: 76px;
+}
+
+.card-home {
+  color: var(--color-at-black);
+  background-color: var(--color-at-white);
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.card-home a:hover {
+  color: var(--color-at-orange) !important;
+  transition: 0.3s ease-in-out;
+}
+
+.h-map {
+  height: 80%;
+}
+
+.leaflet-touch .leaflet-bar a {
+  background: var(--color-at-grey);
+}
+
+.slick-initialized .slick-slide {
+  display: block;
+  padding-right: 16px !important;
+}
+
+.slick-dots li button:before {
+  font-size: 10px;
+  color: black;
+  color: var(--color-at-white);
+}
+
+.slick-dots li.slick-active button:before {
+  opacity: 0.95;
+  color: var(--color-at-orange);
+}
+
+.leaflet-container {
+  height: 100%;
+  border-radius: 12px;
+}
+
+.menu-button {
+  position: absolute !important;
+  top: 10%;
+  right: 2%;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.menu-button_icon {
+  font-size: 52px !important;
+  color: var(--color-at-grey);
+  transition: 0.3s ease-in-out;
+}
+
+.menu-button_icon:hover {
+  color: var(--color-at-orange);
+  transition: 0.3s ease;
+}
+
+.menu-button a:hover {
+  background-color: var(--color-at-orange);
+  color: var(--color-white) !important;
+  transition: 0.3s ease;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  font: 24px/28px Tahoma, Verdana, sans-serif;
+  color: var(--color-at-black) !important;
 }
 
 @media only screen and (min-width: 1200px) {
@@ -193,5 +247,11 @@ a{
   }
   h6 {
     font-size: 1.125rem;
+  }
+
+  .zonas-item {
+    min-width: 220px;
+    min-height: 140px;
+    padding: 32px;
   }
 }

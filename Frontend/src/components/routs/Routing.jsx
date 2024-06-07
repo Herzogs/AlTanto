@@ -1,40 +1,47 @@
 import { useEffect } from 'react';
-import { useMap } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet-routing-machine';
-import L from 'leaflet';
+import { useStore } from '@store';
+import { useMap } from 'react-leaflet';
 
-const Routing = ({ startPoint, endPoint }) => {
-  const map = useMap();
-
+const Routing = ({ startPoint, endPoint}) => {
+  const { setDistance, setTime} = useStore();
+  const map= useMap()
   useEffect(() => {
-    if (startPoint && endPoint) {
-      const routingControl = L.Routing.control({
-        waypoints: [
-          L.latLng(startPoint.lat, startPoint.lng),
-          L.latLng(endPoint.lat, endPoint.lng),
-        ],
-        routeWhileDragging: false,
-        show: false,
-        createMarker: (i, waypoint, n) => {
-          return L.marker(waypoint.latLng, {
-            draggable: true,
-          }).on('dragend', function (e) {
-            const latLng = e.target.getLatLng();
-            if (i === 0) {
-              startPoint.lat = latLng.lat;
-              startPoint.lng = latLng.lng;
-            } else if (i === 1) {
-              endPoint.lat = latLng.lat;
-              endPoint.lng = latLng.lng;
-            }
-          });
-        },
-      }).addTo(map);
+    if (startPoint && endPoint && map) {
+      // Espera un pequeño tiempo para asegurar que el mapa esté inicializado completamente
+      
+        const routingControl = L.Routing.control({
+          waypoints: [
+            L.latLng(startPoint.lat, startPoint.lon),
+            L.latLng(endPoint.lat, endPoint.lon),
+          ],
+          addWaypoints: false,
+          routeWhileDragging: false,
+          show: false,
+          router: new L.Routing.osrmv1({
+            serviceUrl: 'https://router.project-osrm.org/route/v1',
+          })
+        });
 
-      return () => map.removeControl(routingControl);
+        routingControl.on('routesfound', (e) => {
+          const routes = e.routes[0];
+          const { totalDistance, totalTime } = routes.summary;
+          setDistance(totalDistance);
+          setTime(totalTime);
+        });
+
+        routingControl.addTo(map);
+        
+
+        // Remover el control cuando se desmonte el componente
+        return () => {
+          map.removeControl(routingControl);
+        };
+      // Ajusta el tiempo de espera si es necesario
     }
-  }, [map, startPoint, endPoint]);
+  }, [map]);
 
   return null;
 };

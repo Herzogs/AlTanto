@@ -1,10 +1,9 @@
 export interface IReport {
     id: number;
-    title: string;
     content: string;
-    dateTime: Date;
+    createAt: Date;
     file: string;
-    duration: Date;
+    duration: number;
     positiveScore: number;
     negativeScore: number;
     enabled: boolean;
@@ -14,11 +13,11 @@ export interface IReport {
 
 export interface IReportResponse {
     id: number;
-    title: string;
+   
     content: string;
-    dateTime: Date;
+    createAt: Date;
     file: string;
-    duration: Date;
+    duration: number;
     positiveScore: number;
     negativeScore: number;
     enabled: boolean;
@@ -39,7 +38,6 @@ export interface IReportCategory {
 }
 
 export interface IReportRequest {
-    title: string;
     content: string;
     images: string;
     categoryId: string;

@@ -14,6 +14,7 @@ export default defineConfig({
       { find: '@pages', replacement: fileURLToPath(new URL('./src/pages', import.meta.url)) },
       { find: '@services', replacement: fileURLToPath(new URL('./src/services', import.meta.url)) },
       { find: '@store', replacement: fileURLToPath(new URL('./src/store', import.meta.url)) },
+      { find: '@interceptors', replacement: fileURLToPath(new URL('./src/interceptors', import.meta.url)) },
     ],
   },
 

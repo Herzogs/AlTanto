@@ -1,28 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import {
-  Container,
-  Form,
-  Button,
-  Row,
-  Col,
-  Modal,
-  FormCheck,
-} from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Container, Form, Button, Row, Col, FormCheck } from "react-bootstrap";
 import Map from "@components/Map/Map.jsx";
 import { geocodeAddress } from "@services/getGeoAdress";
-import { useStore } from "@store";
-import saveZone from "../../services/saveZone";
+import { useStore, userStore } from "@store";
+import {saveZone} from "@services/sendData";
 import ModalAT from "@components/modal/ModalAT";
 
 function ZoneForm() {
   const [visible, setVisible] = useState(false);
   const [disabled, setDisabled] = useState(true);
-  const [selectedRadio, setSelectedRadio] = useState("250");
+  const [selectedRadio, setSelectedRadio] = useState("500");
+  const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState("");
 
-  const { userLocation, setUserLocation } = useStore();
-  const navigate = useNavigate();
+  const { userLocation, setUserLocation, setReports } = useStore();
 
   const {
     register,
@@ -34,13 +26,14 @@ function ZoneForm() {
     defaultValues: {
       name: "",
       address: "",
-      radio: "",
+      radio: "500", // Valor por defecto para el radio
     },
   });
 
   const address = watch("address");
 
   useEffect(() => {
+    setReports(null);
     setDisabled(address ? false : true);
   }, [address]);
 
@@ -48,25 +41,27 @@ function ZoneForm() {
     register("radio");
   }, [register]);
 
-  const fetchCoordinates = useCallback(() => {
-    geocodeAddress(address).then((data) => {
-      if (!data) throw new Error("Error al obtener la dirección");
+  const fetchCoordinates = useCallback(async () => {
+    try {
+      const data = await geocodeAddress(address);
       const { lat, lon } = data;
-      setUserLocation({ lat: +lat, lng: +lon });
+      if (isNaN(lat) || isNaN(lon)) {
+        throw new Error("Coordenadas inválidas");
+      }
+      setUserLocation({ lat, lng: lon });
       setVisible(true);
-    });
+      setError("");
+    } catch (error) {
+      setError(error.message);
+      setUserLocation(null);
+      setVisible(false);
+    }
   }, [address, setUserLocation]);
 
   const handleSearch = () => {
     if (address) {
       fetchCoordinates();
     }
-  };
-
-  const [showModal, setShowModal] = useState(false);
-
-  const handleClose = () => {
-    setShowModal(false);
   };
 
   const handleCheckboxChange = (value) => {
@@ -76,7 +71,7 @@ function ZoneForm() {
 
   const onSubmit = async (data) => {
     try {
-      await saveZone(data, userLocation);
+      await saveZone(data, userLocation, userStore.getState().user.id);
       setShowModal(true);
     } catch (error) {
       console.log(error.message);
@@ -84,14 +79,14 @@ function ZoneForm() {
   };
 
   return (
-    <Container>
-      <h2>Crear zona</h2>
+    <Container className="h-100">
+      <h2 className="my-4">Crear zona</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group as={Row} controlId="name">
-          <Form.Label column sm={2}>
+          <Form.Label className="mt-3 mb-2" column>
             Nombre:
           </Form.Label>
-          <Col sm={10}>
+          <Col sm={12}>
             <Form.Control
               type="text"
               isInvalid={!!errors.name}
@@ -102,7 +97,7 @@ function ZoneForm() {
                   message: "Máximo 50 caracteres",
                 },
                 minLength: {
-                  value: 5,
+                  value: 3,
                   message: "Mínimo 5 caracteres",
                 },
               })}
@@ -115,19 +110,19 @@ function ZoneForm() {
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="address">
-          <Form.Label column sm={2}>
+          <Form.Label className="mt-3 mb-2" column>
             Dirección: <br />
             <small>Calle, Número y Localidad</small>
           </Form.Label>
-          <Col sm={10}>
+          <Col sm={12}>
             <Form.Control
               type="text"
               isInvalid={!!errors.address}
               {...register("address", {
                 required: "Campo requerido",
                 maxLength: {
-                  value: 50,
-                  message: "Máximo 50 caracteres",
+                  value: 120,
+                  message: "Máximo 120 caracteres",
                 },
               })}
             />
@@ -139,17 +134,16 @@ function ZoneForm() {
           </Col>
         </Form.Group>
         <Form.Group className="my-4" as={Row} controlId="search">
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button type="button" onClick={handleSearch}>
+          <Col sm={12}>
+            <Button type="button" onClick={handleSearch} disabled={disabled}>
               Buscar dirección
             </Button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
           </Col>
         </Form.Group>
         <Form.Group as={Row} controlId="radio">
-          <Form.Label column sm={2}>
-            Radio asignado a la zona:
-          </Form.Label>
-          <Col sm={10}>
+          <Form.Label column>Radio asignado a la zona:</Form.Label>
+          <Col sm={12}>
             {["250", "500", "1000"].map((value) => (
               <FormCheck
                 key={value}
@@ -163,32 +157,37 @@ function ZoneForm() {
           </Col>
         </Form.Group>
         <Form.Group className="my-4" as={Row} controlId="submit">
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button
-              className="btn-success px-4"
-              type="submit"
-              disabled={disabled}
-            >
-              Guardar
-            </Button>
+          <Col sm={12}>
+            {visible && userLocation && (
+              <Button
+                className="btn-success px-4"
+                type="submit"
+                disabled={disabled}
+              >
+                Guardar
+              </Button>
+            )}
           </Col>
         </Form.Group>
-        {visible && userLocation && (
+      </Form>
+
+      {visible && userLocation && (
+        <div className="h-map pb-footer">
           <Map
             userLocation={userLocation}
             radiusZone={selectedRadio}
             zoneMode={true}
             noDrag={true}
           />
-        )}
-      </Form>
+        </div>
+      )}
 
       <ModalAT
-        title="Zona Enviada"
-        message="Se ha guardado correctamente la zona."
+        title="Zona guardada"
+        message="Se registraron correctamente los datos."
         showModal={showModal}
-        handleClose={handleClose}
-        handleAccept={handleClose}
+        setShowModal={setShowModal}
+        url={"/zonas"}
       />
     </Container>
   );

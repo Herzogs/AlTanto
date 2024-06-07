@@ -1,6 +1,7 @@
 import {DataTypes, Model} from 'sequelize';
 import dbConnection from '../config/dbConnection.config';
 import {Location} from './Location';
+import User from './User';
 
 class Zone extends Model {}
 
@@ -12,7 +13,8 @@ Zone.init({
     },
     name: { type: DataTypes.STRING, allowNull: false },
     radio: {type: DataTypes.INTEGER, defaultValue: 500},
-    dateTime: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+    userId: {type: DataTypes.INTEGER, allowNull: false},
+    createAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 }, {
     sequelize: dbConnection,
     freezeTableName: true,
@@ -21,5 +23,6 @@ Zone.init({
 });
 
 Zone.belongsTo(Location);
+Zone.belongsTo(User, {foreignKey: 'id' })
 
 export default Zone;

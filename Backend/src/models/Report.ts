@@ -12,11 +12,10 @@ Report.init({
         primaryKey: true,
         autoIncrement: true
     },
-    title: { type: DataTypes.STRING, allowNull: false},
     content: { type: DataTypes.STRING, allowNull: false},
-    dateTime: { type: DataTypes.DATE, defaultValue: DataTypes.NOW},
+    createAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW},
     images: {type: DataTypes.STRING, allowNull: true},
-    duration: { type: DataTypes.DATE, allowNull: false},
+    duration: { type: DataTypes.INTEGER, defaultValue: 2},
     positiveScore: { type: DataTypes.INTEGER, defaultValue: 0},
     negativeScore: { type: DataTypes.INTEGER, defaultValue: 0},
     enabled: {type: DataTypes.BOOLEAN , defaultValue: true},
