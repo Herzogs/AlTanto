@@ -11,8 +11,8 @@ async function notificacionesColectivosCapital() {
 }
 
 async function obtenerDatosDeAPI() {
-    const client_id = '431350e535634502832e3bf55d781f69';
-    const client_secret = 'b1E507533480471f8A72032Bb3Ea6ddA';
+    const client_id = process.env.API_GBA_API_ID;
+    const client_secret = process.env.API_GBA_API_SECRET;
     const link = `https://apitransporte.buenosaires.gob.ar/colectivos/serviceAlerts?client_id=${client_id}&client_secret=${client_secret}&json=1`;
 
 

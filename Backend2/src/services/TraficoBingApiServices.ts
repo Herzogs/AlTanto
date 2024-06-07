@@ -2,8 +2,9 @@ import axios from 'axios';
 
 
 async function obtenerDatosDeAPI() {
+
     const Area = '-34.78712653421942,-58.83613518664739,-34.49876070617906,-58.22536601079223';
-    const BingMapsAPIKey = 'At9zvJB9f6LDV4jFL4kWn-vZCzbvTxp_mvSbTifvWN96REZ9grk3isbrdT2o-zVN';
+    const BingMapsAPIKey = process.env.API_BINGMAPKEY;
     const url = `http://dev.virtualearth.net/REST/v1/Traffic/Incidents/${Area}?key=${BingMapsAPIKey}`;
     console.log("url "+ url);
    
