@@ -71,7 +71,7 @@ async function initializeClimaModel(estacionMeteorologicaRepository: EstacionMet
             date,
             timeOfDay: morningTimeOfDay,
             temp: item.weather.morning_temp || null,
-            tempDesc: item.weather.morning_desc || null,
+            description: item.weather.morning_desc || null,
             forecastType,
             estacionMeteorologicaLid: item.lid 
         });
@@ -81,7 +81,7 @@ async function initializeClimaModel(estacionMeteorologicaRepository: EstacionMet
             date,
             timeOfDay: afternoonTimeOfDay,
             temp: item.weather.afternoon_temp || null,
-            tempDesc: item.weather.afternoon_desc || null,
+            description: item.weather.afternoon_desc || null,
             forecastType,
             estacionMeteorologicaLid: item.lid 
         });

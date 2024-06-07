@@ -28,9 +28,9 @@ export class PronosticoRepository implements IPronosticoRepository {
           timeOfDay: pronostico.timeOfDay,
         },
       });
-
+  
       if (existingPronostico) {
-        // Update existing forecast
+        // Update existing forecast with all fields
         await existingPronostico.update(pronostico.toJSON());
         return existingPronostico;
       } else {
@@ -43,6 +43,9 @@ export class PronosticoRepository implements IPronosticoRepository {
       throw error;
     }
   }
+  
+
+  
 }
 
 export default PronosticoRepository;
