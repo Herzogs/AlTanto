@@ -14,19 +14,9 @@ import initializeColectivosAlertaModel from './models/ColectivosAlerta.Model';
 import initializeClimaClimaModel from './models/Clima.Model';
 import TraficoBingApiServices from './services/TraficoBingApiServices';
 
-async function obtenerDatosDeTrafico() {
-  try {
-    const datos = await TraficoBingApiServices();
-  
-  } catch (error) {
-    console.error('Error al obtener los datos de tráfico:', error);
-  }
-}
-
-obtenerDatosDeTrafico();
 
 // Carga los imports de los modelos para crear las tablas
-//initializeModels();
+initializeModels();
 
 // Para inyectar
 const pronosticoRepository = new PronosticoRepository();
@@ -40,6 +30,21 @@ const estacionMeteorologicaRepository = new EstacionMeteorologicaRepository();
     initializeColectivosAlertaModel(tipoNotificacionRepo, alertaRepository); 
     initializeClimaClimaModel(estacionMeteorologicaRepository, pronosticoRepository); 
     EstadoDeLosTrenes(tipoNotificacionRepo, alertaRepository); 
+
+
+
+    async function obtenerDatosDeTrafico() {
+        try {
+          const datos = await TraficoBingApiServices();
+        
+        } catch (error) {
+          console.error('Error al obtener los datos de tráfico:', error);
+        }
+      }
+      
+      obtenerDatosDeTrafico();
+
+
 }, 10000); // 10000 milisegundos = 10 segundos
  
 
