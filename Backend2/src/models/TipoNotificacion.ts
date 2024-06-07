@@ -2,6 +2,16 @@
 import { DataTypes, Model } from 'sequelize';
 import dbConnection from '../database/Database';
 
+
+
+interface TipoNotificacionAttributes {
+  identificador?: string;
+  descripcion?: string;
+  grupo?: string;
+}
+
+
+
 class TipoNotificacion extends Model {
   public idTipo_Notificacion!: number;
   public identificador!: string;
@@ -19,7 +29,7 @@ TipoNotificacion.init(
     identificador: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: false,
     },
     descripcion: {
         type: DataTypes.STRING,
@@ -38,4 +48,5 @@ TipoNotificacion.init(
   }
 );
 
+export {TipoNotificacionAttributes}
 export default TipoNotificacion;

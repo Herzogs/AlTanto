@@ -25,10 +25,11 @@ Alerta.init(
         model: TipoNotificacion,
         key: 'idTipo_Notificacion',
       },
-    },    descripcion: {
-      type: DataTypes.STRING,
+    },
+    descripcion: {
+      type: DataTypes.STRING(1000), // Definir el límite de caracteres
       allowNull: false,
-    },    
+    },
     vigente: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -47,6 +48,7 @@ Alerta.init(
     timestamps: false,
   }
 );
+
 
 TipoNotificacion.hasMany(Alerta, { foreignKey: 'idTipo_notificacion' });
 Alerta.belongsTo(TipoNotificacion, { foreignKey: 'idTipo_notificacion' });

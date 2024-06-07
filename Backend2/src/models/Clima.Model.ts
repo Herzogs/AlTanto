@@ -3,7 +3,7 @@ import ClimaHoyServices from '../services/ClimaHoyServices';
 import ClimaMananaServices from '../services/ClimaMananaServices';
 import { EstacionMeteorologicaRepository } from '../repositories/EstacionMeteorologicaRepository';
 import { EstacionInput } from '../repositories/IEstacionMeteorologicaRepository';
-import Pronostico from '../models/Pronostico';
+import Pronostico from './Pronostico';
 import PronosticoRepository from '../repositories/PronosticoRepository';
 
 async function initializeClimaModel(estacionMeteorologicaRepository: EstacionMeteorologicaRepository, pronosticoRepository: PronosticoRepository) {
