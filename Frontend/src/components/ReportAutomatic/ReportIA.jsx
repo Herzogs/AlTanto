@@ -3,7 +3,7 @@ import axios from "axios";
 import { Container, Form, Button, Image } from "react-bootstrap";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
-import sendReport from "@services/sendReport";
+import { sendReport } from "@services/sendData";
 import { getCategoryFromApi } from "@services/getCategory";
 import { useStore } from "@store";
 
@@ -31,20 +31,19 @@ const categories = [
 
 function categorizeDescription(description) {
   const words = description.toLowerCase().split(" ");
-  
+
   for (const categoryObj of categories) {
-    const categoryTags = categoryObj.tags || []; 
-  
+    const categoryTags = categoryObj.tags || [];
+
     for (const tag of categoryTags) {
       if (words.includes(tag.toLowerCase())) {
-        console.log(categoryObj)
+        console.log(categoryObj);
         return categoryObj;
       }
     }
   }
   return { id: 4, name: "Alerta", tags: [] };
 }
-
 
 function ReportIA() {
   const [file, setFile] = useState(null);
@@ -141,7 +140,7 @@ function ReportIA() {
       content: description,
       latitude: userLocation.lat,
       longitude: userLocation.lng,
-      image: [file],
+      image: file,
     };
     try {
       await sendReport(reportData);
@@ -216,7 +215,9 @@ function ReportIA() {
               as="select"
               value={category}
               onChange={(e) => {
-                const selectedCategory = categories.find(cat => cat.id === parseInt(e.target.value));
+                const selectedCategory = categories.find(
+                  (cat) => cat.id === parseInt(e.target.value)
+                );
                 setCategory(selectedCategory);
               }}
             >

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import validateCode from "@services/sendCodeRegister.js";
+import {validateCode} from "@services/sendData";
 import ModalAT from "@components/modal/ModalAT";
 
 function ValidationCodeForm() {
@@ -15,7 +15,7 @@ function ValidationCodeForm() {
 
     const onSubmit = async (data) => {
         try {
-            const response = await validateCode(data); // Llama al servicio de validación de código con los datos del formulario
+            await validateCode(data); // Llama al servicio de validación de código con los datos del formulario
             setTitle("Validación correcta");
             setMessage("Sera redirigido a la home del sitio");
         } catch (error) {

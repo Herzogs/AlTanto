@@ -27,6 +27,7 @@ const getGroupById = async (req: Request, res: Response, next: NextFunction): Pr
 };
 
 const createGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    console.log(req.body);
     const validationResult = createGroupValidator.safeParse(req.body);
     if (!validationResult.success) {
         return next({ message: validationResult.error.errors[0].message, statusCode: 400 });

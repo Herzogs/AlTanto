@@ -10,12 +10,14 @@ import CategoryForm from "@components/category/CategoryForm";
 import ZoneForm from "@components/Zone/ZoneForm";
 import ZoneID from "@components/Zone/ZoneID";
 import ReportDetail from "@components/report/ReportDetail";
+import RoutForm from "@components/routs/RoutForm";
 import Logout from "@components/auth/Logout";
 import { AuthGuard } from "./guards/auth.guard";
 import RegisterForm from "@components/auth/RegisterForm.jsx";
 import ValidationCodeForm from "@components/auth/CodeForm.jsx";
 import LoginForm from "@components/auth/LoginForm.jsx";
-import ReportIA from "./components/ReportAutomatic/ReportIA";
+import RoadID from "@components/routs/RoadID";
+import ReportIA from "@components/ReportAutomatic/ReportIA";
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
@@ -32,6 +34,8 @@ const nonProtectedRoutes = [
 const protectedRoutes = [
   { path: "/", element: <Home /> },
   { path: "/recorridos", element: <Roads /> },
+  { path: "/recorridos/:id", element: <RoadID /> },
+  { path: "/form/ruta", element: <RoutForm /> },
   { path: "/form/reporte", element: <ReportForm /> },
   { path: "/form/reporte/automatico", element: <ReportIA /> },
   { path: "/form/categoria", element: <CategoryForm /> },

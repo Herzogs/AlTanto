@@ -1,77 +1,51 @@
-import { useEffect, useState } from "react";
-import { useStore } from "@store";
-import Map from "@components/Map/Map";
-import { Container } from "react-bootstrap";
-import { fetchReports } from "@services/getReportsInRoutings.js";
-import ModalAT from "@components/modal/ModalAT";
+import {useEffect, useState} from 'react';
+import { getRoutesByUserId } from '@services/getRoutesByUser';
+import { userStore, useStore} from '@store';
+import { Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 function Roads() {
-  const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState(null);
-  const [modalTitle, setModalTitle] = useState(null);
+    
+    const [road, setRoad] = useState([]);
 
-  const {
-    userLocation,
-    setUserLocation,
-    radiusZone,
-    routingMode,
-    setRoutingMode,
-    setStartPoint,
-    setEndPoint,
-    routeCoordinates,
-    setReports,
-    setRouteCoordinates
-  } = useStore();
+    useEffect(() => {
+      useStore.getState().setReports([]);
+      getRoutesByUserId(userStore.getState().user.id).then((data) => {
+        setRoad(data);
 
-  useEffect(() => {
-    setUserLocation(null);
-    setStartPoint(null);
-    setEndPoint(null);
-    setRoutingMode(true);
-    setReports([]);
-    setRouteCoordinates(null);
-  }, []);
-
-
-
-  useEffect(() => {
-    if (routeCoordinates) {
-      setUserLocation({ lat: routeCoordinates[0][0], lng: routeCoordinates[0][1] });
-      fetchReports(routeCoordinates, 4).then((reports) => {
-        setReports(reports);
-      }).catch((error) => {
-        setShowModal(true);
-        setModalTitle("Error");
-        setModalContent(error.message);
       });
-    }
-  }, [routeCoordinates]);
-
-
-
-  return (
-    <section className="container_home">
-      <Container fluid className="h-100">
-        <h3 className="my-4 text-center">Recorridos</h3>
-        <div className="h-map pb-fotter">
-          <Map
-            userLocation={userLocation}
-            radius={radiusZone}
-            routingMode={routingMode}
-          />
+    }, []);
+    
+    return (
+      <Container fluid className="pb-footer">
+        <div className="text-center">
+          <h1>Gestionar Rutas</h1>
+          <Link to="/form/ruta" className="btn btn-success mt-3 px-4 py-3 fw-bold">
+            Crear nueva ruta
+          </Link>
         </div>
-
-        <ModalAT
-          title={modalTitle}
-          message={modalContent}
-          showModal={showModal}
-          setShowModal={setShowModal}
-          url="/"
-        />
+  
+        {road && road.length > 0 ? (
+          <>
+            <h4 className="text-center mt-5 mb-4">Selecciona un recorrido para ver su información</h4>
+            <article className="container_zonas-item container">
+              {road.map((ruta) => (
+                <div className="zonas-item" key={ruta.id}>
+                  <h5>{ruta.name}</h5>
+                  <Link
+                    to={`/recorridos/${ruta.id}`}
+                    className="btn btn-sm btn-primary text-white"
+                  >
+                    Ver detalle
+                  </Link>
+                </div>
+              ))}
+            </article>
+          </>
+        ) : (
+          <h4 className="text-center mt-5">Todavia no tienes Rutas guardadas</h4>
+        )}
       </Container>
-    </section>
-
-  );
+    );
 }
-
-export default Roads;
+export default Roads

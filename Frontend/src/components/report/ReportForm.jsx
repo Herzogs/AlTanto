@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
 import { getCategoryFromApi } from "@services/getCategory";
-import sendReport from "@services/sendReport";
+import { sendReport } from "@services/sendData";
 import { useStore, automaticReport } from "@store";
+import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
 
 function ReportForm() {
-  const { userLocation } = useStore();
+  const { userLocation, setReports } = useStore();
   const { idCategory, file, setIdCategory, setFile } = automaticReport();
 
   const [categories, setCategories] = useState([]);
@@ -16,8 +17,6 @@ function ReportForm() {
   const [formData, setFormData] = useState({
     content: "",
     category: idCategory || "",
-    latitude: userLocation ? userLocation.lat : "",
-    longitude: userLocation ? userLocation.lng : "",
     image: file || null,
   });
 
@@ -29,6 +28,8 @@ function ReportForm() {
   } = useForm();
 
   useEffect(() => {
+    setReports(null);
+
     getCategoryFromApi().then((data) => {
       setCategories(data);
     });
@@ -37,19 +38,20 @@ function ReportForm() {
     if (!idCategory && !file) {
       setValue("content", formData.content);
       setValue("category", formData.category);
-      setValue("latitude", formData.latitude);
-      setValue("longitude", formData.longitude);
+      setValue("latitude", userLocation.lat);
+      setValue("longitude", userLocation.lng);
       setValue("image", formData.image);
     }
   }, [formData, idCategory, file, setValue]);
 
   const onSubmit = async (data) => {
+    data.image = file;
+
+    console.log(data);
     try {
       await sendReport(data);
       setShowModal(true);
       resetForm();
-      console.log(showModal);
-      console.log("Reporte enviado");
     } catch (error) {
       console.log(error);
     }
@@ -59,8 +61,6 @@ function ReportForm() {
     setFormData({
       content: "",
       category: "",
-      latitude: userLocation ? userLocation.lat : "",
-      longitude: userLocation ? userLocation.lng : "",
       image: null,
     });
     setIdCategory("");
@@ -131,41 +131,6 @@ function ReportForm() {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row}>
-          <Col sm={6}>
-            <Form.Label className="mt-3 mb-2">Latitud:</Form.Label>
-
-            <Form.Control
-              type="text"
-              isInvalid={errors.latitude}
-              {...register("latitude", {
-                required: "Campo requerido",
-              })}
-              value={formData.latitude}
-              onChange={handleInputChange}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.latitude?.message}
-            </Form.Control.Feedback>
-          </Col>
-
-          <Col sm={6}>
-            <Form.Label className="mt-3 mb-2">Longitud:</Form.Label>
-            <Form.Control
-              type="text"
-              isInvalid={errors.longitude}
-              {...register("longitude", {
-                required: "Campo requerido",
-              })}
-              value={formData.longitude}
-              onChange={handleInputChange}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.longitude?.message}
-            </Form.Control.Feedback>
-          </Col>
-        </Form.Group>
-
         <Form.Group as={Row} controlId="image">
           <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>
           <Col sm={12}>
@@ -173,14 +138,16 @@ function ReportForm() {
               <Image
                 src={URL.createObjectURL(file)}
                 alt="Report"
-                style={{ width: "100px", height: "100px" }}
+                style={{ maxWidth: "400px", maxHeight: "300px", width: "100%" }}
               />
             )}
-            <Form.Control
-              type="file"
-              {...register("image")}
-              onChange={handleImageChange}
-            />
+            {!file && (
+              <Form.Control
+                type="file"
+                {...register("image")}
+                onChange={handleImageChange}
+              />
+            )}
           </Col>
         </Form.Group>
 
@@ -188,6 +155,12 @@ function ReportForm() {
           Guardar
         </Button>
       </Form>
+
+      {userLocation && (
+        <div style={{ height: "300px", marginTop: "16px" }}>
+          <Map userLocation={userLocation} zoneMode={true} noDrag={true} />
+        </div>
+      )}
 
       <ModalAT
         title="Reporte guardado"

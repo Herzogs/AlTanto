@@ -6,6 +6,10 @@ import { mountStoreDevtool } from 'simple-zustand-devtools';
 const useStore = create(
   persist(
     (set) => ({
+
+      time: null,
+      setTime: (time) => set({ time: time }),
+
       userLocation: null,
       setUserLocation: (location) => set({ userLocation: location }),
 
@@ -58,12 +62,14 @@ const userStore = create(
   persist(
     (set) => ({
       user: {
+        id: null,
         name: null,
         lastName: null,
         email: null,
       },
       setUser: (user) => set({
         user: {
+          id: user.id,
           name: user.name,
           email: user.email,
           lastName: user.lastName

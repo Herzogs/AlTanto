@@ -3,7 +3,7 @@ import router from './routes/index.routes';
 import imageAnalysisRouter from './routes/imageAnalysis.routes'; //  IA
 import cors from 'cors';
 import errorHandler from './middlewares/errorHandler.middleware';
-import { disableOldReport } from './cron/disableOldReport.cron';
+//import { disableOldReport } from './cron/disableOldReport.cron'
 
 const server = express();
 
@@ -16,13 +16,12 @@ server.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-server.use('/api', router);
+server.use('/api',router)
 server.use('/api', imageAnalysisRouter); // IA
-server.use(errorHandler);
-
-const app = server.listen(process.env.PORT, () => {
-    console.log(`Server is running on port ${process.env.PORT}`);
-    disableOldReport.start();
-});
+server.use(errorHandler)
+const app = server.listen(process.env.PORT, ()=>{
+    console.log(`Server is running on port ${process.env.PORT}`)
+    //disableOldReport.start()
+})
 
 export { server, app };

@@ -15,6 +15,9 @@ function Footer() {
     if (path === "/zonas") {
       return location.pathname === path || location.pathname.startsWith("/zonas/") ? "active" : "";
     }
+    if (path === "/recorridos") {
+      return location.pathname === path || location.pathname.startsWith("/recorridos/") ? "active" : "";
+    }
     if (path === "/notificaciones") {
       return location.pathname === path || location.pathname.startsWith("/reportes/") ? "active" : "";
     }
