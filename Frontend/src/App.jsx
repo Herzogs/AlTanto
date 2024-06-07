@@ -20,6 +20,7 @@ import RoadID from "@components/routs/RoadID";
 import ReportIA from "@components/ReportAutomatic/ReportIA";
 import Group from "@components/group/Group";
 import GroupDetail from "@components/group/GroupDetail";
+import GroupSearch from "@components/group/GroupSearch";
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
@@ -48,6 +49,7 @@ const protectedRoutes = [
   { path: "/reportes/:id", element: <ReportDetail /> },
   { path: "/grupos", element: <Group /> },
   { path: "/grupos/:id", element: <GroupDetail /> },
+  { path: "group-search", element: <GroupSearch /> },
 ];
 
 const App = () => {

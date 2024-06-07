@@ -3,6 +3,8 @@ import { GroupNotCreatedException, GroupNotFoundException, UserNotFoundException
 import { IGroup } from '../interfaces/group.interface';
 import { GroupUser } from '../models/GroupUser';
 import { IGroupDetails } from '../interfaces/groupDetail.interface';
+import { getUserByUserName } from "../services/user.service";
+import { IUser } from 'interfaces/user.interface';
 
 async function getAllGroups(): Promise<IGroup[]> {
     const groups = await GroupRepository.getAll();
@@ -90,6 +92,16 @@ async function getGroupDetailsById(groupId: number): Promise<IGroupDetails> {
     return { ...group, members } as IGroupDetails;
 }
 
+async function getUser(userName: string): Promise<IUser> {
+    console.log(userName)
+    try {
+        const user = await getUserByUserName(userName);
+        return user;
+    } catch (error) {
+        throw new Error('Error al obtener usuario');
+    }
+}
+
 
 export{
     getAllGroups,
@@ -102,5 +114,6 @@ export{
     findGroupsByName,
     getGroupsByUserId,
     getGroupDetailsById,
-    addUserToGroupWithCode
+    addUserToGroupWithCode,
+    getUser
 }

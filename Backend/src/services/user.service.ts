@@ -26,4 +26,13 @@ const getUserByEmail = async (email: string): Promise<IUser> => {
     return userSearched.get({plain: true}) as IUser;
 }
 
-export {createUser, getUserByEmail};
+const getUserByUserName = async (userName: string): Promise<IUser> => {
+    const userSearched = await userRepository.getUserByUserName(userName);
+    if (userSearched === null) {
+        throw new UserNotFoundException("User not found.");
+    }
+    return userSearched.get({plain: true}) as IUser;
+}
+
+
+export {createUser, getUserByEmail, getUserByUserName};
