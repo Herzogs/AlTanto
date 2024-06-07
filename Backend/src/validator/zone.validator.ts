@@ -22,11 +22,6 @@ const createZoneValidator = z.object({
         message: 'Radio must be a number',
         required_error: 'Radio is required'
     }).int().positive(),
-    userId: z.number({
-        message: 'Id must be a number',
-        required_error: 'Id is required'
-    }).int().positive()
-
 }).strict();
 
 const getZoneByIdValidator = z.object({

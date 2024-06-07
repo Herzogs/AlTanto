@@ -43,6 +43,7 @@ export interface IReportRequest {
     categoryId: string;
     latitude: string;
     longitude: string;
+    email:string;
 }
 
 export interface IReportWithRadius {

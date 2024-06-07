@@ -4,7 +4,7 @@ export interface IZone {
     latitude:string
     longitude: string;
     radio: number;
-    userId: number;
+    email: string;
 }
 
 export type IZoneRequest = Omit<IZone, 'id'>;
