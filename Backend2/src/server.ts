@@ -12,11 +12,11 @@ import EstadoDeLosTrenes from './models/Trenes.Models';
 import initializeSubtesAlertaModel from './models/SubtesAlerta.Model';
 import initializeColectivosAlertaModel from './models/ColectivosAlerta.Model';
 import initializeClimaClimaModel from './models/Clima.Model';
-import TraficoBingApiServices from './services/TraficoBingApiServices';
+import TraficoBingApiServices from './models/BingMap.Model';
 
 
 // Carga los imports de los modelos para crear las tablas
-initializeModels();
+//initializeModels();
 
 // Para inyectar
 const pronosticoRepository = new PronosticoRepository();
@@ -26,12 +26,10 @@ const estacionMeteorologicaRepository = new EstacionMeteorologicaRepository();
 
 // Demora para que se creen las tablas
  setTimeout(() => {
-    initializeSubtesAlertaModel(tipoNotificacionRepo, alertaRepository); 
-    initializeColectivosAlertaModel(tipoNotificacionRepo, alertaRepository); 
-    initializeClimaClimaModel(estacionMeteorologicaRepository, pronosticoRepository); 
-    EstadoDeLosTrenes(tipoNotificacionRepo, alertaRepository); 
-
-
+   // initializeSubtesAlertaModel(tipoNotificacionRepo, alertaRepository); 
+ //   initializeColectivosAlertaModel(tipoNotificacionRepo, alertaRepository); 
+   // initializeClimaClimaModel(estacionMeteorologicaRepository, pronosticoRepository); 
+   // EstadoDeLosTrenes(tipoNotificacionRepo, alertaRepository); 
 
     async function obtenerDatosDeTrafico() {
         try {
