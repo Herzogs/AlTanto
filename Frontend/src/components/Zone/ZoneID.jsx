@@ -6,6 +6,7 @@ import { useStore } from "@store";
 import useReports from "@hook/useReports";
 import getZone from "@services/getZone";
 import ModalAT from "@components/modal/ModalAT";
+import CategoryFilter from "@components/Map/CategoryFilter";
 
 function ZoneHome() {
   const { userLocation, setUserLocation, radiusZone, setRadiusZone } =
@@ -56,7 +57,7 @@ function ZoneHome() {
           <h2 className="text-center mt-4 mb-5">{zona.name}</h2>
 
           <div className="h-map">
-            <Map userLocation={userLocation} radius={radiusZone} />
+            <Map userLocation={userLocation} radius={radiusZone} CategoryFilterComponent={CategoryFilter} />
           </div>
 
           {!error && (

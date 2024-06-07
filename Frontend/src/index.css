@@ -201,7 +201,7 @@ a {
 
 .menu-button {
   position: absolute !important;
-  top: 3%;
+  top: 10%;
   right: 2%;
   z-index: 999;
   cursor: pointer;

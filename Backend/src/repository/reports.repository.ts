@@ -105,8 +105,8 @@ class ReportRepository {
         const numberOfReportsDisabled = await Report.update({ enabled: false }, {
             where: {
                 createAt: {
-                    //[Op.lte]: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000) // > 2 days
-                    [Op.lte]: new Date(new Date().getTime() - 5 * 60 * 1000) //  > 1 hour
+                    [Op.lte]: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000) // > 2 days
+                    //[Op.lte]: new Date(new Date().getTime() - 5 * 60 * 1000) //  > 1 hour
                 }
             }
         });

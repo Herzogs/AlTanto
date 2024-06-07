@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import L from "leaflet";
 import "leaflet-routing-machine";
 import { formatDuration, formatDistance } from "@/utilities/conversion"
+import CategoryFilter from "@components/Map/CategoryFilter";
 
 function RoadID() {
   const [showModal, setShowModal] = useState(false);
@@ -115,6 +116,7 @@ function RoadID() {
               zoneMode={true}
               noDrag={true}
               routingMode={true}
+              CategoryFilterComponent={CategoryFilter}
             />
           </div>
         )}
