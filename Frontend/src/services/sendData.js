@@ -69,16 +69,18 @@ const sendRoute = async ({ data, startAddress, endAddress, startPoint, endPoint,
   }
 }
 
-const saveZone = async (data, coordinates) => {
+const saveZone = async (data, coordinates,id) => {
   try {
     if (!data || !coordinates) throw new Error("Error al guardar la zona");
     const { name, radio } = data;
+  
 
     const zone = {
       name,
       latitude: coordinates.lat.toString(),
       longitude: coordinates.lng.toString(),
-      radio,
+      radio: +radio,
+      userId: id
     };
     const response = await axiosInstance.post(FORM_URI_ZONE, zone);
     if (response.status !== 201) throw new Error("Error al guardar la zona");

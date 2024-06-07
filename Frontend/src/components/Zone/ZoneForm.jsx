@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, FormCheck } from "react-bootstrap";
 import Map from "@components/Map/Map.jsx";
 import { geocodeAddress } from "@services/getGeoAdress";
-import { useStore } from "@store";
+import { useStore, userStore } from "@store";
 import {saveZone} from "@services/sendData";
 import ModalAT from "@components/modal/ModalAT";
 
@@ -71,7 +71,7 @@ function ZoneForm() {
 
   const onSubmit = async (data) => {
     try {
-      await saveZone(data, userLocation);
+      await saveZone(data, userLocation, userStore.getState().user.id);
       setShowModal(true);
     } catch (error) {
       console.log(error.message);

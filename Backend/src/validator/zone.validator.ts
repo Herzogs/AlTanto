@@ -18,10 +18,15 @@ const createZoneValidator = z.object({
         message: 'Longitude must be a string',
         required_error: 'Longitude is required'
     }),
-    radio: z.string({
-        message: 'Radio must be a string',
+    radio: z.number({
+        message: 'Radio must be a number',
         required_error: 'Radio is required'
-    }).min(3).max(4),
+    }).int().positive(),
+    userId: z.number({
+        message: 'Id must be a number',
+        required_error: 'Id is required'
+    }).int().positive()
+
 }).strict();
 
 const getZoneByIdValidator = z.object({

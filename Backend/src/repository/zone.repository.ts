@@ -3,20 +3,31 @@ import { Location } from '../models/Location';
 import { IZone, IZoneRequest } from '../interfaces/zone.interface';
 import { ZoneNotCreatedException, ZoneNotFoundException } from '../exceptions/zone.exceptions';
 
+
 class ZoneRepository {
     static async create(newZone: IZoneRequest): Promise<IZone> {
+
+
         const locationSearched = await Location.findOrCreate({
             where: { latitude: newZone.latitude, longitude: newZone.longitude },
         })
+
+
         const location = locationSearched[0].get({ plain: true });
+
         const zone = await Zone.create({
             name: newZone.name,
-            LocationId: location.id
+            radio: newZone.radio,
+            LocationId: location.id,
+            userId: newZone.userId
+
         })
+        console.log(zone.get({ plain: true }))
         if (!zone) {
             throw new ZoneNotCreatedException("Zone not created");
         }
         return zone.get({ plain: true });
+
     }
 
     static async getAllZone(): Promise<IZone[]> {
@@ -24,7 +35,7 @@ class ZoneRepository {
             include: [
                 { model: Location, attributes: ['latitude', 'longitude'] }
             ],
-            attributes: { exclude: [ 'LocationId'] }
+            attributes: { exclude: ['LocationId'] }
         });
         if (!listOfZones) {
             throw new ZoneNotFoundException("Zones not found");
