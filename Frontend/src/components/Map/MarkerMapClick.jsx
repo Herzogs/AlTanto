@@ -6,8 +6,8 @@ import L from "leaflet";
 
 const userIcon = new L.Icon({
   iconUrl: iconuser,
-  iconSize: [30, 42], 
-  iconAnchor: [15, 40], 
+  iconSize: [30, 46], 
+  iconAnchor: [13, 40], 
   popupAnchor: [0, -32],
   zIndex: 9999 
 });

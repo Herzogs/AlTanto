@@ -171,7 +171,6 @@ function ReportForm() {
           <Map
             userLocation={userLocation}
             zoneMode={true}
-            noDrag={true}
             mapClick={true}
             noCircle={true}
           />

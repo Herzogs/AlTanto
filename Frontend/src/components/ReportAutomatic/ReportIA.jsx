@@ -12,7 +12,7 @@ const categories = [
   {
     id: 1,
     name: "Seguridad",
-    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta","palanca"],
+    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca"],
   },
   {
     id: 2,
@@ -62,7 +62,10 @@ function ReportIA() {
   useEffect(() => {
     setReports(null);
     fetchCategories();
-    const location = markerPosition !== null ? {lat: markerPosition[0], lng: markerPosition[1]} : userLocation;
+    const location =
+      markerPosition !== null
+        ? { lat: markerPosition[0], lng: markerPosition[1] }
+        : userLocation;
     if (location) {
       const reverse = async () => {
         const data = await reverseGeocode(location);
@@ -78,12 +81,14 @@ function ReportIA() {
   useEffect(() => {
     if (markerPosition) {
       const reverse = async () => {
-        const data = await reverseGeocode({ lat: markerPosition[0], lng: markerPosition[1] });
+        const data = await reverseGeocode({
+          lat: markerPosition[0],
+          lng: markerPosition[1],
+        });
         return data;
       };
       reverse().then((data) => {
         setAddress(data);
-        
       });
     }
   }, [markerPosition]);
@@ -271,11 +276,21 @@ function ReportIA() {
           </Form.Group>
 
           <label className="fw-bold h5 mt-4">Ubicación:</label>
-          <input type="text" className="mt-3 mb-2 w-100" value={address} readOnly="true" />
+          <input
+            type="text"
+            className="mt-3 mb-2 w-100"
+            value={address}
+            readOnly="true"
+          />
 
           {description && userLocation && (
             <div style={{ height: "300px", marginTop: "16px" }}>
-              <Map userLocation={userLocation} zoneMode={true} noDrag={true} mapClick={true} noCircle={true} />
+              <Map
+                userLocation={userLocation}
+                zoneMode={true}
+                mapClick={true}
+                noCircle={true}
+              />
             </div>
           )}
 

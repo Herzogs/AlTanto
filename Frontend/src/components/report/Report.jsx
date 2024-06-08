@@ -1,9 +1,11 @@
 import { Button } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
-import WarningIcon from "@mui/icons-material/Warning";
-import ErrorIcon from "@mui/icons-material/Error";
-import InfoIcon from "@mui/icons-material/Info";
+import iconRed from "@assets/iconRed.png";
+import iconBlue from "@assets/iconBlue.png";
+import iconGreen from "@assets/iconGreen.png";
+import iconYellow from "@assets/iconYellow.png";
+import iconOrange from "@assets/iconOrange.png";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
 
@@ -13,11 +15,17 @@ function Report({ report }) {
   const getIcon = (categoryId) => {
     switch (categoryId) {
       case 1:
-        return <ErrorIcon style={{ color: "#cc545d" }} />;
+        return <img src={iconRed} style={{ width: "40px" }} />;
       case 2:
-        return <WarningIcon style={{ color: "#ea8e2e" }} />;
+        return <img src={iconBlue} style={{ width: "40px" }} />;
+      case 3:
+        return <img src={iconGreen} style={{ width: "40px" }} />;
+      case 4:
+        return <img src={iconYellow} style={{ width: "40px" }} />;
+      case 5:
+        return <img src={iconOrange} style={{ width: "40px" }} />;
       default:
-        return <InfoIcon style={{ color: "#52d2e2" }} />;
+        return <img src={iconYellow} style={{ width: "40px" }} />;
     }
   };
 

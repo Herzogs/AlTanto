@@ -9,8 +9,13 @@ import ModalAT from "@components/modal/ModalAT";
 import CategoryFilter from "@components/Map/CategoryFilter";
 
 function ZoneHome() {
-  const { userLocation, setUserLocation, radiusZone, setRadiusZone, setMarkerPosition } =
-    useStore();
+  const {
+    userLocation,
+    setUserLocation,
+    radiusZone,
+    setRadiusZone,
+    setMarkerPosition,
+  } = useStore();
 
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(null);
@@ -59,14 +64,9 @@ function ZoneHome() {
 
           <div className="h-map">
             <Map
-              
               userLocation={userLocation}
-             
               radiusZone={radiusZone}
-             
               CategoryFilterComponent={CategoryFilter}
-           
-              noDrag={true}
               mapClick={true}
               noCircle={false}
             />

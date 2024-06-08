@@ -20,7 +20,6 @@ const Map = ({
   radiusZone = 500,
   routingMode = false,
   zoneMode = false,
-  noDrag = false,
   startPoint = null,
   endPoint = null,
   fetchingReport = false,
@@ -71,9 +70,6 @@ const Map = ({
     }
   };
 
-  console.log("mapClik ----> ", mapClick)
-
-
   return (
     <section className="h-100" style={{ position: "relative" }}>
       {CategoryFilterComponent && (
@@ -102,7 +98,7 @@ const Map = ({
           </>
         )}
 
-        <LocationMarker noDrag={noDrag} />
+        <LocationMarker />
         {!noCircle && userLocation && !routingMode && (
           <RadiusCircle center={userLocation} radius={radiusZone} noCircle={noCircle} />
         )}

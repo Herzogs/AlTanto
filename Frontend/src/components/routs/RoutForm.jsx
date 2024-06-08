@@ -199,7 +199,6 @@ function RoutForm() {
             startPoint={startPoint}
             endPoint={endPoint}
             zoneMode={true}
-            noDrag={true}
             routingMode={true}
           />
         </div>
