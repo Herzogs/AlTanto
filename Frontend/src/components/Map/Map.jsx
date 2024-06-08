@@ -1,4 +1,6 @@
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { icons, getIconByCategoryId } from './Icons';
+
 import { useStore } from "@store";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
@@ -49,9 +51,28 @@ const Map = ({
   const filteredReports =
     reports && reports.length > 0
       ? reports.filter((report) =>
-          selectedCategories.includes(report.categoryId)
-        )
+        selectedCategories.includes(report.categoryId)
+      )
       : [];
+
+
+  const getIconByCategoryId = (categoryId) => {
+    switch (categoryId) {
+      case 1:
+        return icons.category1;
+      case 2:
+        return icons.category2;
+      case 3:
+        return icons.category3;
+      case 4:
+        return icons.category4;
+      default:
+        return icons.default;
+    }
+  };
+
+  console.log("mapClik ----> ", mapClick)
+
 
   return (
     <section className="h-100" style={{ position: "relative" }}>
@@ -92,6 +113,8 @@ const Map = ({
               <Marker
                 key={report.id}
                 position={[report.latitude, report.longitude]}
+                icon={getIconByCategoryId(report.categoryId)}
+
               >
                 <PopupAT report={report} />
               </Marker>

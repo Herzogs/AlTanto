@@ -6,7 +6,7 @@ import iconuser from "@assets/user-icon.png";
 
 const userIcon = new L.Icon({
   iconUrl: iconuser,
-  iconSize: [28, 42], 
+  iconSize: [20, 42], 
   iconAnchor: [13, 40], 
   popupAnchor: [0, -32],
   zIndex: 9999 

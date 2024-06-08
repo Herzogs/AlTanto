@@ -24,6 +24,10 @@ function Home() {
   const { fetchReports } = useReports();
 
   useEffect(() => {
+    setMarkerPosition(null)
+  },[])
+
+  useEffect(() => {
     if (userLocation) {
       fetchReports();
       setRadiusZone("500");
@@ -57,6 +61,7 @@ function Home() {
               userLocation={userLocation}
               radiusZone={radiusZone}
               CategoryFilterComponent={CategoryFilter}
+              mapClick={true}
             />
           </Col>
         </Row>

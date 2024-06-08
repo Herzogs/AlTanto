@@ -1,7 +1,8 @@
 // CategoryFilter.jsx
 
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Form, Col, Row, OverlayTrigger, Tooltip } from 'react-bootstrap';
+
 import { getCategoryFromApi } from '../../services/getCategory';
 
 const CategoryFilter = ({ selectedCategories, setSelectedCategories }) => {
