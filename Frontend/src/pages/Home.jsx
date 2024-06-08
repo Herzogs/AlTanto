@@ -18,6 +18,7 @@ function Home() {
     setDistance,
     radiusZone,
     setRadiusZone,
+    setMarkerPosition
   } = useStore();
 
   const { fetchReports } = useReports();
@@ -35,6 +36,7 @@ function Home() {
     setDistance(0);
     setRoutingMode(false);
     setRouteCoordinates(null);
+    setMarkerPosition(null);
   }, [setRoutingMode]);
 
   return (

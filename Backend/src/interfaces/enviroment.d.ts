@@ -20,6 +20,8 @@ declare global {
             GOOGLE_TRANSLATE_API_KEY: string
             CV_ENDPOINT: string
             CV_KEY: string
+            GOOGLE_RECAPTCHA_SITE_KEY: string
+            GOOGLE_RECAPTCHA_SECRET_KEY: string
         }
     }
 }

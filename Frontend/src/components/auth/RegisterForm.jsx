@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
-import {registerUser} from "@services/sendData";
+import { registerUser } from "@services/sendData";
 import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import ModalAT from "@components/modal/ModalAT";
 
 function RegisterForm() {
@@ -14,6 +15,7 @@ function RegisterForm() {
       lastName: "",
       username: "",
       password: "",
+      rePassword: "",
       phoneNumber: "",
       email: "",
     },
@@ -22,15 +24,20 @@ function RegisterForm() {
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [captcha, setCaptcha] = useState(false);
 
   const onSubmit = async (data) => {
+    console.log(captcha);
     try {
+      if(captcha === false) throw new Error("Debe completar el captcha");
+      data = captcha;
       await registerUser(data);
       setTitle("Registro de usuario");
       setMessage(
         "Se le enviara un codigo de verifación a su correo electrónico"
       );
     } catch (error) {
+    console.log(error.message)
       setTitle("Error");
       setMessage(error.message);
     } finally {
@@ -115,6 +122,27 @@ function RegisterForm() {
           )}
         </div>
         <div className="mb-3">
+          <label htmlFor="rePassword" className="form-label">
+            Ingrese nuevamente la contraseña:
+          </label>
+          <input
+            type="password"
+            {...register("rePassword", {
+              required: "Campo requerido",
+              minLength: { value: 8, message: "Mínimo 8 caracteres" },
+              pattern: {
+                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]/,
+                message:
+                  "Debe contener al menos una mayúscula, una minúscula y un número",
+              },
+            })}
+            className={`form-control ${errors.password ? "is-invalid" : ""}`}
+          />
+          {errors.password && (
+            <div className="invalid-feedback">{errors.password.message}</div>
+          )}
+        </div>
+        <div className="mb-3">
           <label htmlFor="phoneNumber" className="form-label">
             Numero de telefono:
           </label>
@@ -153,14 +181,21 @@ function RegisterForm() {
             <div className="invalid-feedback">{errors.email.message}</div>
           )}
         </div>
+        <div className="mb-3">
+          <ReCAPTCHA
+            sitekey={import.meta.env.VITE_RE_CAPTCHA_SITE_SECRET}
+           onChange={(value) => setCaptcha(value)} 
+          />
+        </div>
         <input type="submit" value="Enviar" className="btn btn-primary" />
+
       </form>
       <ModalAT
         title={title}
         message={message}
         showModal={showModal}
         setShowModal={setShowModal}
-        url="/auth/verificacion"
+        
       />
     </div>
   );
