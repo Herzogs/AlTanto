@@ -9,7 +9,7 @@ import ModalAT from "@components/modal/ModalAT";
 import { reverseGeocode } from "@services/getGeoAdress";
 
 function ReportForm() {
-  const { userLocation, markerPosition } = useStore(); // Asegúrate de tener una función para setear el markerPosition en tu store
+  const { userLocation, markerPosition, setReports } = useStore();
   const [address, setAddress] = useState("");
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -30,6 +30,7 @@ function ReportForm() {
   } = useForm();
 
   useEffect(() => {
+    setReports([]);
     getCategoryFromApi().then((data) => {
       setCategories(data);
     });

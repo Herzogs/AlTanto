@@ -86,7 +86,7 @@ const Map = ({
           <RadiusCircle center={userLocation} radius={radiusZone} noCircle={noCircle} />
         )}
 
-        {filteredReports && filteredReports.length > 0 ? (
+        {filteredReports && filteredReports.length > 0 && (
           <MarkerClusterGroup>
             {filteredReports.map((report) => (
               <Marker
@@ -97,8 +97,6 @@ const Map = ({
               </Marker>
             ))}
           </MarkerClusterGroup>
-        ) : (
-          <p>No reports available for the selected categories.</p>
         )}
 
         {/* ROUTING PARA RECORIDO */}

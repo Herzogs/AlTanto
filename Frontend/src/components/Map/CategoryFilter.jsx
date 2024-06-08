@@ -33,7 +33,7 @@ const CategoryFilter = ({ selectedCategories, setSelectedCategories }) => {
   };
 
   return (
-    <Form className="row category-filter-container">
+    <Form className="row px-5">
       {categories.map((category) => (
         <div key={category.id} className="col mt-4 mb-2">
           <Form.Check

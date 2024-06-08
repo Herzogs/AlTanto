@@ -7,6 +7,7 @@ function useReports() {
   const fetchReports = async () => {
     if (userLocation) {
       try {
+        console.log(radiusZone)
         const response = await getReportsBy(userLocation, radiusZone);
         setReports(response);
       } catch (error) {

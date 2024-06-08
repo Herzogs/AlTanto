@@ -2,7 +2,7 @@ import axiosInstance from "@interceptors/axiosConfig";
 
 export const getUserByUsername = async (username) => {
     try {
-        const response = await axiosInstance.get(`/user/${username}`); 
+        const response = await axiosInstance.get(`/group/users/${username}`); 
         return response.data; 
     } catch (error) {
         console.error('Error fetching user by username:', error);
