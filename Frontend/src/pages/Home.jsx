@@ -55,6 +55,7 @@ function Home() {
               userLocation={userLocation}
               radiusZone={radiusZone}
               CategoryFilterComponent={CategoryFilter}
+              mapClick={true}
             />
           </Col>
         </Row>
