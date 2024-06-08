@@ -1,7 +1,10 @@
 import transformData from '../utilities/transformData.utilities';
 import * as reportRepository from '../repository/reports.repository';
-import { IReportRequest, IReportResponse, IReportWithRadius } from '../interfaces/reports.interface';
-import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions';
+import {IReportRequest, IReportResponse, IReportWithRadius} from '../interfaces/reports.interface';
+import {ReportNotCreatedException, ReportNotFoundException} from '../exceptions/reports.exceptions';
+import {getAllZone} from "./zone.service";
+import {findEntitiesWithinRadius} from "../models/Location";
+import Report   from "../models/Report";
 
 const getAllReports = async (): Promise<IReportResponse[]> => {
     const listOfReports = await reportRepository.default.getAll();
@@ -11,7 +14,7 @@ const getAllReports = async (): Promise<IReportResponse[]> => {
 
 const getReportById = async (reportId: number): Promise<IReportResponse> => {
     const reportSearched = await reportRepository.default.getById(reportId);
-    if (!reportSearched) throw new ReportNotFoundException("Report not found.");    
+    if (!reportSearched) throw new ReportNotFoundException("Report not found.");
     return transformData(reportSearched);
 }
 
@@ -33,20 +36,36 @@ const getReportsByLatLongRadius = async (zoneWithRadius: IReportWithRadius): Pro
     return reports;
 }
 
-/*
-async function searchReportWithinTheRadius(location: Location, radius: number): Promise<Report[]> {
-    return await findEntitiesWithinRadius(Report, location, radius);
-}
-*/
 
+const getReportsWithinZones = async (userEmail: string) => {
+
+    try {
+        const zones = await getAllZone(userEmail);
+        const reportsWithinZones: any[] = [];
+        for (const zone of zones) {
+            const reportsInZone = await findEntitiesWithinRadius(Report, zone.location, zone.radio);
+            reportsWithinZones.push(...reportsInZone);
+        }
+        console.log(reportsWithinZones.map(r => r.name)); // Log los nombres de los reportes
+        return reportsWithinZones;
+    } catch (error) {
+        console.error('Error al obtener los reportes dentro de las zonas:', error);
+        throw error;
+    }
+
+    //   return reportsWithinZones;
+}
 
 
 export {
+    getReportsWithinZones,
     getAllReports,
     getReportById,
     getReportByUser,
     createReport,
-    //    searchReportWithinTheRadius,
-    getReportsByLatLongRadius
+    //   searchReportWithinTheRadius,
+    getReportsByLatLongRadius,
+
+
 };
 

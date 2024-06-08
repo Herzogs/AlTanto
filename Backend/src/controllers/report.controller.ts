@@ -103,6 +103,21 @@ const getReportsByLatLongRadius = async (req: Request, res: Response, next: Next
         return next((error as Error).message);
     }
 }
+const myReport= async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<Response | void> => {
+
+    const userEmail =   req.usuarioPP;
+
+    console.log("Controller 110");
+    if (!userEmail) return next({ message: userEmail });
+    try {
+
+       const reportsss= await reportService.getReportsWithinZones(userEmail);
+        return res.status(200).json(reportsss);
+    } catch (error) {
+
+        return next((error as Error).message);
+    }
+}
 
 
 export {
@@ -110,5 +125,6 @@ export {
     getReportsById,
     getReportByUser,
     createReport,
-    getReportsByLatLongRadius
+    getReportsByLatLongRadius,
+    myReport
 }

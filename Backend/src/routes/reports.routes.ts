@@ -7,11 +7,12 @@ const router = Router();
 
 router.get('/filterBy', controller.getReportsByLatLongRadius);
 
-router.get('/', auth, controller.getAllReports);
+router.get('/', controller.getAllReports);
 
-router.get('/:id', auth, controller.getReportsById);
+router.get('/:id', controller.getReportsById);
 
-router.get('/:userId', auth, controller.getReportByUser);
+router.get('/:userId', controller.getReportByUser);
+router.post('/myReport', auth,controller.myReport);
 
 router.post('/', auth, upload.single("image"), controller.createReport);
 
