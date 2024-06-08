@@ -72,6 +72,7 @@ function ZoneForm() {
   const onSubmit = async (data) => {
     try {
       await saveZone(data, userLocation, userStore.getState().user.id);
+      
       setShowModal(true);
     } catch (error) {
       console.log(error.message);

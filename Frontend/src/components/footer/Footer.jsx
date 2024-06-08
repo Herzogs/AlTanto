@@ -10,7 +10,7 @@ function Footer() {
   const isActive = (path) => {
 
     if (path === "/") {
-      return location.pathname === path || location.pathname.startsWith("/form/") ? "active" : "";
+      return location.pathname === path || location.pathname.startsWith("/form/") || location.pathname.startsWith("/grupos") ? "active" : "";
     }
     if (path === "/zonas") {
       return location.pathname === path || location.pathname.startsWith("/zonas/") ? "active" : "";

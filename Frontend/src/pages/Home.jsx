@@ -2,36 +2,30 @@ import { useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Map from "@components/Map/Map";
 import SliderAT from "@components/slider/SliderAT";
-import { useStore, automaticReport} from "@store";
+import { useStore } from "@store";
 import useReports from "@hook/useReports";
 import CardHome from "@components/cards/CardHome";
-
 import CategoryFilter from "@components/Map/CategoryFilter";
 
 function Home() {
   const {
     userLocation,
     setUserLocation,
-    radiusZone,
     setRoutingMode,
     reports,
     setRouteCoordinates,
     setOldUserLocation,
     setDistance,
+    radiusZone,
+    setRadiusZone,
   } = useStore();
-
-  const {
-    setFile,
-    setContent,
-    setCategory,
-    setIdCategory,
-  } = automaticReport();
 
   const { fetchReports } = useReports();
 
   useEffect(() => {
     if (userLocation) {
       fetchReports();
+      setRadiusZone("500");
     }
   }, [userLocation, radiusZone]);
 
@@ -39,13 +33,8 @@ function Home() {
     setUserLocation(null);
     setOldUserLocation(null);
     setDistance(0);
-    setFile(null);
-    setContent(null);
-    setCategory(null);
-    setIdCategory(null);
     setRoutingMode(false);
     setRouteCoordinates(null);
-
   }, [setRoutingMode]);
 
   return (
@@ -62,9 +51,12 @@ function Home() {
           </Col>
 
           <Col className="h-map pb-footer">
-            <Map userLocation={userLocation} CategoryFilterComponent={CategoryFilter} />
+            <Map
+              userLocation={userLocation}
+              radiusZone={radiusZone}
+              CategoryFilterComponent={CategoryFilter}
+            />
           </Col>
-
         </Row>
       </Container>
     </section>

@@ -73,22 +73,8 @@ const Map = ({
         {userLocation && !routingMode && (
           <RadiusCircle center={userLocation} radius={radiusZone} />
         )}
-        {/*         {reports && (
-          <MarkerClusterGroup>
-            {reports.map((report) => (
-              <Marker
-                key={report.id}
-                position={[report.latitude, report.longitude]}
-              >
-                <PopupAT report={report} />
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
-        )}
 
- */}
-
-        {filteredReports && filteredReports.length > 0 ? (
+        {filteredReports && filteredReports.length > 0 && (
           <MarkerClusterGroup>
             {filteredReports.map((report) => (
               <Marker
@@ -99,8 +85,6 @@ const Map = ({
               </Marker>
             ))}
           </MarkerClusterGroup>
-        ) : (
-          <p>No reports available for the selected categories.</p>
         )}
 
         {/* ROUTING PARA RECORIDO */}

@@ -57,7 +57,11 @@ function ZoneHome() {
           <h2 className="text-center mt-4 mb-5">{zona.name}</h2>
 
           <div className="h-map">
-            <Map userLocation={userLocation} radius={radiusZone} CategoryFilterComponent={CategoryFilter} />
+            <Map
+              userLocation={userLocation}
+              radiusZone={radiusZone}
+              CategoryFilterComponent={CategoryFilter}
+            />
           </div>
 
           {!error && (
@@ -65,8 +69,8 @@ function ZoneHome() {
               title="Encontramos un error"
               message={error}
               showModal={showModal}
-              handleClose={()=> navigate("/zonas")}
-              handleAccept={()=> navigate("/zonas")}
+              handleClose={() => navigate("/zonas")}
+              handleAccept={() => navigate("/zonas")}
             />
           )}
         </section>
