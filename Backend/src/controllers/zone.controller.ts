@@ -44,7 +44,7 @@ const getZoneById = async (req: Request, res: Response, next: NextFunction): Pro
     try {
         const { id } = validData.data as { id: string };
         const zone = await zoneService.getZoneById(+id);
-        console.log(zone);
+        
         return res.status(200).json(zone);
 
     } catch (error) {

@@ -6,7 +6,8 @@ function ModalAT({ title, message, showModal, setShowModal, url }) {
 
   const handleClose = () => {
     setShowModal(false);
-    navigate(url);
+    if (url !== null)
+      navigate(url);
   };
 
   return (

@@ -13,7 +13,7 @@ class ZoneRepository {
     
     
             const location = locationSearched[0].get({ plain: true });
-    
+            
             const zone = await Zone.create({
                 name: newZone.name,
                 radio: newZone.radio,

@@ -6,6 +6,8 @@ import { Container, Button, Form, Row, Col } from "react-bootstrap";
 import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
 import { sendRoute } from "@services/sendData";
+import zodResolver from "@hookform/resolvers/zod";
+import roadScheme from "@schemes/roadScheme";
 
 
 function RoutForm() {
@@ -30,6 +32,7 @@ function RoutForm() {
       origin: "",
       destination: "",
     },
+    resolver: zodResolver(roadScheme),
   });
 
   const startAddress = watch("origin");
@@ -96,13 +99,7 @@ function RoutForm() {
             <Form.Control
               type="text"
               isInvalid={!!errors.origin}
-              {...register("origin", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 120,
-                  message: "Máximo 120 caracteres",
-                },
-              })}
+              {...register("origin")}
             />
             {errors.origin && (
               <Form.Control.Feedback type="invalid">
@@ -118,14 +115,8 @@ function RoutForm() {
           <Col sm={12}>
             <Form.Control
               type="text"
-              isInvalid={!!errors.des}
-              {...register("destination", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 120,
-                  message: "Máximo 120 caracteres",
-                },
-              })}
+              isInvalid={!!errors.destination}
+              {...register("destination")}
             />
             {errors.destination && (
               <Form.Control.Feedback type="invalid">
@@ -169,17 +160,7 @@ function RoutForm() {
             <Form.Control
               type="text"
               isInvalid={!!errors.name}
-              {...register("name", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 50,
-                  message: "Máximo 50 caracteres",
-                },
-                minLength: {
-                  value: 3,
-                  message: "Mínimo 3 caracteres",
-                },
-              })}
+              {...register("name")}
             />
             {errors.name && (
               <Form.Control.Feedback type="invalid">

@@ -6,6 +6,8 @@ import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
 import {saveZone} from "@services/sendData";
 import ModalAT from "@components/modal/ModalAT";
+import { zodResolver } from "@hookform/resolvers/zod";
+import zoneScheme from "@schemes/zoneScheme";
 
 function ZoneForm() {
   const [visible, setVisible] = useState(false);
@@ -28,6 +30,7 @@ function ZoneForm() {
       address: "",
       radio: "500", // Valor por defecto para el radio
     },
+    resolver: zodResolver(zoneScheme),
   });
 
   const address = watch("address");
@@ -91,17 +94,7 @@ function ZoneForm() {
             <Form.Control
               type="text"
               isInvalid={!!errors.name}
-              {...register("name", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 50,
-                  message: "Máximo 50 caracteres",
-                },
-                minLength: {
-                  value: 3,
-                  message: "Mínimo 5 caracteres",
-                },
-              })}
+              {...register("name")}
             />
             {errors.name && (
               <Form.Control.Feedback type="invalid">
@@ -119,13 +112,7 @@ function ZoneForm() {
             <Form.Control
               type="text"
               isInvalid={!!errors.address}
-              {...register("address", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 120,
-                  message: "Máximo 120 caracteres",
-                },
-              })}
+              {...register("address")}
             />
             {errors.address && (
               <Form.Control.Feedback type="invalid">

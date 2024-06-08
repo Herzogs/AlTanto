@@ -71,9 +71,6 @@ const Map = ({
     }
   };
 
-  console.log("mapClik ----> ", mapClick)
-
-
   return (
     <section className="h-100" style={{ position: "relative" }}>
       {CategoryFilterComponent && (

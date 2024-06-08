@@ -7,7 +7,11 @@ import { useStore } from "@store";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
 import { reverseGeocode } from "@services/getGeoAdress";
+import { zodResolver } from "@hookform/resolvers/zod";
+import reportScheme from "@schemes/reportScheme";
 
+
+// TODO: Revisar porque no se envian los reportes
 function ReportForm() {
   const { userLocation, markerPosition, setReports } = useStore();
   const [address, setAddress] = useState("");
@@ -27,7 +31,9 @@ function ReportForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: zodResolver(reportScheme),
+  });
 
   useEffect(() => {
     setReports([]);
@@ -61,6 +67,8 @@ function ReportForm() {
   }, [markerPosition]);
 
   const onSubmit = async (data) => {
+    console.log("Data", data);
+    console.log(data);
     data.image = file;
     data.latitude = markerPosition ? markerPosition[0] : userLocation.lat;
     data.longitude = markerPosition ? markerPosition[1] : userLocation.lng;
@@ -99,7 +107,6 @@ function ReportForm() {
               as="select"
               isInvalid={errors.category}
               {...register("category", {
-                required: "Campo requerido",
                 onChange: (e) =>
                   setFormData({ ...formData, category: e.target.value }),
               })}
@@ -125,8 +132,6 @@ function ReportForm() {
               rows={3}
               isInvalid={errors.content}
               {...register("content", {
-                required: "Campo requerido",
-                maxLength: { value: 100, message: "Máximo 100 caracteres" },
                 onChange: (e) =>
                   setFormData({ ...formData, content: e.target.value }),
               })}
@@ -139,7 +144,7 @@ function ReportForm() {
         </Form.Group>
             
         <label className="mt-3 mb-2">Ubicación:</label>
-        <input type="text" className="mt-3 mb-2 w-100" value={address} readOnly="true" />
+        <input type="text" className="mt-3 mb-2 w-100" value={address} readOnly={"true"} />
 
         <Form.Group as={Row} controlId="image">
           <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>

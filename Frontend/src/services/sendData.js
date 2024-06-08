@@ -69,6 +69,7 @@ const sendRoute = async ({ data, startAddress, endAddress, startPoint, endPoint,
 }
 
 const saveZone = async (data, coordinates,id) => {
+  console.log(data);
   try {
     if (!data || !coordinates) throw new Error("Error al guardar la zona");
     const { name, radio } = data;
