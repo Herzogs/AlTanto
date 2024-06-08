@@ -16,7 +16,22 @@ Category.init({
         sequelize: dbConnection,
         freezeTableName: true,
         modelName: 'Category',
-        timestamps: false
-    }
-);
-export default Category;
+        timestamps: false,
+        hooks: {
+            afterSync: async () => {
+              try {
+                const [category, created] = await Category.findOrCreate({
+                  where: { name: 'Seguridad' },
+                  defaults: { name: 'Seguridad' }
+                });
+                if (created) {
+                  console.log('Default category "Seguridad" has been created.');
+                }
+              } catch (error) {
+                console.error('Error creating default category "Seguridad":', error);
+              }
+            }
+          }
+        });
+        
+        export default Category;
