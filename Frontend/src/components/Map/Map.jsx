@@ -1,4 +1,4 @@
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { useStore } from "@store";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
@@ -11,6 +11,7 @@ import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import MarkerClusterGroup from "@changey/react-leaflet-markercluster";
 import { getCategoryFromApi } from "../../services/getCategory";
 import { useEffect, useState } from "react";
+import MarkerMapClick from "./MarkerMapClick";
 
 const Map = ({
   userLocation,
@@ -22,7 +23,10 @@ const Map = ({
   endPoint = null,
   fetchingReport = false,
   CategoryFilterComponent = null,
+  mapClick = false,
+  noCircle = false,
 }) => {
+
   const { MapClickHandler } = useMapClickHandler();
   const { reports } = useStore();
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -69,24 +73,18 @@ const Map = ({
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
-        <LocationMarker noDrag={noDrag} />
-        {userLocation && !routingMode && (
-          <RadiusCircle center={userLocation} radius={radiusZone} />
-        )}
-        {/*         {reports && (
-          <MarkerClusterGroup>
-            {reports.map((report) => (
-              <Marker
-                key={report.id}
-                position={[report.latitude, report.longitude]}
-              >
-                <PopupAT report={report} />
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
+
+        {mapClick && (
+          <>
+            <MapClickHandler />
+            <MarkerMapClick />
+          </>
         )}
 
- */}
+        <LocationMarker noDrag={noDrag} />
+        {!noCircle && userLocation && !routingMode && (
+          <RadiusCircle center={userLocation} radius={radiusZone} noCircle={noCircle} />
+        )}
 
         {filteredReports && filteredReports.length > 0 ? (
           <MarkerClusterGroup>
@@ -105,10 +103,7 @@ const Map = ({
 
         {/* ROUTING PARA RECORIDO */}
         {routingMode && startPoint && endPoint && (
-          <>
-            {/*<MapClickHandler />*/}
-            <Routing startPoint={startPoint} endPoint={endPoint} />
-          </>
+          <Routing startPoint={startPoint} endPoint={endPoint} />
         )}
       </MapContainer>
       {!zoneMode && !routingMode && <MenuButton />}
