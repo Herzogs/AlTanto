@@ -18,9 +18,14 @@ function Home() {
     setDistance,
     radiusZone,
     setRadiusZone,
+    setMarkerPosition
   } = useStore();
 
   const { fetchReports } = useReports();
+
+  useEffect(() => {
+    setMarkerPosition(null)
+  },[])
 
   useEffect(() => {
     if (userLocation) {
