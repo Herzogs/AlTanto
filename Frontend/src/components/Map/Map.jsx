@@ -18,7 +18,6 @@ import MarkerMapClick from "./MarkerMapClick";
 import "leaflet/dist/leaflet.css";
 import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import "./styles.css";
-import ContextMenu from "./ContextMenu";
 
 const Map = ({
   userLocation,
@@ -86,8 +85,8 @@ const Map = ({
         className="w-100 h-100"
         center={userLocation ? [userLocation.lat, userLocation.lng] : [0, 0]}
         zoom={15}
-        minZoom={12}
-        maxZoom={18}
+        minZoom={16}
+        maxZoom={20}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
@@ -96,7 +95,6 @@ const Map = ({
 
         {mapClick && (
           <>
-            <ContextMenu />
             <MapClickHandler />
             <MarkerMapClick />
           </>

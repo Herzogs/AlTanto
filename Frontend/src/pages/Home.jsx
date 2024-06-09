@@ -51,7 +51,7 @@ function Home() {
         CategoryFilterComponent={CategoryFilter}
         mapClick={true}
       />
-      {reports.length > 0 && <SliderButton />}
+      {reports && reports.length > 0 && <SliderButton />}
     </section>
   );
 }

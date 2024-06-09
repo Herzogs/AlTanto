@@ -89,7 +89,7 @@ async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
 async function getGroupDetailsById(groupId: number): Promise<IGroupDetails> {
     const group = await GroupRepository.getGroupById(groupId);
     const members = await GroupRepository.getGroupMembers(groupId);
-    return { ...group, members } as IGroupDetails;
+    return { ...group, members } as unknown as IGroupDetails;
 }
 
 async function getUser(userName: string): Promise<IUser> {
