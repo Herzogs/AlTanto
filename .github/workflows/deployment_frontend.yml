@@ -2,14 +2,12 @@ name: Deploy Frontend to Vercel
 
 on:
   push:
-    branches:
-      - main
     paths:
       - 'frontend/**'
   workflow_dispatch:
 
 jobs:
-  deploy:
+  deploy-frontend:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,9 +15,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '21'  # Cambia esto a la versión de Node.js que usas
+          node-version: '16' # Asegúrate de usar la versión de Node.js que necesites
 
       - name: Install dependencies
         run: |
@@ -34,8 +32,9 @@ jobs:
       - name: Deploy to Vercel
         run: |
           npm install -g vercel
-          vercel --prod
+          cd frontend
+          vercel --prod --token=$VERCEL_TOKEN --scope=$VERCEL_ORG_ID --confirm --cwd .
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_FRONTEND_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

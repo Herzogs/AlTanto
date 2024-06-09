@@ -1,0 +1,40 @@
+name: Deploy Backend to Vercel
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '21' # Asegúrate de usar la versión de Node.js que necesites
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm install
+
+      - name: Build backend
+        run: |
+          cd backend
+          npm run build # Ajusta esto si necesitas algún paso específico de build
+
+      - name: Deploy to Vercel
+        run: |
+          npm install -g vercel
+          cd backend
+          vercel --prod --token=$VERCEL_TOKEN --scope=$VERCEL_ORG_ID --confirm --cwd .
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_BACKEND_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
