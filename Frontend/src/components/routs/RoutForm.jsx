@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState } from "react";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";

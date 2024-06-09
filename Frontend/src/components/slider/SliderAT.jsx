@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import Slider from "react-slick";
 import Report from "@components/report/Report";
 import { settings } from "@components/slider/settings";

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";

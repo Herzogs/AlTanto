@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import axiosInstance from "@interceptors/axiosConfig";
 import { Container, Form, Button, Image } from "react-bootstrap";

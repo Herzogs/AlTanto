@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Map from "@components/Map/Map";

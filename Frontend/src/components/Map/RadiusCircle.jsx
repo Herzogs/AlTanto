@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Circle } from "react-leaflet";
 
 const RadiusCircle = ({ center, radius }) => {

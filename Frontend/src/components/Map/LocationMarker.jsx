@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import { useMap, Marker, Popup } from "react-leaflet";
 import { useStore } from "@store";

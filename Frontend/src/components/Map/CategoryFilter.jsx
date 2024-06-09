@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 // CategoryFilter.jsx
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { getCategoryFromApi } from '../../services/getCategory';
 

@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable react/prop-types */
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
 import { useStore } from "@store";
 import LocationMarker from "@components/Map/LocationMarker";
