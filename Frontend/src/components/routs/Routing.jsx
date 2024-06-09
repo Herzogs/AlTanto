@@ -22,7 +22,11 @@ const Routing = ({ startPoint, endPoint}) => {
           show: false,
           router: new L.Routing.osrmv1({
             serviceUrl: 'https://router.project-osrm.org/route/v1',
-          })
+          }),
+          lineOptions: {
+            styles: [{ color: '#fd7014', opacity: 1, weight: 5 }]
+          }
+         
         });
 
         routingControl.on('routesfound', (e) => {
