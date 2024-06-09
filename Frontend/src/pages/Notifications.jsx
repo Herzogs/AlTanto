@@ -4,12 +4,12 @@ import { useStore } from "@store";
 
 function Notifications() {
   const { reports } = useStore();
-
+  
   return (
     <Container fluid className="pb-footer">
       <h2 className="text-center my-4">Mis notificaciones</h2>
       <section className="d-flex justify-content-center flex-wrap gap-4">
-        {reports ? (
+        {reports && reports.length > 0 ? (
           reports.map((report) => <Report key={report.id} report={report} />)
         ) : (
           <h3>No se encontraron reportes</h3>

@@ -9,7 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { userStore } from "@store";
 import { Container } from "react-bootstrap";
 
-function Group() {
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import GroupsIcon from "@mui/icons-material/Groups";
+import { Link } from 'react-router-dom';
+
+function Groups() {
   const [groupName, setGroupName] = useState("");
   const [searchName, setSearchName] = useState("");
   const [groupCode, setGroupCode] = useState("");
@@ -71,7 +75,32 @@ function Group() {
   };
 
   return (
-    <Container className="container-md_stop">
+    <article className="mb-4">
+      <div className="d-flex justify-content-between">
+        <h5>
+          <GroupsIcon /> Zonas
+        </h5>
+        <span>
+          <Link to="/">
+            <AddCircleOutlineIcon /> Crear
+          </Link>
+        </span>
+      </div>
+
+      <ul>
+        {groups && groups.length > 0 && (
+          <>
+            {groups.map((group) => (
+              <Link key={group.id} to={`/grupos/${group.id}`}>
+                <li>{group.name}</li>
+              </Link>
+            ))}
+          </>
+        )}
+      </ul>
+    </article>
+
+    /*  {<Container className="container-md_stop">
       <h2>Crear Grupo</h2>
 
       <input
@@ -99,18 +128,18 @@ function Group() {
           </li>
         ))}
       </ul>
-      {groups.length === 0 && <p>No estás en ningún grupo.</p>}
+      {groups.length === 0 && <p>No estás en ningún grupo.</p>} } */
 
-      {/*       <h3>Buscar Grupo por Nombre</h3>
+    /*   {     <h3>Buscar Grupo por Nombre</h3>
       <input
         className="form-control"
         type="text"
         value={searchName}
         onChange={(e) => setSearchName(e.target.value)}
       />
-      <button className="btn btn-sm btn-primary" onClick={handleSearchGroup}>Buscar Grupo</button> */}
+      <button className="btn btn-sm btn-primary" onClick={handleSearchGroup}>Buscar Grupo</button> } */
 
-      <h3 className="mt-5">Unirse a un Grupo</h3>
+    /*  <h3 className="mt-5">Unirse a un Grupo</h3>
       <input
         className="form-control"
         type="text"
@@ -126,8 +155,8 @@ function Group() {
       </button>
 
       {error && <p>Error: {error}</p>}
-    </Container>
+    </Container> */
   );
 }
 
-export default Group;
+export default Groups;

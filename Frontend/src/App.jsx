@@ -10,15 +10,15 @@ import CategoryForm from "@components/category/CategoryForm";
 import ZoneForm from "@components/Zone/ZoneForm";
 import ZoneID from "@components/Zone/ZoneID";
 import ReportDetail from "@components/report/ReportDetail";
-import RoutForm from "@components/routs/RoutForm";
+import RoutForm from "@components/road/RoutForm";
 import Logout from "@components/auth/Logout";
 import { AuthGuard } from "./guards/auth.guard";
 import RegisterForm from "@components/auth/RegisterForm.jsx";
 import ValidationCodeForm from "@components/auth/CodeForm.jsx";
 import LoginForm from "@components/auth/LoginForm.jsx";
-import RoadID from "@components/routs/RoadID";
+import RoadID from "@components/road/RoadID";
 import ReportIA from "@components/ReportAutomatic/ReportIA";
-import Group from "@components/group/Group";
+import Groups from "@components/group/Groups";
 import GroupDetail from "@components/group/GroupDetail";
 import GroupSearch from "@components/group/GroupSearch";
 
@@ -47,7 +47,7 @@ const protectedRoutes = [
   { path: "/zonas/:id", element: <ZoneID /> },
   { path: "/notificaciones", element: <Notifications /> },
   { path: "/reportes/:id", element: <ReportDetail /> },
-  { path: "/grupos", element: <Group /> },
+  { path: "/grupos", element: <Groups /> },
   { path: "/grupos/:id", element: <GroupDetail /> },
   { path: "group-search", element: <GroupSearch /> },
 ];

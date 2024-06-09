@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 function PopupAT({ report }) {
   return (
     <Popup className="at-popup">
-      <h5>{report.categoryName}</h5>
-      <p>{report.content}</p>
+      <h6 className="fw-bold">{report.categoryName}</h6>
+      <p className="my-2">{report.content}</p>
       <Link className="me-4" to={`/reportes/${report.id}`}>
         Ver detalle
       </Link>

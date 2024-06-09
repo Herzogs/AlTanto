@@ -19,7 +19,7 @@ const LocationMarker = () => {
   useEffect(() => {
     if (!userLocation) {
       map
-        .locate({ setView: true, maxZoom: 20 })
+        .locate({ setView: true, maxZoom: 18 })
         .on("locationfound", function (e) {
           setUserLocation(e.latlng);
         });
@@ -41,7 +41,7 @@ const LocationMarker = () => {
       position={userLocation}
       draggable={false}
       eventHandlers={eventHandlers}
-      zIndexOffset={999}
+      zIndexOffset={9991}
       icon={userIcon}
     >
       <Popup>Estas aquí</Popup>

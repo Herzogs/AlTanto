@@ -6,7 +6,6 @@ import { useStore } from "@store";
 import useReports from "@hook/useReports";
 import getZone from "@services/getZone";
 import ModalAT from "@components/modal/ModalAT";
-import CategoryFilter from "@components/Map/CategoryFilter";
 
 function ZoneHome() {
   const {
@@ -66,7 +65,7 @@ function ZoneHome() {
             <Map
               userLocation={userLocation}
               radiusZone={radiusZone}
-              CategoryFilterComponent={CategoryFilter}
+              showFilters={true}
               mapClick={true}
               noCircle={false}
             />

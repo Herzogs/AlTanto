@@ -175,9 +175,7 @@ a {
   height: 80%;
 }
 
-.leaflet-touch .leaflet-bar a {
-  background: var(--color-at-grey);
-}
+
 
 .slick-initialized .slick-slide {
   display: block;

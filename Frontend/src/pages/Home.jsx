@@ -2,9 +2,8 @@ import { useEffect } from "react";
 import Map from "@components/Map/Map";
 import Aside from "@components/aside/Aside";
 import SliderButton from "@components/slider/SliderButton";
-import CategoryFilter from "@components/Map/CategoryFilter";
 import useReports from "@hook/useReports";
-import { useStore } from "@store";
+import { useStore, userStore } from "@store";
 
 function Home() {
   const {
@@ -19,6 +18,8 @@ function Home() {
     setRadiusZone,
     setMarkerPosition,
   } = useStore();
+
+  const { id } = userStore.getState().user;
 
   const { fetchReports } = useReports();
 
@@ -43,14 +44,14 @@ function Home() {
 
   return (
     <section className="w-100 h-100">
-      <Aside />
+      {id && <Aside />}
       <Map
         userLocation={userLocation}
         radiusZone={radiusZone}
-        CategoryFilterComponent={CategoryFilter}
+        showFilters={true}
         mapClick={true}
       />
-      {reports.length > 0 && <SliderButton />}
+      {reports && reports.length > 0 && <SliderButton />}
     </section>
   );
 }

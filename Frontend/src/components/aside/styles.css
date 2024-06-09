@@ -36,6 +36,10 @@
   z-index: 9993 !important;
 }
 
+.offcanvas-backdrop {
+  z-index: 9991 !important;
+}
+
 .at-aside_offcanvas .offcanvas-header .btn-close {
   background-color: var(--color-at-white) !important;
   opacity: 1;
