@@ -23,6 +23,7 @@ export interface IReportResponse {
     enabled: boolean;
     category: IReportCategory | null;
     location: ILocation | null;
+    groupId: number;
 }
 
 export interface ILocation {
@@ -43,6 +44,7 @@ export interface IReportRequest {
     categoryId: string;
     latitude: string;
     longitude: string;
+    groupId?: string;
 }
 
 export interface IReportWithRadius {

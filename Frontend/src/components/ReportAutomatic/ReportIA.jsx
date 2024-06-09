@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import axiosInstance from "@interceptors/axiosConfig";
 import { Container, Form, Button, Image } from "react-bootstrap";
@@ -11,7 +12,7 @@ const categories = [
   {
     id: 1,
     name: "Seguridad",
-    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta","palanca"],
+    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca"],
   },
   {
     id: 2,
@@ -37,7 +38,6 @@ function categorizeDescription(description) {
 
     for (const tag of categoryTags) {
       if (words.includes(tag.toLowerCase())) {
-        console.log(categoryObj);
         return categoryObj;
       }
     }
@@ -46,6 +46,7 @@ function categorizeDescription(description) {
 }
 
 function ReportIA() {
+  const { groupId } = useParams();
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [description, setDescription] = useState("");
@@ -142,6 +143,11 @@ function ReportIA() {
       longitude: userLocation.lng,
       image: file,
     };
+
+    if (groupId) {
+      reportData.groupId = groupId;
+    }
+
     try {
       await sendReport(reportData);
       setShowModal(true);
@@ -154,8 +160,7 @@ function ReportIA() {
     <Container className="container-md_stop h-100">
       <h2>Generar reporte automático</h2>
       <p>
-        Usaremos un servicio de <strong>Inteligencia Artificial</strong> para
-        obtener un detalle de la imagen que envíes.
+        Usaremos un servicio de <strong>Inteligencia Artificial</strong> para obtener un detalle de la imagen que envíes.
       </p>
 
       <Form.Control
@@ -196,6 +201,7 @@ function ReportIA() {
           <p>{file.name}</p>
         </div>
       )}
+
       <Button
         variant="primary"
         type="button"

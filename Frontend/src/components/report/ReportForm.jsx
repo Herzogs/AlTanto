@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
@@ -8,9 +9,9 @@ import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
 
 function ReportForm() {
+  const { groupId } = useParams();
   const { userLocation, setReports } = useStore();
   const { idCategory, file, setIdCategory, setFile } = automaticReport();
-
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -29,12 +30,10 @@ function ReportForm() {
 
   useEffect(() => {
     setReports(null);
-
     getCategoryFromApi().then((data) => {
       setCategories(data);
     });
 
-    // Update form data only when necessary
     if (!idCategory && !file) {
       setValue("content", formData.content);
       setValue("category", formData.category);
@@ -45,6 +44,9 @@ function ReportForm() {
   }, [formData, idCategory, file, setValue]);
 
   const onSubmit = async (data) => {
+    if (groupId) {
+      data.groupId = groupId;
+    }
     data.image = file;
 
     try {
@@ -95,11 +97,7 @@ function ReportForm() {
             >
               <option value="">Seleccione una categoría</option>
               {categories.map((cat) => (
-                <option
-                  key={cat.id}
-                  value={cat.id}
-                  selected={idCategory === cat.id}
-                >
+                <option key={cat.id} value={cat.id} selected={idCategory === cat.id}>
                   {cat.name}
                 </option>
               ))}

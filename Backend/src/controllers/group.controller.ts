@@ -97,7 +97,6 @@ const findGroupsByName = async (req: Request, res: Response): Promise<Response> 
 };
 
 const getGroupsByUserId = async (req: Request, res: Response): Promise<Response> => {
-    console.log("holaaaa")
     const { userId } = req.params; 
     try {
         const groups = await groupService.getGroupsByUserId(Number(userId));

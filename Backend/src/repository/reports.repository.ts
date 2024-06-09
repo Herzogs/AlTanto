@@ -65,7 +65,8 @@ class ReportRepository {
             content: newReport.content,
             CategoryId: newReport.categoryId,
             LocationId: location.id,
-            images: newReport.images
+            images: newReport.images,
+            groupId: newReport.groupId
         });
         return reporCreated.get({ plain: true }) as IReportResponse;
     }
@@ -112,6 +113,10 @@ class ReportRepository {
         });
         return numberOfReportsDisabled[0];
     }
+
+    static async getByGroup(groupId: number): Promise<Report[]>{
+        return await Report.findAll({ where: { groupId } });
+    };
 
 }
 

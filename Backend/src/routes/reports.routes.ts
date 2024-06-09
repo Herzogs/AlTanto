@@ -15,4 +15,6 @@ router.get('/:userId', auth, controller.getReportByUser);
 
 router.post('/', auth, upload.single("image"), controller.createReport);
 
+router.get('/group/:groupId', auth, controller.getReportsByGroup);
+
 export default router;
