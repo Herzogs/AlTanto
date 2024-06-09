@@ -1,4 +1,3 @@
-import { Button } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import iconRed from "@assets/iconRed.png";
@@ -15,17 +14,17 @@ function Report({ report }) {
   const getIcon = (categoryId) => {
     switch (categoryId) {
       case 1:
-        return <img src={iconRed} style={{ width: "40px" }} />;
+        return <img src={iconRed} />;
       case 2:
-        return <img src={iconBlue} style={{ width: "40px" }} />;
+        return <img src={iconBlue} />;
       case 3:
-        return <img src={iconGreen} style={{ width: "40px" }} />;
+        return <img src={iconGreen} />;
       case 4:
-        return <img src={iconYellow} style={{ width: "40px" }} />;
+        return <img src={iconYellow} />;
       case 5:
-        return <img src={iconOrange} style={{ width: "40px" }} />;
+        return <img src={iconOrange} />;
       default:
-        return <img src={iconYellow} style={{ width: "40px" }} />;
+        return <img src={iconYellow} />;
     }
   };
 
@@ -36,21 +35,19 @@ function Report({ report }) {
   return (
     <article className="at-report">
       <div className="at-report-header">
-        <h5>{report.categoryName}</h5>
+        <p>{report.content}</p>
         {getIcon(report.categoryId)}
       </div>
-      <p>{report.content}</p>
+
       <div className="at-report-footer">
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
+        <button
+          className="btn btn-sm btn-primary"
           onClick={() => {
             handleViewDetails(report.id);
           }}
         >
           Ver detalle
-        </Button>
+        </button>
         <div>
           <ThumbUpIcon style={{ color: "#537ac9", marginRight: "32px" }} />
           <ThumbDownAltIcon style={{ color: "#cc545d" }} />

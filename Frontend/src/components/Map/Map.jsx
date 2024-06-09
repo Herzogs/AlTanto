@@ -1,6 +1,5 @@
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { icons, getIconByCategoryId } from './Icons';
-
+import { icons, getIconByCategoryId } from "./Icons";
 import { useStore } from "@store";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
@@ -8,12 +7,14 @@ import Routing from "@components/routs/Routing";
 import PopupAT from "@components/Map/PopupAT";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
-import "leaflet/dist/leaflet.css";
-import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import MarkerClusterGroup from "@changey/react-leaflet-markercluster";
 import { getCategoryFromApi } from "../../services/getCategory";
 import { useEffect, useState } from "react";
 import MarkerMapClick from "./MarkerMapClick";
+
+import "leaflet/dist/leaflet.css";
+import "@changey/react-leaflet-markercluster/dist/styles.min.css";
+import "./styles.css";
 
 const Map = ({
   userLocation,
@@ -27,7 +28,6 @@ const Map = ({
   mapClick = false,
   noCircle = false,
 }) => {
-
   const { MapClickHandler } = useMapClickHandler();
   const { reports } = useStore();
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -50,10 +50,9 @@ const Map = ({
   const filteredReports =
     reports && reports.length > 0
       ? reports.filter((report) =>
-        selectedCategories.includes(report.categoryId)
-      )
+          selectedCategories.includes(report.categoryId)
+        )
       : [];
-
 
   const getIconByCategoryId = (categoryId) => {
     switch (categoryId) {
@@ -71,20 +70,20 @@ const Map = ({
   };
 
   return (
-    <section className="h-100" style={{ position: "relative" }}>
-      {CategoryFilterComponent && (
+    <section className="altanto-map">
+      {/*       {CategoryFilterComponent && (
         <CategoryFilterComponent
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
         />
-      )}
+      )} */}
 
       <MapContainer
+        className="w-100 h-100"
         center={userLocation ? [userLocation.lat, userLocation.lng] : [0, 0]}
         zoom={15}
         minZoom={12}
         maxZoom={18}
-        style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
@@ -100,7 +99,11 @@ const Map = ({
 
         <LocationMarker />
         {!noCircle && userLocation && !routingMode && (
-          <RadiusCircle center={userLocation} radius={radiusZone} noCircle={noCircle} />
+          <RadiusCircle
+            center={userLocation}
+            radius={radiusZone}
+            noCircle={noCircle}
+          />
         )}
 
         {filteredReports && filteredReports.length > 0 && (
@@ -110,7 +113,6 @@ const Map = ({
                 key={report.id}
                 position={[report.latitude, report.longitude]}
                 icon={getIconByCategoryId(report.categoryId)}
-
               >
                 <PopupAT report={report} />
               </Marker>
