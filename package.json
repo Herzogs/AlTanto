@@ -9,10 +9,9 @@
     "install-all": "cd Backend && npm install && cd ../Frontend && npm install",
     "build:backend": "npm run build --prefix Backend",
     "build:frontend": "npm run build --prefix Frontend",
-    "build": "npm run build:backend && npm run build:frontend",
     "start:backend": "npm run start --prefix Backend",
     "start:frontend": "npm run start --prefix Frontend",
-    "start": "npm run start:backend & npm run start:frontend",
+    "start2": "npm run start:backend & npm run start:frontend",
     "dev:backend": "npm run dev --prefix Backend",
     "dev:frontend": "npm run dev --prefix Frontend",
     "dev": "npm run dev:frontend & npm run dev:backend",
@@ -21,7 +20,9 @@
     "lint": "npm run lint:backend && npm run lint:frontend",
     "test:backend": "npm run test --prefix Backend",
     "test:frontend": "npm run test --prefix Frontend",
-    "test": "npm run test:backend && npm run test:frontend"
+    "test": "npm run test:backend && npm run test:frontend",
+    "build": "react-scripts build",
+    "start": "react-scripts start"
   },
   "engines": {
     "node": ">=20.0.0",
