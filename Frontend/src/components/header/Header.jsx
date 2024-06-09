@@ -13,7 +13,9 @@ function Header() {
       <Container fluid className="h-100">
         <Row className="h-100 align-items-center">
           <Col>
-            <img src={logo} alt="Logo Al Tanto" />
+            <Link to="/">
+              <img src={logo} alt="Logo Al Tanto"/>
+            </Link>
           </Col>
           <Col className="text-end">
             <Dropdown>
