@@ -34,7 +34,7 @@ const getZoneByIdValidator = z.object({
         message: 'Id must be a string',
         required_error: 'Id is required'
     })
-    .min(1)
+    .min(1, {message: 'Id must be required'})
     .max(10)
 }).strict();
 

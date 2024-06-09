@@ -15,7 +15,7 @@ declare global {
             USER_POOL_ID: string
             CLIENT_ID: string
             AWS_REGION: string
-            CRON_TIME: string
+            CRON_TIME_PROD: string
             CRON_TIME_TEST: string
             GOOGLE_TRANSLATE_API_KEY: string
             CV_ENDPOINT: string

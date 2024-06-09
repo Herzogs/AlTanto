@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Map from "@components/Map/Map.jsx";
 import { useStore } from "@store";
 import useReports from "@hook/useReports";
-import getZone from "@services/getZone";
+import {getZone} from "@services/getZone";
 import ModalAT from "@components/modal/ModalAT";
 import CategoryFilter from "@components/Map/CategoryFilter";
 

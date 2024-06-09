@@ -10,13 +10,6 @@ const ReportFormScheme = z.object({
     required_error: 'La categoría es requerida',
   }).min(1, { message: 'La categoría es requerida' }),
 
-  latitude: z.number({
-    required_error: 'La latitud es requerida',
-  }),
-
-  longitude: z.number({
-    required_error: 'La longitud es requerida',
-  })
 }).strict();
 
 export default ReportFormScheme;

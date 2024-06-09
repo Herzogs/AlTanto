@@ -67,8 +67,7 @@ function ReportForm() {
   }, [markerPosition]);
 
   const onSubmit = async (data) => {
-    console.log("Data", data);
-    console.log(data);
+    
     data.image = file;
     data.latitude = markerPosition ? markerPosition[0] : userLocation.lat;
     data.longitude = markerPosition ? markerPosition[1] : userLocation.lng;
@@ -143,12 +142,11 @@ function ReportForm() {
           </Col>
         </Form.Group>
 
-        <Form.Group as={Row} controlId="image">
+        <Form.Group as={Row}>
           <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>
           <Col sm={12}>
             <Form.Control
               type="file"
-              {...register("image")}
               onChange={handleImageChange}
             />
 

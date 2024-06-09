@@ -72,7 +72,7 @@ const userStore = create(
 
 if (import.meta.env.VITE_ENV === 'development') {
   mountStoreDevtool('Store', useStore);
-  
+
   mountStoreDevtool('UserStore', userStore);
 }
 

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as groupService from '../services/group.service';
-import { getGroupByIdValidator, createGroupValidator } from '../validator/group.validator';
+import { getGroupByIdValidator} from '../validator/group.validator';
 
 const getAllGroups = async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
