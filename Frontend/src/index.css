@@ -28,6 +28,7 @@ html,
 body,
 main,
 #root {
+  position: relative;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -196,38 +197,10 @@ a {
 
 .leaflet-container {
   height: 100%;
-  border-radius: 12px;
+/*   border-radius: 12px; */
 }
 
-.menu-button {
-  position: absolute !important;
-  top: 10%;
-  right: 2%;
-  z-index: 999;
-  cursor: pointer;
-}
 
-.menu-button_icon {
-  font-size: 52px !important;
-  color: var(--color-at-grey);
-  transition: 0.3s ease-in-out;
-}
-
-.menu-button_icon:hover {
-  color: var(--color-at-orange);
-  transition: 0.3s ease;
-}
-
-.menu-button a:hover {
-  background-color: var(--color-at-orange);
-  color: var(--color-white) !important;
-  transition: 0.3s ease;
-}
-
-.leaflet-container a.leaflet-popup-close-button {
-  font: 24px/28px Tahoma, Verdana, sans-serif;
-  color: var(--color-at-black) !important;
-}
 
 @media only screen and (min-width: 1200px) {
   h1 {

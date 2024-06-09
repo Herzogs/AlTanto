@@ -18,7 +18,7 @@ function ReportForm() {
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     content: "",
     category: "",
@@ -41,7 +41,7 @@ function ReportForm() {
       setCategories(data);
     });
 
-    const location = markerPosition !== null ? {lat: markerPosition[0], lng: markerPosition[1]} : userLocation;
+    const location = markerPosition !== null ? { lat: markerPosition[0], lng: markerPosition[1] } : userLocation;
     if (location) {
       const reverse = async () => {
         const data = await reverseGeocode(location);
@@ -61,7 +61,7 @@ function ReportForm() {
       };
       reverse().then((data) => {
         setAddress(data);
-        
+
       });
     }
   }, [markerPosition]);
@@ -72,8 +72,8 @@ function ReportForm() {
     data.image = file;
     data.latitude = markerPosition ? markerPosition[0] : userLocation.lat;
     data.longitude = markerPosition ? markerPosition[1] : userLocation.lng;
-    
-    
+
+
     try {
       await sendReport(data);
       setShowModal(true);
@@ -98,7 +98,7 @@ function ReportForm() {
 
   return (
     <Container>
-      <h2 className="my-4">Crear Reporte</h2>
+      <h2 className="my-4 text-center">Crear Reporte</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group as={Row} controlId="category">
           <Form.Label className="mt-3 mb-2">Categoría:</Form.Label>
@@ -142,46 +142,38 @@ function ReportForm() {
             </Form.Control.Feedback>
           </Col>
         </Form.Group>
-            
-        <label className="mt-3 mb-2">Ubicación:</label>
-        <input type="text" className="mt-3 mb-2 w-100" value={address} readOnly={"true"} />
 
         <Form.Group as={Row} controlId="image">
           <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>
           <Col sm={12}>
-            {file && (
-              <Image
-                src={URL.createObjectURL(file)}
-                alt="Report"
-                style={{ maxWidth: "400px", maxHeight: "300px", width: "100%" }}
-              />
-            )}
-            {!file && (
-              <Form.Control
-                type="file"
-                {...register("image")}
-                onChange={handleImageChange}
-              />
-            )}
+            <Form.Control
+              type="file"
+              {...register("image")}
+              onChange={handleImageChange}
+            />
+
           </Col>
         </Form.Group>
+
+        {userLocation && (
+          <>
+            <label className="mt-3">Ubicación:</label>
+            <input type="text" className="mb-2 w-100" value={address} readOnly={true} />
+            <div style={{ height: "300px", marginTop: "10px" }}>
+              <Map
+                userLocation={userLocation}
+                zoneMode={true}
+                mapClick={true}
+                noCircle={true}
+              />
+            </div>
+          </>
+        )}
 
         <Button type="submit" variant="success" className="my-4 px-4">
           Guardar
         </Button>
       </Form>
-
-      {userLocation && (
-        <div style={{ height: "300px", marginTop: "16px" }}>
-          <Map
-            userLocation={userLocation}
-            zoneMode={true}
-            noDrag={true}
-            mapClick={true}
-            noCircle={true}
-          />
-        </div>
-      )}
 
       <ModalAT
         title="Reporte guardado"

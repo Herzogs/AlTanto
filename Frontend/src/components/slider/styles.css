@@ -1,0 +1,52 @@
+/* ASIDE UI */
+.at-slider_button {
+  position: absolute;
+  bottom: 4px;
+  right: 0px;
+  margin-right: 4px;
+  margin-top: 4px;
+  z-index: 9991;
+}
+
+.at-slider_button .btn-slider {
+  display: inline-block;
+  background-color: var(--color-at-black);
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: 0.3s ease-in-out;
+  outline: none;
+  border: none;
+}
+
+.at-slider_button .btn-slider:hover {
+  background-color: var(--color-at-grey);
+}
+
+.btn-slider svg {
+  font-size: 42px;
+}
+
+.at-reports_offcanvas {
+  color: var(--color-at-white) !important;
+  background-color: var(--color-at-black) !important;
+  max-height: 210px !important;
+  z-index: 9993 !important;
+}
+
+.at-reports_offcanvas .offcanvas-header .btn-close {
+  background-color: var(--color-at-white) !important;
+  opacity: 1;
+}
+
+.at-reports_offcanvas .offcanvas-header {
+  padding: 8px 16px !important;
+}
+
+.at-reports_offcanvas .offcanvas-body {
+  padding: 6px 16px !important;
+}
+
+.at-reports_offcanvas .at-report {
+  max-height: 150px !important;
+  margin-bottom: 6px !important;
+}

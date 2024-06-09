@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 function MenuButton() {
   return (
     <Dropdown className="menu-button">
-      <Dropdown.Toggle id="dropdown-basic" as="span">
+      <Dropdown.Toggle id="dropdown-basic" as="button">
         <AddCircleIcon className="menu-button_icon" />
       </Dropdown.Toggle>
-      <Dropdown.Menu>
+      <Dropdown.Menu align="end">
         <Dropdown.Item as={Link} to="/form/reporte">
           Reporte Manual
         </Dropdown.Item>

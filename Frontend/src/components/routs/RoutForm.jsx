@@ -6,7 +6,7 @@ import { Container, Button, Form, Row, Col } from "react-bootstrap";
 import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
 import { sendRoute } from "@services/sendData";
-import zodResolver from "@hookform/resolvers/zod";
+import {zodResolver} from "@hookform/resolvers/zod";
 import roadScheme from "@schemes/roadScheme";
 
 
@@ -180,7 +180,6 @@ function RoutForm() {
             startPoint={startPoint}
             endPoint={endPoint}
             zoneMode={true}
-            noDrag={true}
             routingMode={true}
           />
         </div>

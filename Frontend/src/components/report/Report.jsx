@@ -1,9 +1,10 @@
-import { Button } from "@mui/material";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
-import WarningIcon from "@mui/icons-material/Warning";
-import ErrorIcon from "@mui/icons-material/Error";
-import InfoIcon from "@mui/icons-material/Info";
+import iconRed from "@assets/iconRed.png";
+import iconBlue from "@assets/iconBlue.png";
+import iconGreen from "@assets/iconGreen.png";
+import iconYellow from "@assets/iconYellow.png";
+import iconOrange from "@assets/iconOrange.png";
 import { useNavigate } from "react-router-dom";
 import "./styles.css";
 
@@ -13,11 +14,17 @@ function Report({ report }) {
   const getIcon = (categoryId) => {
     switch (categoryId) {
       case 1:
-        return <ErrorIcon style={{ color: "#cc545d" }} />;
+        return <img src={iconRed} />;
       case 2:
-        return <WarningIcon style={{ color: "#ea8e2e" }} />;
+        return <img src={iconBlue} />;
+      case 3:
+        return <img src={iconGreen} />;
+      case 4:
+        return <img src={iconYellow} />;
+      case 5:
+        return <img src={iconOrange} />;
       default:
-        return <InfoIcon style={{ color: "#52d2e2" }} />;
+        return <img src={iconYellow} />;
     }
   };
 
@@ -28,21 +35,19 @@ function Report({ report }) {
   return (
     <article className="at-report">
       <div className="at-report-header">
-        <h5>{report.categoryName}</h5>
+        <p>{report.content}</p>
         {getIcon(report.categoryId)}
       </div>
-      <p>{report.content}</p>
+
       <div className="at-report-footer">
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
+        <button
+          className="btn btn-sm btn-primary"
           onClick={() => {
             handleViewDetails(report.id);
           }}
         >
           Ver detalle
-        </Button>
+        </button>
         <div>
           <ThumbUpIcon style={{ color: "#537ac9", marginRight: "32px" }} />
           <ThumbDownAltIcon style={{ color: "#cc545d" }} />

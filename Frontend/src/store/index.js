@@ -44,23 +44,6 @@ const useStore = create(
   )
 );
 
-const automaticReport = create(
-  persist(
-    (set) => ({
-      content: null,
-      setContent: (content) => set({ content: content }),
-      category: null,
-      setCategory: (category) => set({ category: category }),
-      idCategory: null,
-      setIdCategory: (id) => set({ idCategory: id }),
-      file: null,
-      setFile: (file) => set({ file: file }),
-    }),
-    {
-    name: 'automaticReport'
-  })
-);
-
 const userStore = create(
   persist(
     (set) => ({
@@ -89,9 +72,9 @@ const userStore = create(
 
 if (import.meta.env.VITE_ENV === 'development') {
   mountStoreDevtool('Store', useStore);
-  mountStoreDevtool('AutomaticReport', automaticReport);
+  
   mountStoreDevtool('UserStore', userStore);
 }
 
 
-export { useStore, automaticReport, userStore };
+export { useStore, userStore };
