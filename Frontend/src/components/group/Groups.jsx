@@ -78,7 +78,7 @@ function Groups() {
     <article className="mb-4">
       <div className="d-flex justify-content-between">
         <h5>
-          <GroupsIcon /> Zonas
+          <GroupsIcon /> Grupos
         </h5>
         <span>
           <Link to="/">
