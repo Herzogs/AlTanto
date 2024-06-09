@@ -40,7 +40,6 @@ function Group() {
       const groupData = { name: groupName, ownerId: userId };
       const createdGroup = await createGroup(groupData);
       setGroups([...groups, createdGroup]);
-      console.log("Group created:", createdGroup);
     } catch (error) {
       setError(error.message);
     }

@@ -33,7 +33,6 @@ function GroupDetail() {
     const fetchGroupReports = async () => {
       try {
         const groupReports = await fetchReportsByGroup(id);
-        console.log(groupReports)
         setReports(groupReports);
       } catch (error) {
         setError(error.message);

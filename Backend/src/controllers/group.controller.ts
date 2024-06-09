@@ -28,7 +28,6 @@ const getGroupById = async (req: Request, res: Response, next: NextFunction): Pr
 
 const createGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     const { name, ownerId } = req.body;
-    console.log(name, ownerId);
 
     try {
         if (typeof ownerId !== 'number') {
@@ -122,8 +121,6 @@ const getGroupDetailsById = async (req: Request, res: Response, next: NextFuncti
 };
 
 const getUserByUserName = async (req: Request, res: Response): Promise<Response> => {
-    console.log(req.params)
-    console.log("SE EJECUTO")
     const { userName } = req.params; 
     try {
         const user = await groupService.getUser(userName);
