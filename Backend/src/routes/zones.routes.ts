@@ -7,6 +7,7 @@ const router = Router();
 router.get('/', auth, controller.getAllZones);
 router.post('/', auth, controller.createZone);
 router.get('/:id', auth, controller.getZoneById);
+router.post('/notification/', auth, controller.reportsByZone);
 
 
 export default router;

@@ -1,20 +1,24 @@
-import Zone from '../models/Zone';
-import {IZone, IZoneRequest} from "../interfaces/zone.interface";
+import {IZone, IZoneRequest, IZoneResponse} from "../interfaces/zone.interface";
 import * as zoneRepository from '../repository/zone.repository';
 import transformData from '../utilities/transformData.utilities';
-import { ZoneNotCreatedException, ZoneNotFoundException } from '../exceptions/zone.exceptions';
+import {ZoneNotCreatedException, ZoneNotFoundException} from '../exceptions/zone.exceptions';
+import {getReportsByLatLongRadius} from "./report.service";
+import {IReportWithRadius} from "../interfaces/reports.interface";
 
 
 const createZone = async (newZone: IZoneRequest): Promise<IZone> => {
+    console.log(newZone, "En el service");
     const zoneCreated = await zoneRepository.default.create(newZone);
     if (!zoneCreated) throw new ZoneNotCreatedException("Zone not created");
     return zoneCreated;
 }
 
-const getAllZone = async (): Promise<Zone[]> => {
-    const listOfZones = await zoneRepository.default.getAllZone();
+
+const getAllZone = async (userId: number): Promise<IZoneResponse[]> => {
+    const listOfZones:IZone[] = await zoneRepository.default.getAllZone(userId);
     if (!listOfZones) throw new ZoneNotFoundException("Zones not found");
     return listOfZones.map(transformData);
+
 }
 
 const getZoneById = async (zoneId: number) => {
@@ -23,4 +27,39 @@ const getZoneById = async (zoneId: number) => {
     return transformData(zoneSearched);
 }
 
-export {createZone, getAllZone, getZoneById}
+interface IZoneReport {
+    zoneName: string;
+    reports: any[];
+}
+
+const getNotification = async (userId: number): Promise<IZoneReport[]> => {
+    const zones:IZoneResponse[] = await getAllZone(userId);
+    const reportByZone: IZoneReport[] = [];
+    for (const myZone of zones) {
+        const reportParams: IReportWithRadius = {
+            lat: myZone.location.latitude.toString(),
+            lon: myZone.location.longitude.toString(),
+            rad: myZone.radio.toString()
+        };
+        const result = await getReportsByLatLongRadius(reportParams);
+        reportByZone.push({
+            zoneName: myZone.name,
+            reports: result
+        });
+    }
+    return reportByZone;
+}
+/*
+}zona{
+    nombre
+    reporte{
+
+    }
+}
+/*export interface IReportWithRadius {
+    lat: string
+    lon: string
+    rad: string
+}*/
+
+export {createZone, getAllZone, getZoneById, getNotification}
