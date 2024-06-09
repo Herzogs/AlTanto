@@ -15,6 +15,7 @@ import MarkerMapClick from "./MarkerMapClick";
 import "leaflet/dist/leaflet.css";
 import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import "./styles.css";
+import ContextMenu from "./ContextMenu";
 
 const Map = ({
   userLocation,
@@ -92,6 +93,7 @@ const Map = ({
 
         {mapClick && (
           <>
+            <ContextMenu />
             <MapClickHandler />
             <MarkerMapClick />
           </>
