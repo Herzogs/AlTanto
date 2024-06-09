@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-import { Col, Container, Row } from "react-bootstrap";
 import Map from "@components/Map/Map";
-import SliderAT from "@components/slider/SliderAT";
-import { useStore } from "@store";
-import useReports from "@hook/useReports";
-import CardHome from "@components/cards/CardHome";
+import Aside from "@components/aside/Aside";
+import SliderButton from "@components/slider/SliderButton";
 import CategoryFilter from "@components/Map/CategoryFilter";
+import useReports from "@hook/useReports";
+import { useStore } from "@store";
 
 function Home() {
   const {
@@ -19,9 +18,14 @@ function Home() {
     setDistance,
     radiusZone,
     setRadiusZone,
+    setMarkerPosition,
   } = useStore();
 
   const { fetchReports } = useReports();
+
+  useEffect(() => {
+    setMarkerPosition(null);
+  }, []);
 
   useEffect(() => {
     if (userLocation) {
@@ -39,27 +43,15 @@ function Home() {
   }, [setRoutingMode]);
 
   return (
-    <section className="container_home">
-      <Container fluid className="h-100">
-        <Row className="h-100">
-          <Col lg={4}>
-            <CardHome />
-          </Col>
-
-          <Col lg={8}>
-            <h3>Reportes</h3>
-            <SliderAT reports={reports} />
-          </Col>
-
-          <Col className="h-map pb-footer">
-            <Map
-              userLocation={userLocation}
-              radiusZone={radiusZone}
-              CategoryFilterComponent={CategoryFilter}
-            />
-          </Col>
-        </Row>
-      </Container>
+    <section className="w-100 h-100">
+      <Aside />
+      <Map
+        userLocation={userLocation}
+        radiusZone={radiusZone}
+        CategoryFilterComponent={CategoryFilter}
+        mapClick={true}
+      />
+      {reports.length > 0 && <SliderButton />}
     </section>
   );
 }

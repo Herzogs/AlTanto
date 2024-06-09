@@ -10,8 +10,13 @@ import ModalAT from "@components/modal/ModalAT";
 import CategoryFilter from "@components/Map/CategoryFilter";
 
 function ZoneHome() {
-  const { userLocation, setUserLocation, radiusZone, setRadiusZone } =
-    useStore();
+  const {
+    userLocation,
+    setUserLocation,
+    radiusZone,
+    setRadiusZone,
+    setMarkerPosition,
+  } = useStore();
 
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState(null);
@@ -23,6 +28,7 @@ function ZoneHome() {
   useEffect(() => {
     try {
       if (!id) throw new Error("El id de la zona no es válido");
+      setMarkerPosition(null);
       getZone(id)
         .then((data) => {
           setRadiusZone(data.radio);
@@ -62,6 +68,8 @@ function ZoneHome() {
               userLocation={userLocation}
               radiusZone={radiusZone}
               CategoryFilterComponent={CategoryFilter}
+              mapClick={true}
+              noCircle={false}
             />
           </div>
 

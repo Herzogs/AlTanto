@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "@components/header/Header";
-import Footer from "@components/footer/Footer";
 import Home from "@pages/Home";
 import Roads from "@pages/Roads";
 import Zones from "@pages/Zones";
@@ -75,7 +74,7 @@ const App = () => {
           </Route>
         </Routes>
       </main>
-      <Footer />
+     {/*  <Footer /> */}
     </BrowserRouter>
   );
 };

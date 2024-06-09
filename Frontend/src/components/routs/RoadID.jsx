@@ -114,7 +114,6 @@ function RoadID() {
               startPoint={{lat: origin.latitude, lon: origin.longitude}}
               endPoint={{lat: destination.latitude, lon: destination.longitude}}
               zoneMode={true}
-              noDrag={true}
               routingMode={true}
               CategoryFilterComponent={CategoryFilter}
             />

@@ -4,50 +4,69 @@ import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
 import { getCategoryFromApi } from "@services/getCategory";
 import { sendReport } from "@services/sendData";
-import { useStore, automaticReport } from "@store";
+import { useStore } from "@store";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
+import { reverseGeocode } from "@services/getGeoAdress";
 
 function ReportForm() {
-  const { userLocation, setReports } = useStore();
-  const { idCategory, file, setIdCategory, setFile } = automaticReport();
-
+  const { userLocation, markerPosition, setReports } = useStore();
+  const [address, setAddress] = useState("");
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
-
+  const [file, setFile] = useState(null);
+  
   const [formData, setFormData] = useState({
     content: "",
-    category: idCategory || "",
-    image: file || null,
+    category: "",
+    image: null,
+    latitude: null,
+    longitude: null,
   });
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm();
 
   useEffect(() => {
-    setReports(null);
-
+    setReports([]);
     getCategoryFromApi().then((data) => {
       setCategories(data);
     });
 
-    // Update form data only when necessary
-    if (!idCategory && !file) {
-      setValue("content", formData.content);
-      setValue("category", formData.category);
-      setValue("latitude", userLocation.lat);
-      setValue("longitude", userLocation.lng);
-      setValue("image", formData.image);
+    const location = markerPosition !== null ? {lat: markerPosition[0], lng: markerPosition[1]} : userLocation;
+    if (location) {
+      const reverse = async () => {
+        const data = await reverseGeocode(location);
+        return data;
+      };
+      reverse().then((data) => {
+        setAddress(data);
+      });
     }
-  }, [formData, idCategory, file, setValue]);
+  }, []);
+
+  useEffect(() => {
+    if (markerPosition) {
+      const reverse = async () => {
+        const data = await reverseGeocode({ lat: markerPosition[0], lng: markerPosition[1] });
+        return data;
+      };
+      reverse().then((data) => {
+        setAddress(data);
+        
+      });
+    }
+  }, [markerPosition]);
 
   const onSubmit = async (data) => {
     data.image = file;
-
+    data.latitude = markerPosition ? markerPosition[0] : userLocation.lat;
+    data.longitude = markerPosition ? markerPosition[1] : userLocation.lng;
+    
+    
     try {
       await sendReport(data);
       setShowModal(true);
@@ -63,13 +82,6 @@ function ReportForm() {
       category: "",
       image: null,
     });
-    setIdCategory("");
-    setFile(null);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
   };
 
   const handleImageChange = (e) => {
@@ -89,18 +101,13 @@ function ReportForm() {
               isInvalid={errors.category}
               {...register("category", {
                 required: "Campo requerido",
-                onChange: (e) => setIdCategory(e.target.value),
+                onChange: (e) =>
+                  setFormData({ ...formData, category: e.target.value }),
               })}
-              value={formData.category}
-              onChange={handleInputChange}
             >
               <option value="">Seleccione una categoría</option>
               {categories.map((cat) => (
-                <option
-                  key={cat.id}
-                  value={cat.id}
-                  selected={idCategory === cat.id}
-                >
+                <option key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>
               ))}
@@ -120,16 +127,20 @@ function ReportForm() {
               isInvalid={errors.content}
               {...register("content", {
                 required: "Campo requerido",
-                maxLength: { value: 50, message: "Máximo 50 caracteres" },
+                maxLength: { value: 100, message: "Máximo 100 caracteres" },
+                onChange: (e) =>
+                  setFormData({ ...formData, content: e.target.value }),
               })}
               value={formData.content}
-              onChange={handleInputChange}
             />
             <Form.Control.Feedback type="invalid">
               {errors.content?.message}
             </Form.Control.Feedback>
           </Col>
         </Form.Group>
+            
+        <label className="mt-3 mb-2">Ubicación:</label>
+        <input type="text" className="mt-3 mb-2 w-100" value={address} readOnly="true" />
 
         <Form.Group as={Row} controlId="image">
           <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>
@@ -158,7 +169,12 @@ function ReportForm() {
 
       {userLocation && (
         <div style={{ height: "300px", marginTop: "16px" }}>
-          <Map userLocation={userLocation} zoneMode={true} noDrag={true} />
+          <Map
+            userLocation={userLocation}
+            zoneMode={true}
+            mapClick={true}
+            noCircle={true}
+          />
         </div>
       )}
 

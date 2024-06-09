@@ -179,7 +179,6 @@ function ZoneForm() {
             userLocation={userLocation}
             radiusZone={selectedRadio}
             zoneMode={true}
-            noDrag={true}
           />
         </div>
       )}

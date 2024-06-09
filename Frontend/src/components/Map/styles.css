@@ -1,0 +1,81 @@
+/* MAPA UI */
+.altanto-map {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+/* ICONOS ZOOM */
+.leaflet-top {
+  top: 48px;
+}
+
+.leaflet-touch .leaflet-bar a {
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+}
+
+/* LOGO LETFLEAT */
+.leaflet-container .leaflet-control-attribution {
+  display: none;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  font: 24px/28px Tahoma, Verdana, sans-serif;
+  color: var(--color-at-black) !important;
+}
+
+/* MENU BUTTON REPORTE */
+.menu-button {
+  position: absolute !important;
+  bottom: 60px;
+  left: 0px;
+  z-index: 9991;
+  cursor: pointer;
+}
+
+.menu-button button {
+  border: none !important;
+  padding-inline-start: 0px !important;
+  background: transparent !important;
+}
+
+.menu-button_icon {
+  font-size: 64px !important;
+  color: var(--color-at-orange);
+  transition: 0.3s ease-in-out;
+}
+
+.menu-button_icon:hover {
+  color: #f8863a;
+}
+
+.menu-button a:hover {
+  background-color: var(--color-at-orange);
+  color: var(--color-white) !important;
+}
+
+.menu-button .dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-toggle::after {
+  color: transparent;
+}
+
+@media only screen and (min-width: 1400px) {
+  .leaflet-left .leaflet-control {
+    margin-left: 16px;
+  }
+
+  .leaflet-touch .leaflet-bar a {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+  }
+
+  .menu-button {
+    margin-left: 12px;
+  }
+}

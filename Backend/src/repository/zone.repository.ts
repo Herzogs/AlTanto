@@ -5,28 +5,31 @@ import { ZoneNotCreatedException, ZoneNotFoundException } from '../exceptions/zo
 
 
 class ZoneRepository {
-    static async create(newZone: IZoneRequest): Promise<IZone> {
-
-
-        const locationSearched = await Location.findOrCreate({
-            where: { latitude: newZone.latitude, longitude: newZone.longitude },
-        })
-
-
-        const location = locationSearched[0].get({ plain: true });
-
-        const zone = await Zone.create({
-            name: newZone.name,
-            radio: newZone.radio,
-            LocationId: location.id,
-            userId: newZone.userId
-
-        })
-        
-        if (!zone) {
-            throw new ZoneNotCreatedException("Zone not created");
+    static async create(newZone: IZoneRequest): Promise<IZone | void> {
+        try {
+            const locationSearched = await Location.findOrCreate({
+                where: { latitude: newZone.latitude, longitude: newZone.longitude },
+            })
+    
+    
+            const location = locationSearched[0].get({ plain: true });
+    
+            const zone = await Zone.create({
+                name: newZone.name,
+                radio: newZone.radio,
+                LocationId: location.id,
+                userId: newZone.userId
+    
+            })
+            
+            if (!zone) {
+                throw new ZoneNotCreatedException("Zone not created");
+            }
+            return zone.get({ plain: true });    
+        } catch (error) {
+            console.log(error);
         }
-        return zone.get({ plain: true });
+        
 
     }
 

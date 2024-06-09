@@ -6,13 +6,14 @@ import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
 import { sendReport } from "@services/sendData";
 import { getCategoryFromApi } from "@services/getCategory";
+import { reverseGeocode } from "@services/getGeoAdress";
 import { useStore } from "@store";
 
 const categories = [
   {
     id: 1,
     name: "Seguridad",
-    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta","palanca"],
+    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca"],
   },
   {
     id: 2,
@@ -48,6 +49,7 @@ function categorizeDescription(description) {
 
 function ReportIA() {
   const [file, setFile] = useState(null);
+  const [address, setAddress] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -55,13 +57,42 @@ function ReportIA() {
   const videoRef = useRef(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
-  const { userLocation, setReports } = useStore();
+  const { userLocation, setReports, markerPosition } = useStore();
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setReports(null);
     fetchCategories();
+    const location =
+      markerPosition !== null
+        ? { lat: markerPosition[0], lng: markerPosition[1] }
+        : userLocation;
+    if (location) {
+      const reverse = async () => {
+        const data = await reverseGeocode(location);
+        return data;
+      };
+      reverse().then((data) => {
+        console.log(data);
+        setAddress(data);
+      });
+    }
   }, []);
+
+  useEffect(() => {
+    if (markerPosition) {
+      const reverse = async () => {
+        const data = await reverseGeocode({
+          lat: markerPosition[0],
+          lng: markerPosition[1],
+        });
+        return data;
+      };
+      reverse().then((data) => {
+        setAddress(data);
+      });
+    }
+  }, [markerPosition]);
 
   const fetchCategories = async () => {
     try {
@@ -136,11 +167,13 @@ function ReportIA() {
   };
 
   const onSubmit = async () => {
+    const lat = markerPosition ? markerPosition[0] : userLocation.lat;
+    const lng = markerPosition ? markerPosition[1] : userLocation.lng;
     const reportData = {
       category: category.id,
       content: description,
-      latitude: userLocation.lat,
-      longitude: userLocation.lng,
+      latitude: lat,
+      longitude: lng,
       image: file,
     };
     try {
@@ -243,9 +276,22 @@ function ReportIA() {
             ></Form.Control>
           </Form.Group>
 
+          <label className="fw-bold h5 mt-4">Ubicación:</label>
+          <input
+            type="text"
+            className="mt-3 mb-2 w-100"
+            value={address}
+            readOnly="true"
+          />
+
           {description && userLocation && (
             <div style={{ height: "300px", marginTop: "16px" }}>
-              <Map userLocation={userLocation} zoneMode={true} noDrag={true} />
+              <Map
+                userLocation={userLocation}
+                zoneMode={true}
+                mapClick={true}
+                noCircle={true}
+              />
             </div>
           )}
 

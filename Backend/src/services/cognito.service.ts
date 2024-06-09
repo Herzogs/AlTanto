@@ -36,7 +36,6 @@ const confirmUser = async (email: string, confirmationCode: string): Promise<voi
         await new Promise<void>((resolve, reject) => {
             cognitoUser.confirmRegistration(confirmationCode, true, (err, result) => {
                 if (err) {
-                    console.error(`Error resending confirmation code: ${err.message}`);
                     return reject(new Error(err.message || 'Error resending confirmation code'));
                 }
                 console.log(`Confirmation code resent successfully: ${result}`);

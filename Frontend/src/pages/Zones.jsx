@@ -9,6 +9,8 @@ function Zones() {
   useEffect(() => {
     getZone().then((data) => {
       setZones(data);
+    }).catch((error) => {
+      console.error(error);
     });
   }, []);
 
