@@ -32,10 +32,10 @@ function Aside() {
           <Offcanvas.Title>Mantenete Al Tanto</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <Zones />
-          <Roads />
-          <Groups />
-          <Notifications />
+          <Zones handleClose={handleClose} />
+          <Roads handleClose={handleClose} />
+          <Groups handleClose={handleClose} />
+          <Notifications handleClose={handleClose} />
         </Offcanvas.Body>
       </Offcanvas>
     </aside>

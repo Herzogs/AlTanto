@@ -8,6 +8,7 @@ import {
 import { getUserByUsername } from "@services/userService";
 import { userStore } from "@/store/index";
 import { Container } from "react-bootstrap";
+import Header from "@components/header/Header";
 
 function GroupDetail() {
   const { id } = useParams();
@@ -98,77 +99,80 @@ function GroupDetail() {
   }
 
   return (
-    <Container className="container-md_stop">
-      <h1>{groupDetails.name}</h1>
-      <p>
-        Código de Grupo: <strong>{groupDetails.groupCode}</strong>
-      </p>
-      <button
-        className="btn btn-sm btn-danger"
-        onClick={() => handleDeleteGroup(groupDetails.id)}
-      >
-        Borrar Grupo
-      </button>
+    <>
+      <Header />
+      <Container className="container-md_stop pt-4 pt-lg-5">
+        <h1>{groupDetails.name}</h1>
+        <p>
+          Código de Grupo: <strong>{groupDetails.groupCode}</strong>
+        </p>
+        <button
+          className="btn btn-sm btn-danger"
+          onClick={() => handleDeleteGroup(groupDetails.id)}
+        >
+          Borrar Grupo
+        </button>
 
-      <h3 className="mt-4">Miembros:</h3>
-      <ul>
-        {groupDetails.members.map((member) => (
-          <li key={member.id}>
-            <h5 className="mt-3">{member.name}</h5>
-            <strong>
-              {member.id === groupDetails.ownerId && "* Propietario"}
-            </strong>
+        <h3 className="mt-4">Miembros:</h3>
+        <ul>
+          {groupDetails.members.map((member) => (
+            <li key={member.id}>
+              <h5 className="mt-3">{member.name}</h5>
+              <strong>
+                {member.id === groupDetails.ownerId && "* Propietario"}
+              </strong>
 
-            {userId === member.id && (
-              <>
-                <br />
-                <button
-                  className="btn btn-sm btn-secondary"
-                  onClick={() => handleLeaveGroup(groupDetails.id, member.id)}
-                >
-                  Abandonar grupo
-                </button>
-              </>
-            )}
-            {groupDetails.ownerId === userId &&
-              member.id !== groupDetails.ownerId && (
-                <button
-                  className="btn btn-sm btn-warning"
-                  onClick={() => handleRemoveUser(groupDetails.id, member.id)}
-                >
-                  Eliminar usuario
-                </button>
+              {userId === member.id && (
+                <>
+                  <br />
+                  <button
+                    className="btn btn-sm btn-secondary"
+                    onClick={() => handleLeaveGroup(groupDetails.id, member.id)}
+                  >
+                    Abandonar grupo
+                  </button>
+                </>
               )}
-          </li>
-        ))}
-      </ul>
+              {groupDetails.ownerId === userId &&
+                member.id !== groupDetails.ownerId && (
+                  <button
+                    className="btn btn-sm btn-warning"
+                    onClick={() => handleRemoveUser(groupDetails.id, member.id)}
+                  >
+                    Eliminar usuario
+                  </button>
+                )}
+            </li>
+          ))}
+        </ul>
 
-      {groupDetails.ownerId === userId && (
-        <div className="mt-5">
-          <h3>Invitar Usuario</h3>
-          <input
-            className="form-control"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <button className="btn btn-primary mt-3" onClick={handleSearchUser}>
-            Buscar Usuario
-          </button>
+        {groupDetails.ownerId === userId && (
+          <div className="mt-5">
+            <h3>Invitar Usuario</h3>
+            <input
+              className="form-control"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <button className="btn btn-primary mt-3" onClick={handleSearchUser}>
+              Buscar Usuario
+            </button>
 
-          {foundUser && (
-            <div>
-              <strong>Usuario encontrado: {foundUser.username}</strong>
-              <button onClick={handleInviteUser}>Invitar Usuario</button>
-            </div>
-          )}
-        </div>
-      )}
+            {foundUser && (
+              <div>
+                <strong>Usuario encontrado: {foundUser.username}</strong>
+                <button onClick={handleInviteUser}>Invitar Usuario</button>
+              </div>
+            )}
+          </div>
+        )}
 
-      <Link className="btn btn-secondary px-3 mt-5" to="/grupos">
-        Volver
-      </Link>
-    </Container>
+        <Link className="btn btn-secondary px-3 mt-5" to="/">
+          Volver
+        </Link>
+      </Container>
+    </>
   );
 }
 

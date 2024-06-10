@@ -198,7 +198,9 @@ a {
 /*   border-radius: 12px; */
 }
 
-
+.pt-header{
+  padding-top: 60px;
+}
 
 @media only screen and (min-width: 1200px) {
   h1 {

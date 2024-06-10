@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import HeaderHome from "@components/header/HeaderHome";
 import Map from "@components/Map/Map";
 import Aside from "@components/aside/Aside";
 import SliderButton from "@components/slider/SliderButton";
@@ -20,7 +21,6 @@ function Home() {
   } = useStore();
 
   const { id } = userStore.getState().user;
-
   const { fetchReports } = useReports();
 
   useEffect(() => {
@@ -44,12 +44,14 @@ function Home() {
 
   return (
     <section className="w-100 h-100">
+      <HeaderHome />
       {id && <Aside />}
       <Map
         userLocation={userLocation}
         radiusZone={radiusZone}
         showFilters={true}
         mapClick={true}
+        noCircle={false}
       />
       {reports && reports.length > 0 && <SliderButton />}
     </section>

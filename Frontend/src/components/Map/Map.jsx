@@ -85,8 +85,8 @@ const Map = ({
       <MapContainer
         className="w-100 h-100"
         center={userLocation ? [userLocation.lat, userLocation.lng] : [0, 0]}
-        zoom={12}
-        minZoom={12}
+        zoom={15}
+        minZoom={14}
         maxZoom={18}
       >
         <TileLayer

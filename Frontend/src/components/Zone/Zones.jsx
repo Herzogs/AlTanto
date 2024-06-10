@@ -4,7 +4,7 @@ import PinDropIcon from "@mui/icons-material/PinDrop";
 import getZone from "@services/getZone";
 import { Link } from "react-router-dom";
 
-function Zones() {
+function Zones({handleClose}) {
   const [zones, setZones] = useState([]);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ function Zones() {
         </h5>
         <span>
           <Link to="/form/zona">
-            <AddCircleOutlineIcon /> Crear{" "}
+            <AddCircleOutlineIcon /> Crear
           </Link>
         </span>
       </div>
@@ -34,7 +34,7 @@ function Zones() {
         {zones && zones.length > 0 && (
           <>
             {zones.map((zone) => (
-              <Link key={zone.id} to={`/zonas/${zone.id}`}>
+              <Link key={zone.id} to={`/zonas/${zone.id}`} onClick={handleClose}>
                 <li>{zone.name}</li>
               </Link>
             ))}

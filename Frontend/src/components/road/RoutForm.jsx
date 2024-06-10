@@ -3,10 +3,10 @@ import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
 import { useForm } from "react-hook-form";
 import { Container, Button, Form, Row, Col } from "react-bootstrap";
+import Header from "@components/header/Header";
 import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
 import { sendRoute } from "@services/sendData";
-
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
@@ -45,10 +45,8 @@ function RoutForm() {
       setError(false);
     } catch (error) {
       console.error("Error al obtener coordenadas:", error);
-      setTitle("Error al obtener coordenadas");
-      setMessage("Verifique las direcciones ingresadas");
-      setShowModal(true);
       setError(true);
+      setVisible(false);
     }
   }, [startAddress, endAddress]);
 
@@ -69,150 +67,154 @@ function RoutForm() {
         endPoint,
         distance: useStore.getState().distance,
         time: useStore.getState().time,
-        id: userStore.getState().user.id
+        id: userStore.getState().user.id,
       });
 
       setTitle(response.title);
       setMessage(response.message);
-      
+      setShowModal(true);
     } catch (error) {
       console.error("Error al guardar la ruta", error);
-      setTitle("Error al guardar la ruta");
-      setMessage(error.message);
-    } finally {
-      setShowModal(true);
     }
   };
 
   return (
-    <Container className="h-100">
-      <h2 className="my-4">Crear Ruta</h2>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Form.Group as={Row} controlId="origin">
-          <Form.Label className="mt-3 mb-2" column>
-            Dirección origen:
-          </Form.Label>
-          <Col sm={12}>
-            <Form.Control
-              type="text"
-              isInvalid={!!errors.origin}
-              {...register("origin", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 120,
-                  message: "Máximo 120 caracteres",
-                },
-              })}
-            />
-            {errors.origin && (
-              <Form.Control.Feedback type="invalid">
-                {errors.origin.message}
-              </Form.Control.Feedback>
-            )}
-          </Col>
-        </Form.Group>
-        <Form.Group as={Row} controlId="destination">
-          <Form.Label className="mt-3 mb-2" column>
-            Dirección destino:
-          </Form.Label>
-          <Col sm={12}>
-            <Form.Control
-              type="text"
-              isInvalid={!!errors.des}
-              {...register("destination", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 120,
-                  message: "Máximo 120 caracteres",
-                },
-              })}
-            />
-            {errors.destination && (
-              <Form.Control.Feedback type="invalid">
-                {errors.destination.message}
-              </Form.Control.Feedback>
-            )}
-          </Col>
-        </Form.Group>
+    <>
+      <Header />
+      <Container className="h-100 pt-4 pt-lg-5">
+        <h2>Crear Ruta</h2>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form.Group as={Row} controlId="origin">
+            <Form.Label className="mt-3 mb-2" column>
+              Dirección origen:
+            </Form.Label>
+            <Col sm={12}>
+              <Form.Control
+                type="text"
+                isInvalid={!!errors.origin}
+                {...register("origin", {
+                  required: "Campo requerido",
+                  maxLength: {
+                    value: 120,
+                    message: "Máximo 120 caracteres",
+                  },
+                })}
+              />
+              {errors.origin && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.origin.message}
+                </Form.Control.Feedback>
+              )}
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} controlId="destination">
+            <Form.Label className="mt-3 mb-2" column>
+              Dirección destino:
+            </Form.Label>
+            <Col sm={12}>
+              <Form.Control
+                type="text"
+                isInvalid={!!errors.des}
+                {...register("destination", {
+                  required: "Campo requerido",
+                  maxLength: {
+                    value: 120,
+                    message: "Máximo 120 caracteres",
+                  },
+                })}
+              />
+              {errors.destination && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.destination.message}
+                </Form.Control.Feedback>
+              )}
+            </Col>
+          </Form.Group>
+          {error && (
+            <p className="text-danger">* Error al obtener coordenadas</p>
+          )}
 
-        <Form.Group className="my-4" as={Row} controlId="search">
-          <Col sm={12}>
-            <Button
-              type="button"
-              onClick={handleSetPoints}
-              disabled={startAddress === "" || endAddress === ""}
-            >
-              Ver Ruta
-            </Button>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-          </Col>
-        </Form.Group>
-
-        <Form.Group className="my-4" as={Row} controlId="submit">
-          <Col sm={12}>
-            {visible && userLocation && (
+          <Form.Group className="my-4" as={Row} controlId="search">
+            <Col sm={12}>
               <Button
-                className="btn-success px-4"
-                type="submit"
-                disabled={!visible}
+                type="button"
+                className="px-5"
+                onClick={handleSetPoints}
+                disabled={startAddress === "" || endAddress === ""}
               >
-                Guardar
+                Ver Ruta
               </Button>
-            )}
-          </Col>
-        </Form.Group>
-        {visible && <Form.Group as={Row} controlId="name">
-          <Form.Label className="mt-3 mb-2" column>
-            Nombre:
-          </Form.Label>
-          <Col sm={12}>
-            <Form.Control
-              type="text"
-              isInvalid={!!errors.name}
-              {...register("name", {
-                required: "Campo requerido",
-                maxLength: {
-                  value: 50,
-                  message: "Máximo 50 caracteres",
-                },
-                minLength: {
-                  value: 3,
-                  message: "Mínimo 3 caracteres",
-                },
-              })}
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </Col>
+          </Form.Group>
+
+          {visible && (
+            <Form.Group as={Row} controlId="name">
+              <Form.Label className="mt-3 mb-2" column>
+                Nombre:
+              </Form.Label>
+              <Col sm={12}>
+                <Form.Control
+                  type="text"
+                  isInvalid={!!errors.name}
+                  {...register("name", {
+                    required: "Campo requerido",
+                    maxLength: {
+                      value: 50,
+                      message: "Máximo 50 caracteres",
+                    },
+                    minLength: {
+                      value: 3,
+                      message: "Mínimo 3 caracteres",
+                    },
+                  })}
+                />
+                {errors.name && (
+                  <Form.Control.Feedback type="invalid">
+                    {errors.name.message}
+                  </Form.Control.Feedback>
+                )}
+              </Col>
+            </Form.Group>
+          )}
+
+          <Form.Group className="my-4" as={Row} controlId="submit">
+            <Col sm={12}>
+              {visible && userLocation && (
+                <Button
+                  className="btn-success px-5"
+                  type="submit"
+                  disabled={!visible}
+                >
+                  Guardar
+                </Button>
+              )}
+            </Col>
+          </Form.Group>
+        </Form>
+
+        {visible && userLocation && (
+          <div className="h-map pb-footer mt-2">
+            <Map
+              userLocation={userLocation}
+              radiusZone={500}
+              startPoint={startPoint}
+              endPoint={endPoint}
+              zoneMode={true}
+              routingMode={true}
             />
-            {errors.name && (
-              <Form.Control.Feedback type="invalid">
-                {errors.name.message}
-              </Form.Control.Feedback>
-            )}
-          </Col>
-        </Form.Group>
-        }
-      </Form>
+          </div>
+        )}
 
-      {visible && userLocation && (
-        <div className="h-map pb-footer mt-2">
-          <Map
-            userLocation={userLocation}
-            radiusZone={500}
-            startPoint={startPoint}
-            endPoint={endPoint}
-            zoneMode={true}
-            routingMode={true}
-          />
-        </div>
-      )}
-
-
-      <ModalAT
-        title={title}
-        message={message}
-        showModal={showModal}
-        setShowModal={setShowModal}
-        url="/recorridos"
-      />
-    </Container>
+        <ModalAT
+          title={title}
+          message={message}
+          showModal={showModal}
+          setShowModal={setShowModal}
+          url="/"
+        />
+      </Container>
+    </>
   );
 }
 

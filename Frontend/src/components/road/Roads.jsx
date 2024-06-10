@@ -5,7 +5,7 @@ import { getRoutesByUserId } from "@services/getRoutesByUser";
 import { userStore } from "@store";
 import { Link } from "react-router-dom";
 
-function Roads() {
+function Roads({handleClose}) {
   const [roads, setRoads] = useState([]);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ function Roads() {
           <ForkRightIcon /> Recorridos
         </h5>
         <span>
-          <Link to="/form/zona">
+          <Link to="/form/ruta">
             <AddCircleOutlineIcon /> Crear
           </Link>
         </span>
@@ -31,7 +31,7 @@ function Roads() {
         {roads && roads.length > 0 && (
           <>
             {roads.map((road) => (
-              <Link key={road.id} to={`/recorridos/${road.id}`}>
+              <Link key={road.id} to={`/recorridos/${road.id}`} onClick={handleClose}>
                 <li>{road.name}</li>
               </Link>
             ))}
