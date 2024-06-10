@@ -91,6 +91,7 @@ const Map = ({
         zoom={15}
         minZoom={14}
         maxZoom={18}
+        markerZoomAnimation={true}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"

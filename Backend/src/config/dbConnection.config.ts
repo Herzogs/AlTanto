@@ -13,6 +13,7 @@ const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     dialect: dbDialect as 'mysql',
     timezone: '-03:00',
     logging: false,
+        
 });
 
 dbConnection.authenticate()
