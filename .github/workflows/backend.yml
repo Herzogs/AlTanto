@@ -5,12 +5,12 @@ on:
     branches:
       - master
     paths:
-      - 'backend/**'
+      - 'Backend/**'
   pull_request:
     branches:
       - master
     paths:
-      - 'backend/**'
+      - 'Backend/**'
 
 jobs:
   lint:
@@ -25,9 +25,9 @@ jobs:
         with:
           node-version: 20
       - name: Install dependencies
-        run: npm install --prefix backend
+        run: npm install --prefix Backend
       - name: Run Lint
-        run: npm run lint --prefix backend
+        run: npm run lint --prefix Backend
 
   build:
     needs: lint
@@ -42,14 +42,16 @@ jobs:
         with:
           node-version: 20
       - name: Install dependencies
-        run: npm install --prefix backend
+        run: npm install --prefix Backend
       - name: Build
-        run: npm run build --prefix backend
+        run: npm run build --prefix Backend
       - name: Upload Backend Artifact
         uses: actions/upload-artifact@v2
         with:
           name: build_backend
           path: backend/build
+      - name: Run tests
+        run: npm run test --prefix Backend
 
   deploy:
     needs: build
