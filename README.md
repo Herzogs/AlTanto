@@ -34,7 +34,7 @@ Para poder correr este proyecto lo que primero debes hacer es clonar este reposi
 git clone https://github.com/Herzogs/AlTanto
 ```
 
-Después debes meterte en el proyecto recien clonado y realizar el npm run dev
+Después debes meterte en el proyecto recien clonado y realizar el npm run dev -
 
 ``` bash
 cd altanto
