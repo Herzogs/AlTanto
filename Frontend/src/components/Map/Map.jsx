@@ -3,10 +3,9 @@
 /* eslint-disable react/prop-types */
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { icons, getIconByCategoryId } from "./Icons";
-import { useStore } from "@store";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
-import Routing from "@components/routs/Routing";
+import Routing from "@components/road/Routing";
 import PopupAT from "@components/Map/PopupAT";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
@@ -14,6 +13,9 @@ import MarkerClusterGroup from "@changey/react-leaflet-markercluster";
 import { getCategoryFromApi } from "../../services/getCategory";
 import { useEffect, useState } from "react";
 import MarkerMapClick from "./MarkerMapClick";
+
+import Filters from "@components/filter/Filters";
+import { useStore, userStore } from "@store";
 
 import "leaflet/dist/leaflet.css";
 import "@changey/react-leaflet-markercluster/dist/styles.min.css";
@@ -27,14 +29,16 @@ const Map = ({
   startPoint = null,
   endPoint = null,
   fetchingReport = false,
-  CategoryFilterComponent = null,
+  showFilters = false,
   mapClick = false,
   noCircle = false,
 }) => {
   const { MapClickHandler } = useMapClickHandler();
-  const { reports } = useStore();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [categories, setCategories] = useState([]);
+
+  const { reports } = useStore();
+  const { id } = userStore.getState().user;
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -74,26 +78,26 @@ const Map = ({
 
   return (
     <section className="altanto-map">
-      {/*       {CategoryFilterComponent && (
-        <CategoryFilterComponent
+      {showFilters && (
+        <Filters
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
         />
-      )} */}
+      )}
 
       <MapContainer
         className="w-100 h-100"
         center={userLocation ? [userLocation.lat, userLocation.lng] : [0, 0]}
         zoom={15}
-        minZoom={16}
-        maxZoom={20}
+        minZoom={14}
+        maxZoom={18}
       >
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
 
-        {mapClick && (
+        {id && mapClick && (
           <>
             <MapClickHandler />
             <MarkerMapClick />
@@ -128,7 +132,7 @@ const Map = ({
           <Routing startPoint={startPoint} endPoint={endPoint} />
         )}
       </MapContainer>
-      {!zoneMode && !routingMode && <MenuButton />}
+      {id && !zoneMode && !routingMode && <MenuButton />}
     </section>
   );
 };

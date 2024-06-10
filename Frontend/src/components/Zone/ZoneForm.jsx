@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, FormCheck } from "react-bootstrap";
+import Header from "@components/header/Header";
 import Map from "@components/Map/Map.jsx";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
@@ -81,8 +82,10 @@ function ZoneForm() {
   };
 
   return (
-    <Container className="h-100">
-      <h2 className="my-4">Crear zona</h2>
+    <>
+    <Header />
+    <Container className="h-100 pt-4 pt-lg-5">
+      <h2>Crear zona</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group as={Row} controlId="name">
           <Form.Label className="mt-3 mb-2" column>
@@ -191,6 +194,7 @@ function ZoneForm() {
         url={"/zonas"}
       />
     </Container>
+    </>
   );
 }
 

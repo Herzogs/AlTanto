@@ -7,14 +7,16 @@
 
 /* ICONOS ZOOM */
 .leaflet-top {
-  top: 48px;
+  top: 98px;
 }
 
 .leaflet-touch .leaflet-bar a {
   width: 25px;
   height: 25px;
   line-height: 25px;
+  background: #09f;
 }
+
 
 /* LOGO LETFLEAT */
 .leaflet-container .leaflet-control-attribution {
@@ -29,8 +31,10 @@
 /* MENU BUTTON REPORTE */
 .menu-button {
   position: absolute !important;
-  bottom: 60px;
-  left: 0px;
+  top: 30%;
+  right: 0;
+  max-width: 60px;
+  margin-right: 4px;
   z-index: 9991;
   cursor: pointer;
 }
@@ -64,6 +68,18 @@
   color: transparent;
 }
 
+/* MARKER REPORT */
+.marker-report{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+ font-weight: 600;
+}
+
+.marker-report a:hover{
+  color: #f8863a !important;
+  transition: 0.3s ease-in-out;
+}
 @media only screen and (min-width: 1400px) {
   .leaflet-left .leaflet-control {
     margin-left: 16px;
@@ -76,6 +92,6 @@
   }
 
   .menu-button {
-    margin-left: 12px;
+    margin-right: 16px;
   }
 }

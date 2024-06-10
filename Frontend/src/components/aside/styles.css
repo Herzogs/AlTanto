@@ -2,7 +2,8 @@
 .at-aside_button {
   position: absolute;
   bottom: 4px;
-  margin-left: 4px;
+  right: 0;
+  margin-right: 4px;
   margin-top: 4px;
   z-index: 9991;
 }
@@ -36,6 +37,10 @@
   z-index: 9993 !important;
 }
 
+.offcanvas-backdrop {
+  z-index: 9991 !important;
+}
+
 .at-aside_offcanvas .offcanvas-header .btn-close {
   background-color: var(--color-at-white) !important;
   opacity: 1;
@@ -63,6 +68,6 @@
 
 @media only screen and (min-width: 1400px) {
   .at-aside_button {
-    margin-left: 16px;
+    margin-right: 16px;
   }
 }

@@ -2,12 +2,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import HeaderHome from "@components/header/HeaderHome";
 import Map from "@components/Map/Map.jsx";
+import ModalAT from "@components/modal/ModalAT";
+import Aside from "@components/aside/Aside";
+import SliderButton from "@components/slider/SliderButton";
 import { useStore } from "@store";
 import useReports from "@hook/useReports";
 import {getZone} from "@services/getZone";
-import ModalAT from "@components/modal/ModalAT";
-import CategoryFilter from "@components/Map/CategoryFilter";
+import "./styles.css";
 
 function ZoneHome() {
   const {
@@ -16,6 +19,7 @@ function ZoneHome() {
     radiusZone,
     setRadiusZone,
     setMarkerPosition,
+    reports,
   } = useStore();
 
   const [showModal, setShowModal] = useState(false);
@@ -26,28 +30,26 @@ function ZoneHome() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      if (!id) throw new Error("El id de la zona no es válido");
-      setMarkerPosition(null);
-      getZone(id)
-        .then((data) => {
-          setRadiusZone(data.radio);
-          setUserLocation({
-            lat: data.location.latitude,
-            lng: data.location.longitude,
-          });
-          setZona(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setShowModal(true);
+    const fetchZoneData = async () => {
+      try {
+        if (!id) throw new Error("El id de la zona no es válido");
+        setMarkerPosition(null);
+        const data = await getZone(id);
+        setRadiusZone(data.radio);
+        setUserLocation({
+          lat: data.location.latitude,
+          lng: data.location.longitude,
         });
-    } catch (error) {
-      setError(error.message);
-      setShowModal(true);
-    }
-  }, [id, setRadiusZone]);
+        setZona(data);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setShowModal(true);
+      }
+    };
+
+    fetchZoneData();
+  }, [id]);
 
   const { fetchReports } = useReports();
 
@@ -60,26 +62,26 @@ function ZoneHome() {
   return (
     <>
       {!loading && (
-        <section className="container_home">
-          <h2 className="text-center mt-4 mb-5">{zona.name}</h2>
-
-          <div className="h-map">
-            <Map
-              userLocation={userLocation}
-              radiusZone={radiusZone}
-              CategoryFilterComponent={CategoryFilter}
-              mapClick={true}
-              noCircle={false}
-            />
-          </div>
-
+        <section className="w-100 h-100">
+          <HeaderHome />
+          <h2 className="float-title">{zona.name}</h2>
+          {id && <Aside />}
+          <Map
+            key={`${userLocation.lat}-${userLocation.lng}`}  // Añadir key para forzar re-renderizado
+            userLocation={userLocation}
+            radiusZone={radiusZone}
+            showFilters={true}
+            mapClick={true}
+            noCircle={false}
+          />
+          {reports && reports.length > 0 && <SliderButton />}
           {!error && (
             <ModalAT
               title="Encontramos un error"
               message={error}
               showModal={showModal}
-              handleClose={() => navigate("/zonas")}
-              handleAccept={() => navigate("/zonas")}
+              handleClose={() => navigate("/")}
+              handleAccept={() => navigate("/")}
             />
           )}
         </section>

@@ -1,0 +1,38 @@
+name: Deploy Both Frontend and Backend
+
+on:
+  workflow_run:
+    workflows: ["Backend Pipeline", "Frontend Pipeline"]
+    types:
+      - completed
+
+jobs:
+  deploy_both:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Deploy Backend and Frontend
+        run: echo "Both workflows completed successfully. Deploying both Frontend and Backend."
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Deploy Backend
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@v1
+      - name: Deploy Backend to Fly.io
+        run: |
+          flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      # Deploy Frontend
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+      - name: Deploy Frontend to Vercel
+        run: |
+          cd frontend
+          vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

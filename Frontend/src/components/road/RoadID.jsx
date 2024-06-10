@@ -1,15 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useStore } from "@store";
-import Map from "@components/Map/Map";
-import { Container } from "react-bootstrap";
-import { fetchReports } from "@services/getReportsInRoutings";
-import { getDataOfRoadById } from "@services/getRoutesByUser";
+import HeaderHome from "@components/header/HeaderHome";
+import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
+import Aside from "@components/aside/Aside";
+import SliderButton from "@components/slider/SliderButton";
 import { useParams } from "react-router-dom";
 import L from "leaflet";
+import { useStore } from "@store";
+import { fetchReports } from "@services/getReportsInRoutings";
+import { getDataOfRoadById } from "@services/getRoutesByUser";
+import { formatDistance } from "@/utilities/conversion";
 import "leaflet-routing-machine";
-import { formatDuration, formatDistance } from "@/utilities/conversion"
-import CategoryFilter from "@components/Map/CategoryFilter";
+import "./styles.css";
 
 function RoadID() {
   const [showModal, setShowModal] = useState(false);
@@ -18,13 +21,21 @@ function RoadID() {
   const [addressOrigin, setAddressOrigin] = useState(null);
   const [addressDestination, setAddressDestination] = useState(null);
   const [distance, setDistance] = useState(0);
-  const [duration, setDuration] = useState(0);
+  
   const [name, setName] = useState(null);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const { id } = useParams();
-  const { routeCoordinates, setRouteCoordinates, userLocation, setUserLocation, setReports } = useStore();
+  const {
+    routeCoordinates,
+    setRouteCoordinates,
+    userLocation,
+    setUserLocation,
+    reports,
+    setReports,
+  } = useStore();
 
   useEffect(() => {
     setReports([]);
@@ -32,21 +43,25 @@ function RoadID() {
   }, [setReports, setRouteCoordinates]);
 
   useEffect(() => {
-    if (!origin && !destination) {
+    setLoading(true);
+    setOrigin(null);
+    setDestination(null);
+
+    if (id) {
       const getData = async () => {
         try {
           const data = await getDataOfRoadById(id);
           if (!data) {
             throw new Error("No se encontraron datos");
           }
-          
+
           setName(data.name);
           setOrigin(data.origin);
           setAddressOrigin(data.addressOrigin);
           setAddressDestination(data.addressDestiny);
           setDestination(data.destination);
           setDistance(data.distance);
-          setDuration(data.duration);
+          
 
           const plan = new L.Routing.Plan([
             L.latLng(data.origin.latitude, data.origin.longitude),
@@ -54,17 +69,16 @@ function RoadID() {
           ]);
 
           const routeControl = L.Routing.control({
-            plan: plan            
+            plan: plan,
           });
 
-          routeControl.on('routesfound', (e) => {
+          routeControl.on("routesfound", (e) => {
             const routes = e.routes[0];
             setRouteCoordinates(routes.coordinates);
           });
 
-
           routeControl.route(); // Ejecuta el cálculo de la ruta
-
+          setLoading(false);
         } catch (error) {
           setShowModal(true);
           setModalTitle("Error");
@@ -75,7 +89,7 @@ function RoadID() {
 
       getData();
     }
-  }, [id, origin, destination, setRouteCoordinates]);
+  }, [id]);
 
   useEffect(() => {
     if (routeCoordinates && routeCoordinates.length > 0) {
@@ -92,42 +106,51 @@ function RoadID() {
     }
   }, [routeCoordinates, setUserLocation, setReports]);
 
-
   return (
-    <section className="container_home">
-      <Container fluid className="h-100">
-        <h3 className="my-4 text-center">Recorridos</h3>
-        <div className="d-flex justify-content-center">
-          <div className="d-flex flex-column">
-            <h5>Nombre: {name}</h5>
-            <h5>Origen: {addressOrigin}</h5>
-            <h5>Destino: {addressDestination}</h5>
-            <h5>Distancia: {formatDistance(distance)}</h5>
-            <h5>Duración: {formatDuration(duration)}</h5>
+    <>
+      {!loading && (
+        <section className="w-100 h-100 roads-section">
+          <HeaderHome />
+          <h2 className="float-title">{name}</h2>
+          <div className="float-box">
+            <p><strong>Nombre:</strong> {name}</p>
+            <p><strong>Origen:</strong> {addressOrigin}</p>
+            <p><strong>Destino:</strong> {addressDestination}</p>
+            <p><strong>Distancia:</strong> {formatDistance(distance)}</p>
           </div>
-        </div>
-        {origin && destination && (
-          <div className="h-map pb-footer">
+          {id && <Aside />}
+
+          {origin && destination && (
             <Map
+              key={`${userLocation.lat}-${userLocation.lng}`}
               userLocation={userLocation}
-              radiusZone={500}
-              startPoint={{lat: origin.latitude, lon: origin.longitude}}
-              endPoint={{lat: destination.latitude, lon: destination.longitude}}
+              startPoint={{ lat: origin.latitude, lon: origin.longitude }}
+              endPoint={{
+                lat: destination.latitude,
+                lon: destination.longitude,
+              }}
               zoneMode={true}
               routingMode={true}
-              CategoryFilterComponent={CategoryFilter}
+              showFilters={true}
             />
+          )}
+          {reports && reports.length > 0 && <SliderButton />}
+          <ModalAT
+            title={modalTitle}
+            message={modalContent}
+            showModal={showModal}
+            setShowModal={setShowModal}
+            url="/recorridos"
+          />
+        </section>
+      )}
+    </>
+
+    /*  
+          <div className="d-flex flex-column">
+            
           </div>
-        )}
-        <ModalAT
-          title={modalTitle}
-          message={modalContent}
-          showModal={showModal}
-          setShowModal={setShowModal}
-         url="/recorridos"
-        />
-      </Container>
-    </section>
+        */
   );
 }
 
