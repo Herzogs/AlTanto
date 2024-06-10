@@ -16,17 +16,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Deploy Backend
+      - name: Verify Fly API Token
+        run: echo $FLY_API_TOKEN
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
       - name: Install Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@v1
+
+      - name: Authenticate with Fly.io
+        run: flyctl auth token ${{ secrets.FLY_API_TOKEN }}
+
       - name: Deploy Backend to Fly.io
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
-      # Deploy Frontend
       - name: Install Vercel CLI
         run: npm install -g vercel
+
       - name: Deploy Frontend to Vercel
         run: |
           cd frontend
