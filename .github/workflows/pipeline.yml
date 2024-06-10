@@ -1,0 +1,82 @@
+name: Al Tanto Pipeline (Backend & Frontend)
+
+on:
+  push:
+    branches: [master,dev]
+  pull_request:
+    types: [opened, synchronize]
+    branches: [master,dev]
+
+jobs:
+
+  avoid-redundant-builds:
+    runs-on: ubuntu-22.04
+    permissions:
+      actions: write
+    steps:
+      - name: Cancel Previous Redundant Builds
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
+
+  lint:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Run Lint
+        run: npm run lint
+  
+  build_frontend:
+    needs: lint
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build --prefix Frontend
+      - name : Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build_frontend
+          path: build_frontend
+      - name: Run tests
+        run: npm run test --prefix Frontend
+
+  build_backend_and_testing:
+    needs: lint
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build --prefix Backend
+      - name: Run tests
+        run: npm run test --prefix Backend

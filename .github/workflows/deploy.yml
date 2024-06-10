@@ -2,7 +2,7 @@ name: Deploy Both Frontend and Backend
 
 on:
   workflow_run:
-    workflows: ["Backend Pipeline", "Frontend Pipeline"]
+    workflows: ["Al Tanto Pipeline (Backend & Frontend)"]
     types:
       - completed
 
