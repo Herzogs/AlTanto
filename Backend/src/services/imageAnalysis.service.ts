@@ -13,9 +13,7 @@ const imageAnalysisService = async (image: Buffer): Promise<string> => {
             queryParameters: {
                 features: ['Caption']
             },
-            headers: {
-                'Content-Type': 'application/octet-stream'
-            }
+            contentType: 'application/octet-stream'
         });
         if (isUnexpected(analysis)) throw new Error('Error analyzing the image');
         if (!analysis.body || !analysis.body.captionResult) throw new Error('Error analyzing the image');

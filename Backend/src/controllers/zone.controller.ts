@@ -4,9 +4,8 @@ import {IZoneRequest} from "../interfaces/zone.interface";
 import * as zoneValidator from "../validator/zone.validator";
 import {ZoneNotCreatedException, ZoneNotFoundException} from "../exceptions/zone.exceptions";
 
-const getAllZones = async (req: Request, res: Response, next: NextFunction) => {
+const getAllZones = async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        // const {userId} = req.body; <---------  LOS MEDOTOS DEBEN RECIBIR LOS PARAMETROS POR LA URL NO POR EL BODY
         const zones = await zoneService.getAllZone();
         return res.json(zones);
     } catch (error) {
