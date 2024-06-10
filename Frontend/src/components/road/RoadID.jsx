@@ -110,7 +110,13 @@ function RoadID() {
       {!loading && (
         <section className="w-100 h-100 roads-section">
           <HeaderHome />
-          <h2 className="zone-title">{name}</h2>
+          <h2 className="float-title">{name}</h2>
+          <div className="float-box">
+            <p><strong>Nombre:</strong> {name}</p>
+            <p><strong>Origen:</strong> {addressOrigin}</p>
+            <p><strong>Destino:</strong> {addressDestination}</p>
+            <p><strong>Distancia:</strong> {formatDistance(distance)}</p>
+          </div>
           {id && <Aside />}
 
           {origin && destination && (
@@ -141,11 +147,7 @@ function RoadID() {
 
     /*  
           <div className="d-flex flex-column">
-            <h5>Nombre: {name}</h5>
-            <h5>Origen: {addressOrigin}</h5>
-            <h5>Destino: {addressDestination}</h5>
-            <h5>Distancia: {formatDistance(distance)}</h5>
-            <h5>Duración: {formatDuration(duration)}</h5>
+            
           </div>
         */
   );

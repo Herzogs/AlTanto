@@ -1,7 +1,7 @@
 /* ASIDE UI */
 .at-slider_button {
   position: absolute;
-  bottom: 4px;
+  bottom: 64px;
   right: 0px;
   margin-right: 4px;
   margin-top: 4px;
@@ -49,4 +49,12 @@
 .at-reports_offcanvas .at-report {
   max-height: 150px !important;
   margin-bottom: 6px !important;
+}
+
+
+
+@media only screen and (min-width: 1400px) {
+  .at-slider_button {
+    margin-right: 16px;
+  }
 }

@@ -63,7 +63,7 @@ function ZoneHome() {
       {!loading && (
         <section className="w-100 h-100">
           <HeaderHome />
-          <h2 className="zone-title">{zona.name}</h2>
+          <h2 className="float-title">{zona.name}</h2>
           {id && <Aside />}
           <Map
             key={`${userLocation.lat}-${userLocation.lng}`}  // Añadir key para forzar re-renderizado

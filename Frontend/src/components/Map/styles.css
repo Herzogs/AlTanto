@@ -31,8 +31,10 @@
 /* MENU BUTTON REPORTE */
 .menu-button {
   position: absolute !important;
-  bottom: 60px;
-  left: 0px;
+  top: 30%;
+  right: 0;
+  max-width: 60px;
+  margin-right: 4px;
   z-index: 9991;
   cursor: pointer;
 }
@@ -90,6 +92,6 @@
   }
 
   .menu-button {
-    margin-left: 12px;
+    margin-right: 16px;
   }
 }
