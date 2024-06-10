@@ -19,6 +19,7 @@ import ReportIA from "@components/ReportAutomatic/ReportIA";
 import Groups from "@components/group/Groups";
 import GroupDetail from "@components/group/GroupDetail";
 import GroupSearch from "@components/group/GroupSearch";
+import GroupForm from "@components/group/GroupForm";
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
@@ -47,6 +48,7 @@ const protectedRoutes = [
   { path: "/reportes/:id", element: <ReportDetail /> },
   { path: "/grupos", element: <Groups /> },
   { path: "/grupos/:id", element: <GroupDetail /> },
+  { path: "/form/grupo", element: <GroupForm /> },
   { path: "group-search", element: <GroupSearch /> },
 ];
 
