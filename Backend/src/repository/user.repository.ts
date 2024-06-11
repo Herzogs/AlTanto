@@ -1,3 +1,4 @@
+// repository/ user.repository.ts
 import User from "../models/User";
 import {IUser} from "../interfaces/user.interface";
 

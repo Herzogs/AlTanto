@@ -3,6 +3,7 @@ import router from './routes/index.routes';
 import cors from 'cors';
 import errorHandler from './middlewares/errorHandler.middleware';
 //import { disableOldReport } from './cron/disableOldReport.cron'
+import startWazeCronJob from './cron/reportWazeApi.cron'
 
 const server = express();
 
@@ -20,6 +21,7 @@ server.use(errorHandler)
 const app = server.listen(process.env.PORT, ()=>{
     console.log(`Server is running on port ${process.env.PORT}`)
     //disableOldReport.start()
+    startWazeCronJob();
 })
 
 export { server, app };

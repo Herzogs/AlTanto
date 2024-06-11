@@ -19,7 +19,15 @@ Report.init({
     positiveScore: { type: DataTypes.INTEGER, defaultValue: 0},
     negativeScore: { type: DataTypes.INTEGER, defaultValue: 0},
     enabled: {type: DataTypes.BOOLEAN , defaultValue: true},
-}, {
+    idApi: {
+        type: DataTypes.STRING, // Cambiado a STRING para permitir el formato 'alert-729091093/68b68895-4fb3-4b98-bde7-85568f5cd2c2'
+        unique: true, // Para asegurarse de que sea único
+        allowNull: true, // Permitir null
+      },
+},
+
+
+{
     sequelize: dbConnection,
     freezeTableName: true,
     modelName: 'Report',
@@ -31,3 +39,6 @@ Report.belongsTo(Location);
 
 
 export default Report;
+
+
+

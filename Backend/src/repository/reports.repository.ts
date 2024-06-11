@@ -1,3 +1,4 @@
+// report.repository.ts
 import Report from '../models/Report';
 import Category from '../models/Category';
 import { Location } from '../models/Location';
@@ -65,7 +66,9 @@ class ReportRepository {
             content: newReport.content,
             CategoryId: newReport.categoryId,
             LocationId: location.id,
-            images: newReport.images
+            images: newReport.images,
+            idApi: newReport.idApi 
+
         });
         return reporCreated.get({ plain: true }) as IReportResponse;
     }
@@ -112,6 +115,21 @@ class ReportRepository {
         });
         return numberOfReportsDisabled[0];
     }
+
+    static async getByApiId(idApi: string | null): Promise<IReportResponse | null> {
+        if (!idApi) {
+            return null; 
+        }
+        const report = await Report.findOne({
+            where: { idApi }
+        });
+        if (!report) {
+            return null; 
+        }
+        return report.get({ plain: true }) as IReportResponse;
+    }
+    
+
 
 }
 
