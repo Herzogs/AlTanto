@@ -1,5 +1,4 @@
 import logo from "@assets/logo-altanto.png";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from "react-router-dom";
 import { userStore } from "@store";
