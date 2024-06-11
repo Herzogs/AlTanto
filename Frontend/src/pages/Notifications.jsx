@@ -23,7 +23,6 @@ function Notifications() {
     };
 
     getZonesAndNotifications().then((data) => {
-      console.log(data);
       setInfoZones(data);
       setLoading(false);
     });

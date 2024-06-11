@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect } from "react";
 import { useCallback, useState } from "react";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
@@ -8,7 +9,8 @@ import Header from "@components/header/Header";
 import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
 import { sendRoute } from "@services/sendData";
-import { useEffect } from "react";
+import { fetchReports } from "@services/getReportsInRoutings";
+
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
@@ -19,7 +21,13 @@ function RoutForm() {
   const [message, setMessage] = useState("");
 
   const [showModal, setShowModal] = useState(false);
-  const { userLocation, setUserLocation, setReports } = useStore();
+  const { 
+    userLocation, 
+    setUserLocation, 
+    setReports, 
+    routeCoordinates,
+    setRouteCoordinates
+  } = useStore();
 
   const {
     register,
@@ -34,8 +42,9 @@ function RoutForm() {
     },
   });
 
-  useEffect(()=>{
+  useEffect(() => {
     setReports([]);
+    setRouteCoordinates([]);
   }, [])
 
   const startAddress = watch("origin");
@@ -62,6 +71,22 @@ function RoutForm() {
       setVisible(true);
     }
   };
+
+  useEffect(() => {
+    if (routeCoordinates && routeCoordinates.length > 0) {
+      setUserLocation(routeCoordinates[0]);
+      fetchReports(routeCoordinates, 4)
+        .then((reports) => {
+          setReports(reports);
+        })
+        .catch((error) => {
+          setShowModal(true);
+          setTitle("Error");
+          setMessage(error.message);
+        });
+    }
+  }, [routeCoordinates, setUserLocation, setReports]);
+  
 
   const onSubmit = async (data) => {
     try {

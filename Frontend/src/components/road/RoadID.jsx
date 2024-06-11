@@ -6,12 +6,11 @@ import ModalAT from "@components/modal/ModalAT";
 import Aside from "@components/aside/Aside";
 import SliderButton from "@components/slider/SliderButton";
 import { useParams } from "react-router-dom";
-import L from "leaflet";
 import { useStore } from "@store";
 import { fetchReports } from "@services/getReportsInRoutings";
 import { getDataOfRoadById } from "@services/getRoutesByUser";
 import { formatDistance } from "@/utilities/conversion";
-import "leaflet-routing-machine";
+
 import "./styles.css";
 
 function RoadID() {
@@ -21,7 +20,7 @@ function RoadID() {
   const [addressOrigin, setAddressOrigin] = useState(null);
   const [addressDestination, setAddressDestination] = useState(null);
   const [distance, setDistance] = useState(0);
-  
+
   const [name, setName] = useState(null);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
@@ -30,7 +29,6 @@ function RoadID() {
   const { id } = useParams();
   const {
     routeCoordinates,
-    setRouteCoordinates,
     userLocation,
     setUserLocation,
     reports,
@@ -39,8 +37,8 @@ function RoadID() {
 
   useEffect(() => {
     setReports([]);
-    setRouteCoordinates([]);
-  }, [setReports, setRouteCoordinates]);
+
+  }, [setReports]);
 
   useEffect(() => {
     setLoading(true);
@@ -61,28 +59,11 @@ function RoadID() {
           setAddressDestination(data.addressDestiny);
           setDestination(data.destination);
           setDistance(data.distance);
-          
 
-          const plan = new L.Routing.Plan([
-            L.latLng(data.origin.latitude, data.origin.longitude),
-            L.latLng(data.destination.latitude, data.destination.longitude),
-          ]);
-
-          const routeControl = L.Routing.control({
-            plan: plan,
-          });
-
-          routeControl.on("routesfound", (e) => {
-            const routes = e.routes[0];
-            setRouteCoordinates(routes.coordinates);
-          });
-
-          routeControl.route(); // Ejecuta el cálculo de la ruta
           setLoading(false);
         } catch (error) {
           setShowModal(true);
           setModalTitle("Error");
-          console.log("Error ====> ", error.message);
           setModalContent(error.message);
         }
       };
@@ -105,6 +86,7 @@ function RoadID() {
         });
     }
   }, [routeCoordinates, setUserLocation, setReports]);
+  
 
   return (
     <>
@@ -145,12 +127,6 @@ function RoadID() {
         </section>
       )}
     </>
-
-    /*  
-          <div className="d-flex flex-column">
-            
-          </div>
-        */
   );
 }
 
