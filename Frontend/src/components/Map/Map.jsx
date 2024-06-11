@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-
 /* eslint-disable react/prop-types */
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { icons, getIconByCategoryId } from "./Icons";
@@ -20,6 +19,7 @@ import { useStore, userStore } from "@store";
 import "leaflet/dist/leaflet.css";
 import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import "./styles.css";
+import Weather from "@components/Map/Weather";
 
 const Map = ({
   userLocation,
@@ -132,6 +132,7 @@ const Map = ({
         {routingMode && startPoint && endPoint && (
           <Routing startPoint={startPoint} endPoint={endPoint} />
         )}
+        <Weather />
       </MapContainer>
       {id && !zoneMode && !routingMode && <MenuButton />}
     </section>

@@ -54,15 +54,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #09f;
+  
   border-radius: 12px;
   padding: 4px 12px;
   transition: 0.3s ease-in-out;
   cursor: pointer;
-}
-
-.user-menu:hover {
-  background-color: #0075e3;
 }
 
 .user-menu svg {

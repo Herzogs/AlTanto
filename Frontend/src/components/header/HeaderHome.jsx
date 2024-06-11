@@ -1,9 +1,9 @@
 import logo from "@assets/logo-altanto.png";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from "react-router-dom";
 import { userStore } from "@store";
 import "./styles.css";
+import UserAvatar from "./UserAvatar";
 
 function HeaderHome() {
   const { token } = userStore();
@@ -25,10 +25,7 @@ function HeaderHome() {
               id="dropdown-basic"
               as="span"
             >
-              <AccountCircleIcon />
-              <span>
-                {name} {lastName}
-              </span>
+              <UserAvatar name={name} lastName={lastName} />
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
