@@ -3,48 +3,79 @@ import Header from "@components/header/Header";
 import Report from "@components/report/Report";
 import { userStore } from "@store";
 import { useEffect, useState } from "react";
-import axiosInstance from "@interceptors/axiosConfig"
+import axiosInstance from "@interceptors/axiosConfig";
 
 function Notifications() {
-  const [infoZones, setInfoZones] = useState(null);
+  const [infoZones, setInfoZones] = useState([null]);
+  const [infoGroups, setInfoGroups] = useState([null]);
+  const [loading, setLoading] = useState(true);
+  const [loadingDos, setLoadingDos] = useState(true);
   const { user } = userStore();
 
   useEffect(() => {
-    console.log(user.id)
-    
-      const getReports = async () => {
-        const response = await axiosInstance.post("/zones/notification", {
-          userId: user.id
-        });
-        if (response.status === 200) {
-          return response.data;
-        }
-      }
-  
-      getReports().then((data) => {
-        console.log(data)
-        setInfoZones(data);
+    const getZonesAndNotifications = async () => {
+      const response = await axiosInstance.post("/zones/notification", {
+        userId: user.id,
       });
+      if (response.status === 200) {
+        return response.data;
+      }
+    };
 
+    getZonesAndNotifications().then((data) => {
+      console.log(data);
+      setInfoZones(data);
+      setLoading(false);
+    });
+
+    const getGroupsAndNotifications = async () => {
+      const response = await axiosInstance.post("/group/notification", {
+        userId: user.id,
+      });
+      if (response.status === 200) {
+        return response.data;
+      }
+    };
+
+    getGroupsAndNotifications().then((data) => {
+      console.log(data);
+      setInfoGroups(data);
+      setLoadingDos(false);
+    });
   }, []);
-  console.log(infoZones);
+
   return (
     <>
       <Header />
-      <button onClick={() => console.log(infoZones[0])}>Click</button>
       <Container fluid className="pt-4 pt-lg-5">
         <h2 className="text-center my-4">Mis notificaciones</h2>
-        <section className="d-flex justify-content-center flex-wrap gap-4">
-          {(infoZones === undefined || infoZones === null) && infoZones.reports.length === 0 && <h3>No se encontraron reportes</h3>}
-          {(infoZones !== undefined && infoZones !== null) && infoZones.reports.length > 0 && infoZones.map((info) =>
-            info.reports.map((report) => {
-              return <Report key={report.id} report={report} />;
-            }
-            )
-          )
-        }
-          
-        </section>
+
+        {!loading && (
+          <div className="zone-reports">
+            {infoZones.map((zone, index) => (
+              <div key={index} className="mb-5">
+                <h2>Zona: {zone.zoneName}</h2>
+                {zone.reports.map((report) => (
+                  <Report key={report.id} report={report} />
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!loadingDos && (
+          <div className="zone-reports">
+            {infoGroups.map((group, index) => (
+              <div key={index} className="mb-5">
+                <h2>Grupo: {group.groupName}</h2>
+                {group.reports.map((report) => (
+                  <Report key={report.id} report={report} />
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+
       </Container>
     </>
   );

@@ -140,7 +140,18 @@ const getUserByUserName = async (req: Request, res: Response): Promise<Response>
         }
     };
 
-
+    const getGroupsAndNotifications = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const {userId} = req.body;
+            const zones = await groupService.getNotification(+userId);
+            return res.json(zones);
+        } catch (error) {
+            if (error ) {
+            console.log(error);
+            }
+            return next((error as Error).message);
+        }
+    }
 
     export {
         getAllGroups,
@@ -153,5 +164,6 @@ const getUserByUserName = async (req: Request, res: Response): Promise<Response>
         findGroupsByName,
         getGroupsByUserId,
         getGroupDetailsById,
-        getUserByUserName
+        getUserByUserName,
+        getGroupsAndNotifications
     };

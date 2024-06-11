@@ -5,6 +5,7 @@ import { GroupUser } from '../models/GroupUser';
 import { IGroupDetails } from '../interfaces/groupDetail.interface';
 import { getUserByUserName } from "../services/user.service";
 import { IUser } from 'interfaces/user.interface';
+import * as reportRepository  from "../repository/reports.repository";
 
 async function getAllGroups(): Promise<IGroup[]> {
     const groups = await GroupRepository.getAll();
@@ -101,6 +102,27 @@ async function getUser(userName: string): Promise<IUser> {
     }
 }
 
+interface IGroupReport {
+    groupName: string;
+    reports: any[];
+}
+
+const getNotification = async (userId: number): Promise<any[]> => {
+    console.log(userId + ' aca RECIBI USSEEEEEEEER')
+    const groups:IGroup[] = await getGroupsByUserId(userId);
+    const reportByGroup: IGroupReport[] = [];
+    for (const myGroup of groups) {
+        const result = await reportRepository.default.getByGroup(myGroup.id as number);
+        console.log(result)
+
+        reportByGroup.push({
+            groupName: myGroup.name,
+            reports: result
+        });
+    }
+    return reportByGroup;
+}
+
 
 export{
     getAllGroups,
@@ -114,5 +136,6 @@ export{
     getGroupsByUserId,
     getGroupDetailsById,
     addUserToGroupWithCode,
-    getUser
+    getUser,
+    getNotification
 }
