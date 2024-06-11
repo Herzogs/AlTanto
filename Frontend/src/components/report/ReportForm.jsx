@@ -1,9 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
+import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import { getCategoryFromApi } from "@services/getCategory";
 import { sendReport } from "@services/sendData";
 import { useStore } from "@store";
+import Header from "@components/header/Header";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
 import { reverseGeocode } from "@services/getGeoAdress";
@@ -11,8 +14,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import reportScheme from "@schemes/reportScheme";
 
 
+
 // TODO: Revisar porque no se envian los reportes
 function ReportForm() {
+  const { groupId } = useParams();
   const { userLocation, markerPosition, setReports } = useStore();
   const [address, setAddress] = useState("");
   const [categories, setCategories] = useState([]);
@@ -41,7 +46,10 @@ function ReportForm() {
       setCategories(data);
     });
 
-    const location = markerPosition !== null ? { lat: markerPosition[0], lng: markerPosition[1] } : userLocation;
+    const location =
+      markerPosition !== null
+        ? {  lat: markerPosition[0], lng: markerPosition[1]  }
+        : userLocation;
     if (location) {
       const reverse = async () => {
         const data = await reverseGeocode(location);
@@ -56,7 +64,10 @@ function ReportForm() {
   useEffect(() => {
     if (markerPosition) {
       const reverse = async () => {
-        const data = await reverseGeocode({ lat: markerPosition[0], lng: markerPosition[1] });
+        const data = await reverseGeocode({
+          lat: markerPosition[0],
+          lng: markerPosition[1],
+        });
         return data;
       };
       reverse().then((data) => {
@@ -67,11 +78,12 @@ function ReportForm() {
   }, [markerPosition]);
 
   const onSubmit = async (data) => {
-    
+    if (groupId !== undefined) {
+      data.groupId = groupId;
+    }
     data.image = file;
     data.latitude = markerPosition ? markerPosition[0] : userLocation.lat;
     data.longitude = markerPosition ? markerPosition[1] : userLocation.lng;
-
 
     try {
       await sendReport(data);
@@ -97,6 +109,7 @@ function ReportForm() {
 
   return (
     <Container>
+      <Header />
       <h2 className="my-4 text-center">Crear Reporte</h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group as={Row} controlId="category">
@@ -173,14 +186,14 @@ function ReportForm() {
         </Button>
       </Form>
 
-      <ModalAT
-        title="Reporte guardado"
-        message="Se registraron correctamente los datos."
-        showModal={showModal}
-        setShowModal={setShowModal}
-        url={"/"}
-      />
-    </Container>
+        <ModalAT
+          title="Reporte guardado"
+          message="Se registraron correctamente los datos."
+          showModal={showModal}
+          setShowModal={setShowModal}
+          url={"/"}
+        />
+      </Container>
   );
 }
 

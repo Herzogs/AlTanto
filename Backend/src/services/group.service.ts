@@ -5,6 +5,8 @@ import { GroupUser } from '../models/GroupUser';
 import { IGroupDetails } from '../interfaces/groupDetail.interface';
 import { getUserByUserName } from "../services/user.service";
 import { IUser } from 'interfaces/user.interface';
+import * as reportRepository  from "../repository/reports.repository";
+import Report from '../models/Report';
 
 async function getAllGroups(): Promise<IGroup[]> {
     const groups = await GroupRepository.getAll();
@@ -80,7 +82,11 @@ async function findGroupsByName(name: string): Promise<IGroup[]> {
 async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
     try {
         const groups = await GroupRepository.getGroupsByUserId(userId);
-        return groups;
+        const aux: IGroup[] = [];
+        groups.forEach((group) => {
+            aux.push(group.toJSON());
+        });
+        return aux
     } catch (error) {
         throw new Error('Error al obtener los grupos del usuario');
     }
@@ -89,17 +95,34 @@ async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
 async function getGroupDetailsById(groupId: number): Promise<IGroupDetails> {
     const group = await GroupRepository.getGroupById(groupId);
     const members = await GroupRepository.getGroupMembers(groupId);
-    return { ...group, members } as IGroupDetails;
+    return { ...group, members } as unknown as IGroupDetails;
 }
 
 async function getUser(userName: string): Promise<IUser> {
-    console.log(userName)
     try {
         const user = await getUserByUserName(userName);
         return user;
     } catch (error) {
         throw new Error('Error al obtener usuario');
     }
+}
+
+interface IGroupReport {
+    groupName: string;
+    reports: Report[];
+}
+
+const getNotification = async (userId: number): Promise<IGroupReport[]> => {
+    const groups:IGroup[] = await getGroupsByUserId(userId);
+    const reportByGroup: IGroupReport[] = [];
+    groups.forEach(async (myGroup) => {
+        const result = await reportRepository.default.getByGroup(myGroup.id as number);
+        reportByGroup.push({
+            groupName: myGroup.name,
+            reports: result
+        });
+    })
+    return reportByGroup;
 }
 
 
@@ -115,5 +138,6 @@ export{
     getGroupsByUserId,
     getGroupDetailsById,
     addUserToGroupWithCode,
-    getUser
+    getUser,
+    getNotification
 }

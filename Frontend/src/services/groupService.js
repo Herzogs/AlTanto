@@ -22,7 +22,6 @@ export const getGroupById = async (groupId) => {
 
 export const createGroup = async (groupData) => {
   try {
-    console.log('Creating group:', groupData);
     const response = await axiosInstance.post(`/group`, groupData);
     if (response.status !== 200) {
       if (response.status === 401) {

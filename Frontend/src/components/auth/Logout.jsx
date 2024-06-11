@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { userStore } from "@store"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"

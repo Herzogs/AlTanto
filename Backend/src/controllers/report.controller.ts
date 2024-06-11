@@ -53,7 +53,6 @@ const getReportByUser = async (req: Request, res: Response, next: NextFunction):
 };
 
 const createReport = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    
     const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
     if (!validData.success) {
         const listofErrors = validData.error.errors.map((error) => {
@@ -68,7 +67,7 @@ const createReport = async (req: Request, res: Response, next: NextFunction): Pr
     try {
         const newReport: IReportRequest = {
             ...validData.data,
-            "images": req.file?.filename as string
+            "images": req.file?.filename as string,
         }
         const reportCreated = await reportService.createReport(newReport);
         return res.status(201).json(reportCreated);
@@ -105,11 +104,24 @@ const getReportsByLatLongRadius = async (req: Request, res: Response, next: Next
     }
 }
 
+const getReportsByGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    try {
+        const { groupId } = req.params;
+        const reports = await reportService.getReportsByGroup(+groupId);
+        return res.json(reports);
+    } catch (error) {
+        if (error instanceof ReportNotFoundException) {
+            return next({ message: error.message, statusCode: error.statusCode });
+        }
+        return next((error as Error).message);
+    }
+};
 
 export {
     getAllReports,
     getReportsById,
     getReportByUser,
     createReport,
-    getReportsByLatLongRadius
+    getReportsByLatLongRadius,
+    getReportsByGroup
 }

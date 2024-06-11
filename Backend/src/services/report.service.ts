@@ -39,6 +39,11 @@ async function searchReportWithinTheRadius(location: Location, radius: number): 
 }
 */
 
+export const getReportsByGroup = async (groupId: number): Promise<object[]> => {
+    const reports = await reportRepository.default.getByGroup(groupId);
+    if (!reports) throw new ReportNotFoundException("Reports not found for the given group.");
+    return reports;
+};
 
 
 export {

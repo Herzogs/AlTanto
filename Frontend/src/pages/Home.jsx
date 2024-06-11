@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
+import HeaderHome from "@components/header/HeaderHome";
 import Map from "@components/Map/Map";
 import Aside from "@components/aside/Aside";
 import SliderButton from "@components/slider/SliderButton";
-import CategoryFilter from "@components/Map/CategoryFilter";
 import useReports from "@hook/useReports";
-import { useStore } from "@store";
+import { useStore, userStore } from "@store";
 
 function Home() {
   const {
@@ -20,6 +21,7 @@ function Home() {
     setMarkerPosition,
   } = useStore();
 
+  const { id } = userStore.getState().user;
   const { fetchReports } = useReports();
 
   useEffect(() => {
@@ -44,12 +46,14 @@ function Home() {
 
   return (
     <section className="w-100 h-100">
-      <Aside />
+      <HeaderHome />
+      {id && <Aside />}
       <Map
         userLocation={userLocation}
         radiusZone={radiusZone}
-        CategoryFilterComponent={CategoryFilter}
+        showFilters={true}
         mapClick={true}
+        noCircle={false}
       />
       {reports && reports.length > 0 && <SliderButton />}
     </section>

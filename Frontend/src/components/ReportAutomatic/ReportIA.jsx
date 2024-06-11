@@ -1,6 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import axiosInstance from "@interceptors/axiosConfig";
 import { Container, Form, Button, Image } from "react-bootstrap";
+import Header from "@components/header/Header";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
 import { sendReport } from "@services/sendData";
@@ -8,11 +11,12 @@ import { getCategoryFromApi } from "@services/getCategory";
 import { reverseGeocode } from "@services/getGeoAdress";
 import { useStore } from "@store";
 
+
 const categories = [
   {
     id: 1,
     name: "Seguridad",
-    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca"],
+    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta",  "palanca"],
   },
   {
     id: 2,
@@ -38,7 +42,6 @@ function categorizeDescription(description) {
 
     for (const tag of categoryTags) {
       if (words.includes(tag.toLowerCase())) {
-        console.log(categoryObj);
         return categoryObj;
       }
     }
@@ -47,6 +50,7 @@ function categorizeDescription(description) {
 }
 
 function ReportIA() {
+  const { groupId } = useParams();
   const [file, setFile] = useState(null);
   const [address, setAddress] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -175,6 +179,11 @@ function ReportIA() {
       longitude: lng,
       image: file,
     };
+
+    if (groupId) {
+      reportData.groupId = groupId;
+    }
+
     try {
       await sendReport(reportData);
       setShowModal(true);
@@ -184,130 +193,130 @@ function ReportIA() {
   };
 
   return (
-    <Container className="container-md_stop h-100">
-      <h2 className="text-center">Generar reporte automático</h2>
-      <p>
-        Usaremos un servicio de <strong>Inteligencia Artificial</strong> para
-        obtener un detalle de la imagen que envíes.
-      </p>
+    <>
+      <Header />
+      <Container className="container-md_stop h-100 pt-4 pt-lg-5">
+        <h2 className="text-center">Generar reporte automático</h2>
+        <p>
+          Usaremos un servicio de <strong>Inteligencia Artificial</strong> para
+          obtener un detalle de la imagen que envíes.
+        </p>
 
-      <Form.Control
-        type="file"
-        label="Seleccionar imagen"
-        onChange={handleFileChange}
-        accept="image/*"
-        capture="environment"
-        disabled={isCameraOpen}
-      />
+        <Form.Control
+          type="file"
+          label="Seleccionar imagen"
+          onChange={handleFileChange}
+          accept="image/*"
+          capture="environment"
+          disabled={isCameraOpen}
+        />
 
-      <Button
-        variant="primary"
-        onClick={handleOpenCamera}
-        disabled={isCameraOpen}
-        className="w-100 mt-3 mb-3"
-      >
-        Usar mi cámara
-      </Button>
+        <Button
+          variant="primary"
+          onClick={handleOpenCamera}
+          disabled={isCameraOpen}
+          className="w-100 mt-3 mb-3"
+        >
+          Usar mi cámara
+        </Button>
 
-      {isCameraOpen && (
-        <div>
-          <video ref={videoRef} style={{ width: "100%" }}></video>
-          <Button variant="primary" onClick={handleCapture} className="mt-3">
-            Capturar foto
-          </Button>
-        </div>
-      )}
+        {isCameraOpen && (
+          <div>
+            <video ref={videoRef} style={{ width: "100%" }}></video>
+            <Button variant="primary" onClick={handleCapture} className="mt-3">
+              Capturar foto
+            </Button>
+          </div>
+        )}
 
-      {previewUrl && (
-        <div>
-          <Image
-            src={previewUrl}
-            alt="Vista previa"
-            style={{ width: "100%", maxHeight: "300px" }}
-            fluid
-          />
-          <p>{file.name}</p>
-        </div>
-      )}
-      <Button
-        variant="primary"
-        type="button"
-        disabled={!file || description}
-        className="mt-3 d-block"
-        onClick={() => {
-          analizeImage();
-        }}
-      >
-        Analizar imagen
-      </Button>
-      {description && (
-        <div className="mt-5 pb-footer">
-          <Form.Group controlId="category">
-            <Form.Label className="fw-bold h5">Categoría:</Form.Label>
-            <Form.Control
-              as="select"
-              value={category}
-              onChange={(e) => {
-                const selectedCategory = categories.find(
-                  (cat) => cat.id === parseInt(e.target.value)
-                );
-                setCategory(selectedCategory);
-              }}
-            >
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
+        {previewUrl && (
+          <div>
+            <Image
+              src={previewUrl}
+              alt="Vista previa"
+              style={{ width: "100%", maxHeight: "400px" }}
+              fluid
+            />
+            <p>{file.name}</p>
+          </div>
+        )}
+        <Button
+          variant="primary"
+          type="button"
+          disabled={!file || description}
+          className="mt-3 d-block"
+          onClick={() => {
+            analizeImage();
+          }}
+        >
+          Analizar imagen
+        </Button>
+        {description && (
+          <div className="mt-5 pb-footer">
+            <Form.Group controlId="category">
+              <Form.Label className="fw-bold h5">Categoría:</Form.Label>
+              <Form.Control
+                as="select"
+                value={category}
+                onChange={(e) => {
+                  const selectedCategory = categories.find(
+                    (cat) => cat.id === parseInt(e.target.value)
+                  );
+                  setCategory(selectedCategory);
+                }}
+              >
+                <option key={category.id} value={category.id}>
+                  {category.name}
                 </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
 
-          <Form.Group controlId="description">
-            <Form.Label className="fw-bold h5 mt-4">Descripción:</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              value={description}
-              onChange={handleDescriptionChange}
-            ></Form.Control>
-          </Form.Group>
+            <Form.Group controlId="description">
+              <Form.Label className="fw-bold h5 mt-4">Descripción:</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={description}
+                onChange={handleDescriptionChange}
+              ></Form.Control>
+            </Form.Group>
 
-          <label className="fw-bold h5 mt-4">Ubicación:</label>
-          <input
-            type="text"
-            className="mt-3 mb-2 w-100"
-            value={address}
-            readOnly="true"
-          />
+            <Form.Group controlId="ubicacion">
+              <Form.Label className="mt-3 mb-2">Ubicación:</Form.Label>
+              <Form.Control type="text" value={address} readOnly="true" />
+            </Form.Group>
 
-          {description && userLocation && (
-            <div style={{ height: "300px", marginTop: "16px" }}>
-              <Map
-                userLocation={userLocation}
-                zoneMode={true}
-                mapClick={true}
-                noCircle={true}
-              />
-            </div>
-          )}
+            {description && userLocation && (
+              <div style={{ height: "300px", marginTop: "16px" }}>
+                <Map
+                  userLocation={userLocation}
+                  zoneMode={true}
+                  mapClick={true}
+                  noCircle={true}
+                />
+              </div>
+            )}
 
-          <Button variant="success" className="my-4 px-4" onClick={onSubmit}>
-            Guardar reporte
-          </Button>
-        </div>
-      )}
+            <Button variant="success" className="my-4 px-5" onClick={onSubmit}>
+              Guardar reporte
+            </Button>
+          </div>
+        )}
 
-      <ModalAT
-        title="Reporte guardado"
-        message="Se registraron correctamente los datos."
-        showModal={showModal}
-        setShowModal={setShowModal}
-        url={"/"}
-      />
-    </Container>
+        <ModalAT
+          title="Reporte guardado"
+          message="Se registraron correctamente los datos."
+          showModal={showModal}
+          setShowModal={setShowModal}
+          url={"/"}
+        />
+      </Container>
+    </>
   );
 }
 

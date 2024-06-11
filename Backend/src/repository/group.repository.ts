@@ -1,21 +1,31 @@
 import Group from '../models/Group';
 import { GroupUser } from '../models/GroupUser';
 import User from '../models/User';
-import { IGroup } from '../interfaces/group.interface';
+import { IGroup, IGroupWithMembers } from '../interfaces/group.interface';
 
 class GroupRepository {
-    static async getAll(): Promise<IGroup[]> {
+    static async getAll(): Promise<IGroupWithMembers[]> {
         const groups = await Group.findAll({
-            include: [{ model: User, as: 'members', through: { attributes: [] } }]
+            include: 
+                [
+                    { model: User, 
+                        attributes: ['id', 'name', 'lastName', 'username', 'email', 'phoneNumber'],
+                        as: 'members', 
+                        through: { attributes: [] } }
+                ],
+            
         });
-        return groups.map(group => group.toJSON());
+        return groups.map(group => group.toJSON()) as IGroupWithMembers[];
     }
 
-    static async getById(id: number): Promise<IGroup | null> {
+    static async getById(id: number): Promise<IGroupWithMembers | null> {
         const group = await Group.findByPk(id, {
-            include: [{ model: User, as: 'members', through: { attributes: [] } }]
+            include: [{ model: User, 
+                attributes: ['id', 'name', 'lastName', 'username', 'email', 'phoneNumber'],
+                as: 'members', 
+                through: { attributes: [] } }]
         });
-        return group ? group.toJSON() : null;
+        return group ? group.toJSON() as IGroupWithMembers : null;
     }
 
     static async create(name: string, ownerId: number): Promise<IGroup> {
@@ -29,22 +39,16 @@ class GroupRepository {
     }
 
     static async updateName(id: number, name: string): Promise<IGroup | null> {
+        const upd = await Group.update({ name }, { where: { id } });
+        if (upd[0] === 0) return null;
         const group = await Group.findByPk(id);
-        if (group) {
-            group.name = name;
-            await group.save();
-            return group.toJSON();
-        }
-        return null;
+        return group ? group.toJSON() : null;
     }
 
     static async remove(id: number): Promise<boolean> {
-        const group = await Group.findByPk(id);
-        if (group) {
-            await group.destroy();
-            return true;
-        }
-        return false;
+        await GroupUser.destroy({ where: { groupId: id } });
+        const nDestroy = await Group.destroy({ where: { id } });
+        return nDestroy > 0;
     }
 
     static async addUser(groupId: number, userId: number): Promise<GroupUser> {
@@ -63,7 +67,7 @@ class GroupRepository {
     static async findByName(name: string): Promise<IGroup[]> {
         try {
             const groups = await Group.findAll({ where: { name } });
-            return groups;
+            return groups.map(group => group.toJSON()) as IGroup[];
         } catch (error) {
             throw new Error(`Error buscando el grupo por nombre`);
         }
@@ -94,7 +98,7 @@ class GroupRepository {
         return group.toJSON();
     }
 
-    static async getGroupMembers(groupId: number): Promise<any> {
+    static async getGroupMembers(groupId: number): Promise<GroupUser[]> {
         const groupUsers = await GroupUser.findAll({
             where: { groupId },
             include: [{ model: User }],

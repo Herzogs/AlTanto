@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
-import {getZoneByUserId} from "@services/getZone";
 import { Link } from "react-router-dom";
-import { userStore } from "@store";
-
+import { getZoneByUserId } from "@services/getZone";
+import {userStore} from "@store";
 function Zones() {
   const [zones, setZones] = useState([]);
 

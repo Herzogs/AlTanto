@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { Container, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";

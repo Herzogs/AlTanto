@@ -4,9 +4,8 @@ import {IZoneRequest} from "../interfaces/zone.interface";
 import * as zoneValidator from "../validator/zone.validator";
 import {ZoneNotCreatedException, ZoneNotFoundException} from "../exceptions/zone.exceptions";
 
-const getAllZones = async (_req: Request, res: Response, next: NextFunction) => {
+const getAllZones = async (__req: Request, res: Response, next: NextFunction) => {
     try {
-        // const {userId} = req.body;  <------ ESTO ES UN GET, LOS ESTANDARES DE REST NO PERMITEN BODY EN GET
         const zones = await zoneService.getAllZone();
         return res.json(zones);
     } catch (error) {
@@ -17,6 +16,7 @@ const getAllZones = async (_req: Request, res: Response, next: NextFunction) => 
         return next((error as Error).message);
     }
 }
+
 const createZone = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     const validData = await zoneValidator.createZoneValidator.safeParseAsync(req.body);
     if (!validData.success) {
@@ -44,6 +44,7 @@ const getZoneById = async (req: Request, res: Response, next: NextFunction): Pro
     try {
         const {id} = validData.data as { id: string };
         const zone = await zoneService.getZoneById(+id);
+        
         
         return res.status(200).json(zone);
 

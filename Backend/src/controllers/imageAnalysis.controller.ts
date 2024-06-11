@@ -4,7 +4,6 @@ import imageAnalysisService from '../services/imageAnalysis.service';
 
 const analyzeImage = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     try {
-        console.log(req.file);        
         if(!req.file) return next({ message: 'No image provided', status: 400 });
 
         const description = await imageAnalysisService(req.file.buffer);

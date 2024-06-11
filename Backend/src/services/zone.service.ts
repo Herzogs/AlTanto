@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {IZone, IZoneRequest, IZoneResponse} from "../interfaces/zone.interface";
 import * as zoneRepository from '../repository/zone.repository';
 import transformData from '../utilities/transformData.utilities';
@@ -7,7 +8,6 @@ import {IReportWithRadius} from "../interfaces/reports.interface";
 
 
 const createZone = async (newZone: IZoneRequest): Promise<IZone> => {
-    console.log(newZone, "En el service");
     const zoneCreated = await zoneRepository.default.create(newZone);
     if (!zoneCreated) throw new ZoneNotCreatedException("Zone not created");
     return zoneCreated;

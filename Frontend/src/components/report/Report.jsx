@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import iconRed from "@assets/iconRed.png";

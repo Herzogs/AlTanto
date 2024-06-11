@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import L from "leaflet";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
@@ -6,11 +8,12 @@ import { useStore } from "@store";
 import { useMap } from "react-leaflet";
 
 const Routing = ({ startPoint, endPoint }) => {
-  const { setDistance, setTime } = useStore();
+  const { setDistance, setTime, setRouteCoordinates} = useStore();
   const map = useMap();
+
   useEffect(() => {
     if (startPoint && endPoint && map) {
-      // Espera un pequeño tiempo para asegurar que el mapa esté inicializado completamente
+      
 
       const routingControl = L.Routing.control({
         waypoints: [
@@ -33,6 +36,7 @@ const Routing = ({ startPoint, endPoint }) => {
         const { totalDistance, totalTime } = routes.summary;
         setDistance(totalDistance);
         setTime(totalTime);
+        setRouteCoordinates(routes.coordinates);
       });
 
       routingControl.addTo(map);
@@ -41,7 +45,6 @@ const Routing = ({ startPoint, endPoint }) => {
       return () => {
         map.removeControl(routingControl);
       };
-      // Ajusta el tiempo de espera si es necesario
     }
   }, [map]);
 
