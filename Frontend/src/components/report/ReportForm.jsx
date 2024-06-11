@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
@@ -12,6 +13,7 @@ import { reverseGeocode } from "@services/getGeoAdress";
 
 
 function ReportForm() {
+  const { groupId } = useParams();
   const { userLocation, markerPosition, setReports } = useStore();
   const [address, setAddress] = useState("");
   const [categories, setCategories] = useState([]);
@@ -69,6 +71,9 @@ function ReportForm() {
   }, [markerPosition]);
 
   const onSubmit = async (data) => {
+    if (groupId !== undefined) {
+      data.groupId = groupId;
+    }
     data.image = file;
     data.latitude = markerPosition ? markerPosition[0] : userLocation.lat;
     data.longitude = markerPosition ? markerPosition[1] : userLocation.lng;

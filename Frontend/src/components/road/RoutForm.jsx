@@ -8,6 +8,7 @@ import Header from "@components/header/Header";
 import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
 import { sendRoute } from "@services/sendData";
+import { useEffect } from "react";
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
@@ -18,7 +19,7 @@ function RoutForm() {
   const [message, setMessage] = useState("");
 
   const [showModal, setShowModal] = useState(false);
-  const { userLocation, setUserLocation } = useStore();
+  const { userLocation, setUserLocation, setReports } = useStore();
 
   const {
     register,
@@ -32,6 +33,10 @@ function RoutForm() {
       destination: "",
     },
   });
+
+  useEffect(()=>{
+    setReports([]);
+  }, [])
 
   const startAddress = watch("origin");
   const endAddress = watch("destination");

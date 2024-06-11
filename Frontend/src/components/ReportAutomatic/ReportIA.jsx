@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import axiosInstance from "@interceptors/axiosConfig";
 import { Container, Form, Button, Image } from "react-bootstrap";
@@ -15,7 +16,7 @@ const categories = [
   {
     id: 1,
     name: "Seguridad",
-    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca"],
+    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta",  "palanca"],
   },
   {
     id: 2,
@@ -41,7 +42,6 @@ function categorizeDescription(description) {
 
     for (const tag of categoryTags) {
       if (words.includes(tag.toLowerCase())) {
-        console.log(categoryObj);
         return categoryObj;
       }
     }
@@ -50,6 +50,7 @@ function categorizeDescription(description) {
 }
 
 function ReportIA() {
+  const { groupId } = useParams();
   const [file, setFile] = useState(null);
   const [address, setAddress] = useState("");
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -178,6 +179,11 @@ function ReportIA() {
       longitude: lng,
       image: file,
     };
+
+    if (groupId) {
+      reportData.groupId = groupId;
+    }
+
     try {
       await sendReport(reportData);
       setShowModal(true);

@@ -100,10 +100,10 @@ const addUserToGroupWithCode = async (req: Request, res: Response, next: NextFun
         }
     };
 
-    const getGroupsByUserId = async (req: Request, res: Response): Promise<Response> => {
-        const { userId } = req.params;
-        try {
-            const groups = await groupService.getGroupsByUserId(Number(userId));
+const getGroupsByUserId = async (req: Request, res: Response): Promise<Response> => {
+    const { userId } = req.params; 
+    try {
+        const groups = await groupService.getGroupsByUserId(Number(userId));
 
             if (!groups || groups.length === 0) {
                 return res.status(200).json([]);
@@ -125,11 +125,10 @@ const addUserToGroupWithCode = async (req: Request, res: Response, next: NextFun
         }
     };
 
-    const getUserByUserName = async (req: Request, res: Response): Promise<Response> => {
-        console.log(req.params)
-        const { userName } = req.params;
-        try {
-            const user = await groupService.getUser(userName);
+const getUserByUserName = async (req: Request, res: Response): Promise<Response> => {
+    const { userName } = req.params; 
+    try {
+        const user = await groupService.getUser(userName);
 
             if (!user) {
                 return res.status(500).json([]);

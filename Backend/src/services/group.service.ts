@@ -93,7 +93,6 @@ async function getGroupDetailsById(groupId: number): Promise<IGroupDetails> {
 }
 
 async function getUser(userName: string): Promise<IUser> {
-    console.log(userName)
     try {
         const user = await getUserByUserName(userName);
         return user;

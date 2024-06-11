@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import {
-  getGroupById,
-  removeUserFromGroup,
-  deleteGroup,
-} from "@/services/groupService";
+import { getGroupById, removeUserFromGroup, deleteGroup } from "@/services/groupService";
 import { getUserByUsername } from "@services/userService";
+import { fetchReportsByGroup } from "@services/getReportByGroup";
 import { userStore } from "@/store/index";
 import { Container } from "react-bootstrap";
-import Header from "@components/header/Header";
+//import Header from "@components/header/Header";
+import MenuButton from "../Map/MenuButton";
+import Report from "@components/report/Report";
 
 function GroupDetail() {
   const { id } = useParams();
@@ -16,6 +15,7 @@ function GroupDetail() {
   const [error, setError] = useState(null);
   const [username, setUsername] = useState("");
   const [foundUser, setFoundUser] = useState(null);
+  const [reports, setReports] = useState([]);
   const navigate = useNavigate();
 
   const { user } = userStore();
@@ -31,7 +31,17 @@ function GroupDetail() {
       }
     };
 
+    const fetchGroupReports = async () => {
+      try {
+        const groupReports = await fetchReportsByGroup(id);
+        setReports(groupReports);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
     fetchGroupDetails();
+    fetchGroupReports();
   }, [id]);
 
   const handleSearchUser = async () => {
@@ -72,9 +82,7 @@ function GroupDetail() {
       await removeUserFromGroup({ groupId, userId: userIdToRemove });
       setGroupDetails((prevDetails) => ({
         ...prevDetails,
-        members: prevDetails.members.filter(
-          (member) => member.id !== userIdToRemove
-        ),
+        members: prevDetails.members.filter((member) => member.id !== userIdToRemove),
       }));
     } catch (error) {
       setError(error.message);
@@ -100,16 +108,13 @@ function GroupDetail() {
 
   return (
     <>
-      <Header />
-      <Container className="container-md_stop pt-4 pt-lg-5">
+      <Container className="container-md_stop">
         <h1>{groupDetails.name}</h1>
         <p>
           Código de Grupo: <strong>{groupDetails.groupCode}</strong>
         </p>
-        <button
-          className="btn btn-sm btn-danger"
-          onClick={() => handleDeleteGroup(groupDetails.id)}
-        >
+        <MenuButton groupId={groupDetails.id} />
+        <button className="btn btn-sm btn-danger" onClick={() => handleDeleteGroup(groupDetails.id)}>
           Borrar Grupo
         </button>
 
@@ -133,15 +138,14 @@ function GroupDetail() {
                   </button>
                 </>
               )}
-              {groupDetails.ownerId === userId &&
-                member.id !== groupDetails.ownerId && (
-                  <button
-                    className="btn btn-sm btn-warning"
-                    onClick={() => handleRemoveUser(groupDetails.id, member.id)}
-                  >
-                    Eliminar usuario
-                  </button>
-                )}
+              {groupDetails.ownerId === userId && member.id !== groupDetails.ownerId && (
+                <button
+                  className="btn btn-sm btn-warning"
+                  onClick={() => handleRemoveUser(groupDetails.id, member.id)}
+                >
+                  Eliminar usuario
+                </button>
+              )}
             </li>
           ))}
         </ul>
@@ -167,6 +171,15 @@ function GroupDetail() {
             )}
           </div>
         )}
+
+        <h3 className="mt-4">Reportes del Grupo:</h3>
+        <section className="d-flex justify-content-center flex-wrap gap-4">
+          {reports.length > 0 ? (
+            reports.map((report) => <Report key={report.id} report={report} />)
+          ) : (
+            <h3>No se encontraron reportes</h3>
+          )}
+        </section>
 
         <Link className="btn btn-secondary px-3 mt-5" to="/">
           Volver

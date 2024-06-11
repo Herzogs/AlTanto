@@ -12,7 +12,7 @@ const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     port: dbPort,
     dialect: dbDialect as 'mysql',
     timezone: '-03:00',
-    logging: false,
+    logging: false
         
 });
 
