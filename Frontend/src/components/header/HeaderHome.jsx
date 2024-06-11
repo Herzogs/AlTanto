@@ -3,6 +3,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from "react-router-dom";
 import { userStore } from "@store";
+import UserAvatar from "./UserAvatar";
 import "./styles.css";
 
 function HeaderHome() {
@@ -21,17 +22,15 @@ function HeaderHome() {
         {token ? (
           <Dropdown>
             <Dropdown.Toggle
-              className="user-menu"
+              
               id="dropdown-basic"
               as="span"
             >
-              <AccountCircleIcon />
-              <span>
-                {name} {lastName}
-              </span>
+              <UserAvatar name={name} lastName={lastName} />
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
+              <p className="dropdown-item">{`${name} ${lastName}`}</p>
               <Dropdown.Item as={Link} to="/auth/logout">
                 Cerrar sesión
               </Dropdown.Item>
