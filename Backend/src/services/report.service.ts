@@ -29,30 +29,28 @@ const getReportByUser = async (userId: number): Promise<IReportResponse[]> => {
 } */
 
     const createReport = async (newReport: IReportRequest): Promise<IReportResponse | string> => {
-        console.log("Starting report creation process...");
-        console.log("New report data:", newReport);
-    
+       // console.log("Starting report creation process...");
+        //console.log("New report data:", newReport);    
         try {
-            // Check if report with idApi already exists
             if (newReport.idApi) {
-                console.log("Checking if report with idApi already exists...");
+         //       console.log("Checking if report with idApi already exists...");
                 const existingReport = await reportRepository.default.getByApiId(newReport.idApi);
                 if (existingReport) {
-                    console.log("Report with specified idApi already exists.");
+               //     console.log("Report with specified idApi already exists.");
                     return "Report with the specified idApi already exists.";
                 }
             }
     
-            console.log("Creating new report...");
+          //  console.log("Creating new report...");
             const reportCreated = await reportRepository.default.create(newReport);
             if (!reportCreated) {
-                console.log("Report creation returned null.");
+           //     console.log("Report creation returned null.");
                 throw new ReportNotCreatedException("Report not created.");
             }
-            console.log("Report successfully created:", reportCreated);
+         //   console.log("Report successfully created:", reportCreated);
             return transformData(reportCreated);
         } catch (error) {
-            console.error("Error during report creation:", error);
+          //  console.error("Error during report creation:", error);
             throw new ReportNotCreatedException("Report not created.");
         }
     };

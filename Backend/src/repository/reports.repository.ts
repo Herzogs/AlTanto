@@ -3,7 +3,7 @@ import Report from '../models/Report';
 import Category from '../models/Category';
 import { Location } from '../models/Location';
 import { IReportRequest, IReportResponse, IReportWithRadius } from '../interfaces/reports.interface';
-import { QueryTypes } from 'sequelize';
+import { QueryTypes, Transaction } from 'sequelize';
 import { Op } from 'sequelize';
 
 class ReportRepository {
@@ -67,7 +67,7 @@ class ReportRepository {
             CategoryId: newReport.categoryId,
             LocationId: location.id,
             images: newReport.images,
-            idApi: newReport.idApi 
+            idApi: newReport.idApi
 
         });
         return reporCreated.get({ plain: true }) as IReportResponse;
@@ -116,21 +116,20 @@ class ReportRepository {
         return numberOfReportsDisabled[0];
     }
 
-    static async getByApiId(idApi: string | null): Promise<IReportResponse | null> {
+
+    static async getByApiId(idApi: string | null, transaction?: Transaction): Promise<IReportResponse | null> {
         if (!idApi) {
-            return null; 
+            return null;
         }
         const report = await Report.findOne({
-            where: { idApi }
+            where: { idApi },
+            transaction
         });
         if (!report) {
-            return null; 
+            return null;
         }
         return report.get({ plain: true }) as IReportResponse;
     }
     
-
-
 }
-
 export default ReportRepository;
