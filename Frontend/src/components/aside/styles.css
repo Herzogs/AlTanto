@@ -1,0 +1,73 @@
+/* ASIDE UI */
+.at-aside_button {
+  position: absolute;
+  bottom: 4px;
+  right: 0;
+  margin-right: 4px;
+  margin-top: 4px;
+  z-index: 9991;
+}
+
+.at-aside_button .btn-aside {
+  display: inline-block;
+  background-color: var(--color-at-black);
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: 0.3s ease-in-out;
+  outline: none;
+  border: none;
+}
+
+.at-aside_button .btn-aside:hover {
+  background-color: var(--color-at-grey);
+}
+
+.btn-aside svg {
+  font-size: 42px;
+}
+
+.offcanvas.offcanvas-start {
+    width: var(--bs-offcanvas-width);
+    max-width: 320px !important;
+}
+
+.at-aside_offcanvas {
+  color: var(--color-at-white) !important;
+  background-color: var(--color-at-black) !important;
+  z-index: 9993 !important;
+}
+
+.offcanvas-backdrop {
+  z-index: 9991 !important;
+}
+
+.at-aside_offcanvas .offcanvas-header .btn-close {
+  background-color: var(--color-at-white) !important;
+  opacity: 1;
+}
+
+.at-aside_offcanvas h5 svg{
+    font-size: 32px;
+    color: var(--color-at-orange);
+    margin-bottom: 6px;
+    margin-right: 4px;
+}
+
+.at-aside_offcanvas span svg{
+    color: var(--color-at-orange);
+    margin-bottom: 4px;
+}
+
+.at-aside_offcanvas li{
+    margin-bottom: 12px;
+}
+
+
+@media only screen and (min-width: 768px) {
+}
+
+@media only screen and (min-width: 1400px) {
+  .at-aside_button {
+    margin-right: 16px;
+  }
+}

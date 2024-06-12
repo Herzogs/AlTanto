@@ -1,0 +1,43 @@
+name: Deploy Both Frontend and Backend
+
+on:
+  workflow_run:
+    workflows: ["Al Tanto Pipeline (Backend & Frontend)"]
+    types:
+      - completed
+
+jobs:
+  deploy_both:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Verify Fly API Token
+        run: echo $FLY_API_TOKEN
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@v1
+
+      - name: Authenticate with Fly.io
+        run: flyctl auth token ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Deploy Backend to Fly.io
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy Frontend to Vercel
+        run: |
+          cd frontend
+          vercel --prod --token=$VERCEL_TOKEN
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

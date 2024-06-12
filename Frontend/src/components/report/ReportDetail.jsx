@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { Container, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -8,9 +9,10 @@ import { fetchReportById } from "@services/getReport";
 function ReportDetail() {
   const { id } = useParams();
   const [report, setReport] = useState(null);
-  const { userLocation, setUserLocation } = useStore();
+  const { userLocation, setUserLocation, setReports } = useStore();
 
   useEffect(() => {
+    setReports()
     const getReport = async () => {
       try {
         const data = await fetchReportById(id);
@@ -48,7 +50,7 @@ function ReportDetail() {
           )}
         </article>
         <div className="h-map pb-footer">
-          <Map userLocation={userLocation} noDrag={true} zoneMode={true} />
+          <Map userLocation={userLocation} zoneMode={true} />
         </div>
       </Container>
     </section>

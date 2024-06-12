@@ -2,24 +2,24 @@ import { useEffect } from "react";
 import { useMap, Marker, Popup } from "react-leaflet";
 import { useStore } from "@store";
 import L from "leaflet";
-import iconuser from "@assets/user-icon.png"; 
+import iconuser from "@assets/user-icon.png";
 
 const userIcon = new L.Icon({
   iconUrl: iconuser,
-  iconSize: [28, 42], 
-  iconAnchor: [13, 40], 
+  iconSize: [28, 42],
+  iconAnchor: [13, 40],
   popupAnchor: [0, -32],
-  zIndex: 9999 
+  zIndex: 9999,
 });
 
-const LocationMarker = ({noDrag = false}) => {
+const LocationMarker = () => {
   const map = useMap();
   const { userLocation, setUserLocation, setOldUserLocation } = useStore();
 
   useEffect(() => {
     if (!userLocation) {
       map
-        .locate({ setView: true, maxZoom: 20 })
+        .locate({ setView: true, maxZoom: 18 })
         .on("locationfound", function (e) {
           setUserLocation(e.latlng);
         });
@@ -39,9 +39,9 @@ const LocationMarker = ({noDrag = false}) => {
   return userLocation ? (
     <Marker
       position={userLocation}
-      draggable={noDrag == false ? true : false}
+      draggable={false}
       eventHandlers={eventHandlers}
-      zIndexOffset={999}
+      zIndexOffset={9991}
       icon={userIcon}
     >
       <Popup>Estas aquí</Popup>

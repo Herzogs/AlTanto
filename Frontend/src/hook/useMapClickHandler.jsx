@@ -1,20 +1,14 @@
 import { useMapEvents } from "react-leaflet";
-import { useStore } from "../store";
+import { useStore } from "@store";
 
 const useMapClickHandler = () => {
-  const { startPoint, endPoint, setStartPoint, setEndPoint } = useStore();
-
-  const handleMapClick = (e) => {
-    if (!startPoint) {
-      setStartPoint(e.latlng);
-    } else if (!endPoint) {
-      setEndPoint(e.latlng);
-    }
-  };
+  const setMarkerPosition = useStore((state) => state.setMarkerPosition);
 
   const MapClickHandler = () => {
     useMapEvents({
-      click: handleMapClick,
+      click(e) {
+        setMarkerPosition([e.latlng.lat, e.latlng.lng]);
+      },
     });
     return null;
   };

@@ -14,8 +14,12 @@
   margin-bottom: 12px;
 }
 
-.at-report-header svg {
-  font-size: 36px;
+.at-report-header p {
+  margin-bottom: 0px;
+}
+
+.at-report-header img {
+  max-width: 42px;
 }
 
 .at-report-footer {

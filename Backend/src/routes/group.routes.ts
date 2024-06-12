@@ -14,4 +14,6 @@ router.post('/:id/add-user', auth, groupController.addUserToGroupWithCode);
 router.delete('/:groupId/remove-user/:userId', auth, groupController.removeUserFromGroup);
 router.get('/find/:groupName', auth, groupController.findGroupsByName); 
 
+router.post('/notification/', auth, groupController.getGroupsAndNotifications);
+
 export default router;

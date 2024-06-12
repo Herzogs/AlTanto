@@ -20,6 +20,7 @@ declare global {
             GOOGLE_TRANSLATE_API_KEY: string
             CV_ENDPOINT: string
             CV_KEY: string
+            CORS_ORIGIN: string
         }
     }
 }

@@ -26,8 +26,7 @@ export interface IReportResponse {
     category: IReportCategory | null;
     location: ILocation | null;
     idApi?: string | null; 
-
-
+    groupId: number;
 }
 
 export interface ILocation {
@@ -49,6 +48,7 @@ export interface IReportRequest {
     latitude: string;
     longitude: string;
     idApi?: string | null; 
+    groupId?: string;
 
 }
 

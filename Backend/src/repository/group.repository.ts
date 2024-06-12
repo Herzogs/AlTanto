@@ -94,7 +94,7 @@ class GroupRepository {
         return group.toJSON();
     }
 
-    static async getGroupMembers(groupId: number): Promise<any> {
+    static async getGroupMembers(groupId: number): Promise<GroupUser[]> {
         const groupUsers = await GroupUser.findAll({
             where: { groupId },
             include: [{ model: User }],

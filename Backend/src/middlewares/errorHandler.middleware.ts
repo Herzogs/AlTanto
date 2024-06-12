@@ -1,10 +1,10 @@
-import type {NextFunction, Request, Response} from 'express';
+import type {Request, Response} from 'express';
 
 interface AppError extends Error {
     statusCode?: number;
 }
 
-const errorHandler = (error: AppError, _req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (error: AppError, _req: Request, res: Response) => {
 
     const statusCode = error.statusCode || 500; // Si no hay statusCode, se usa 500 por defecto.
     const message = statusCode === 500 ? 'Internal server error' : error.message; // Mensaje genérico para errores 500.

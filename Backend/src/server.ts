@@ -11,8 +11,8 @@ server.use(express.json());
 server.use("/static", express.static('public'));
 server.use(express.urlencoded({ extended: true }));
 server.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: process.env.CORS_ORIGIN,
+    methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 

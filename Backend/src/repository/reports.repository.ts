@@ -61,14 +61,15 @@ class ReportRepository {
         const locationSearched = await Location.findOrCreate({
             where: { latitude: newReport.latitude, longitude: newReport.longitude },
         })
+        console.log(newReport)
         const location = locationSearched[0].get({ plain: true });
         const reporCreated = await Report.create({
             content: newReport.content,
             CategoryId: newReport.categoryId,
             LocationId: location.id,
             images: newReport.images,
-            idApi: newReport.idApi
-
+            idApi: newReport.idApi,
+            groupId: newReport.groupId
         });
         return reporCreated.get({ plain: true }) as IReportResponse;
     }
@@ -86,7 +87,7 @@ class ReportRepository {
             FROM Location
             JOIN Report ON Location.id = Report.LocationId
             JOIN Category ON Report.CategoryId = Category.id
-            WHERE Report.enabled = true
+            WHERE Report.enabled = true AND Report.groupId IS NULL
             HAVING distancia <= :radius
             ORDER BY distancia;`,
             {
@@ -115,6 +116,11 @@ class ReportRepository {
         });
         return numberOfReportsDisabled[0];
     }
+
+    static async getByGroup(groupId: number): Promise<Report[]>{
+        return await Report.findAll({ where: { groupId } });
+    }
+
 
 
     static async getByApiId(idApi: string | null, transaction?: Transaction): Promise<IReportResponse | null> {

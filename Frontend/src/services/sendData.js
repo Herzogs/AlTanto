@@ -14,6 +14,9 @@ const sendReport = async (data) => {
     formData.append("latitude", data.latitude.toString());
     formData.append("longitude", data.longitude.toString());
     if (data && data.image) formData.append("image", data.image);
+    if(data.groupId !== undefined){
+      formData.append("groupId", data.groupId);
+    }
 
     const response = await axiosInstance.post(FORM_URI_REPORT, formData, {
       headers: {
