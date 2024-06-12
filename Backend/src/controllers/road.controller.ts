@@ -44,7 +44,6 @@ const createRoad = async (req: Request, res: Response, next: NextFunction) => {
         });
         return next({ message: listOffErrors, statusCode: 400 });
     }
-    console.log(req.body as IRoad);
     try {
         const road = await roadServices.createRoad(req.body as IRoad);
         res.status(201).json(road);

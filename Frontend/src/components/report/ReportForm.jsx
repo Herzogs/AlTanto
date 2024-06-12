@@ -163,7 +163,7 @@ function ReportForm() {
               <Form.Group as={Row} controlId="ubicacion">
                 <Form.Label className="mt-3 mb-2">Ubicación:</Form.Label>
                 <Col sm={12}>
-                  <Form.Control type="text" value={address} readOnly="true" />
+                  <Form.Control type="text" value={address} readOnly={true} />
                 </Col>
               </Form.Group>
 

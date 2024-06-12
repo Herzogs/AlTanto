@@ -6,6 +6,7 @@ import { IGroupDetails } from '../interfaces/groupDetail.interface';
 import { getUserByUserName } from "../services/user.service";
 import { IUser } from 'interfaces/user.interface';
 import * as reportRepository  from "../repository/reports.repository";
+import Report  from '../models/Report';
 
 async function getAllGroups(): Promise<IGroup[]> {
     const groups = await GroupRepository.getAll();
@@ -81,7 +82,7 @@ async function findGroupsByName(name: string): Promise<IGroup[]> {
 async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
     try {
         const groups = await GroupRepository.getGroupsByUserId(userId);
-        return groups;
+        return groups.map(group => group.get({ plain: true })) as IGroup[];
     } catch (error) {
         throw new Error('Error al obtener los grupos del usuario');
     }
@@ -104,17 +105,14 @@ async function getUser(userName: string): Promise<IUser> {
 
 interface IGroupReport {
     groupName: string;
-    reports: any[];
+    reports: Report[];
 }
 
-const getNotification = async (userId: number): Promise<any[]> => {
-    console.log(userId + ' aca RECIBI USSEEEEEEEER')
+const getNotification = async (userId: number): Promise<IGroupReport[]> => {
     const groups:IGroup[] = await getGroupsByUserId(userId);
     const reportByGroup: IGroupReport[] = [];
     for (const myGroup of groups) {
         const result = await reportRepository.default.getByGroup(myGroup.id as number);
-        console.log(result)
-
         reportByGroup.push({
             groupName: myGroup.name,
             reports: result
