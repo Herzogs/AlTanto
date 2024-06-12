@@ -5,7 +5,8 @@ import { getUserByUsername } from "@services/userService";
 import { fetchReportsByGroup } from "@services/getReportByGroup";
 import { userStore } from "@/store/index";
 import { Container } from "react-bootstrap";
-//import Header from "@components/header/Header";
+import Header from "@components/header/Header";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MenuButton from "../Map/MenuButton";
 import Report from "@components/report/Report";
 
@@ -108,7 +109,9 @@ function GroupDetail() {
 
   return (
     <>
+    <Header/>
       <Container className="container-md_stop">
+      <p className="text-end"><Link to="/form/grupo"><ArrowBackIcon/> Regresar</Link></p>
         <h1>{groupDetails.name}</h1>
         <p>
           Código de Grupo: <strong>{groupDetails.groupCode}</strong>
@@ -181,9 +184,6 @@ function GroupDetail() {
           )}
         </section>
 
-        <Link className="btn btn-secondary px-3 mt-5" to="/">
-          Volver
-        </Link>
       </Container>
     </>
   );

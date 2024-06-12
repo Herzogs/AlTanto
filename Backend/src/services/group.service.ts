@@ -82,13 +82,7 @@ async function findGroupsByName(name: string): Promise<IGroup[]> {
 async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
     try {
         const groups = await GroupRepository.getGroupsByUserId(userId);
-        const aux = groups.map(group => ({
-            id: group.id,
-            name: group.name,
-            ownerId: group.ownerId,
-            groupCode: group.groupCode
-        }));
-        return aux
+        return groups.map(group => group.get({ plain: true })) as IGroup[];
     } catch (error) {
         throw new Error('Error al obtener los grupos del usuario');
     }

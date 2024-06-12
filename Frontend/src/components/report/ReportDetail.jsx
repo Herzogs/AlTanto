@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Container, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import Header from "@components/header/Header";
 import Map from "@components/Map/Map";
 import { useStore } from "@store";
 import { fetchReportById } from "@services/getReport";
@@ -12,7 +13,7 @@ function ReportDetail() {
   const { userLocation, setUserLocation, setReports } = useStore();
 
   useEffect(() => {
-    setReports()
+    setReports();
     const getReport = async () => {
       try {
         const data = await fetchReportById(id);
@@ -37,6 +38,7 @@ function ReportDetail() {
 
   return (
     <section className="container_home">
+      <Header />
       <Container fluid className="h-100">
         <article className="text-center mb-5">
           <h2 className="my-4">Detalle del reporte</h2>

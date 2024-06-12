@@ -1,13 +1,15 @@
-import { Container } from "react-bootstrap";
+import { Container, Accordion } from "react-bootstrap";
 import Header from "@components/header/Header";
 import Report from "@components/report/Report";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Link } from "react-router-dom";
 import { userStore } from "@store";
 import { useEffect, useState } from "react";
 import axiosInstance from "@interceptors/axiosConfig";
 
 function Notifications() {
-  const [infoZones, setInfoZones] = useState([null]);
-  const [infoGroups, setInfoGroups] = useState([null]);
+  const [infoZones, setInfoZones] = useState([]);
+  const [infoGroups, setInfoGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingDos, setLoadingDos] = useState(true);
   const { user } = userStore();
@@ -37,45 +39,81 @@ function Notifications() {
     };
 
     getGroupsAndNotifications().then((data) => {
-      console.log(data);
       setInfoGroups(data);
       setLoadingDos(false);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user.id]);
 
   return (
     <>
       <Header />
-      <Container fluid className="pt-4 pt-lg-5">
-        <h2 className="text-center my-4">Mis notificaciones</h2>
+      <Container className="pt-4 pt-lg-5">
+        <section className="text-center">
+          <p className="text-end">
+            <Link to="/">
+              <ArrowBackIcon /> Regresar
+            </Link>
+          </p>
+          <h2 className="text-center my-4">Mis notificaciones</h2>
 
-        {!loading && (
-          <div className="zone-reports">
-            {infoZones.map((zone, index) => (
-              <div key={index} className="mb-5">
-                <h2>Zona: {zone.zoneName}</h2>
-                {zone.reports.map((report) => (
-                  <Report key={report.id} report={report} />
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
+          {!loading && (
+            <div className="zone-reports">
+              {infoZones.map(
+                (zone, index) =>
+                  zone.reports.length > 0 && (
+                    <div key={index} className="mb-5">
+                      <h3>Zona: {zone.zoneName}</h3>
+                      <article className="d-lg-flex gap-3">
+                        {zone.reports.slice(0, 3).map((report) => (
+                          <Report key={report.id} report={report} />
+                        ))}
+                      </article>
+                      {zone.reports.length > 3 && (
+                        <Accordion>
+                          <Accordion.Item eventKey="0">
+                            <Accordion.Header><strong>Ver más</strong></Accordion.Header>
+                            <Accordion.Body>
+                              {zone.reports.slice(3).map((report) => (
+                                <Report key={report.id} report={report} />
+                              ))}
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        </Accordion>
+                      )}
+                    </div>
+                  )
+              )}
+            </div>
+          )}
 
-        {!loadingDos && (
-          <div className="zone-reports">
-            {infoGroups.map((group, index) => (
-              <div key={index} className="mb-5">
-                <h2>Grupo: {group.groupName}</h2>
-                {group.reports.map((report) => (
-                  <Report key={report.id} report={report} />
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
-
+          {!loadingDos && (
+            <div className="zone-reports">
+              {infoGroups.map(
+                (group, index) =>
+                  group.reports.length > 0 && (
+                    <div key={index} className="mb-5">
+                      <h3>Grupo: {group.groupName}</h3>
+                      {group.reports.slice(0, 3).map((report) => (
+                        <Report key={report.id} report={report} />
+                      ))}
+                      {group.reports.length > 3 && (
+                        <Accordion>
+                          <Accordion.Item eventKey="0">
+                            <Accordion.Header><strong>Ver más</strong></Accordion.Header>
+                            <Accordion.Body>
+                              {group.reports.slice(3).map((report) => (
+                                <Report key={report.id} report={report} />
+                              ))}
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        </Accordion>
+                      )}
+                    </div>
+                  )
+              )}
+            </div>
+          )}
+        </section>
       </Container>
     </>
   );

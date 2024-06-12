@@ -6,17 +6,18 @@ import { Container, Form, Button, Image } from "react-bootstrap";
 import Header from "@components/header/Header";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Link } from "react-router-dom";
 import { sendReport } from "@services/sendData";
 import { getCategoryFromApi } from "@services/getCategory";
 import { reverseGeocode } from "@services/getGeoAdress";
 import { useStore } from "@store";
 
-
 const categories = [
   {
     id: 1,
     name: "Seguridad",
-    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta",  "palanca"],
+    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca"],
   },
   {
     id: 2,
@@ -196,6 +197,11 @@ function ReportIA() {
     <>
       <Header />
       <Container className="container-md_stop h-100 pt-4 pt-lg-5">
+        <p className="text-end">
+          <Link to="/">
+            <ArrowBackIcon /> Regresar
+          </Link>
+        </p>
         <h2>Generar reporte automático</h2>
         <p>
           Usaremos un servicio de <strong>Inteligencia Artificial</strong> para

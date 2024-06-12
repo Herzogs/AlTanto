@@ -60,7 +60,7 @@ class ReportRepository {
         const locationSearched = await Location.findOrCreate({
             where: { latitude: newReport.latitude, longitude: newReport.longitude },
         })
-        console.log(newReport)
+        
         const location = locationSearched[0].get({ plain: true });
         const reporCreated = await Report.create({
             content: newReport.content,

@@ -11,7 +11,6 @@ const createUser = async (user: IUser): Promise<User> => {
       await cognitoService.createUser(user);
         return userCreated;
     } catch (error) {
-        console.log((error as Error).message)
         await userRepository.deleteUser(user.email)
         throw new UserNotCreatedException((error as Error).message);
     }

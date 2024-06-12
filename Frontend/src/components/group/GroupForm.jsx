@@ -10,6 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { userStore } from "@store";
 import { Container } from "react-bootstrap";
 import Header from "@components/header/Header";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link } from "react-router-dom";
+
 
 function GroupForm() {
   const [groupName, setGroupName] = useState("");
@@ -75,6 +78,7 @@ function GroupForm() {
     <>
       <Header />
       <Container className="container-md_stop pt-4 pt-lg-5">
+      <p className="text-end"><Link to="/"><ArrowBackIcon/> Regresar</Link></p>
         <h2>Crear Grupo</h2>
 
         <input

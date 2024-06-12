@@ -94,7 +94,6 @@ function RoadID() {
           <HeaderHome />
           <h2 className="float-title">{name}</h2>
           <div className="float-box">
-            <p><strong>Nombre:</strong> {name}</p>
             <p><strong>Origen:</strong> {addressOrigin}</p>
             <p><strong>Destino:</strong> {addressDestination}</p>
             <p><strong>Distancia:</strong> {formatDistance(distance)}</p>

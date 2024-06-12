@@ -2,12 +2,13 @@ import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import AppsIcon from "@mui/icons-material/Apps";
-
 import Zones from "@components/Zone/Zones";
 import Roads from "@components/road/Roads";
 import Groups from "@components/group/Groups";
 import Notifications from "@components/notification/Notifications";
+import { Link } from "react-router-dom";
 import "./styles.css";
+
 
 
 function Aside() {
@@ -27,7 +28,7 @@ function Aside() {
 
       <Offcanvas className="at-aside_offcanvas" show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Mantenete Al Tanto</Offcanvas.Title>
+          <Offcanvas.Title><Link to="/">Mantenete Al Tanto</Link></Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Zones handleClose={handleClose} />

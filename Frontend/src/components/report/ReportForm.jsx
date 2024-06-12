@@ -9,6 +9,8 @@ import { useStore } from "@store";
 import Header from "@components/header/Header";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link } from "react-router-dom";
 import { reverseGeocode } from "@services/getGeoAdress";
 
 
@@ -104,6 +106,7 @@ function ReportForm() {
     <>
       <Header />
       <Container className="pt-4 pt-lg-5">
+      <p className="text-end"><Link to="/"><ArrowBackIcon/> Regresar</Link></p>
         <h2>Crear Reporte</h2>
         <Row>
           <Col lg={4}>
@@ -160,7 +163,7 @@ function ReportForm() {
               <Form.Group as={Row} controlId="ubicacion">
                 <Form.Label className="mt-3 mb-2">Ubicación:</Form.Label>
                 <Col sm={12}>
-                  <Form.Control type="text" value={address} readOnly="true" />
+                  <Form.Control type="text" value={address} readOnly={true} />
                 </Col>
               </Form.Group>
 
