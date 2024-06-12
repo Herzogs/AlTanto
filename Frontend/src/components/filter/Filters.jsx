@@ -69,7 +69,7 @@ const Filter = ({ selectedCategories, setSelectedCategories }) => {
 
           <Dropdown.Menu>
             {categories.map((category) => (
-              <div key={category.id} className="d-flex mb-2">
+              <div key={category.id} className="d-flex mb-2" style={{minWidth:"148px"}}>
                 <Form.Check
                   type="checkbox"
                   id={`category-${category.id}`}

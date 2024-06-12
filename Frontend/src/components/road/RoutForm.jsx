@@ -8,9 +8,10 @@ import { Container, Button, Form, Row, Col } from "react-bootstrap";
 import Header from "@components/header/Header";
 import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Link } from "react-router-dom";
 import { sendRoute } from "@services/sendData";
 import { fetchReports } from "@services/getReportsInRoutings";
-
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
@@ -21,12 +22,12 @@ function RoutForm() {
   const [message, setMessage] = useState("");
 
   const [showModal, setShowModal] = useState(false);
-  const { 
-    userLocation, 
-    setUserLocation, 
-    setReports, 
+  const {
+    userLocation,
+    setUserLocation,
+    setReports,
     routeCoordinates,
-    setRouteCoordinates
+    setRouteCoordinates,
   } = useStore();
 
   const {
@@ -45,7 +46,7 @@ function RoutForm() {
   useEffect(() => {
     setReports([]);
     setRouteCoordinates([]);
-  }, [])
+  }, []);
 
   const startAddress = watch("origin");
   const endAddress = watch("destination");
@@ -86,7 +87,6 @@ function RoutForm() {
         });
     }
   }, [routeCoordinates, setUserLocation, setReports]);
-  
 
   const onSubmit = async (data) => {
     try {
@@ -113,8 +113,13 @@ function RoutForm() {
     <>
       <Header />
       <Container className="h-100 pt-4 pt-lg-5">
+        <p className="text-end">
+          <Link to="/">
+            <ArrowBackIcon /> Regresar
+          </Link>
+        </p>
         <h2>Crear Ruta</h2>
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit)} className="h-100">
           <Form.Group as={Row} controlId="origin">
             <Form.Label className="mt-3 mb-2" column>
               Dirección origen:
@@ -179,6 +184,19 @@ function RoutForm() {
             </Col>
           </Form.Group>
 
+          {visible && userLocation && (
+            <div className="h-50 mt-2">
+              <Map
+                userLocation={userLocation}
+                radiusZone={500}
+                startPoint={startPoint}
+                endPoint={endPoint}
+                zoneMode={true}
+                routingMode={true}
+              />
+            </div>
+          )}
+
           {visible && (
             <Form.Group as={Row} controlId="name">
               <Form.Label className="mt-3 mb-2" column>
@@ -223,19 +241,6 @@ function RoutForm() {
             </Col>
           </Form.Group>
         </Form>
-
-        {visible && userLocation && (
-          <div className="h-map pb-footer mt-2">
-            <Map
-              userLocation={userLocation}
-              radiusZone={500}
-              startPoint={startPoint}
-              endPoint={endPoint}
-              zoneMode={true}
-              routingMode={true}
-            />
-          </div>
-        )}
 
         <ModalAT
           title={title}

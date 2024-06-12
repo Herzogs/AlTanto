@@ -23,7 +23,7 @@
   display: none !important;
 }
 
-.dropdown-menu.show {
+.form-filter .dropdown-menu.show {
   z-index: 9995 !important;
   background-color: #393e46d2;
   color: #fff;
@@ -32,7 +32,7 @@
 }
 
 .form-filter label {
-  min-width: 60px;
+  min-width: 72px;
   font-size: 12px;
   margin-right: 12px;
 }
@@ -45,6 +45,7 @@
 
 .form-filter img{
   max-width: 26px;
+  max-height: 26px;
 }
 
 @media only screen and (min-width: 1400px) {
@@ -81,5 +82,6 @@
 
   .form-filter_pild img{
     max-width: 26px;
+    max-height: 26px;
   }
 }
