@@ -21,6 +21,7 @@ declare global {
             CV_ENDPOINT: string
             CV_KEY: string
             CORS_ORIGIN: string
+            DB_SSL_CA: string
         }
     }
 }

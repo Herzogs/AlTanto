@@ -16,7 +16,8 @@ const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     dialectOptions: {
         ssl:{
             require: true,
-            rejectUnauthorized: false
+            rejectUnauthorized: true,
+            ca: process.env.DB_SSL_CA,
         }
     }
         
