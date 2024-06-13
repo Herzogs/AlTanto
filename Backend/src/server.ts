@@ -16,6 +16,10 @@ server.use(cors({
 }));
 
 server.use('/api',router)
+server.use('/',(req,res)=>{
+    res.send('Welcome to the API')
+
+})
 server.use(errorHandler)
 const app = server.listen(process.env.PORT, ()=>{
     console.log(`Server is running on port ${process.env.PORT}`)
