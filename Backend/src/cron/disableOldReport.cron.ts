@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import reportRepository from '../repository/reports.repository';
+import reportRepository from '../repository/models/reports.repository';
 
 export const disableOldReport = cron.schedule(process.env.CRON_TIME_TEST as string, async () => {
   try {

@@ -1,5 +1,5 @@
 import {DataTypes, Model, ModelStatic, Op} from 'sequelize';
-import dbConnection from '../config/dbConnection.config';
+import dbConnection from '../../config/dbConnection.config';
 
 interface LocationAttributes {
     id?: number;

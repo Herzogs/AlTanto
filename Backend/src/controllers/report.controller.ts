@@ -9,10 +9,7 @@ const getAllReports = async (_req: Request, res: Response, next: NextFunction): 
         const reports = await reportService.getAllReports();
         return res.json(reports);
     } catch (error) {
-        if (error instanceof ReportNotFoundException) {
-            return next({ message: error.message, statusCode: error.statusCode });
-        }
-        return next((error as Error).message);
+        return next({ message: error.message, statusCode: 400 });
     }
 };
 
@@ -28,10 +25,9 @@ const getReportsById = async (req: Request, res: Response, next: NextFunction): 
             return res.json(report);
         }
     } catch (error) {
-        if (error instanceof ReportNotFoundException) {
-            return next({ message: error.message, statusCode: error.statusCode });
-        }
-        return next((error as Error).message);
+       
+            return next({ message: (error as Error).message, statusCode: 400 });
+       
     }
 };
 
@@ -45,10 +41,7 @@ const getReportByUser = async (req: Request, res: Response, next: NextFunction):
         const reports = await reportService.getReportByUser(+userId);
         return res.json(reports);
     } catch (error) {
-        if (error instanceof ReportNotFoundException) {
-            return next({ message: error.message, statusCode: error.statusCode });
-        }
-        return next((error as Error).message);
+        return next({message: (error as Error).message, statusCode: 400});
     }
 };
 
@@ -72,11 +65,7 @@ const createReport = async (req: Request, res: Response, next: NextFunction): Pr
         const reportCreated = await reportService.createReport(newReport);
         return res.status(201).json(reportCreated);
     } catch (error) {
-        if (error instanceof ReportNotCreatedException) {
-            return next({ message: error.message, statusCode: error.statusCode });
-        }
-
-        return next((error as Error).message);
+            return next({ message: (error as Error).message, statusCode: 400 });
     }
 };
 
@@ -97,10 +86,8 @@ const getReportsByLatLongRadius = async (req: Request, res: Response, next: Next
         const reports = await reportService.getReportsByLatLongRadius(coordinates);
         return res.status(200).json(reports);
     } catch (error) {
-        if (error instanceof ReportNotFoundException) {
-            return next({ message: error.message, statusCode: error.statusCode });
-        }
-        return next((error as Error).message);
+        
+            return next({ message: (error as Error).message, statusCode: 400 });
     }
 }
 

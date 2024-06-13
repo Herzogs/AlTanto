@@ -1,14 +1,12 @@
-import ApiError from "../utilities/apiError";
-
-class CategoryNotFoundException extends ApiError {
+class CategoryNotFoundException extends Error {
     constructor(message: string = "Category not found") {
-        super(message, 404);
+        super(message);
     }
 }
 
-class CategoryNotCreatedException extends ApiError {
+class CategoryNotCreatedException extends Error {
     constructor(message: string = "Category could not be created") {
-        super(message, 400);
+        super(message);
     }
 }
 

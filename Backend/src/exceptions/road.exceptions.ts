@@ -1,14 +1,12 @@
-import ApiError from "../utilities/apiError";
-
-class RoadNotFoundException extends ApiError {
+class RoadNotFoundException extends Error {
     constructor(message: string = "Road not found") {
-        super(message, 200);
+        super(message);
     }
 }
 
-class RoadNotCreatedException extends ApiError {
+class RoadNotCreatedException extends Error {
     constructor(message: string = "Road could not be created") {
-        super(message, 200);
+        super(message);
     }
 }
 

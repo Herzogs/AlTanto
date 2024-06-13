@@ -1,6 +1,5 @@
 import { DataTypes, Model} from 'sequelize';
-import dbConnection from '../config/dbConnection.config';
-//import User from './User';
+import dbConnection from '../../config/dbConnection.config';
 import { v4 as uuidv4 } from 'uuid';
 
 

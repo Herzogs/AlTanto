@@ -1,5 +1,5 @@
-import Zone from '../models/Zone';
-import {Location} from '../models/Location';
+import Zone from './models/Zone';
+import {Location} from './models/Location';
 import {IZone, IZoneRequest} from '../interfaces/zone.interface';
 import {ZoneNotCreatedException, ZoneNotFoundException} from '../exceptions/zone.exceptions';
 
@@ -63,6 +63,37 @@ class ZoneRepository {
         }
         const zoneSearched = await zone.get({plain: true});
         return zoneSearched as IZone;
+    }
+
+    static async getByLatLongRadius(zoneWithRadius: IZone): Promise<object[] | null> {
+        const { lat, lon, rad } = zoneWithRadius;
+        const reports = await Report.sequelize?.query(
+            `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.categoryId,
+                Location.latitude, Location.longitude, 
+                Category.name AS categoryName,
+                (6371000 * acos(
+                    least(1, cos(radians(:lat)) * cos(radians(Location.latitude)) * cos(radians(Location.longitude) - radians(:lon)) +
+                    sin(radians(:lat)) * sin(radians(Location.latitude)))
+                )) AS distancia
+            FROM Location
+            JOIN Report ON Location.id = Report.LocationId
+            JOIN Category ON Report.CategoryId = Category.id
+            WHERE Report.enabled = true AND Report.groupId IS NULL
+            HAVING distancia <= :radius
+            ORDER BY distancia;`,
+            {
+                replacements: {
+                    lat: parseFloat(lat),
+                    lon: parseFloat(lon),
+                    radius: parseFloat(rad)
+                },
+                type: QueryTypes.SELECT
+            }
+        );
+        if (!reports) {
+            return null;
+        }
+        return reports;
     }
 }
 

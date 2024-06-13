@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import dbConnection from '../config/dbConnection.config';
+import dbConnection from '../../config/dbConnection.config';
 import Group from './Group';
 import User from './User';
 

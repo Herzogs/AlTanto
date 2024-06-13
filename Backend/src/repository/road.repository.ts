@@ -1,10 +1,19 @@
-import Road from "../models/Road";
-import { Location } from "../models/Location";
+import Road from "./models/Road";
+import { Location } from "./models/Location";
 import { IRoad } from "../interfaces/road.interfaces";
+import {IRoadRepository} from "./interface/road.interface";
 
-class RoadRepository {
-    static async getAll(): Promise<Road[]> {
-        const listOfRoad = await Road.findAll({
+
+class RoadRepository implements IRoadRepository<IRoad>{
+
+    private roadModel: typeof Road;
+
+    constructor(roadModel = Road) {
+        this.roadModel = roadModel;
+    }
+
+    async getAll(): Promise<IRoad[]> {
+        const listOfRoad = await this.roadModel.findAll({
             include: [{ model: Location, attributes: ['latitude', 'longitude'] }],
             attributes: { exclude: ['LocationId'] }
         });
@@ -14,8 +23,8 @@ class RoadRepository {
         return listOfRoad.map((Road) => Road.get({ plain: true }));
     }
 
-    static async getById(id: number): Promise<Road | null> {
-        const roadSearched = await Road.findByPk(id);
+    async getById(id: number): Promise<IRoad | null> {
+        const roadSearched = await this.roadModel.findByPk(id);
 
         if (!roadSearched) {
             return null;
@@ -30,7 +39,7 @@ class RoadRepository {
         return road;
     }
 
-    static async create(road: IRoad): Promise<Road | null | unknown> {
+    async create(road: IRoad): Promise<IRoad | null> {
 
         const locationSearchedOrigin = await Location.findOrCreate({
             where: { latitude: road.origin.lat, longitude: road.origin.lng }
@@ -42,7 +51,7 @@ class RoadRepository {
         const locationOrigin = locationSearchedOrigin[0].get({ plain: true });
         const locationDestiny = locationSearchedDestiny[0].get({ plain: true });
 
-        const roadCreated = await Road.create({
+        const roadCreated = await this.roadModel.create({
             name: road.name,
             addressOrigin: road.addressOrigin,
             addressDestiny: road.addressDestiny,
@@ -57,8 +66,8 @@ class RoadRepository {
 
     }
 
-    static async getByUserId(id: number): Promise<Road[]> {
-        const listOfRoad = await Road.findAll({
+    async getByUserId(id: number): Promise<IRoad[]> {
+        const listOfRoad = await this.roadModel.findAll({
             where: { user: id }
         });
 
@@ -78,4 +87,4 @@ class RoadRepository {
     }
 }
 
-export default RoadRepository;
+export default new RoadRepository()

@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import dbConnection from '../config/dbConnection.config';
+import dbConnection from '../../config/dbConnection.config';
 
 class Category extends Model {
 }

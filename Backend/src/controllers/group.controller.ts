@@ -49,16 +49,6 @@ const createGroup = async (req: Request, res: Response, next: NextFunction): Pro
     }
 };
 
-const updateGroupName = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const { id } = req.params;
-    const { name } = req.body;
-    try {
-        const updatedGroup = await groupService.updateGroupName(+id, name);
-        return res.json(updatedGroup);
-    } catch (error) {
-        return next({ message: (error as Error).message, statusCode: 500 });
-    }
-};
 
 const deleteGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
     const { id } = req.params;
@@ -157,7 +147,6 @@ const getUserByUserName = async (req: Request, res: Response): Promise<Response>
         getAllGroups,
         getGroupById,
         createGroup,
-        updateGroupName,
         deleteGroup,
         addUserToGroupWithCode,
         removeUserFromGroup,

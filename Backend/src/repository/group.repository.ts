@@ -1,7 +1,9 @@
-import Group from '../models/Group';
-import { GroupUser } from '../models/GroupUser';
-import User from '../models/User';
+import Group from './models/Group';
+import { GroupUser } from './models/GroupUser';
+import User from './models/User';
 import { IGroup } from '../interfaces/group.interface';
+import Report  from './models/Report';
+import 
 
 class GroupRepository {
     static async getAll(): Promise<IGroup[]> {
@@ -26,13 +28,6 @@ class GroupRepository {
         if(!newGroup)
             throw new Error('Error creating group');
         return newGroup.toJSON();
-    }
-
-    static async updateName(id: number, name: string): Promise<IGroup | null> {
-        const change = await Group.update({ name }, { where: { id } });
-        if (change[0] === 0) return null;
-        const group = await Group.findByPk(id);
-        return group ? group.toJSON() : null;
     }
 
     static async remove(id: number): Promise<boolean> {
@@ -97,6 +92,10 @@ class GroupRepository {
             include: [{ model: User }],
         });
         return groupUsers;
+    }
+
+    static async getByGroup(groupId: number): Promise<Report[]>{
+        return await Report.findAll({ where: { groupId } });
     }
 }
 

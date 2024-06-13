@@ -1,12 +1,12 @@
-import GroupRepository from '../repository/group.repository';
+import GroupRepository from '../repository/models/group.repository';
 import { GroupNotCreatedException, GroupNotFoundException, UserNotFoundException } from '../exceptions/group.exceptions';
 import { IGroup } from '../interfaces/group.interface';
-import { GroupUser } from '../models/GroupUser';
+import { GroupUser } from '../repository/models/GroupUser';
 import { IGroupDetails } from '../interfaces/groupDetail.interface';
 import { getUserByUserName } from "../services/user.service";
 import { IUser } from 'interfaces/user.interface';
-import * as reportRepository  from "../repository/reports.repository";
-import Report  from '../models/Report';
+import * as reportRepository  from "../repository/models/reports.repository";
+import Report  from '../repository/models/Report';
 
 async function getAllGroups(): Promise<IGroup[]> {
     const groups = await GroupRepository.getAll();
@@ -24,12 +24,6 @@ async function createGroup(name: string, ownerId: number): Promise<IGroup> {
     const newGroup = await GroupRepository.create(name, ownerId);
     if (!newGroup) throw new GroupNotCreatedException('Group not created');
     return newGroup;
-}
-
-async function updateGroupName(groupId: number, name: string): Promise<IGroup> {
-    const updatedGroup = await GroupRepository.updateName(groupId, name);
-    if (!updatedGroup) throw new GroupNotFoundException('Group not found');
-    return updatedGroup;
 }
 
 async function deleteGroup(groupId: number): Promise<boolean> {
