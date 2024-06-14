@@ -4,7 +4,7 @@ import { IGroup } from '../interfaces/group.interface';
 import { GroupUser } from '../models/GroupUser';
 import { IGroupDetails } from '../interfaces/groupDetail.interface';
 import { getUserByUserName } from "../services/user.service";
-import { IUser } from 'interfaces/user.interface';
+import { IUser } from '../interfaces/user.interface';
 import * as reportRepository  from "../repository/reports.repository";
 import Report from '../models/Report';
 

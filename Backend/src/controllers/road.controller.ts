@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as roadServices from '../services/road.service'
-import { IRoad } from 'interfaces/road.interfaces';
+import { IRoad } from '../interfaces/road.interfaces';
 import * as validationRouts from '../validator/road.validatos';
 
 const getAllRoads = async (_req: Request, res: Response, next: NextFunction) => {

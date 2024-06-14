@@ -3,18 +3,13 @@ import * as controller from '../controllers/report.controller';
 import {upload} from '../middlewares/saveImages.middleware';
 import { auth } from "../middlewares/auth.middlewares";
 
-const router = Router();
+const reportRouter = Router();
 
-router.get('/filterBy', controller.getReportsByLatLongRadius);
+reportRouter.get('/filterBy', controller.getReportsByLatLongRadius);
+reportRouter.get('/', auth, controller.getAllReports);
+reportRouter.get('/:id', auth, controller.getReportsById);
+reportRouter.get('/:userId', auth, controller.getReportByUser);
+reportRouter.post('/', auth, upload.single("image"), controller.createReport);
+reportRouter.get('/group/:groupId', auth, controller.getReportsByGroup);
 
-router.get('/', auth, controller.getAllReports);
-
-router.get('/:id', auth, controller.getReportsById);
-
-router.get('/:userId', auth, controller.getReportByUser);
-
-router.post('/', auth, upload.single("image"), controller.createReport);
-
-router.get('/group/:groupId', auth, controller.getReportsByGroup);
-
-export default router;
+export default reportRouter;

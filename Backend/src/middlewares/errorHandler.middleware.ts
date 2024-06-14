@@ -1,16 +1,21 @@
-import type {Request, Response} from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 interface AppError extends Error {
     statusCode?: number;
 }
 
-const errorHandler = (error: AppError, _req: Request, res: Response) => {
+const errorHandler = (error: AppError, _req: Request, res: Response, next: NextFunction) => {
+    console.error('Error caught in errorHandler:', error);
 
-    const statusCode = error.statusCode || 500; // Si no hay statusCode, se usa 500 por defecto.
-    const message = statusCode === 500 ? 'Internal server error' : error.message; // Mensaje genérico para errores 500.
+    const statusCode = error.statusCode || 500;
+    const message = statusCode === 500 ? 'Internal server error' : error.message;
 
-    // Devolver una respuesta con el código de estado y el mensaje de error.
-    return res.status(statusCode).json({ status: statusCode ,error: message });
+    if (typeof res.json !== 'function') {
+        console.error('res.json is not a function:', res);
+        return res.status(500).send('Internal server error');
+    }
+
+    return res.json({ message, statusCode });
 }
 
 export default errorHandler;

@@ -18,11 +18,12 @@ const getAllZones = async (_req: Request, res: Response, next: NextFunction) => 
 }
 
 const createZone = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    console.log(req.body);
     const validData = await zoneValidator.createZoneValidator.safeParseAsync(req.body);
     if (!validData.success) {
         return next({message: validData.error.errors[0].message, statusCode: 400});
     }
-
+    console.log(validData);
     try {
         const miZona = (validData.data as IZoneRequest);
         const zone = await zoneService.createZone(miZona);

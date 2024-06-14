@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-
 /* eslint-disable react/prop-types */
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { icons, getIconByCategoryId } from "./Icons";
@@ -36,9 +35,10 @@ const Map = ({
   const { MapClickHandler } = useMapClickHandler();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [categories, setCategories] = useState([]);
-
+  
   const { reports } = useStore();
   const { id } = userStore.getState().user;
+  
 
   useEffect(() => {
     const fetchCategories = async () => {

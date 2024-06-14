@@ -25,6 +25,7 @@ const confirmUser = async (req: Request, res: Response, next: NextFunction) => {
 
 }
 const login = async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Login");
     const email = req.body.email;
     const password = req.body.password;
     try {
