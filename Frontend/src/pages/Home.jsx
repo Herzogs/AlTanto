@@ -28,14 +28,13 @@ function Home() {
 
   useEffect(() => {
     setMarkerPosition(null);
+    cargando()
   }, []);
 
   useEffect(() => {
     if (userLocation) {
-      fetchReports().finally(() => setLoading(false)); // Finaliza el estado de carga después de obtener los reportes
+      fetchReports()
       setRadiusZone("500");
-    } else {
-      setLoading(false); // Asegurarse de que el estado de carga se finalice si no hay ubicación del usuario
     }
   }, [userLocation, radiusZone]);
 
@@ -46,6 +45,12 @@ function Home() {
     setRoutingMode(false);
     setRouteCoordinates(null);
   }, [setRoutingMode]);
+
+
+  const cargando = () => {
+    setTimeout(()=> setLoading(false), 10000);
+  };
+
 
   return (
     <section className="w-100 h-100">
@@ -58,7 +63,7 @@ function Home() {
           <Map
             userLocation={userLocation}
             radiusZone={radiusZone}
-            /* showFilters={true} */
+            showFilters={true}
             mapClick={true}
             noCircle={false}
           />
