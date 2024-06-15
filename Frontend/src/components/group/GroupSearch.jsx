@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { addUserToGroupWithCode } from '@/services/groupService';
 import { userStore } from '@/store/index'; 

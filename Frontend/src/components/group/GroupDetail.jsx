@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import {
-  getGroupById,
-  removeUserFromGroup,
-  deleteGroup,
-} from "@/services/groupService";
+import { getGroupById, removeUserFromGroup, deleteGroup } from "@/services/groupService";
 import { getUserByUsername } from "@services/userService";
+import { fetchReportsByGroup } from "@services/getReportByGroup";
 import { userStore } from "@/store/index";
 import { Container } from "react-bootstrap";
+import Header from "@components/header/Header";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import MenuButton from "../Map/MenuButton";
+import Report from "@components/report/Report";
 
 function GroupDetail() {
   const { id } = useParams();
@@ -15,6 +16,7 @@ function GroupDetail() {
   const [error, setError] = useState(null);
   const [username, setUsername] = useState("");
   const [foundUser, setFoundUser] = useState(null);
+  const [reports, setReports] = useState([]);
   const navigate = useNavigate();
 
   const { user } = userStore();
@@ -30,7 +32,17 @@ function GroupDetail() {
       }
     };
 
+    const fetchGroupReports = async () => {
+      try {
+        const groupReports = await fetchReportsByGroup(id);
+        setReports(groupReports);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
     fetchGroupDetails();
+    fetchGroupReports();
   }, [id]);
 
   const handleSearchUser = async () => {
@@ -71,9 +83,7 @@ function GroupDetail() {
       await removeUserFromGroup({ groupId, userId: userIdToRemove });
       setGroupDetails((prevDetails) => ({
         ...prevDetails,
-        members: prevDetails.members.filter(
-          (member) => member.id !== userIdToRemove
-        ),
+        members: prevDetails.members.filter((member) => member.id !== userIdToRemove),
       }));
     } catch (error) {
       setError(error.message);
@@ -98,40 +108,40 @@ function GroupDetail() {
   }
 
   return (
-    <Container className="container-md_stop">
-      <h1>{groupDetails.name}</h1>
-      <p>
-        Código de Grupo: <strong>{groupDetails.groupCode}</strong>
-      </p>
-      <button
-        className="btn btn-sm btn-danger"
-        onClick={() => handleDeleteGroup(groupDetails.id)}
-      >
-        Borrar Grupo
-      </button>
+    <>
+    <Header/>
+      <Container className="container-md_stop">
+      <p className="text-end"><Link to="/form/grupo"><ArrowBackIcon/> Regresar</Link></p>
+        <h1>{groupDetails.name}</h1>
+        <p>
+          Código de Grupo: <strong>{groupDetails.groupCode}</strong>
+        </p>
+        <MenuButton groupId={groupDetails.id} />
+        <button className="btn btn-sm btn-danger" onClick={() => handleDeleteGroup(groupDetails.id)}>
+          Borrar Grupo
+        </button>
 
-      <h3 className="mt-4">Miembros:</h3>
-      <ul>
-        {groupDetails.members.map((member) => (
-          <li key={member.id}>
-            <h5 className="mt-3">{member.name}</h5>
-            <strong>
-              {member.id === groupDetails.ownerId && "* Propietario"}
-            </strong>
+        <h3 className="mt-4">Miembros:</h3>
+        <ul>
+          {groupDetails.members.map((member) => (
+            <li key={member.id}>
+              <h5 className="mt-3">{member.name}</h5>
+              <strong>
+                {member.id === groupDetails.ownerId && "* Propietario"}
+              </strong>
 
-            {userId === member.id && (
-              <>
-                <br />
-                <button
-                  className="btn btn-sm btn-secondary"
-                  onClick={() => handleLeaveGroup(groupDetails.id, member.id)}
-                >
-                  Abandonar grupo
-                </button>
-              </>
-            )}
-            {groupDetails.ownerId === userId &&
-              member.id !== groupDetails.ownerId && (
+              {userId === member.id && (
+                <>
+                  <br />
+                  <button
+                    className="btn btn-sm btn-secondary"
+                    onClick={() => handleLeaveGroup(groupDetails.id, member.id)}
+                  >
+                    Abandonar grupo
+                  </button>
+                </>
+              )}
+              {groupDetails.ownerId === userId && member.id !== groupDetails.ownerId && (
                 <button
                   className="btn btn-sm btn-warning"
                   onClick={() => handleRemoveUser(groupDetails.id, member.id)}
@@ -139,36 +149,43 @@ function GroupDetail() {
                   Eliminar usuario
                 </button>
               )}
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
 
-      {groupDetails.ownerId === userId && (
-        <div className="mt-5">
-          <h3>Invitar Usuario</h3>
-          <input
-            className="form-control"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <button className="btn btn-primary mt-3" onClick={handleSearchUser}>
-            Buscar Usuario
-          </button>
+        {groupDetails.ownerId === userId && (
+          <div className="mt-5">
+            <h3>Invitar Usuario</h3>
+            <input
+              className="form-control"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <button className="btn btn-primary mt-3" onClick={handleSearchUser}>
+              Buscar Usuario
+            </button>
 
-          {foundUser && (
-            <div>
-              <strong>Usuario encontrado: {foundUser.username}</strong>
-              <button onClick={handleInviteUser}>Invitar Usuario</button>
-            </div>
+            {foundUser && (
+              <div>
+                <strong>Usuario encontrado: {foundUser.username}</strong>
+                <button onClick={handleInviteUser}>Invitar Usuario</button>
+              </div>
+            )}
+          </div>
+        )}
+
+        <h3 className="mt-4">Reportes del Grupo:</h3>
+        <section className="d-flex justify-content-center flex-wrap gap-4">
+          {reports.length > 0 ? (
+            reports.map((report) => <Report key={report.id} report={report} />)
+          ) : (
+            <h3>No se encontraron reportes</h3>
           )}
-        </div>
-      )}
+        </section>
 
-      <Link className="btn btn-secondary px-3 mt-5" to="/grupos">
-        Volver
-      </Link>
-    </Container>
+      </Container>
+    </>
   );
 }
 

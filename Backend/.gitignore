@@ -1,1 +1,4 @@
-public/
+.env
+.env.test
+fly.toml
+.vercel

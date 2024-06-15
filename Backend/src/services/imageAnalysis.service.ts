@@ -3,9 +3,9 @@ import createImageAnalysisClient, { ImageAnalysisClient, isUnexpected } from '@a
 
 const imageAnalysisService = async (image: Buffer): Promise<string> => {
     try {
-        const endpoint = process.env.CV_ENDPOINT;
-        const key = process.env.CV_KEY;
-        const credential = new AzureKeyCredential(key);
+        const endpoint = process.env.CV_ENDPOINT as string;
+        const key = process.env.CV_KEY as string;
+        const credential = new AzureKeyCredential(key as string);
         const client: ImageAnalysisClient = createImageAnalysisClient(endpoint, credential);
 
         const analysis = await client.path('/imageanalysis:analyze').post({
@@ -13,9 +13,7 @@ const imageAnalysisService = async (image: Buffer): Promise<string> => {
             queryParameters: {
                 features: ['Caption']
             },
-            headers: {
-                'Content-Type': 'application/octet-stream'
-            }
+            contentType: 'application/octet-stream'
         });
         if (isUnexpected(analysis)) throw new Error('Error analyzing the image');
         if (!analysis.body || !analysis.body.captionResult) throw new Error('Error analyzing the image');

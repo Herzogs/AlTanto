@@ -23,6 +23,6 @@ Zone.init({
 });
 
 Zone.belongsTo(Location);
-Zone.belongsTo(User, {foreignKey: 'id' })
+Zone.belongsTo(User, {foreignKey: 'userId' })
 
 export default Zone;

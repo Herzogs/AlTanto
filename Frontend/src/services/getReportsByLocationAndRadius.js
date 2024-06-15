@@ -1,8 +1,10 @@
 import axiosInstance from "@interceptors/axiosConfig";
 
 export async function getReportsBy(location, radius) {
-  
+  console.log(location)
+  console.log(radius)
   const API_URL = `/reports/filterBy?lat=${location.lat}&lon=${location.lng}&rad=${radius}`;
+  console.log(API_URL)
   try {
 
     const response = await axiosInstance.get(API_URL);

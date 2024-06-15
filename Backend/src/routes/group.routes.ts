@@ -2,16 +2,17 @@ import Router from 'express'
 import * as groupController from '../controllers/group.controller';
 import { auth } from '../middlewares/auth.middlewares';
 
-const router = Router();
+const groupRouter = Router();
 
-router.get('/user/:userId', auth, groupController.getGroupsByUserId);
-router.get('/users/:userName', auth, groupController.getUserByUserName);
-router.get('/:id', auth, groupController.getGroupById);
-router.post('/', auth, groupController.createGroup);
-router.put('/:id', auth, groupController.updateGroupName);
-router.delete('/:id', auth, groupController.deleteGroup);
-router.post('/:id/add-user', auth, groupController.addUserToGroupWithCode);
-router.delete('/:groupId/remove-user/:userId', auth, groupController.removeUserFromGroup);
-router.get('/find/:groupName', auth, groupController.findGroupsByName); 
+groupRouter.get('/user/:userId', auth, groupController.getGroupsByUserId);
+groupRouter.get('/users/:userName', auth, groupController.getUserByUserName);
+groupRouter.get('/:id', auth, groupController.getGroupById);
+groupRouter.post('/', auth, groupController.createGroup);
+groupRouter.put('/:id', auth, groupController.updateGroupName);
+groupRouter.delete('/:id', auth, groupController.deleteGroup);
+groupRouter.post('/:id/add-user', auth, groupController.addUserToGroupWithCode);
+groupRouter.delete('/:groupId/remove-user/:userId', auth, groupController.removeUserFromGroup);
+groupRouter.get('/find/:groupName', auth, groupController.findGroupsByName); 
+groupRouter.post('/notification/', auth, groupController.getGroupsAndNotifications);
 
-export default router;
+export default groupRouter;

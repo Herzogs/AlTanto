@@ -29,13 +29,10 @@ class GroupRepository {
     }
 
     static async updateName(id: number, name: string): Promise<IGroup | null> {
+        const change = await Group.update({ name }, { where: { id } });
+        if (change[0] === 0) return null;
         const group = await Group.findByPk(id);
-        if (group) {
-            group.name = name;
-            await group.save();
-            return group.toJSON();
-        }
-        return null;
+        return group ? group.toJSON() : null;
     }
 
     static async remove(id: number): Promise<boolean> {
@@ -63,7 +60,7 @@ class GroupRepository {
     static async findByName(name: string): Promise<IGroup[]> {
         try {
             const groups = await Group.findAll({ where: { name } });
-            return groups;
+            return groups.map(group => group.toJSON());
         } catch (error) {
             throw new Error(`Error buscando el grupo por nombre`);
         }
@@ -94,7 +91,7 @@ class GroupRepository {
         return group.toJSON();
     }
 
-    static async getGroupMembers(groupId: number): Promise<any> {
+    static async getGroupMembers(groupId: number): Promise<GroupUser[]> {
         const groupUsers = await GroupUser.findAll({
             where: { groupId },
             include: [{ model: User }],

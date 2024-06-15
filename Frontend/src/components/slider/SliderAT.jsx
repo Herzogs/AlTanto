@@ -1,10 +1,13 @@
 import Slider from "react-slick";
 import Report from "@components/report/Report";
 import { settings } from "@components/slider/settings";
+import { useStore } from "@store";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-function SliderAT({ reports }) {
+function SliderAT() {
+  const { reports } = useStore();
+  
   return (
     <>
       {reports && reports.length > 0 ? (
@@ -15,7 +18,7 @@ function SliderAT({ reports }) {
             ))}
           </div>
         ) : (
-          <div className="slider-container pb-5">
+          <div className="slider-container">
             <Slider {...settings}>
               {reports.map((report) => (
                 <Report key={report.id} report={report} />

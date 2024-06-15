@@ -1,23 +1,10 @@
-import { DataTypes, Model, Optional } from 'sequelize';
+import { DataTypes, Model} from 'sequelize';
 import dbConnection from '../config/dbConnection.config';
-import User from './User';
+//import User from './User';
 import { v4 as uuidv4 } from 'uuid';
 
-interface GroupAttributes {
-    id: number;
-    name: string;
-    ownerId: number;
-    groupCode: string;
-}
 
-interface GroupCreationAttributes extends Optional<GroupAttributes, 'id' | 'groupCode'> {}
-
-class Group extends Model<GroupAttributes, GroupCreationAttributes> implements GroupAttributes {
-    public id!: number;
-    public name!: string;
-    public ownerId!: number;
-    public groupCode!: string;
-}
+class Group extends Model{}
 
 Group.init({
     id: {
@@ -28,14 +15,6 @@ Group.init({
     name: {
         type: DataTypes.STRING,
         allowNull: false
-    },
-    ownerId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: User,
-            key: 'id'
-        }
     },
     groupCode: {
         type: DataTypes.STRING,

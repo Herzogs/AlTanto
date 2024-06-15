@@ -1,18 +1,28 @@
 import { Sequelize } from "sequelize";
+import mysql2 from 'mysql2';
 
-const dbHost = process.env.DB_HOST
-const dbPort = parseInt(process.env.DB_PORT, 10)
-const dbName = process.env.BD_NAME_DATABASE
-const dbUser = process.env.DB_USER
-const dbPassword = process.env.DB_PASSWORD
-const dbDialect = process.env.DB_DIALECT
+const dbHost = process.env.DB_HOST as string
+const dbPort = parseInt(process.env.DB_PORT as string, 10)
+const dbName = process.env.BD_NAME_DATABASE as string
+const dbUser = process.env.DB_USER as string
+const dbPassword = process.env.DB_PASSWORD as string
+const dbDialect = process.env.DB_DIALECT as string
 
 const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     host: dbHost,
     port: dbPort,
     dialect: dbDialect as 'mysql',
+    dialectModule: mysql2,
     timezone: '-03:00',
     logging: false,
+    dialectOptions: {
+        ssl:{
+            require: true,
+            rejectUnauthorized: true,
+            ca: process.env.DB_SSL_CA,
+        }
+    }
+        
 });
 
 dbConnection.authenticate()

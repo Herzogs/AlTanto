@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as roadServices from '../services/road.service'
-import { IRoad } from 'interfaces/road.interfaces';
+import { IRoad } from '../interfaces/road.interfaces';
 import * as validationRouts from '../validator/road.validatos';
 
 const getAllRoads = async (_req: Request, res: Response, next: NextFunction) => {
@@ -44,7 +44,6 @@ const createRoad = async (req: Request, res: Response, next: NextFunction) => {
         });
         return next({ message: listOffErrors, statusCode: 400 });
     }
-    console.log(req.body as IRoad);
     try {
         const road = await roadServices.createRoad(req.body as IRoad);
         res.status(201).json(road);

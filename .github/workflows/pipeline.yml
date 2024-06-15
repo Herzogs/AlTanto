@@ -58,6 +58,8 @@ jobs:
         with:
           name: build_frontend
           path: build_frontend
+      - name: Run tests
+        run: npm run test --prefix Frontend
 
   build_backend_and_testing:
     needs: lint
@@ -77,5 +79,4 @@ jobs:
       - name: Build
         run: npm run build --prefix Backend
       - name: Run tests
-        run: |
-            npm run test --prefix Backend
+        run: npm run test --prefix Backend

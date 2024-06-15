@@ -1,10 +1,12 @@
-import { userStore } from "@store"
+/* eslint-disable react-hooks/exhaustive-deps */
+import { userStore, useStore } from "@store"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
 function Logout() {
 
   const { setToken, setUser } = userStore()
+  const { setReports } = useStore()
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -14,6 +16,7 @@ function Logout() {
       lastName: null,
       email: null,
     })
+    setReports([])
     navigate('/')
   },[])
   return null;

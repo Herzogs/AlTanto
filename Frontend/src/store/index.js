@@ -10,6 +10,9 @@ const useStore = create(
       time: null,
       setTime: (time) => set({ time: time }),
 
+      markerPosition: null,
+      setMarkerPosition: (position) => set({ markerPosition: position }),
+
       userLocation: null,
       setUserLocation: (location) => set({ userLocation: location }),
 

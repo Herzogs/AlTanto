@@ -21,3 +21,24 @@ export const geocodeAddress = async (address) => {
     throw new Error("Error al obtener la dirección: " + error.message);
   }
 };
+
+export const reverseGeocode = async ({ lat, lng }) => {
+  
+  try {
+    const response = await axios.get(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+    );
+  
+
+    const data = response.data;
+    if (data) {
+      const { display_name } = data;
+  
+      if (display_name)
+        return display_name
+    }
+  } catch (error) {
+    throw new Error("Error al obtener la dirección: " + error.message);
+  }
+};
+

@@ -3,12 +3,12 @@ import * as controller from '../controllers/auth.controller';
 import validateData from "../middlewares/validateData.middleware";
 import {createUser, login} from "../validator/user.validator";
 
-const router = Router();
+const authRouter = Router();
 
-router.post('/register',validateData(createUser), controller.createUSer);
-router.post('/validate-code', controller.confirmUser)
-router.post('/login',validateData(login),controller.login)
+authRouter.post('/register',validateData(createUser), controller.createUSer);
+authRouter.post('/validate-code', controller.confirmUser)
+authRouter.post('/login',validateData(login),controller.login)
 
 
 
-export default router;
+export default authRouter;

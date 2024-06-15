@@ -2,6 +2,7 @@ import {DataTypes, Model} from 'sequelize';
 import dbConnection from '../config/dbConnection.config';
 import Category from './Category';
 import {Location} from './Location';
+import Group from "./Group";
 
 class Report extends Model {
 }
@@ -19,6 +20,12 @@ Report.init({
     positiveScore: { type: DataTypes.INTEGER, defaultValue: 0},
     negativeScore: { type: DataTypes.INTEGER, defaultValue: 0},
     enabled: {type: DataTypes.BOOLEAN , defaultValue: true},
+    groupId: { type: DataTypes.INTEGER,allowNull: true, defaultValue: null,
+        references: {
+            model: Group,
+            key: 'id'
+        }
+    }
 }, {
     sequelize: dbConnection,
     freezeTableName: true,
@@ -28,6 +35,6 @@ Report.init({
 
 Report.belongsTo(Category);
 Report.belongsTo(Location);
-
+Report.belongsTo(Group, { foreignKey: 'groupId' }); 
 
 export default Report;

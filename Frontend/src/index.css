@@ -28,6 +28,7 @@ html,
 body,
 main,
 #root {
+  position: relative;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -149,7 +150,7 @@ a {
 }
 
 /* NUEVA UI */
-.container-md_stop{
+.container-md_stop {
   max-width: 768px !important;
 }
 
@@ -174,10 +175,6 @@ a {
   height: 80%;
 }
 
-.leaflet-touch .leaflet-bar a {
-  background: var(--color-at-grey);
-}
-
 .slick-initialized .slick-slide {
   display: block;
   padding-right: 16px !important;
@@ -196,37 +193,42 @@ a {
 
 .leaflet-container {
   height: 100%;
+  /*   border-radius: 12px; */
+}
+
+.float-title {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 200px;
+  font-size: 20px;
+  color: var(--color-at-white);
+  background-color: #393e468b;
+  padding: 6px 12px;
   border-radius: 12px;
+  z-index: 9991;
 }
 
-.menu-button {
-  position: absolute !important;
-  top: 10%;
-  right: 2%;
-  z-index: 999;
-  cursor: pointer;
+.float-box {
+  position: absolute;
+  bottom: 0;
+  max-width: 320px;
+  color: var(--color-at-white);
+  background-color: #393e468b;
+  padding: 6px 12px;
+  margin-left: 4px;
+  margin-bottom: 4px;
+  border-radius: 12px;
+  z-index: 9991;
 }
 
-.menu-button_icon {
-  font-size: 52px !important;
-  color: var(--color-at-grey);
-  transition: 0.3s ease-in-out;
+.float-box p {
+  margin-bottom: 4px;
 }
 
-.menu-button_icon:hover {
-  color: var(--color-at-orange);
-  transition: 0.3s ease;
-}
-
-.menu-button a:hover {
-  background-color: var(--color-at-orange);
-  color: var(--color-white) !important;
-  transition: 0.3s ease;
-}
-
-.leaflet-container a.leaflet-popup-close-button {
-  font: 24px/28px Tahoma, Verdana, sans-serif;
-  color: var(--color-at-black) !important;
+.pt-header {
+  padding-top: 60px;
 }
 
 @media only screen and (min-width: 1200px) {
@@ -253,5 +255,31 @@ a {
     min-width: 220px;
     min-height: 140px;
     padding: 32px;
+  }
+
+  .float-box {
+    max-width: 600px;
+  }
+}
+
+@media only screen and (min-width: 1400px) {
+  .float-title {
+    font-size: 32px;
+  }
+
+  .float-box {
+    margin-left: 16px;
+    margin-bottom: 16px;
+  }
+
+  .float-box p {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+}
+
+@media only screen and (max-width: 380px) {
+  .float-box {
+    max-width: 290px;
   }
 }
