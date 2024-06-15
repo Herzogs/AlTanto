@@ -55,14 +55,13 @@ function Home() {
         <>
           <HeaderHome />
           {id && <Aside />}
-          <h1>CRIS TROLAZO</h1>
-{/*           <Map
+          <Map
             userLocation={userLocation}
             radiusZone={radiusZone}
-            showFilters={true}
+            /* showFilters={true} */
             mapClick={true}
             noCircle={false}
-          /> */}
+          />
           {reports && reports.length > 0 && <SliderButton />}
         </>
       )}
