@@ -6,6 +6,7 @@ import Aside from "@components/aside/Aside";
 import SliderButton from "@components/slider/SliderButton";
 import useReports from "@hook/useReports";
 import { useStore, userStore } from "@store";
+import Spinner from 'react-bootstrap/Spinner';
 
 function Home() {
   const {
@@ -24,17 +25,18 @@ function Home() {
   const { id } = userStore.getState().user;
   const { fetchReports } = useReports();
 
-  const [loading, setLoading] = useState(false); // Estado de carga
+  const [loading, setLoading] = useState(true); // Estado de carga
 
   useEffect(() => {
     setMarkerPosition(null);
-    //cargando()
+    setLoading(false);
+
   }, []);
 
   useEffect(() => {
     if (userLocation) {
       fetchReports()
-      /* .finally(() => setLoading(false)); */
+
       setRadiusZone("500");
     }
   }, [userLocation, radiusZone]);
@@ -48,15 +50,14 @@ function Home() {
   }, [setRoutingMode]);
 
 
-  /* const cargando = () => {
-    setTimeout(()=> setLoading(false), 10000);
-  };
- */
-
   return (
     <section className="w-100 h-100">
       {loading ? (
-        <div className="loading-indicator">Cargando...</div> // Indicador de carga
+        <div className="text-center mt-5">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div> // Indicador de carga
       ) : (
         <>
           <HeaderHome />

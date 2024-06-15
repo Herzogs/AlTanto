@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { AuthGuard } from "./guards/auth.guard";
+import Spinner from 'react-bootstrap/Spinner';
 
 // Lazy load the components
 const Home = lazy(() => import("@pages/Home"));
@@ -59,7 +60,13 @@ const App = () => {
   return (
     <BrowserRouter>
       <main>
-        <Suspense fallback={<div>Cargando...</div>}>
+        <Suspense fallback={
+           <div className="text-center mt-5">
+           <Spinner animation="border" role="status">
+             <span className="visually-hidden">Loading...</span>
+           </Spinner>
+         </div> // Indicador de carga
+        }>
           <Routes>
             {/* Rutas que no requieren autenticación */}
             {nonProtectedRoutes.map((route) => (
