@@ -35,6 +35,9 @@ const routes: { route: Router; uri: string }[] = [
 
 routes.forEach(({ route, uri }) => server.use(`/api${uri}`, route));
 
+server.use('/', (req, res) => {
+  res.send('Welcome to the Road Analyzer API');
+});
 
 server.use(errorHandler);
 

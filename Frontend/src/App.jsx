@@ -20,6 +20,7 @@ import Groups from "@components/group/Groups";
 import GroupDetail from "@components/group/GroupDetail";
 import GroupSearch from "@components/group/GroupSearch";
 import GroupForm from "@components/group/GroupForm";
+import { getCategoryFromApi } from "./services/getCategory";
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
@@ -52,29 +53,20 @@ const protectedRoutes = [
   { path: "group-search", element: <GroupSearch /> },
 ];
 
+    const fetchCategories = async () => {
+      try {
+        const fetchedCategories = await getCategoryFromApi();
+        console.log(fetchedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
 const App = () => {
   return (
-    <BrowserRouter>
-      <main>
-        <Routes>
-          {/* Rutas que no requieren autenticación */}
-          {nonProtectedRoutes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
-          ))}
-
-          <Route element={<AuthGuard />}>
-            {/* Rutas que requieren autenticación */}
-            {protectedRoutes.map((route) => (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={route.element}
-              />
-            ))}
-          </Route>
-        </Routes>
-      </main>
-    </BrowserRouter>
+    <>
+      <h1>Hola Mundo</h1>
+      <button onClick={() => fetchCategories()}>Hola</button>
+    </>
   );
 };
 
