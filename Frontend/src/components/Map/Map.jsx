@@ -39,7 +39,7 @@ const Map = ({
   const { reports } = useStore();
   const { id } = userStore.getState().user;
   
-
+/* 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -74,16 +74,16 @@ const Map = ({
       default:
         return icons.default;
     }
-  };
+  }; */
 
   return (
     <section className="altanto-map">
-      {showFilters && (
+{/*       {showFilters && (
         <Filters
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
         />
-      )}
+      )} */}
 
       <MapContainer
         className="w-100 h-100"
@@ -114,7 +114,7 @@ const Map = ({
           />
         )}
 
-        {filteredReports && filteredReports.length > 0 && (
+{/*         {filteredReports && filteredReports.length > 0 && (
           <MarkerClusterGroup>
             {filteredReports.map((report) => (
               <Marker
@@ -126,7 +126,7 @@ const Map = ({
               </Marker>
             ))}
           </MarkerClusterGroup>
-        )}
+        )} */}
 
         {/* ROUTING PARA RECORIDO */}
         {routingMode && startPoint && endPoint && (
