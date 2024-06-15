@@ -1,26 +1,28 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "@pages/Home";
-import Roads from "@pages/Roads";
-import Zones from "@pages/Zones";
-import Notifications from "@pages/Notifications";
-import ReportForm from "@components/report/ReportForm";
-import CategoryForm from "@components/category/CategoryForm";
-import ZoneForm from "@components/Zone/ZoneForm";
-import ZoneID from "@components/Zone/ZoneID";
-import ReportDetail from "@components/report/ReportDetail";
-import RoutForm from "@components/road/RoutForm";
-import Logout from "@components/auth/Logout";
+import { lazy, Suspense } from "react";
 import { AuthGuard } from "./guards/auth.guard";
-import RegisterForm from "@components/auth/RegisterForm.jsx";
-import ValidationCodeForm from "@components/auth/CodeForm.jsx";
-import LoginForm from "@components/auth/LoginForm.jsx";
-import RoadID from "@components/road/RoadID";
-import ReportIA from "@components/ReportAutomatic/ReportIA";
-import Groups from "@components/group/Groups";
-import GroupDetail from "@components/group/GroupDetail";
-import GroupSearch from "@components/group/GroupSearch";
-import GroupForm from "@components/group/GroupForm";
-import { getCategoryFromApi } from "./services/getCategory";
+
+// Lazy load the components
+const Home = lazy(() => import("@pages/Home"));
+const Roads = lazy(() => import("@pages/Roads"));
+const Zones = lazy(() => import("@pages/Zones"));
+const Notifications = lazy(() => import("@pages/Notifications"));
+const ReportForm = lazy(() => import("@components/report/ReportForm"));
+const CategoryForm = lazy(() => import("@components/category/CategoryForm"));
+const ZoneForm = lazy(() => import("@components/Zone/ZoneForm"));
+const ZoneID = lazy(() => import("@components/Zone/ZoneID"));
+const ReportDetail = lazy(() => import("@components/report/ReportDetail"));
+const RoutForm = lazy(() => import("@components/road/RoutForm"));
+const Logout = lazy(() => import("@components/auth/Logout"));
+const RegisterForm = lazy(() => import("@components/auth/RegisterForm.jsx"));
+const ValidationCodeForm = lazy(() => import("@components/auth/CodeForm.jsx"));
+const LoginForm = lazy(() => import("@components/auth/LoginForm.jsx"));
+const RoadID = lazy(() => import("@components/road/RoadID"));
+const ReportIA = lazy(() => import("@components/ReportAutomatic/ReportIA"));
+const Groups = lazy(() => import("@components/group/Groups"));
+const GroupDetail = lazy(() => import("@components/group/GroupDetail"));
+const GroupSearch = lazy(() => import("@components/group/GroupSearch"));
+const GroupForm = lazy(() => import("@components/group/GroupForm"));
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
@@ -53,20 +55,31 @@ const protectedRoutes = [
   { path: "group-search", element: <GroupSearch /> },
 ];
 
-    const fetchCategories = async () => {
-      try {
-        const fetchedCategories = await getCategoryFromApi();
-        console.log(fetchedCategories);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
 const App = () => {
   return (
-    <>
-      <h1>Hola Mundo</h1>
-      <button onClick={() => fetchCategories()}>Hola</button>
-    </>
+    <BrowserRouter>
+      <main>
+        <Suspense fallback={<div>Cargando...</div>}>
+          <Routes>
+            {/* Rutas que no requieren autenticación */}
+            {nonProtectedRoutes.map((route) => (
+              <Route key={route.path} path={route.path} element={route.element} />
+            ))}
+
+            <Route element={<AuthGuard />}>
+              {/* Rutas que requieren autenticación */}
+              {protectedRoutes.map((route) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              ))}
+            </Route>
+          </Routes>
+        </Suspense>
+      </main>
+    </BrowserRouter>
   );
 };
 
