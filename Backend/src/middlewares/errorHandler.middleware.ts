@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response} from 'express';
 
 interface AppError extends Error {
     statusCode?: number;
 }
 
-const errorHandler = (error: AppError, _req: Request, res: Response, next: NextFunction) => {
+const errorHandler = (error: AppError, _req: Request, res: Response) => {
     console.error('Error caught in errorHandler:', error);
 
     const statusCode = error.statusCode || 500;
