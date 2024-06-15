@@ -27,10 +27,10 @@ const routes: { route: Router; uri: string }[] = [
   { route: authRouter, uri: '/auth' },
   { route: categoryRouter, uri: '/categories' },
   { route: groupRouter, uri: '/group' },
-  { route: imageRouter, uri: '/image' },
+  { route: imageRouter, uri: '/imageAnalysis' },
   { route: reportRouter, uri: '/reports' },
   { route: roadRouter, uri: '/road' },
-  { route: zoneRouter, uri: '/zone' },
+  { route: zoneRouter, uri: '/zones' },
 ];
 
 routes.forEach(({ route, uri }) => server.use(`/api${uri}`, route));
