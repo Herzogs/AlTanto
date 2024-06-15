@@ -24,7 +24,7 @@ function Home() {
   const { id } = userStore.getState().user;
   const { fetchReports } = useReports();
 
-  const [loading, setLoading] = useState(true); // Estado de carga
+  const [loading, setLoading] = useState(false); // Estado de carga
 
   useEffect(() => {
     setMarkerPosition(null);
@@ -33,7 +33,8 @@ function Home() {
 
   useEffect(() => {
     if (userLocation) {
-      fetchReports().finally(() => setLoading(false));
+      fetchReports()
+      /* .finally(() => setLoading(false)); */
       setRadiusZone("500");
     }
   }, [userLocation, radiusZone]);
