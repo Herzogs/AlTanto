@@ -27,8 +27,8 @@ GroupUser.init({
     timestamps: false
 });
 
-Group.belongsTo(User, { as: 'owner', foreignKey: 'ownerId' });
-Group.belongsToMany(User, { through: GroupUser, as: 'members', foreignKey: 'groupId' });
-User.belongsToMany(Group, { through: GroupUser, as: 'groups', foreignKey: 'userId' });
+Group.belongsTo(User, { as: 'owner', foreignKey: 'ownerId', onDelete: 'CASCADE'});
+Group.belongsToMany(User, { through: GroupUser, as: 'members', foreignKey: 'groupId', onDelete: 'CASCADE'});
+User.belongsToMany(Group, { through: GroupUser, as: 'groups', foreignKey: 'userId', onDelete: 'CASCADE' });
 
 export { Group, GroupUser ,User };

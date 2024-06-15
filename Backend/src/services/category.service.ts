@@ -1,8 +1,8 @@
 import CategoryRepository from '../repository/category.repository';
 import { ICategory } from '../interfaces/category.interface';
 import { CategoryNotCreatedException, CategoryNotFoundException } from '../exceptions/category.exceptions';
-import { IService } from '../interfaces/service.interface';
-import { IRepository } from '../repository/interface/model.interface';
+import { IService } from './interfaces/category.service.interface';
+import { IRepository } from '../repository/interface/category.repository.interface';
 
 class CategoryService implements IService<ICategory>{
 

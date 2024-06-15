@@ -1,5 +1,5 @@
 import Category from './models/Category';
-import { IRepository } from './interface/model.interface';
+import { IRepository } from './interface/category.repository.interface';
 import { ICategory } from '../interfaces/category.interface';
 
 class CategoryRepository implements IRepository<ICategory>{

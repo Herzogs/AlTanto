@@ -1,5 +1,5 @@
 import transformData from '../utilities/transformData.utilities';
-import * as reportRepository from '../repository/models/reports.repository';
+import * as reportRepository from '../repository/reports.repository';
 import { IReportRequest, IReportResponse, IReportWithRadius } from '../interfaces/reports.interface';
 import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions';
 

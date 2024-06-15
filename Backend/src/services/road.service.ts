@@ -3,7 +3,7 @@ import { IRoadRepository } from '../repository/interface/road.interface'
 import RoadRepository from '../repository/road.repository';
 import transformData from '../utilities/transformData.utilities'
 import { RoadNotCreatedException, RoadNotFoundException } from '../exceptions/road.exceptions';
-import { IRoadService } from './interfaces/road.service.interfaces';
+import { IRoadService } from './interfaces/road.service.interface';
 
 class RoadService implements IRoadService<IRoad> {
     private roadRepository: IRoadRepository<IRoad>;

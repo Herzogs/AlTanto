@@ -40,6 +40,8 @@
     "@azure-rest/ai-vision-image-analysis": "^1.0.0-beta.2",
     "@azure/ai-text-analytics": "^5.1.0",
     "amazon-cognito-identity-js": "^6.3.12",
+    "awilix": "^10.0.2",
+    "awilix-express": "^9.0.1",
     "axios": "^1.7.2",
     "cors": "2.8.5",
     "crypto-js": "^4.2.0",

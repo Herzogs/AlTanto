@@ -1,133 +1,66 @@
-import GroupRepository from '../repository/models/group.repository';
-import { GroupNotCreatedException, GroupNotFoundException, UserNotFoundException } from '../exceptions/group.exceptions';
-import { IGroup } from '../interfaces/group.interface';
-import { GroupUser } from '../repository/models/GroupUser';
-import { IGroupDetails } from '../interfaces/groupDetail.interface';
-import { getUserByUserName } from "../services/user.service";
-import { IUser } from 'interfaces/user.interface';
-import * as reportRepository  from "../repository/models/reports.repository";
-import Report  from '../repository/models/Report';
+import GroupRepository from "../repository/group.repository";
+import { IGroup, IGroupUser } from "../interfaces/group.interface";
+import { IGroupService } from "./interfaces/group.service.interface";
+import { IGroupRepository } from "../repository/interface/group.repository.interface";
+import { GroupNotCreatedException } from "../exceptions/group.exceptions";
 
-async function getAllGroups(): Promise<IGroup[]> {
-    const groups = await GroupRepository.getAll();
-    if (!groups) throw new GroupNotFoundException('Groups not found');
-    return groups;
-}
+class GroupService implements IGroupService<IGroup, IGroupUser> {
 
-async function getGroupById(groupId: number): Promise<IGroup> {
-    const group = await GroupRepository.getById(groupId);
-    if (!group) throw new GroupNotFoundException('Group not found');
-    return group;
-}
+    private groupRepository: IGroupRepository<IGroup>;
 
-async function createGroup(name: string, ownerId: number): Promise<IGroup> {
-    const newGroup = await GroupRepository.create(name, ownerId);
-    if (!newGroup) throw new GroupNotCreatedException('Group not created');
-    return newGroup;
-}
-
-async function deleteGroup(groupId: number): Promise<boolean> {
-    const deleted = await GroupRepository.remove(groupId);
-    if (!deleted) throw new GroupNotFoundException('Group not found');
-    return deleted;
-}
-
-async function addUserToGroup(groupId: number, userId: number): Promise<GroupUser> {
-    const groupUser = await GroupRepository.addUser(groupId, userId);
-    if (!groupUser) throw new UserNotFoundException('User not found in group');
-    return groupUser;
-}
-
-async function addUserToGroupWithCode(groupId: number | null, userId: number, groupCode: string): Promise<GroupUser> {
-    let group: IGroup | null = null;
-
-    if (groupId !== null) {
-        group = await GroupRepository.getGroupById(groupId);
-    } else {
-        group = await GroupRepository.getGroupByGroupCode(groupCode);
+    constructor({ groupRepository }: { groupRepository: IGroupRepository<IGroup> }) {
+        this.groupRepository = groupRepository;
     }
-    if (!group) {
-        throw new Error('Group not found');
+
+    async getAllByOwner(userId: number): Promise<IGroup[]> {
+        return await this.groupRepository.findByOwner(userId);
     }
-    if (group.groupCode !== groupCode) {
-        throw new Error('Invalid group code');
+
+    async create(group: IGroup): Promise<IGroup> {
+        const result = await this.groupRepository.create(group);
+        if (!result)
+            throw new GroupNotCreatedException('Error creating group');
+        return result;
     }
-    if (!group.id) {
-        throw new Error('Group ID is undefined or null');
+
+    async remove(id: number): Promise<boolean> {
+        const groupRemoved = await this.groupRepository.remove(id);
+        return groupRemoved;
     }
-    return await GroupRepository.addUser(group.id, userId);
-}
 
-async function removeUserFromGroup(groupId: number, userId: number): Promise<boolean>{
-    const removed = await GroupRepository.removeUser(groupId, userId);
-    if (!removed) throw new UserNotFoundException('User not found in group');
-    return removed;
-}
-
-async function findGroupsByName(name: string): Promise<IGroup[]> {
-    try {
-        const groups = await GroupRepository.findByName(name);
-        return groups;
-    } catch (error) {
-        throw new Error(`Error en el servicio al buscar grupos por nombre`);
+    async validateGroupCode(groupCode: string): Promise<boolean> {
+        const result = await this.groupRepository.findByCode(groupCode);
+        if (!result)
+            throw new Error(`Error validating group code`);
+        return true;
     }
-}
 
-async function getGroupsByUserId(userId: number): Promise<IGroup[]> {
-    try {
-        const groups = await GroupRepository.getGroupsByUserId(userId);
-        return groups.map(group => group.get({ plain: true })) as IGroup[];
-    } catch (error) {
-        throw new Error('Error al obtener los grupos del usuario');
+    async findByName(name: string): Promise<IGroup> {
+        console.log('En el servicio ===> ', name);
+        const result = await this.groupRepository.findByName(name);
+        if (!result)
+            throw new Error(`Error searching group by name`);
+        return result;
     }
-}
 
-async function getGroupDetailsById(groupId: number): Promise<IGroupDetails> {
-    const group = await GroupRepository.getGroupById(groupId);
-    const members = await GroupRepository.getGroupMembers(groupId);
-    return { ...group, members } as unknown as IGroupDetails;
-}
-
-async function getUser(userName: string): Promise<IUser> {
-    try {
-        const user = await getUserByUserName(userName);
-        return user;
-    } catch (error) {
-        throw new Error('Error al obtener usuario');
-    }
-}
-
-interface IGroupReport {
-    groupName: string;
-    reports: Report[];
-}
-
-const getNotification = async (userId: number): Promise<IGroupReport[]> => {
-    const groups:IGroup[] = await getGroupsByUserId(userId);
-    const reportByGroup: IGroupReport[] = [];
-    for (const myGroup of groups) {
-        const result = await reportRepository.default.getByGroup(myGroup.id as number);
-        reportByGroup.push({
-            groupName: myGroup.name,
-            reports: result
+    async findAllByGroupId(groupUser: IGroupUser[]): Promise<IGroup[]> {
+        const listOfGroups: IGroup[] = [];
+        groupUser.forEach(async (group) => {
+            const groupSearched = await this.groupRepository.findById(group.groupId);
+            if (groupSearched) {
+                listOfGroups.push(groupSearched);
+            }
         });
+        return listOfGroups;
     }
-    return reportByGroup;
+
+    async findById(id: number): Promise<IGroup> {
+        const result = await this.groupRepository.findById(id);
+        if (!result)
+            throw new Error(`Error searching group by id`);
+        return result;
+    }
+
 }
 
-
-export{
-    getAllGroups,
-    getGroupById,
-    createGroup,
-    updateGroupName,
-    deleteGroup,
-    addUserToGroup,
-    removeUserFromGroup,
-    findGroupsByName,
-    getGroupsByUserId,
-    getGroupDetailsById,
-    addUserToGroupWithCode,
-    getUser,
-    getNotification
-}
+export default GroupService;

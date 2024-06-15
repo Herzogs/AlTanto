@@ -2,6 +2,8 @@ import Zone from './models/Zone';
 import {Location} from './models/Location';
 import {IZone, IZoneRequest} from '../interfaces/zone.interface';
 import {ZoneNotCreatedException, ZoneNotFoundException} from '../exceptions/zone.exceptions';
+import Report from './models/Report';
+import { QueryTypes } from 'sequelize';
 
 
 class ZoneRepository {

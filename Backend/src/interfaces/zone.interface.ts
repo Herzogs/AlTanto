@@ -1,9 +1,9 @@
 export interface IZone {
     id?: number;
     name: string;
-    latitude: string
-    longitude: string;
-    radio: number;
+    lat: string
+    lon: string;
+    rad: number;
     userId: number;
 }
 

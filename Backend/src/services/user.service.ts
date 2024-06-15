@@ -1,6 +1,6 @@
 import User from "../repository/models/User";
 import {IUser} from "../interfaces/user.interface";
-import userRepository from "../repository/models/user.repository";
+import userRepository from "../repository/user.repository";
 import {UserNotCreatedException, UserNotFoundException} from "../exceptions/users.exceptions";
 import * as cognitoService from '../services/cognito.service'
 import {Error} from "sequelize";

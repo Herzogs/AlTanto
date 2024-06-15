@@ -3,7 +3,7 @@ import CategoryService from '../services/category.service';
 import * as categoryValidator from '../validator/category.validator'
 import { CategoryNotCreatedException, CategoryNotFoundException } from '../exceptions/category.exceptions';
 import { ICategory } from '../interfaces/category.interface';
-import { IService } from '../interfaces/service.interface';
+import { IService } from '../services/interfaces/category.service.interface';
 class CategoryController {
     private service: IService<ICategory>;
 

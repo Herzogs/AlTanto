@@ -49,5 +49,5 @@ User.init({
     ]
 });
 
-User.hasOne(Group, { as: 'group', foreignKey: 'ownerId' });
+User.hasOne(Group, { as: 'group', foreignKey: 'ownerId' , onDelete: 'CASCADE'});
 export default User;

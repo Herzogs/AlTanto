@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {IZone, IZoneRequest, IZoneResponse} from "../interfaces/zone.interface";
-import * as zoneRepository from '../repository/models/zone.repository';
+import * as zoneRepository from '../repository/zone.repository';
 import transformData from '../utilities/transformData.utilities';
 import {ZoneNotCreatedException, ZoneNotFoundException} from '../exceptions/zone.exceptions';
 import {getReportsByLatLongRadius} from "./report.service";
 import {IReportWithRadius} from "../interfaces/reports.interface";
-import {IReport} from "../interfaces/report.interface";
+import {IReport} from "../interfaces/reports.interface";
 
 
 const createZone = async (newZone: IZoneRequest): Promise<IZone> => {

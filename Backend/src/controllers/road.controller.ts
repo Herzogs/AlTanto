@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { IRoad } from 'interfaces/road.interfaces';
 import * as validationRouts from '../validator/road.validatos';
 import RoadService from '../services/road.service';
-import { IRoadService } from '../services/interfaces/road.service.interfaces';
+import { IRoadService } from '../services/interfaces/road.service.interface';
 
 class RoadController {
     private service: IRoadService<IRoad>;

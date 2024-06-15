@@ -1,7 +1,7 @@
-import Report from '../models/Report';
-import Category from '../models/Category';
-import { Location } from '../models/Location';
-import { IReportRequest, IReportResponse, IReportWithRadius } from '../interfaces/reports.interface';
+import Report from './models/Report';
+import Category from './models/Category';
+import { Location } from './models/Location';
+import  {IReportRequest, IReportResponse, IReportWithRadius}  from '../interfaces/reports.interface';
 import { QueryTypes } from 'sequelize';
 import { Op } from 'sequelize';
 
@@ -122,3 +122,19 @@ class ReportRepository {
 }
 
 export default ReportRepository;
+
+/*
+ const getGroupsAndNotifications = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const {userId} = req.body;
+            const zones = await groupService.getNotification(+userId);
+            return res.json(zones);
+        } catch (error) {
+            if (error ) {
+            console.log(error);
+            }
+            return next((error as Error).message);
+        }
+    }
+
+*/
