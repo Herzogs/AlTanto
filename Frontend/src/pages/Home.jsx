@@ -28,12 +28,12 @@ function Home() {
 
   useEffect(() => {
     setMarkerPosition(null);
-    cargando()
+    //cargando()
   }, []);
 
   useEffect(() => {
     if (userLocation) {
-      fetchReports()
+      fetchReports().finally(() => setLoading(false));
       setRadiusZone("500");
     }
   }, [userLocation, radiusZone]);
@@ -47,10 +47,10 @@ function Home() {
   }, [setRoutingMode]);
 
 
-  const cargando = () => {
+  /* const cargando = () => {
     setTimeout(()=> setLoading(false), 10000);
   };
-
+ */
 
   return (
     <section className="w-100 h-100">

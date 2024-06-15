@@ -35,10 +35,11 @@ const Map = ({
   const { MapClickHandler } = useMapClickHandler();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [categories, setCategories] = useState([]);
-  
+  const [loading, setLoading] = useState(true); // Estado de carga
+
   const { reports } = useStore();
   const { id } = userStore.getState().user;
-  
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -46,6 +47,7 @@ const Map = ({
         const fetchedCategories = await getCategoryFromApi();
         setCategories(fetchedCategories);
         setSelectedCategories(fetchedCategories.map((category) => category.id));
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -57,8 +59,8 @@ const Map = ({
   const filteredReports =
     reports && reports.length > 0
       ? reports.filter((report) =>
-          selectedCategories.includes(report.categoryId)
-        )
+        selectedCategories.includes(report.categoryId)
+      )
       : [];
 
   const getIconByCategoryId = (categoryId) => {
@@ -78,7 +80,7 @@ const Map = ({
 
   return (
     <section className="altanto-map">
-     {showFilters && (
+      {!loading && showFilters && (
         <Filters
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
@@ -114,7 +116,7 @@ const Map = ({
           />
         )}
 
-        {filteredReports && filteredReports.length > 0 && (
+        {!loading && filteredReports && filteredReports.length > 0 && (
           <MarkerClusterGroup>
             {filteredReports.map((report) => (
               <Marker
