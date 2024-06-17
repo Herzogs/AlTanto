@@ -1,13 +1,12 @@
-import { IGroupUser, IGroupMember } from "../interfaces/group.interface";
-import { GroupUser } from "./models/GroupUser";
-import  User from "./models/User";
+import { IGroupUser } from "../interfaces/group.interface";
 import { IGroupUserRepository } from "./interface/groupUser.repository.interface";
+import { ModelCtor, Model } from "sequelize";
 
-class GroupUserRepository implements IGroupUserRepository<IGroupUser,IGroupMember>{
-    private model: typeof GroupUser;
+class GroupUserRepository implements IGroupUserRepository<IGroupUser> {
+    private model: ModelCtor<Model<IGroupUser>>;
 
-    constructor(model = GroupUser) {
-        this.model = model;
+    constructor({ GroupUser }: { GroupUser: ModelCtor<Model<IGroupUser>> }) {
+        this.model = GroupUser;
     }
 
     async create(groupUser: IGroupUser): Promise<IGroupUser | null> {
@@ -26,46 +25,31 @@ class GroupUserRepository implements IGroupUserRepository<IGroupUser,IGroupMembe
     }
 
     async remove(groupUser: IGroupUser): Promise<boolean> {
-        const groupUserDeleted = await this.model.destroy({ where: {
-            groupId: groupUser.groupId,
-            userId: groupUser.userId
-        } });
+        const groupUserDeleted = await this.model.destroy({
+            where: {
+                groupId: groupUser.groupId,
+                userId: groupUser.userId
+            }
+        });
         return groupUserDeleted > 0;
     }
 
-    async getMembers(groupId: number): Promise<IGroupMember | null> {
-        const groupMembers = await this.model.findByPk(groupId, {
-            include: [{ model: User, as: 'members', through: { attributes: [] } }]
-        });
-        if(groupMembers){
-            const groupMembersPlain = groupMembers.get({plain: true});
-            const groupMember: IGroupMember = {
-                id: groupMembersPlain.id,
-                name: groupMembersPlain.name,
-                ownerId: groupMembersPlain.ownerId,
-                members: groupMembersPlain.members.map((member: {
-                    name: string;
-                    lastName: string;
-                    email: string;
-                }) => {
-                    return {
-                        name: member.name,
-                        lastName: member.lastName,
-                        email: member.email
-                    }
-                })
-            };
-            return groupMember;
+    async getMembers(groupId: number): Promise<IGroupUser[] | null> {
+        try {
+            const groupMembers = await this.model.findAll({
+                where: { groupId }
+            });
+            return groupMembers.map(groupMember => groupMember.get({ plain: true }) as IGroupUser);
+        } catch (error) {
+            console.log(error);
         }
-        return null;
+        return null
     }
 
     async findAllByUserId(userId: number): Promise<IGroupUser[]> {
         const groupUsers = await this.model.findAll({ where: { userId } });
         return groupUsers.map(groupUser => groupUser.get({ plain: true }) as IGroupUser);
     }
-
-
 }
 
-export default new GroupUserRepository();
+export default GroupUserRepository;

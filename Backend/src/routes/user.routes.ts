@@ -1,8 +1,10 @@
 import Router from 'express';
 import userController from '../controllers/user.controller';
+import { makeInvoker } from 'awilix-express';
 
-const router = Router();
+const userRouter = Router();
+const api = makeInvoker(userController);
 
-router.get('/:name', userController.getUserByName);
+userRouter.get('/:name', api('getUserByName'));
 
-export default router;
+export default userRouter;

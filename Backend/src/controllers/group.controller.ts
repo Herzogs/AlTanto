@@ -1,18 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-import GroupService from '../services/group.service';
-import GroupUserService from '../services/groupUser.service';
+//import GroupService from '../services/group.service';
+//import GroupUserService from '../services/groupUser.service';
 import { getGroupByIdValidator } from '../validator/group.validator';
 import { IGroupService } from '../services/interfaces/group.service.interface';
 import { IGroup, IGroupUser, IGroupMember } from '../interfaces/group.interface';
 import { IGroupUserService } from '../services/interfaces/groupUser.service.interface';
 
 class GroupController {
-    private groupService: IGroupService<IGroup, IGroupUser>;
-    private groupUserService: IGroupUserService<IGroupUser, IGroupMember>;
+    private groupService: IGroupService<IGroup, IGroupUser,IGroupMember>;
+    private groupUserService: IGroupUserService<IGroupUser>;
 
-    constructor(groupService = GroupService, groupUserService = GroupUserService) {
-        console.log("En el controlador ====> ", groupService);
-        console.log("En el controlador ====> ", groupUserService);
+    constructor({ groupService, groupUserService }: { groupService: IGroupService<IGroup, IGroupUser,IGroupMember>, groupUserService: IGroupUserService<IGroupUser> }) {
         this.groupService = groupService;
         this.groupUserService = groupUserService;
     }
@@ -94,10 +92,7 @@ class GroupController {
     async findGroupsByName(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const { name } = req.params;
         try {
-            console.log("En controlador ===> ", name);
-            console.log("Servicio de Group ====> ", this.groupService)
             const groups = await this.groupService.findByName(name);
-            console.log(groups);
             return res.json(groups);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: 500 });
@@ -115,18 +110,18 @@ class GroupController {
     }
 
     async getGroupDetailsById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const { name } = req.params;
+        const { id } = req.params;
+        console.log(id);
         try {
-            const group = await this.groupService.findByName(name);
-            if (!group) {
-                return next({ message: 'Group not found', statusCode: 404 });
-            }
-            const groupDetails = await this.groupUserService.findAllMembers(group.id as number);
-            return res.json(groupDetails);
+            
+            const group = await this.groupService.findMembersByGroupId(+id);
+            console.log("GroupDetail ===========> ", group);
+            
+            return res.json(group);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: 500 });
         }
     }
 }
 
-export default new GroupController();
+export default GroupController;

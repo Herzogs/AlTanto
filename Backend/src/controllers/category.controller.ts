@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
-import CategoryService from '../services/category.service';
 import * as categoryValidator from '../validator/category.validator'
 import { CategoryNotCreatedException, CategoryNotFoundException } from '../exceptions/category.exceptions';
 import { ICategory } from '../interfaces/category.interface';
 import { IService } from '../services/interfaces/category.service.interface';
+
 class CategoryController {
     private service: IService<ICategory>;
 
-    constructor(service = CategoryService) {
-        this.service = service;
+    constructor({ categoryService }: { categoryService: IService<ICategory> }) {
+        this.service = categoryService;
     }
 
     async getAllCategories(_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -61,4 +61,4 @@ class CategoryController {
     }
 }
 
-export default new CategoryController()
+export default CategoryController

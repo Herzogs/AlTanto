@@ -1,4 +1,4 @@
-export interface IGroupService<T,K> {
+export interface IGroupService<T,K,E> {
     getAllByOwner(userId: number): Promise<T[]>;
     create(group: T): Promise<T>;
     remove(id: number): Promise<boolean>;
@@ -6,4 +6,5 @@ export interface IGroupService<T,K> {
     findByName(name: string): Promise<T>;
     findAllByGroupId(groupUser: K[]): Promise<T[]>;
     findById(id: number): Promise<T | null>;
+    findMembersByGroupId(groupId: number): Promise<E>;
 }

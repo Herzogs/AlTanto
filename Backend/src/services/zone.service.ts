@@ -1,62 +1,56 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import {IZone, IZoneRequest, IZoneResponse} from "../interfaces/zone.interface";
-import * as zoneRepository from '../repository/zone.repository';
-import transformData from '../utilities/transformData.utilities';
-import {ZoneNotCreatedException, ZoneNotFoundException} from '../exceptions/zone.exceptions';
-import {getReportsByLatLongRadius} from "./report.service";
-import {IReportWithRadius} from "../interfaces/reports.interface";
-import {IReport} from "../interfaces/reports.interface";
+import { IZoneDto, IZoneReport } from "../interfaces/zone.interface";
+import { IZoneRepository } from "../repository/interface/zone.repository.interface";
+import { ZoneNotFoundException } from "../exceptions/zone.exceptions";
+import { IReport } from "../interfaces/reports.interface";
+import { IZoneService } from "./interfaces/zone.service.interface";
 
 
-const createZone = async (newZone: IZoneRequest): Promise<IZone> => {
-    const zoneCreated = await zoneRepository.default.create(newZone);
-    if (!zoneCreated) throw new ZoneNotCreatedException("Zone not created");
-    return zoneCreated;
-}
+class ZoneService implements IZoneService<IZoneDto, IZoneReport>{
+    private zoneRepository: IZoneRepository<IZoneDto,object>;
 
-
-const getAllZone = async (): Promise<IZoneResponse[]> => {
-    const listOfZones:IZone[] = await zoneRepository.default.getAllZone();
-    if (!listOfZones) throw new ZoneNotFoundException("Zones not found");
-    return listOfZones.map(transformData);
-
-}
-
-const getZoneById = async (zoneId: number) => {
-    const zoneSearched = await zoneRepository.default.getZoneById(zoneId);
-    if (!zoneSearched) throw new ZoneNotFoundException("Zone not found");
-    return transformData(zoneSearched);
-}
-
-interface IZoneReport {
-    zoneName: string;
-    reports: IReport[];
-}
-
-const getNotification = async (userId: number): Promise<IZoneReport[]> => {
-    const zones:IZoneResponse[] = await getAllZoneByUserId(userId);
-    const reportByZone: IZoneReport[] = [];
-    for (const myZone of zones) {
-        const reportParams: IReportWithRadius = {
-            lat: myZone.location.latitude.toString(),
-            lon: myZone.location.longitude.toString(),
-            rad: myZone.radio.toString()
-        };
-        const result = await getReportsByLatLongRadius(reportParams);
-        if (result === undefined) throw new ZoneNotFoundException("Reports not found");
-        reportByZone.push({
-            zoneName: myZone.name,
-            reports: result
-        });
+    constructor({ zoneRepository }: { zoneRepository: IZoneRepository<IZoneDto,object> }) {
+        this.zoneRepository = zoneRepository;
     }
-    return reportByZone;
+
+    async create(newZone: IZoneDto): Promise<IZoneDto | null> {
+        const zoneCreated = await this.zoneRepository.create(newZone);
+        return zoneCreated;
+    }
+
+    async getAll(): Promise<IZoneDto[]> {
+        const listOfZones = await this.zoneRepository.getAll();
+        return listOfZones;
+    }
+
+    async getAllByUserId(userId: number): Promise<IZoneDto[]> {
+        const listOfZones = await this.zoneRepository.getAllByUserId(userId);
+        return listOfZones;
+    }
+
+    async getById(zoneId: number): Promise<IZoneDto | null> {
+        const zoneSearched = await this.zoneRepository.getById(zoneId);
+        return zoneSearched;
+    }
+
+    async getNotification(userId: number): Promise<IZoneReport[]> {
+        const zones = await this.getAllByUserId(userId);
+        const reportByZone: IZoneReport[] = [];
+        for (const myZone of zones) {
+            const result = await this.zoneRepository.getReports(myZone);
+            if (result === undefined) throw new ZoneNotFoundException("Reports not found");
+            reportByZone.push({
+                zoneName: myZone.name,
+                reports: result as IReport[]
+            });
+        }
+        return reportByZone;
+    }
+
+    async getFilteredReports(obj: IZoneDto): Promise<IZoneReport[]> {
+        const zones = await this.zoneRepository.getReports(obj);
+        return zones as IZoneReport[];
+    }
+
 }
 
-const getAllZoneByUserId = async (userId: number): Promise<IZoneResponse[]> => {
-    const listOfZones:IZone[] = await zoneRepository.default.getAllZoneByUserId(userId);
-    if (!listOfZones) throw new ZoneNotFoundException("Zones not found");
-    return listOfZones.map(transformData);
-
-}
-
-export {createZone, getAllZone, getZoneById, getNotification, getAllZoneByUserId}
+export default ZoneService;

@@ -1,13 +1,14 @@
-import Category from './models/Category';
 import { IRepository } from './interface/category.repository.interface';
 import { ICategory } from '../interfaces/category.interface';
+import Category from './models/Category';
+import { ModelCtor } from 'sequelize';
 
 class CategoryRepository implements IRepository<ICategory>{
 
-    private categoryModel: typeof Category;
+    private categoryModel: ModelCtor<Category>;
 
-    constructor( categoryModel = Category) {
-        this.categoryModel = categoryModel;
+    constructor({ Category }: { Category: ModelCtor<Category> }) {
+        this.categoryModel = Category;
     }
 
     async getAll(): Promise<ICategory[]> {
@@ -36,4 +37,4 @@ class CategoryRepository implements IRepository<ICategory>{
     }
 }
 
-export default new CategoryRepository();
+export default CategoryRepository;

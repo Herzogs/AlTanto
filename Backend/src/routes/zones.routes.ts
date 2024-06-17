@@ -1,14 +1,17 @@
 import {Router} from "express";
-import * as controller from '../controllers/zone.controller';
-import { auth } from "../middlewares/auth.middlewares";
+import controller from '../controllers/zone.controller';
+//import { auth } from "../middlewares/auth.middlewares";
+import { makeInvoker } from "awilix-express";
 
-const router = Router();
+const zoneRouter = Router();
+const api = makeInvoker(controller);
 
-router.get('/', auth, controller.getAllZones);
-router.post('/', auth, controller.createZone);
-router.get('/:id', auth, controller.getZoneById);
-router.post('/notification/', auth, controller.reportsByZone);
-router.get('/user/:id', auth, controller.getAllZonesByUserId);
+zoneRouter.get('/filterBy', api('getFilteredReports'));
+zoneRouter.get('/', api('getAll'));
+zoneRouter.post('/', api('create'));
+zoneRouter.get('/:id', api('getById'));
+zoneRouter.get('/notification/:userId', api('getNotification'));
+zoneRouter.get('/user/:id', api('getAllByUserId'));
 
 
-export default router;
+export default zoneRouter;

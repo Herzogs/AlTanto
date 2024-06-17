@@ -19,5 +19,5 @@ export interface IGroupMember {
 export interface IGroupUser {
     id?: number;
     groupId: number;
-    userId: number;
+    userId?: number;
 }

@@ -1,87 +1,123 @@
-import {NextFunction, Request, Response} from "express";
-import * as zoneService from '../services/zone.service';
-import {IZoneRequest} from "../interfaces/zone.interface";
+import { Request, Response, NextFunction } from "express";
+import { IZoneDto, IZoneReport } from "../interfaces/zone.interface";
+import { IZoneService } from "../services/interfaces/zone.service.interface";
 import * as zoneValidator from "../validator/zone.validator";
-import {ZoneNotCreatedException, ZoneNotFoundException} from "../exceptions/zone.exceptions";
 
-const getAllZones = async (_req: Request, res: Response, next: NextFunction) => {
-    try {
-        const zones = await zoneService.getAllZone();
-        return res.json(zones);
-    } catch (error) {
-        if (error instanceof ZoneNotFoundException) {
-            return next({message: error.message, statusCode: error.statusCode});
-        }
-        // Para otros tipos de errores, pasar al siguiente middleware de error
-        return next((error as Error).message);
-    }
-}
+class ZoneController {
+    private zoneService: IZoneService<IZoneDto, IZoneReport>;
 
-const createZone = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const validData = await zoneValidator.createZoneValidator.safeParseAsync(req.body);
-    if (!validData.success) {
-        return next({message: validData.error.errors[0].message, statusCode: 400});
+    constructor({ zoneService }: { zoneService: IZoneService<IZoneDto, IZoneReport> }) {
+        this.zoneService = zoneService;
     }
 
-    try {
-        const miZona = (validData.data as IZoneRequest);
-        const zone = await zoneService.createZone(miZona);
-        return res.status(201).json(zone);
-    } catch (error) {
-        if (error instanceof ZoneNotCreatedException) {
-            return next({message: error.message, statusCode: error.statusCode});
-        }
-        // Para otros tipos de errores, pasar al siguiente middleware de error
-        return next((error as Error).message);
-    }
-}
-
-const getZoneById = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const validData = await zoneValidator.getZoneByIdValidator.safeParseAsync(req.params);
-    if (!validData.success) {
-        return next({message: validData.error.errors[0].message, statusCode: 400});
-    }
-    try {
-        const {id} = validData.data as { id: string };
-        const zone = await zoneService.getZoneById(+id);
+    async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         
-        return res.status(200).json(zone);
-
-    } catch (error) {
-        if (error instanceof ZoneNotFoundException) {
-            return next({message: error.message, statusCode: error.statusCode});
+        const validData = await zoneValidator.createZoneValidator.safeParseAsync(req.body);
+        if (!validData.success) {
+            return next({ message: validData.error.errors[0].message, statusCode: 400 });
         }
-        // Para otros tipos de errores, pasar al siguiente middleware de error
-        return next((error as Error).message);
-    }
-}
-const reportsByZone = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const {userId} = req.body;
-    try {
-        const zones = await zoneService.getNotification(+userId);
-        return res.json(zones);
-    } catch (error) {
-        if (error instanceof ZoneNotFoundException) {
-            return next({message: error.message, statusCode: error.statusCode});
+
+        try {
+            const miZona: IZoneDto = {
+                name: validData.data.name,
+                location: {
+                    lat: validData.data.latitude,
+                    lon: validData.data.longitude
+                },
+                rad: validData.data.radio,
+                userId: validData.data.userId
+            }
+            const zone = await this.zoneService.create(miZona);
+            return res.status(201).json(zone);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 404 });
         }
-        // Para otros tipos de errores, pasar al siguiente middleware de error
-        return next((error as Error).message);
     }
-}
 
-const getAllZonesByUserId = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const {id} = req.params;
-
-        const zones = await zoneService.getAllZoneByUserId(+id);
-        return res.json(zones);
-    } catch (error) {
-        if (error instanceof ZoneNotFoundException) {
-            return next({message: error.message, statusCode: error.statusCode});
+    async getAll (_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const zones = await this.zoneService.getAll();
+            return res.json(zones);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 404 });
         }
-        // Para otros tipos de errores, pasar al siguiente middleware de error
-        return next((error as Error).message);
     }
+
+    async getById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const validData = await zoneValidator.getZoneByIdValidator.safeParseAsync(req.params);
+        if (!validData.success) {
+            return next({ message: validData.error.errors[0].message, statusCode: 400 });
+        }
+        try {
+            const { id } = validData.data as { id: string };
+            const zone = await this.zoneService.getById(+id);
+            return res.status(200).json(zone);
+
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 404 });
+        }
+    }
+
+    async getNotification(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        console.log("getNotification")
+        
+        const validData = await zoneValidator.getNotificationValidator.safeParseAsync(req.params);
+        if (!validData.success) {
+            return next({ message: validData.error.errors[0].message, statusCode: 400 });
+        }
+        try {
+            const { userId } = validData.data as { userId: string };
+            const result = await this.zoneService.getNotification(+userId);
+            return res.status(200).json(result);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 404 });
+        }
+    }
+
+    async getAllByUserId(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        console.log("getAllByUserId")
+        console.log("req.params")
+
+        console.log(req)
+        const validData = await zoneValidator.getAllByUserIdValidator.safeParseAsync(req.params);
+        if (!validData.success) {
+            return next({ message: validData.error.errors[0].message, statusCode: 400 });
+        }
+        console.log(validData.data)
+        try {
+            const { id } = validData.data as { id: string };
+            const zones = await this.zoneService.getAllByUserId(+id);
+            return res.json(zones);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 404 });
+        }
+    }
+
+    async getFilteredReports(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        console.log("getFilteredReports")
+        console.log(req.params)
+        const validData = await zoneValidator.getFilteredReportsValidator.safeParseAsync(req.query);
+        if (!validData.success) {
+            return next({ message: validData.error.errors[0].message, statusCode: 400 });
+        }
+        try {
+            const { lat, lon, rad } = validData.data as { lat: string, lon: string, rad: string };
+            const miZona: IZoneDto = {
+                name: 'zona',
+                location: {
+                    lat: lat,
+                    lon: lon
+                },
+                rad: +rad,
+                userId: 1
+            }
+            const result = await this.zoneService.getFilteredReports(miZona);
+            return res.status(200).json(result);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 404 });
+        }
+    }
+
 }
 
-export {getAllZones, createZone, getZoneById, reportsByZone, getAllZonesByUserId}
+export default ZoneController;

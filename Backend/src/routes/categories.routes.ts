@@ -1,12 +1,12 @@
 import {Router} from "express";
 import controller from '../controllers/category.controller';
 import { auth } from "../middlewares/auth.middlewares";
-const router = Router();
+import { makeInvoker } from "awilix-express";
 
-router.get('/', controller.getAllCategories);
+const api = makeInvoker(controller);
+const categoryRouter = Router();
+categoryRouter.get('/', api('getAllCategories'));
+categoryRouter.get('/:id',api('getCategoriesById'));
+categoryRouter.post('/',auth,api('createCategory'));
 
-router.get('/:id',controller.getCategoriesById);
-
-router.post('/',auth,controller.createCategory);
-
-export default router;
+export default categoryRouter;

@@ -1,3 +1,5 @@
+import { IReport } from "./reports.interface";
+
 export interface IZone {
     id?: number;
     name: string;
@@ -7,15 +9,18 @@ export interface IZone {
     userId: number;
 }
 
-export interface IZoneResponse {
+export interface IZoneDto {
     id?: number;
     name: string;
     location: {
-        latitude: string,
-        longitude: string
+        lat: string,
+        lon: string
     };
-    radio: number;
+    rad: number;
     userId: number;
 }
 
-export type IZoneRequest = Omit<IZone, 'id'>;
+export type IZoneReport = {
+    zoneName: string;
+    reports: IReport[];
+}

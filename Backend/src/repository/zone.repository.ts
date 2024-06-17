@@ -1,75 +1,103 @@
-import Zone from './models/Zone';
-import {Location} from './models/Location';
-import {IZone, IZoneRequest} from '../interfaces/zone.interface';
-import {ZoneNotCreatedException, ZoneNotFoundException} from '../exceptions/zone.exceptions';
-import Report from './models/Report';
-import { QueryTypes } from 'sequelize';
+import { ModelCtor, QueryTypes } from "sequelize";
+import Zone from "./models/Zone";
+import { Location } from "./models/Location";
+import { IZoneDto } from "interfaces/zone.interface";
+import { IZoneRepository } from "./interface/zone.repository.interface";
 
+class ZoneRepository implements IZoneRepository<IZoneDto, object>{
 
-class ZoneRepository {
-    static async create(newZone: IZoneRequest): Promise<IZone> {
+    private zoneModel: ModelCtor<Zone>;
+
+    constructor({ Zone }: { Zone: ModelCtor<Zone> }) {
+        this.zoneModel = Zone;
+    }
+
+    async create(newZone: IZoneDto): Promise<IZoneDto | null> {
         const locationSearched = await Location.findOrCreate({
-            where: {latitude: newZone.latitude, longitude: newZone.longitude},
+            where: { latitude: newZone.location.lat, longitude: newZone.location.lon },
         })
 
-        const location = locationSearched[0].get({plain: true});
-        const zone = await Zone.create({
+        const location = locationSearched[0].get({ plain: true });
+        const zone = await this.zoneModel.create({
             name: newZone.name,
-            radio: newZone.radio,
+            radio: newZone.rad,
             LocationId: location.id,
             userId: newZone.userId
 
         })
         if (!zone) {
-            throw new ZoneNotCreatedException("Zone not created");
+            return null
         }
-        return zone.get({plain: true});
+        return zone.get({ plain: true });
     }
 
-    static async getAllZone(): Promise<IZone[]> {
-        const listOfZones = await Zone.findAll({
+    async getAll(): Promise<IZoneDto[]> {
+        const listOfZones = await this.zoneModel.findAll({
             include: [
-                {model: Location, attributes: ['latitude', 'longitude']}
+                { model: Location, attributes: ['latitude', 'longitude'] }
             ],
-            attributes: {exclude: ['LocationId']}
+            attributes: { exclude: ['LocationId'] }
         });
         if (!listOfZones) {
-            throw new ZoneNotFoundException("Zones not found");
+            return [];
         }
-        return listOfZones.map((zone) => zone.get({plain: true}));
+        return listOfZones.map((zone) => zone.get({ plain: true }));
     }
 
-    static async getAllZoneByUserId(userId: number): Promise<IZone[]> {
-        const listOfZones = await Zone.findAll({
-            where: {userId: +userId},
+    async getAllByUserId(userId: number): Promise<IZoneDto[]> {
+        const listOfZone = await this.zoneModel.findAll({
+            where: { userId: +userId },
             include: [
-                {model: Location, attributes: ['latitude', 'longitude']}
+                { model: Location, attributes: ['latitude', 'longitude'] }
             ],
-            attributes: {exclude: ['LocationId']}
+            attributes: { exclude: ['LocationId'] }
         });
-        if (!listOfZones) {
-            throw new ZoneNotFoundException("Zones not found");
+        if (!listOfZone) {
+            return []
         }
-        return listOfZones.map((zone) => zone.get({plain: true}));
+        const aux = listOfZone.map((zone) => zone.get({ plain: true }));
+        const listOfZones: IZoneDto[] = []
+        aux.forEach((zone) => {
+            listOfZones.push({
+                id: zone.id,
+                name: zone.name,
+                location: {
+                    lat: zone.Location.latitude,
+                    lon: zone.Location.longitude
+                },
+                rad: zone.radio,
+                userId: zone.userId
+            })
+        })
+        return listOfZones
     }
 
-    static async getZoneById(zoneId: number): Promise<IZone> {
-        const zone = await Zone.findByPk(zoneId, {
+    async getById(zoneId: number): Promise<IZoneDto | null> {
+        const zone = await this.zoneModel.findByPk(zoneId, {
             include: [
-                {model: Location, attributes: ['latitude', 'longitude']}
+                { model: Location, attributes: ['latitude', 'longitude'] }
             ],
-            attributes: {exclude: ['LocationId']}
+            attributes: { exclude: ['LocationId'] }
         });
         if (!zone) {
-            throw new ZoneNotFoundException("Zone not found");
+            return null
         }
-        const zoneSearched = await zone.get({plain: true});
-        return zoneSearched as IZone;
+        return zone.get({ plain: true });
     }
 
-    static async getByLatLongRadius(zoneWithRadius: IZone): Promise<object[] | null> {
-        const { lat, lon, rad } = zoneWithRadius;
-        const reports = await Report.sequelize?.query(
+    async deleteById(zoneId: number): Promise<boolean> {
+        const zone = await this.zoneModel.findByPk(zoneId);
+        if (!zone) {
+            return false
+        }
+        await zone.destroy();
+        return true
+    }
+
+    async getReports(zone: IZoneDto): Promise<NonNullable<object[]> | null> {
+        const { location, rad } = zone;
+        console.log(location, rad)
+        const reports = await Zone.sequelize?.query(
             `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.categoryId,
                 Location.latitude, Location.longitude, 
                 Category.name AS categoryName,
@@ -85,9 +113,9 @@ class ZoneRepository {
             ORDER BY distancia;`,
             {
                 replacements: {
-                    lat: parseFloat(lat),
-                    lon: parseFloat(lon),
-                    radius: parseFloat(rad)
+                    lat: parseFloat(location.lat),
+                    lon: parseFloat(location.lon),
+                    radius: parseFloat(rad.toString())
                 },
                 type: QueryTypes.SELECT
             }

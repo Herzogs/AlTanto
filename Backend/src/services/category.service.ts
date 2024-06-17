@@ -1,4 +1,3 @@
-import CategoryRepository from '../repository/category.repository';
 import { ICategory } from '../interfaces/category.interface';
 import { CategoryNotCreatedException, CategoryNotFoundException } from '../exceptions/category.exceptions';
 import { IService } from './interfaces/category.service.interface';
@@ -7,8 +6,8 @@ import { IRepository } from '../repository/interface/category.repository.interfa
 class CategoryService implements IService<ICategory>{
 
     private categoryRepository: IRepository<ICategory>;
-    
-    constructor(categoryRepository = CategoryRepository) {
+
+    constructor({ categoryRepository }: { categoryRepository: IRepository<ICategory> }) {
         this.categoryRepository = categoryRepository;
     }
     
@@ -29,4 +28,4 @@ class CategoryService implements IService<ICategory>{
     }
 }
 
-export default new CategoryService();
+export default CategoryService;

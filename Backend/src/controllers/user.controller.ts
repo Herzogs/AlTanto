@@ -1,11 +1,19 @@
 import {Request, Response, NextFunction} from 'express';
-import * as userService from '../services/user.service';
+import { IUser } from '../interfaces/user.interface';
+import { IUserService } from '../services/interfaces/user.service.interface';
 
 class UserController {
+
+    private userService: IUserService<IUser>;
+
+    constructor({ userService }: { userService: IUserService<IUser> }) {
+        this.userService = userService;
+    }
+
     async getUserByName(req: Request, res: Response, next: NextFunction) {
         const { name } = req.params;
         try {
-            const user = await userService.getUserByUserName(name);
+            const user = await this.userService.getUserByUserName(name);
             return res.json(user);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: 500 });
@@ -13,4 +21,4 @@ class UserController {
     }
 }
 
-export default new UserController();
+export default UserController;

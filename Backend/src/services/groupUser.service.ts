@@ -1,14 +1,13 @@
-import GroupUserRepository from "../repository/groupUser.repository";
-import { IGroupMember, IGroupUser } from "../interfaces/group.interface";
+import { IGroupUser } from "../interfaces/group.interface";
 import { IGroupUserRepository } from "repository/interface/groupUser.repository.interface";
 import { UserNotFoundException } from "../exceptions/users.exceptions";
 import { IGroupUserService } from "./interfaces/groupUser.service.interface";
 
-class GroupUserService implements IGroupUserService<IGroupUser, IGroupMember>{
+class GroupUserService implements IGroupUserService<IGroupUser>{
     
-        private groupUserRepository: IGroupUserRepository<IGroupUser, IGroupMember>;
+        private groupUserRepository: IGroupUserRepository<IGroupUser>;
     
-        constructor(groupUserRepository = GroupUserRepository) {
+        constructor({ groupUserRepository }: { groupUserRepository: IGroupUserRepository<IGroupUser> }) {
             this.groupUserRepository = groupUserRepository;
         }
     
@@ -28,12 +27,12 @@ class GroupUserService implements IGroupUserService<IGroupUser, IGroupMember>{
             return await this.groupUserRepository.findAllByUserId(userId);
         }
 
-        async findAllMembers(groupId: number): Promise<IGroupMember> {
+        /*async findAllMembers(groupId: number): Promise<IGroupMember> {
             const result = await this.groupUserRepository.getMembers(groupId);
             if (!result) throw new UserNotFoundException('Members not found');
             return result;
-        }
+        }*/
 
 }
 
-export default new GroupUserService();
+export default GroupUserService;

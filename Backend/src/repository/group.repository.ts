@@ -1,13 +1,14 @@
-import { IGroup } from "../interfaces/group.interface";
-import Group from "./models/Group";
+import { IGroup, IGroupMember } from "../interfaces/group.interface";
 import {IGroupRepository}  from "./interface/group.repository.interface";
+import { ModelCtor, Model } from "sequelize";
+import User from "./models/User";
 
-class GroupRepository implements IGroupRepository<IGroup>{
+class GroupRepository implements IGroupRepository<IGroup,IGroupMember>{
 
-    private model: typeof Group;
+    private model: ModelCtor<Model<IGroup>>;
 
-    constructor(model = Group){
-        this.model = model;
+    constructor({ Group }: { Group: ModelCtor<Model<IGroup>> }) {
+        this.model = Group;
     }
     
     async create(group: IGroup): Promise<IGroup | null> {
@@ -57,6 +58,30 @@ class GroupRepository implements IGroupRepository<IGroup>{
             return group.get({plain: true}) as IGroup;
         return null;
     }
+
+    async getGroupMembers(groupId: number): Promise<IGroupMember> {
+        try {
+            const group = await this.model.findOne({
+                where: { id: groupId },
+                include: {
+                    model: User,
+                    as: 'members',
+                    attributes: ['id', 'name', 'lastName', 'username', 'email', 'phoneNumber'],
+                    through: {
+                        attributes: [],
+                    }
+                },
+            });
+    
+            if (!group) {
+                throw new Error('Group not found');
+            }
+            return group.get({ plain: true }) as IGroupMember;
+        } catch (error) {
+            console.error('Error fetching group members:', error);
+            throw error;
+        }
+    }
 }
 
-export default new GroupRepository();
+export default GroupRepository;

@@ -1,19 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import { IRoad } from 'interfaces/road.interfaces';
+import { IRoadDto } from 'interfaces/road.interfaces';
 import * as validationRouts from '../validator/road.validatos';
-import RoadService from '../services/road.service';
 import { IRoadService } from '../services/interfaces/road.service.interface';
 
 class RoadController {
-    private service: IRoadService<IRoad>;
+    private roadService: IRoadService<IRoadDto>;
 
-    controller(service = RoadService) {
-        this.service = service;
+    constructor({ roadService }: { roadService: IRoadService<IRoadDto> }) {
+        this.roadService = roadService;
     }
 
     async getAllRoads(_req: Request, res: Response, next: NextFunction) {
         try {
-            const roads = await this.service.getAllRoads();
+            const roads = await this.roadService.getAllRoads();
             res.status(200).json(roads);
         } catch (error) {
             next((error as Error).message);
@@ -33,7 +32,7 @@ class RoadController {
             return next({ message: listOffErrors, statusCode: 400 });
         }
         try {
-            const road = await this.service.getRouteById(+req.params.id);
+            const road = await this.roadService.getRouteById(+req.params.id);
             res.status(200).json(road);
         } catch (error) {
             next((error as Error).message);
@@ -53,7 +52,7 @@ class RoadController {
             return next({ message: listOffErrors, statusCode: 400 });
         }
         try {
-            const roads = await this.service.getRoadsByUserId(req.params.id);
+            const roads = await this.roadService.getRoadsByUserId(req.params.id);
             res.status(200).json(roads);
         } catch (error) {
             next((error as Error).message);
@@ -73,7 +72,7 @@ class RoadController {
             return next({ message: listOffErrors, statusCode: 400 });
         }
         try {
-            const road = await this.service.createRoad(req.body as IRoad);
+            const road = await this.roadService.createRoad(req.body as IRoadDto);
             res.status(201).json(road);
         } catch (error) {
             next((error as Error).message);
@@ -81,8 +80,5 @@ class RoadController {
 
     }
 
-
-
-
 }
-export default new RoadController();
+export default RoadController;

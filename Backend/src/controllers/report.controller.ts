@@ -1,114 +1,94 @@
 import { NextFunction, Request, Response } from 'express'
-import * as reportService from '../services/report.service'
-import { IReportRequest, IReportWithRadius } from '../interfaces/reports.interface'
+import { IReportDto } from '../interfaces/reports.interface'
 import * as reportValidator from '../validator/report.validator'
-import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions'
+//import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions'
+import { IReportService } from '../services/interfaces/report.service.interface'
 
-const getAllReports = async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-        const reports = await reportService.getAllReports();
-        return res.json(reports);
-    } catch (error) {
-        return next({ message: error.message, statusCode: 400 });
-    }
-};
+class ReportController {
+    private reportService: IReportService<IReportDto>;
 
-const getReportsById = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const validationResult = await reportValidator.getReportByIdValidator.safeParseAsync(req.params);
-    if (!validationResult.success) {
-        return next({ message: validationResult.error.errors[0].message, statusCode: 400 });
+    constructor({ reportService }: { reportService: IReportService<IReportDto> }) {
+        this.reportService = reportService;
     }
-    try {
-        const { id } = validationResult.data as { id: string };
-        const report = await reportService.getReportById(+id);
-        if (report) {
-            return res.json(report);
+
+    async getAllReports(_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const reports = await this.reportService.getAll();
+            return res.json(reports);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 400 });
         }
-    } catch (error) {
-       
-            return next({ message: (error as Error).message, statusCode: 400 });
-       
     }
-};
 
-const getReportByUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const validData = await reportValidator.getReportByUserIDValidator.safeParseAsync(req.body);
-    if (!validData.success) {
-        return next({ message: validData.error.errors[0].message, statusCode: 400 });
-    }
-    try {
-        const { userId } = validData.data as { userId: string };
-        const reports = await reportService.getReportByUser(+userId);
-        return res.json(reports);
-    } catch (error) {
-        return next({message: (error as Error).message, statusCode: 400});
-    }
-};
-
-const createReport = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
-    if (!validData.success) {
-        const listofErrors = validData.error.errors.map((error) => {
-            return {
-                message: error.message,
-                path: error.path.join('.')
-
-            }
-        });
-        return next({ message: listofErrors, statusCode: 400 });
-    }
-    try {
-        const newReport: IReportRequest = {
-            ...validData.data,
-            "images": req.file?.filename as string,
+    async getReportById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const validationResult = await reportValidator.getReportByIdValidator.safeParseAsync(req.params);
+        if (!validationResult.success) {
+            return next({ message: validationResult.error.errors[0].message, statusCode: 400 });
         }
-        const reportCreated = await reportService.createReport(newReport);
-        return res.status(201).json(reportCreated);
-    } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 400 });
-    }
-};
-
-const getReportsByLatLongRadius = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const validationResult = await reportValidator.getReportByLatLongRadValidator.safeParseAsync(req.query);
-    if (!validationResult.success) {
-        const listofErrors = validationResult.error.errors.map((error) => {
-            return {
-                message: error.message,
-                path: error.path.join('.')
-
+        try {
+            const { id } = validationResult.data as { id: string };
+            const report = await this.reportService.getById(+id);
+            if (report) {
+                return res.json(report);
             }
-        });
-        return next({ message: listofErrors, statusCode: 400 });
-    }
-    try {
-        const coordinates: IReportWithRadius = validationResult.data as IReportWithRadius;
-        const reports = await reportService.getReportsByLatLongRadius(coordinates);
-        return res.status(200).json(reports);
-    } catch (error) {
-        
+        } catch (error) {
             return next({ message: (error as Error).message, statusCode: 400 });
+        }
+    }
+
+    async getReportByUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const validData = await reportValidator.getReportByUserIDValidator.safeParseAsync(req.body);
+        if (!validData.success) {
+            return next({ message: validData.error.errors[0].message, statusCode: 400 });
+        }
+        try {
+            const { userId } = validData.data as { userId: string };
+            const reports = await this.reportService.getByUser(+userId);
+            return res.json(reports);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 400 });
+        }
+    }
+
+    async createReport(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
+        if (!validData.success) {
+            const listofErrors = validData.error.errors.map((error) => {
+                return {
+                    message: error.message,
+                    path: error.path.join('.')
+
+                }
+            });
+            return next({ message: listofErrors, statusCode: 400 });
+        }
+        try {
+            const newReport: IReportDto = {
+                category: validData.data.categoryId,
+                content: validData.data.content,
+                location: {
+                    latitude: +validData.data.latitude,
+                    longitude: +validData.data.longitude,
+                },
+                groupId: validData.data.groupId ? +validData.data.groupId : undefined,
+                image: req.file?.filename as string,
+            }
+            const reportCreated = await this.reportService.createReport(newReport);
+            return res.status(201).json(reportCreated);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 400 });
+        }
+    }
+
+    async getReportsByGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const { groupId } = req.params
+            const reports = await this.reportService.getReportsByGroup(+groupId);
+            return res.json(reports);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 400 });
+        }
     }
 }
 
-const getReportsByGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-        const { groupId } = req.params;
-        const reports = await reportService.getReportsByGroup(+groupId);
-        return res.json(reports);
-    } catch (error) {
-        if (error instanceof ReportNotFoundException) {
-            return next({ message: error.message, statusCode: error.statusCode });
-        }
-        return next((error as Error).message);
-    }
-};
-
-export {
-    getAllReports,
-    getReportsById,
-    getReportByUser,
-    createReport,
-    getReportsByLatLongRadius,
-    getReportsByGroup
-}
+export default ReportController;

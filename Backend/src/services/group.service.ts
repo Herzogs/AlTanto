@@ -1,14 +1,13 @@
-import GroupRepository from "../repository/group.repository";
-import { IGroup, IGroupUser } from "../interfaces/group.interface";
+import { IGroup, IGroupMember, IGroupUser } from "../interfaces/group.interface";
 import { IGroupService } from "./interfaces/group.service.interface";
 import { IGroupRepository } from "../repository/interface/group.repository.interface";
 import { GroupNotCreatedException } from "../exceptions/group.exceptions";
 
-class GroupService implements IGroupService<IGroup, IGroupUser> {
+class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
 
-    private groupRepository: IGroupRepository<IGroup>;
+    private groupRepository: IGroupRepository<IGroup,IGroupMember>;
 
-    constructor({ groupRepository }: { groupRepository: IGroupRepository<IGroup> }) {
+    constructor({ groupRepository }: { groupRepository: IGroupRepository<IGroup,IGroupMember> }) {
         this.groupRepository = groupRepository;
     }
 
@@ -36,7 +35,6 @@ class GroupService implements IGroupService<IGroup, IGroupUser> {
     }
 
     async findByName(name: string): Promise<IGroup> {
-        console.log('En el servicio ===> ', name);
         const result = await this.groupRepository.findByName(name);
         if (!result)
             throw new Error(`Error searching group by name`);
@@ -58,6 +56,14 @@ class GroupService implements IGroupService<IGroup, IGroupUser> {
         const result = await this.groupRepository.findById(id);
         if (!result)
             throw new Error(`Error searching group by id`);
+        return result;
+    }
+
+    async findMembersByGroupId(groupId: number): Promise<IGroupMember> {
+        const result = await this.groupRepository.getGroupMembers(groupId);
+        console.log(result);
+        if (!result)
+            throw new Error(`Error searching group members by group id`);
         return result;
     }
 
