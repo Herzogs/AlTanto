@@ -5,12 +5,13 @@ import { getGroupByIdValidator } from '../validator/group.validator';
 import { IGroupService } from '../services/interfaces/group.service.interface';
 import { IGroup, IGroupUser, IGroupMember } from '../interfaces/group.interface';
 import { IGroupUserService } from '../services/interfaces/groupUser.service.interface';
+import { decode } from 'js-base64';
 
 class GroupController {
-    private groupService: IGroupService<IGroup, IGroupUser,IGroupMember>;
+    private groupService: IGroupService<IGroup, IGroupUser, IGroupMember>;
     private groupUserService: IGroupUserService<IGroupUser>;
 
-    constructor({ groupService, groupUserService }: { groupService: IGroupService<IGroup, IGroupUser,IGroupMember>, groupUserService: IGroupUserService<IGroupUser> }) {
+    constructor({ groupService, groupUserService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, groupUserService: IGroupUserService<IGroupUser> }) {
         this.groupService = groupService;
         this.groupUserService = groupUserService;
     }
@@ -113,15 +114,33 @@ class GroupController {
         const { id } = req.params;
         console.log(id);
         try {
-            
+
             const group = await this.groupService.findMembersByGroupId(+id);
             console.log("GroupDetail ===========> ", group);
-            
+
             return res.json(group);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: 500 });
         }
     }
+
+    async joinGroupFromInvitation(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const { encodedInfo } = req.params;
+        try {
+            const { groupId, userId } = JSON.parse(decode(encodedInfo));
+
+            if (!groupId || !userId) {
+                return next({ message: 'Invalid input', statusCode: 400 });
+            }
+
+            await this.groupUserService.addUser({ groupId, userId });
+            return res.redirect(`/group-detail/${groupId}`);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: 500 });
+        }
+    };
+
+
 }
 
 export default GroupController;

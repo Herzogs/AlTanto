@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getGroupById, removeUserFromGroup, deleteGroup } from "@/services/groupService";
+import { getGroupById, removeUserFromGroup, deleteGroup, joinGroupWithInvitation } from "@/services/groupService";
 import { getUserByUsername } from "@services/userService";
 import { fetchReportsByGroup } from "@services/getReportByGroup";
 import { userStore } from "@/store/index";
@@ -9,9 +9,10 @@ import Header from "@components/header/Header";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MenuButton from "../Map/MenuButton";
 import Report from "@components/report/Report";
+import { decode } from 'js-base64';
 
 function GroupDetail() {
-  const { id } = useParams();
+  const { id, encodedInfo } = useParams();
   const [groupDetails, setGroupDetails] = useState(null);
   const [error, setError] = useState(null);
   const [username, setUsername] = useState("");
@@ -41,9 +42,23 @@ function GroupDetail() {
       }
     };
 
-    fetchGroupDetails();
-    fetchGroupReports();
-  }, [id]);
+    if (encodedInfo) {
+      const joinGroupFromInvitation = async () => {
+        try {
+          const { groupId, userId } = JSON.parse(decode(encodedInfo));
+          await joinGroupWithInvitation({ groupId, userId });
+          navigate(`/group-detail/${groupId}`);
+        } catch (error) {
+          setError(error.message);
+        }
+      };
+
+      joinGroupFromInvitation();
+    } else {
+      fetchGroupDetails();
+      fetchGroupReports();
+    }
+  }, [id, encodedInfo]);
 
   const handleSearchUser = async () => {
     try {
@@ -61,10 +76,15 @@ function GroupDetail() {
       return;
     }
 
-    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nCódigo del grupo: ${groupDetails.groupCode}\n\n¡Únete a nosotros en WhatsApp!`;
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      inviteMessage
-    )}`;
+    const groupId = groupDetails.id;
+    const userId = foundUser.id;
+    const encodedInfo = encode(JSON.stringify({ groupId, userId }));
+
+    const inviteLink = `${window.location.origin}/group-detail/${groupId}/${encodedInfo}`;
+
+    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nÚnete a través de este enlace: ${inviteLink}`;
+
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(inviteMessage)}`;
 
     window.open(whatsappUrl, "_blank");
   };
@@ -109,9 +129,9 @@ function GroupDetail() {
 
   return (
     <>
-    <Header/>
+      <Header/>
       <Container className="container-md_stop">
-      <p className="text-end"><Link to="/form/grupo"><ArrowBackIcon/> Regresar</Link></p>
+        <p className="text-end"><Link to="/form/grupo"><ArrowBackIcon/> Regresar</Link></p>
         <h1>{groupDetails.name}</h1>
         <p>
           Código de Grupo: <strong>{groupDetails.groupCode}</strong>
@@ -183,7 +203,6 @@ function GroupDetail() {
             <h3>No se encontraron reportes</h3>
           )}
         </section>
-
       </Container>
     </>
   );

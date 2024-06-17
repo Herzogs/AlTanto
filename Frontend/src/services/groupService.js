@@ -77,3 +77,14 @@ export const deleteGroup = async (groupId) => {
   }
 };
 
+
+export const joinGroupWithInvitation = async ({ groupId, userId }) => {
+  try {
+    const response = await axiosInstance.post(`/group/join-with-invitation`, { groupId, userId });
+    return response.data;
+  } catch (error) {
+    console.error('Error joining group with invitation:', error);
+    throw new Error('Failed to join group with invitation.');
+  }
+};
+

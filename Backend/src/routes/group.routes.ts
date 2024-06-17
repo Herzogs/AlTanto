@@ -14,7 +14,7 @@ groupRouter.post('/:id/add-user', auth, api('addUserToGroup'));
 groupRouter.delete('/:groupId/remove-user/:userId', auth, api('removeUserFromGroup'));
 groupRouter.get('/find/:name', auth, api('findGroupsByName')); 
 groupRouter.get('/members/:id', auth, api('getGroupDetailsById'));
-
+groupRouter.get('/join/:encodedInfo', auth, api('joinGroupFromInvitation'));
 //router.post('/notification/', auth, groupController.getGroupsAndNotifications);
 
 
