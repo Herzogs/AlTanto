@@ -1,10 +1,13 @@
+import { IGroupReport } from "interfaces/group.interface";
+
 export interface IGroupService<T,K,E> {
-    getAllByOwner(userId: number): Promise<T[]>;
+    getAllByOwner(id: number): Promise<T[]>;
     create(group: T): Promise<T>;
     remove(id: number): Promise<boolean>;
-    validateGroupCode(groupCode: string): Promise<boolean>;
+    validateGroupCode(code: string): Promise<boolean>;
     findByName(name: string): Promise<T>;
-    findAllByGroupId(groupUser: K[]): Promise<T[]>;
+    findAllByGroupId(user: K[]): Promise<T[]>;
     findById(id: number): Promise<T | null>;
-    findMembersByGroupId(groupId: number): Promise<E>;
+    findMembersByGroupId(id: number): Promise<E>;
+    getNotifications(id: number): Promise<IGroupReport[]>;
 }

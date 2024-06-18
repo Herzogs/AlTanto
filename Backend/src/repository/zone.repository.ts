@@ -82,7 +82,17 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
         if (!zone) {
             return null
         }
-        return zone.get({ plain: true });
+        const zonePlain = zone.get({ plain: true });
+        return {
+            id: zonePlain.id,
+            name: zonePlain.name,
+            location: {
+                lat: zonePlain.Location.latitude,
+                lon: zonePlain.Location.longitude
+            },
+            rad: zonePlain.radio,
+            userId: zonePlain.userId
+        };
     }
 
     async deleteById(zoneId: number): Promise<boolean> {

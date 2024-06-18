@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import {IImageAnalysisService} from '../services/interfaces/imageAnalysis.service.interface';
 import { ITranslateText } from '../services/interfaces/translate.service.interface';
+import { STATUS_CODE } from '../utilities/statusCode.utilities';
 
 class AnalysisController {
 
@@ -14,17 +15,13 @@ class AnalysisController {
 
     async analyzeImage(req: Request, res: Response, next: NextFunction) {
         try {
-            if(!req.file) return next({ message: 'No image provided', status: 400 });
+            if(!req.file) return next({ message: 'No image provided', status: STATUS_CODE.BAD_REQUEST });
 
             const description = await this.imageAnalysisService.analyzeImage(req.file.buffer);
-            
-            if (description) {
-                const translatedDescription = await this.translateText.translate(description);
-                return res.json({ description: translatedDescription });
-            }
-            return next({ message: 'Unable to analyze the image', status: 500 });
+            const translatedDescription = await this.translateText.translate(description);
+            return res.status(STATUS_CODE.SUCCESS).json({ description: translatedDescription });
         } catch (error) {
-            return next({ message: 'Error analyzing the image', status: 500 });
+            return next({ message: 'Error analyzing the image', status: STATUS_CODE.SERVER_ERROR });
         }
     }
 }

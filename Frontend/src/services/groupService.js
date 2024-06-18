@@ -12,7 +12,7 @@ export const getGroupsByUserId = async (userId) => {
 
 export const getGroupById = async (groupId) => {
   try {
-    const response = await axiosInstance.get(`/group/${groupId}`);
+    const response = await axiosInstance.get(`/group/members/${groupId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching group by ID:', error);

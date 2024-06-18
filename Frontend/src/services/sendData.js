@@ -17,6 +17,7 @@ const sendReport = async (data) => {
     if(data.groupId !== undefined){
       formData.append("groupId", data.groupId);
     }
+    console.log("formData", formData);
 
     const response = await axiosInstance.post(FORM_URI_REPORT, formData, {
       headers: {

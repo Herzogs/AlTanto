@@ -1,3 +1,5 @@
+import { IReportDto } from "./reports.interface";
+
 export interface IGroup {
     id?: number;
     name: string;
@@ -20,4 +22,9 @@ export interface IGroupUser {
     id?: number;
     groupId: number;
     userId?: number;
+}
+
+export type IGroupReport = {
+    groupName: string;
+    reports: IReportDto[];
 }

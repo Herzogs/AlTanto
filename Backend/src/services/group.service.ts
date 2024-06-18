@@ -1,16 +1,22 @@
-import { IGroup, IGroupMember, IGroupUser } from "../interfaces/group.interface";
+import { IGroup, IGroupMember, IGroupReport, IGroupUser } from "../interfaces/group.interface";
 import { IGroupService } from "./interfaces/group.service.interface";
 import { IGroupRepository } from "../repository/interface/group.repository.interface";
 import { GroupNotCreatedException } from "../exceptions/group.exceptions";
+import { IReportService } from "./interfaces/report.service.interface";
+import { IReportDto } from "interfaces/reports.interface";
 
 class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
 
     private groupRepository: IGroupRepository<IGroup,IGroupMember>;
+    private reportService: IReportService<IReportDto>;
 
-    constructor({ groupRepository }: { groupRepository: IGroupRepository<IGroup,IGroupMember> }) {
-        this.groupRepository = groupRepository;
+    constructor({ groupRepository, reportService }: { 
+        groupRepository: IGroupRepository<IGroup,IGroupMember>, 
+        reportService: IReportService<IReportDto>}) {
+            this.groupRepository = groupRepository;
+            this.reportService = reportService;
     }
-
+    
     async getAllByOwner(userId: number): Promise<IGroup[]> {
         return await this.groupRepository.findByOwner(userId);
     }
@@ -67,6 +73,18 @@ class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
         return result;
     }
 
+    async getNotifications(id: number): Promise<IGroupReport[]> {
+        const groupUser = await this.groupRepository.findByOwner(id);
+        const reportByZone: IGroupReport[] = [];
+        for (const group of groupUser) {
+            const result = await this.reportService.getReportsByGroup(group.id as number);
+            reportByZone.push({
+                groupName: group.name,
+                reports: result as IReportDto[]
+            });
+        }
+        return reportByZone;
+    }
 }
 
 export default GroupService;

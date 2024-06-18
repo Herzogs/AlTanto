@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { IUser } from "../interfaces/user.interface";
 import { ICognitoService } from "../services/interfaces/cognito.service.interface";
 import { IUserService } from "../services/interfaces/user.service.interface";
+import { STATUS_CODE } from "../utilities/statusCode.utilities";
 
 class AuthController{
 
@@ -17,9 +18,9 @@ class AuthController{
         try {
             const newUser: IUser = req.body as IUser;
             const newUserDatabase = await this.userService.createUser(newUser);
-            res.status(201).json(newUserDatabase);
+            res.status(STATUS_CODE.SUCCESS).json(newUserDatabase);
         } catch (error) {
-            next(error);
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
     }
 
@@ -28,9 +29,9 @@ class AuthController{
         const code = req.body.code;
         try {
             await this.cognitoService.confirmUser(email, code);
-            res.status(201).json("Validated code");
+            res.status(STATUS_CODE.SUCCESS).json("Validated code");
         } catch (error) {
-            next(error);
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
 
     }
@@ -41,7 +42,7 @@ class AuthController{
         try {
             const jwt = await this.cognitoService.login(email, password);
             const user = await this.userService.getUserByEmail(email);
-            return res.status(200).send({
+            return res.status(STATUS_CODE.SUCCESS).send({
                 message: "Login success",
                 token: jwt,
                 user: {
@@ -55,7 +56,7 @@ class AuthController{
 
         } catch (error) {
 
-            return next({ message: (error as Error).message, statusCode: 401 });
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
     }
 

@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import { IUser } from '../interfaces/user.interface';
 import { IUserService } from '../services/interfaces/user.service.interface';
+import { STATUS_CODE } from '../utilities/statusCode.utilities';
 
 class UserController {
 
@@ -14,9 +15,9 @@ class UserController {
         const { name } = req.params;
         try {
             const user = await this.userService.getUserByUserName(name);
-            return res.json(user);
+            return res.status(STATUS_CODE.SUCCESS).json(user);
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 500 });
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }
     }
 }

@@ -5,7 +5,6 @@ import { IReportDto} from "../interfaces/reports.interface";
 import { ModelCtor } from "sequelize";
 import { IReportRepository } from "./interface/report.repository.interface";
 
-
 class ReportRepository implements IReportRepository<IReportDto>{
 
     private reportModel: ModelCtor<Report>;
@@ -98,9 +97,10 @@ class ReportRepository implements IReportRepository<IReportDto>{
             where: { groupId: groupId },
             include: [
                 { model: Category, attributes: ['id', 'name'] },
-                { model: Location, attributes: ['latitude', 'longitude'] }
+                { model: Location, attributes: ['latitude', 'longitude'] },
             ],
             attributes: { exclude: ['CategoryId', 'LocationId'] }
+
         });
         if (!listOfReports) {
             return [];

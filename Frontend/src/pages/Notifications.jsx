@@ -16,9 +16,7 @@ function Notifications() {
 
   useEffect(() => {
     const getZonesAndNotifications = async () => {
-      const response = await axiosInstance.post("/zones/notification", {
-        userId: user.id,
-      });
+      const response = await axiosInstance.get(`/zones/notification/${user.id}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -30,9 +28,9 @@ function Notifications() {
     });
 
     const getGroupsAndNotifications = async () => {
-      const response = await axiosInstance.post("/group/notification", {
-        userId: user.id,
-      });
+
+      
+      const response = await axiosInstance.get(`/group/notifications/${user.id}`);
       if (response.status === 200) {
         return response.data;
       }

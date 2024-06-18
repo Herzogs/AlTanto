@@ -19,8 +19,8 @@ server.use(express.json());
 server.use("/static", express.static('public'));
 server.use(express.urlencoded({ extended: true }));
 server.use(cors({
-    origin: process.env.CORS_ORIGIN,
-    methods: ['GET', 'POST'],
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -36,7 +36,10 @@ const routes: { route: Router; uri: string }[] = [
     { route: userRouter, uri: '/user' }
 ];
 
-routes.forEach(({ route, uri }) => server.use(`/api${uri}`, route));
+routes.forEach(({ route, uri }) => {
+    console.log(`Adding route /api${uri}`);
+    server.use(`/api${uri}`, route);
+});
 
 server.use('/', (_req, res) => {
     res.send('Welcome to the Road Analyzer API');
@@ -45,6 +48,7 @@ server.use('/', (_req, res) => {
 
 server.use(errorHandler)
 const app = server.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
     //disableOldReport.start()
 })
 

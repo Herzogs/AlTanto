@@ -27,7 +27,7 @@ function Home() {
   useEffect(() => {
     setMarkerPosition(null);
   }, []);
-
+  
   useEffect(() => {
     if (userLocation) {
       fetchReports();

@@ -3,6 +3,7 @@ import { IReportDto } from '../interfaces/reports.interface'
 import * as reportValidator from '../validator/report.validator'
 //import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions'
 import { IReportService } from '../services/interfaces/report.service.interface'
+import { STATUS_CODE } from '../utilities/statusCode.utilities'
 
 class ReportController {
     private reportService: IReportService<IReportDto>;
@@ -14,16 +15,16 @@ class ReportController {
     async getAllReports(_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const reports = await this.reportService.getAll();
-            return res.json(reports);
+            return res.status(STATUS_CODE.SUCCESS).json(reports);
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 400 });
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }
     }
 
     async getReportById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const validationResult = await reportValidator.getReportByIdValidator.safeParseAsync(req.params);
         if (!validationResult.success) {
-            return next({ message: validationResult.error.errors[0].message, statusCode: 400 });
+            return next({ message: validationResult.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
         try {
             const { id } = validationResult.data as { id: string };
@@ -32,21 +33,21 @@ class ReportController {
                 return res.json(report);
             }
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 400 });
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }
     }
 
     async getReportByUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const validData = await reportValidator.getReportByUserIDValidator.safeParseAsync(req.body);
         if (!validData.success) {
-            return next({ message: validData.error.errors[0].message, statusCode: 400 });
+            return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
         try {
             const { userId } = validData.data as { userId: string };
             const reports = await this.reportService.getByUser(+userId);
             return res.json(reports);
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 400 });
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }
     }
 
@@ -60,7 +61,7 @@ class ReportController {
 
                 }
             });
-            return next({ message: listofErrors, statusCode: 400 });
+            return next({ message: listofErrors, statusCode: STATUS_CODE.BAD_REQUEST });
         }
         try {
             const newReport: IReportDto = {
@@ -76,7 +77,7 @@ class ReportController {
             const reportCreated = await this.reportService.createReport(newReport);
             return res.status(201).json(reportCreated);
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 400 });
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }
     }
 
@@ -86,7 +87,7 @@ class ReportController {
             const reports = await this.reportService.getReportsByGroup(+groupId);
             return res.json(reports);
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 400 });
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }
     }
 }

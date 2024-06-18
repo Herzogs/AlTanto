@@ -17,13 +17,29 @@ const LocationMarker = () => {
   const { userLocation, setUserLocation, setOldUserLocation } = useStore();
 
   useEffect(() => {
+
     if (!userLocation) {
-      map
-        .locate({ setView: true, maxZoom: 18 })
-        .on("locationfound", function (e) {
+
+      map.locate()
+        .on("locationfound", (e) => {
           setUserLocation(e.latlng);
-        });
+        })
+        .on("locationerror", () => {
+          const API_KEY = import.meta.env.VITE_GEOAPIFY_API_KEY;
+          const getIPByGeoApi = async () => {
+            const response = await fetch(`https://api.geoapify.com/v1/ipinfo?apiKey=${API_KEY}`);
+            const data = await response.json();
+            return data;
+          }
+
+          getIPByGeoApi().then((data) => {
+            const { latitude, longitude } = data.location;
+
+            setUserLocation(L.latLng(latitude, longitude))
+          });
+        })
     }
+
   }, [map, userLocation, setUserLocation]);
 
   const eventHandlers = {
