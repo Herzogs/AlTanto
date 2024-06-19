@@ -96,6 +96,7 @@ const saveZone = async (data, coordinates,id) => {
 
 const registerUser = async (userData) => {
   try {
+    
     const response = await axiosInstance.post(FORM_URI_REGISTER, userData);
     if (response.status !== 201) {
       throw new Error("Error al registrar usuario");
@@ -110,7 +111,7 @@ const registerUser = async (userData) => {
 const validateCode = async (data) => {
   try {
     const response = await axiosInstance.post(VALIDATION_URI, data);
-    if (response.status !== 201) {
+    if (response.status !== 200) {
       throw new Error("Error al validar el código");
     }
     return response.data;

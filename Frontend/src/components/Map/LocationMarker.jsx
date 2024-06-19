@@ -21,6 +21,7 @@ const LocationMarker = () => {
     if (!userLocation) {
 
       map.locate()
+      .locate({ setView: true, maxZoom: 18 })
         .on("locationfound", (e) => {
           setUserLocation(e.latlng);
         })
