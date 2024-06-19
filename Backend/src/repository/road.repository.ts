@@ -1,6 +1,6 @@
-import { Location } from "./models/Location";
-import Road from "./models/Road";
-import { IRoadDto } from "../interfaces/road.interfaces";
+import { Location } from "./entities/Location";
+import Road from "./entities/Road";
+import { IRoadDto } from "../models/road.interfaces";
 import { IRoadRepository } from "./interface/road.repository.interface";
 import { ModelCtor } from "sequelize";
 

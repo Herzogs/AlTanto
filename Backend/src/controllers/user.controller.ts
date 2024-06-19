@@ -1,5 +1,5 @@
 import {Request, Response, NextFunction} from 'express';
-import { IUser } from '../interfaces/user.interface';
+import { IUser } from '../models/user.interface';
 import { IUserService } from '../services/interfaces/user.service.interface';
 import { STATUS_CODE } from '../utilities/statusCode.utilities';
 

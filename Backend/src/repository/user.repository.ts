@@ -1,5 +1,5 @@
-import User from "./models/User";
-import {IUser} from "../interfaces/user.interface";
+import User from "./entities/User";
+import {IUser} from "../models/user.interface";
 import { ModelCtor } from "sequelize";
 import { IUserRepository } from "./interface/user.repository.interface";
 

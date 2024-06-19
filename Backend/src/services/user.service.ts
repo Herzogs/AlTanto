@@ -1,4 +1,4 @@
-import {IUser} from "../interfaces/user.interface";
+import {IUser} from "../models/user.interface";
 import {UserNotCreatedException, UserNotFoundException} from "../exceptions/users.exceptions";
 import * as cognitoService from '../services/cognito.service'
 import { IUserRepository } from "../repository/interface/user.repository.interface";

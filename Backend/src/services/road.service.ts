@@ -1,4 +1,4 @@
-import { IRoadDto } from '../interfaces/road.interfaces';
+import { IRoadDto } from '../models/road.interfaces';
 import { IRoadRepository } from '../repository/interface/road.repository.interface'
 import { RoadNotCreatedException, RoadNotFoundException } from '../exceptions/road.exceptions';
 import { IRoadService } from './interfaces/road.service.interface';

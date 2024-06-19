@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { IZoneDto, IZoneReport } from "../interfaces/zone.interface";
+import { IZoneDto, IZoneReport } from "../models/zone.interface";
 import { IZoneService } from "../services/interfaces/zone.service.interface";
 import * as zoneValidator from "../validator/zone.validator";
 import { STATUS_CODE } from "../utilities/statusCode.utilities";

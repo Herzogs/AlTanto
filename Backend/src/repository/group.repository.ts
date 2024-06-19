@@ -1,7 +1,7 @@
-import { IGroup, IGroupMember } from "../interfaces/group.interface";
+import { IGroup, IGroupMember } from "../models/group.interface";
 import {IGroupRepository}  from "./interface/group.repository.interface";
 import { ModelCtor, Model } from "sequelize";
-import User from "./models/User";
+import User from "./entities/User";
 
 class GroupRepository implements IGroupRepository<IGroup,IGroupMember>{
 

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as categoryValidator from '../validator/category.validator'
-import { ICategory } from '../interfaces/category.interface';
+import { ICategory } from '../models/category.interface';
 import { IService } from '../services/interfaces/category.service.interface';
 import { STATUS_CODE } from '../utilities/statusCode.utilities';
 

@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { IReportDto } from '../interfaces/reports.interface'
+import { IReportDto } from '../models/reports.interface'
 import * as reportValidator from '../validator/report.validator'
-//import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions'
 import { IReportService } from '../services/interfaces/report.service.interface'
 import { STATUS_CODE } from '../utilities/statusCode.utilities'
 

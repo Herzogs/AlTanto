@@ -1,7 +1,7 @@
-import Category from "./models/Category";
-import Report from "./models/Report";
-import { Location } from "./models/Location";
-import { IReportDto} from "../interfaces/reports.interface";
+import Category from "./entities/Category";
+import Report from "./entities/Report";
+import { Location } from "./entities/Location";
+import { IReportDto} from "../models/reports.interface";
 import { ModelCtor } from "sequelize";
 import { IReportRepository } from "./interface/report.repository.interface";
 

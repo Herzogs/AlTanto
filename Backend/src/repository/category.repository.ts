@@ -1,6 +1,6 @@
 import { IRepository } from './interface/category.repository.interface';
-import { ICategory } from '../interfaces/category.interface';
-import Category from './models/Category';
+import { ICategory } from '../models/category.interface';
+import Category from './entities/Category';
 import { ModelCtor } from 'sequelize';
 
 class CategoryRepository implements IRepository<ICategory>{

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { getGroupByIdValidator } from '../validator/group.validator';
 import { IGroupService } from '../services/interfaces/group.service.interface';
-import { IGroup, IGroupUser, IGroupMember } from '../interfaces/group.interface';
+import { IGroup, IGroupUser, IGroupMember } from '../models/group.interface';
 import { IGroupUserService } from '../services/interfaces/groupUser.service.interface';
 import { STATUS_CODE } from '../utilities/statusCode.utilities';
 

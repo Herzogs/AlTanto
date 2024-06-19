@@ -1,4 +1,4 @@
-import { IUserCognito } from "interfaces/user.interface";
+import { IUserCognito } from "models/user.interface";
 
 export interface ICognitoService {
     createUser(userData: IUserCognito): Promise<string>;

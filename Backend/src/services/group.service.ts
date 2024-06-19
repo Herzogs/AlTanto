@@ -1,9 +1,9 @@
-import { IGroup, IGroupMember, IGroupReport, IGroupUser } from "../interfaces/group.interface";
+import { IGroup, IGroupMember, IGroupReport, IGroupUser } from "../models/group.interface";
 import { IGroupService } from "./interfaces/group.service.interface";
 import { IGroupRepository } from "../repository/interface/group.repository.interface";
 import { GroupNotCreatedException } from "../exceptions/group.exceptions";
 import { IReportService } from "./interfaces/report.service.interface";
-import { IReportDto } from "interfaces/reports.interface";
+import { IReportDto } from "models/reports.interface";
 
 class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
 

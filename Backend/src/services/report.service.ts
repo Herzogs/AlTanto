@@ -1,5 +1,5 @@
 import transformData from '../utilities/transformData.utilities';
-import { IReportDto} from '../interfaces/reports.interface';
+import { IReportDto} from '../models/reports.interface';
 import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions';
 import { IReportRepository } from '../repository/interface/report.repository.interface';
 import { IReportService } from './interfaces/report.service.interface';

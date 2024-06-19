@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 import cors from 'cors';
 import errorHandler from './middlewares/errorHandler.middleware';
 import { scopePerRequest } from 'awilix-express';
-import container from './contenedor';
+import container from './container';
 import authRouter from './routes/auth.routes';
 import categoryRouter from './routes/categories.routes';
 import imageRouter from './routes/imageAnalysis.routes';

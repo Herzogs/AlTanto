@@ -1,4 +1,4 @@
-import { IGroupUser } from "../interfaces/group.interface";
+import { IGroupUser } from "../models/group.interface";
 import { IGroupUserRepository } from "./interface/groupUser.repository.interface";
 import { ModelCtor, Model } from "sequelize";
 

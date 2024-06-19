@@ -1,4 +1,4 @@
-import { ICategory } from '../interfaces/category.interface';
+import { ICategory } from '../models/category.interface';
 import { CategoryNotCreatedException, CategoryNotFoundException } from '../exceptions/category.exceptions';
 import { IService } from './interfaces/category.service.interface';
 import { IRepository } from '../repository/interface/category.repository.interface';

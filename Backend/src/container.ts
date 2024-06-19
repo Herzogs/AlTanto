@@ -1,12 +1,12 @@
 import { createContainer, asClass, asValue} from "awilix";
-import Category from "./repository/models/Category";
-import Group from "./repository/models/Group";
-import { GroupUser} from "./repository/models/GroupUser";
-import {Location} from "./repository/models/Location";
-import Report from "./repository/models/Report";
-import User from "./repository/models/User";
-import Zone from "./repository/models/Zone";
-import Road from "./repository/models/Road";
+import Category from "./repository/entities/Category";
+import Group from "./repository/entities/Group";
+import { GroupUser} from "./repository/entities/GroupUser";
+import {Location} from "./repository/entities/Location";
+import Report from "./repository/entities/Report";
+import User from "./repository/entities/User";
+import Zone from "./repository/entities/Zone";
+import Road from "./repository/entities/Road";
 import CategoryRepository from "./repository/category.repository";
 import CategoryService from "./services/category.service";
 import GroupRepository from './repository/group.repository'
@@ -53,7 +53,6 @@ container.register({
     zoneService: asClass(ZoneService).scoped(),
     imageAnalysis: asClass(ImageAnalysis).scoped(),
     translateText: asClass(TranslateText).scoped()
-
 });
 
 export default container;
