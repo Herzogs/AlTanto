@@ -1,20 +1,22 @@
 import {IUser} from "../models/user.interface";
 import {UserNotCreatedException, UserNotFoundException} from "../exceptions/users.exceptions";
-import * as cognitoService from '../services/cognito.service'
 import { IUserRepository } from "../repository/interface/user.repository.interface";
 import { IUserService } from "./interfaces/user.service.interface";
+import { ICognitoService } from "./interfaces/cognito.service.interface";
 
 
 class UserService implements IUserService<IUser> {
     private userRepository: IUserRepository<IUser>;
-    constructor({ userRepository }: { userRepository: IUserRepository<IUser> }) {
+    private cognitoService: ICognitoService;
+    constructor({ userRepository, cognitoService }: { userRepository: IUserRepository<IUser>, cognitoService: ICognitoService}) {
         this.userRepository = userRepository;
+        this.cognitoService = cognitoService;
     }
 
     async createUser(user: IUser): Promise<IUser> {
         try {
             const userCreated = await this.userRepository.create(user);
-            await cognitoService.createUser(user);
+            await this.cognitoService.createUser(user);
             return userCreated;
         } catch (error) {
             await this.userRepository.delete(user.email)
