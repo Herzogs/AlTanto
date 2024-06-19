@@ -87,7 +87,7 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
 
     async create(road: IRoadDto): Promise<IRoadDto | null> {
 
-        /* const routeSearched = await this.roadModel.findOne({
+       /*  const routeSearched = await this.roadModel.findOne({
             where: {
                 addressOrigin: road.addressOrigin,
                 addressDestiny: road.addressDestiny,

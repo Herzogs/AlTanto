@@ -23,7 +23,7 @@ export const getGroupById = async (groupId) => {
 export const createGroup = async (groupData) => {
   try {
     const response = await axiosInstance.post(`/group`, groupData);
-    if (response.status !== 200) {
+    if (response.status !== 201) {
       if (response.status === 401) {
         throw new Error('Unauthorized: You are not authorized to create groups.');
       } else {

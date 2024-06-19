@@ -17,6 +17,7 @@ class ImageAnalysis implements IImageAnalysisService<Buffer>{
     }
 
     async analyzeImage(image: Buffer): Promise<string> {
+        console.log("ENTRE AL SERVICIO IA ")
         try {
             const analysis = await this.client.path('/imageanalysis:analyze').post({
                 body: image,

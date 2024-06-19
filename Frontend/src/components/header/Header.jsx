@@ -14,7 +14,7 @@ function Header() {
       <Row className="h-100 align-items-center pt-2">
         <Col>
           <Link to="/">
-            <img src={logo} alt="Logo Al Tanto" style={{maxWidth:"200px"}} />
+            <img src={logo} alt="Logo Al Tanto" style={{ maxWidth: "200px" }} />
           </Link>
         </Col>
         <Col className="text-end">
@@ -30,10 +30,17 @@ function Header() {
               />
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              {token && (
+              {token ? (
+                <Dropdown.Item as={Link} to="/auth/logout">
+                  Cerrar sesión
+                </Dropdown.Item>
+              ) : (
                 <>
-                  <Dropdown.Item as={Link} to="/auth/logout">
-                    Cerrar sesión
+                  <Dropdown.Item as={Link} to="/auth/login">
+                    Iniciar sesión
+                  </Dropdown.Item>
+                  <Dropdown.Item as={Link} to="/auth/verificacion">
+                    Verificar usuario
                   </Dropdown.Item>
                 </>
               )}

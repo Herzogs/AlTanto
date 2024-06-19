@@ -7,12 +7,17 @@ import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import loginScheme from "@schemes/loginScheme";
 
+import Header from "@components/header/Header";
+import { Container } from "react-bootstrap";
+
 function LoginForm() {
   const [showModal, setShowModal] = useState(false);
   const [titleModal, setTitleModal] = useState("");
   const [messageModal, setMessageModal] = useState("");
   const [url, setUrl] = useState(null);
   const { setToken, setUser } = userStore();
+
+  const [fails, setFails] = useState(false);
 
   const {
     register,
@@ -31,15 +36,17 @@ function LoginForm() {
       setTitleModal("Logeo exitoso");
       setMessageModal("Será redirigido a la home del sitio");
       setUrl("/");
-    } catch (error) {
-      setTitleModal("Error");
-      setMessageModal(error.message);
-    } finally {
       setShowModal(true);
+    } catch (error) {
+      console.log(error.message);
+      setFails(true);
     }
   };
 
   return (
+    
+
+    
     <div className="container">
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Iniciar Sesión</h2>

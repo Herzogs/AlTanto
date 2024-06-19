@@ -1,10 +1,12 @@
 import { useForm } from "react-hook-form";
-import { registerUser } from "@services/sendData";
+import {  registerUser  } from "@services/sendData";
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import ModalAT from "@components/modal/ModalAT";
 import createUser from "@schemes/registerScheme";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Header from "@components/header/Header";
+import { Container } from "react-bootstrap";
 
 function RegisterForm() {
   const {
@@ -30,6 +32,7 @@ function RegisterForm() {
   const [message, setMessage] = useState("");
   const [captcha, setCaptcha] = useState(false);
   const [url, setUrl] = useState(null);
+  const [fails, setFails] = useState(false);
 
   const onSubmit = async (data) => {
     
@@ -46,17 +49,18 @@ function RegisterForm() {
       setTitle("Registro de usuario");
       setMessage("Se le enviara un codigo de verifación a su correo electrónico");
       setUrl("/auth/verificacion");
+      setShowModal(true)
     } catch (error) {
       
-      setTitle("Error");
-      setMessage(error.message);
-    } finally {
-      setShowModal(true);
+      console.log(error.message);
+      setFails(true);
     }
   };
 
   return (
-    <div className="container">
+   <>
+    <Header />
+    <Container className="pt-4 pt-lg-5">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="my-4 p-4 border rounded"
@@ -159,6 +163,7 @@ function RegisterForm() {
             onChange={(value) => setCaptcha(value)}
           />
         </div>
+        {fails && <p className="text-danger">* Error al crear el usuario</p>}
         <input type="submit" value="Enviar" className="btn btn-primary" />
 
       </form>
@@ -170,7 +175,8 @@ function RegisterForm() {
         url={url}
 
       />
-    </div>
+    </Container>
+   </>
   );
 }
 
