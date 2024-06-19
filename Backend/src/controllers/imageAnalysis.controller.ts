@@ -5,11 +5,11 @@ import { STATUS_CODE } from '../utilities/statusCode.utilities';
 
 class AnalysisController {
 
-    private imageAnalysisService: IImageAnalysisService<Buffer>;
+    private imageAnalysis: IImageAnalysisService<Buffer>;
     private translateText: ITranslateText;
 
-    constructor({ imageAnalysisService, translateText }: { imageAnalysisService: IImageAnalysisService<Buffer>, translateText: ITranslateText}) {
-        this.imageAnalysisService = imageAnalysisService;
+    constructor({ imageAnalysis, translateText }: { imageAnalysis: IImageAnalysisService<Buffer>, translateText: ITranslateText}) {
+        this.imageAnalysis = imageAnalysis;
         this.translateText = translateText;
     }
 
@@ -17,7 +17,7 @@ class AnalysisController {
         try {
             if(!req.file) return next({ message: 'No image provided', status: STATUS_CODE.BAD_REQUEST });
 
-            const description = await this.imageAnalysisService.analyzeImage(req.file.buffer);
+            const description = await this.imageAnalysis.analyzeImage(req.file.buffer);
             const translatedDescription = await this.translateText.translate(description);
             return res.status(STATUS_CODE.SUCCESS).json({ description: translatedDescription });
         } catch (error) {
