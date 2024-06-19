@@ -6,6 +6,7 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet-routing-machine";
 import { useStore } from "@store";
 import { useMap } from "react-leaflet";
+import iconuser from "@assets/user-icon.png";
 
 const Routing = ({ startPoint, endPoint }) => {
   const { setDistance, setTime, setRouteCoordinates} = useStore();
@@ -29,6 +30,19 @@ const Routing = ({ startPoint, endPoint }) => {
         lineOptions: {
           styles: [{ color: "#fd7014", opacity: 1, weight: 5 }],
         },
+        createMarker: function (i, wp, nWps) {
+          if (i === nWps - 1) {
+            return L.marker(wp.latLng, {
+              draggable: false,
+              icon: L.icon({
+                iconUrl: iconuser,
+                iconSize: [30, 46],
+                iconAnchor: [13, 40],
+                popupAnchor: [0, -32],
+              }),
+            });
+          }
+        }
       });
 
       routingControl.on("routesfound", (e) => {
