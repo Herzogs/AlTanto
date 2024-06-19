@@ -29,7 +29,7 @@ class ZoneController {
                 userId: validData.data.userId
             }
             const zone = await this.zoneService.create(miZona);
-            return res.status(STATUS_CODE.SUCCESS).json(zone);
+            return res.status(STATUS_CODE.CREATED).json(zone);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }

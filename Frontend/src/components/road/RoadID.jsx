@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import HeaderHome from "@components/header/HeaderHome";
 import Map from "@components/Map/Map.jsx";

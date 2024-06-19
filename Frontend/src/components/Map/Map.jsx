@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-
 /* eslint-disable react/prop-types */
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { icons, getIconByCategoryId } from "./Icons";
@@ -28,7 +27,6 @@ const Map = ({
   zoneMode = false,
   startPoint = null,
   endPoint = null,
-  fetchingReport = false,
   showFilters = false,
   mapClick = false,
   noCircle = false,

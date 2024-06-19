@@ -1,7 +1,10 @@
 import { useForm } from "react-hook-form";
-import {registerUser} from "@services/sendData";
+import { registerUser } from "@services/sendData";
 import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import ModalAT from "@components/modal/ModalAT";
+import createUser from "@schemes/registerScheme";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 function RegisterForm() {
   const {
@@ -14,23 +17,37 @@ function RegisterForm() {
       lastName: "",
       username: "",
       password: "",
+      rePassword: "",
       phoneNumber: "",
       email: "",
     },
-  });
+    resolver: zodResolver(createUser)
+  }
+  );
 
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [captcha, setCaptcha] = useState(false);
+  const [url, setUrl] = useState(null);
 
   const onSubmit = async (data) => {
+    
     try {
-      await registerUser(data);
+      if (captcha === false) throw new Error("Debe completar el captcha");
+      await registerUser({
+        name: data.name,
+        lastName: data.lastName,
+        username: data.username,
+        password: data.password,
+        phoneNumber: data.phoneNumber,
+        email: data.email
+      });
       setTitle("Registro de usuario");
-      setMessage(
-        "Se le enviara un codigo de verifación a su correo electrónico"
-      );
+      setMessage("Se le enviara un codigo de verifación a su correo electrónico");
+      setUrl("/auth/verificacion");
     } catch (error) {
+      
       setTitle("Error");
       setMessage(error.message);
     } finally {
@@ -51,10 +68,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("name", {
-              required: "Campo requerido",
-              maxLength: { value: 50, message: "Máximo 50 caracteres" },
-            })}
+            {...register("name")}
             className={`form-control ${errors.name ? "is-invalid" : ""}`}
           />
           {errors.name && (
@@ -67,10 +81,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("lastName", {
-              required: "Campo requerido",
-              maxLength: { value: 50, message: "Máximo 50 caracteres" },
-            })}
+            {...register("lastName")}
             className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
           />
           {errors.lastName && (
@@ -83,10 +94,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("username", {
-              required: "Campo requerido",
-              maxLength: { value: 50, message: "Máximo 50 caracteres" },
-            })}
+            {...register("username")}
             className={`form-control ${errors.username ? "is-invalid" : ""}`}
           />
           {errors.username && (
@@ -99,19 +107,24 @@ function RegisterForm() {
           </label>
           <input
             type="password"
-            {...register("password", {
-              required: "Campo requerido",
-              minLength: { value: 8, message: "Mínimo 8 caracteres" },
-              pattern: {
-                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]/,
-                message:
-                  "Debe contener al menos una mayúscula, una minúscula y un número",
-              },
-            })}
+            {...register("password")}
             className={`form-control ${errors.password ? "is-invalid" : ""}`}
           />
           {errors.password && (
             <div className="invalid-feedback">{errors.password.message}</div>
+          )}
+        </div>
+        <div className="mb-3">
+          <label htmlFor="rePassword" className="form-label">
+            Ingrese nuevamente la contraseña:
+          </label>
+          <input
+            type="password"
+            {...register("rePassword")}
+            className={`form-control ${errors.rePassword ? "is-invalid" : ""}`}
+          />
+          {errors.rePassword && (
+            <div className="invalid-feedback">{errors.rePassword.message}</div>
           )}
         </div>
         <div className="mb-3">
@@ -120,14 +133,7 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("phoneNumber", {
-              required: "Campo requerido",
-              pattern: {
-                value: /^[0-9]{8,15}$/,
-                message:
-                  "Debe ser un número de teléfono válido (mínimo 8 dígitos)",
-              },
-            })}
+            {...register("phoneNumber")}
             className={`form-control ${errors.phoneNumber ? "is-invalid" : ""}`}
           />
           {errors.phoneNumber && (
@@ -140,27 +146,29 @@ function RegisterForm() {
           </label>
           <input
             type="text"
-            {...register("email", {
-              required: "Campo requerido",
-              pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: "Debe ser una dirección de correo electrónico válida",
-              },
-            })}
+            {...register("email")}
             className={`form-control ${errors.email ? "is-invalid" : ""}`}
           />
           {errors.email && (
             <div className="invalid-feedback">{errors.email.message}</div>
           )}
         </div>
+        <div className="mb-3">
+          <ReCAPTCHA
+            sitekey={import.meta.env.VITE_RE_CAPTCHA_SITE_SECRET}
+            onChange={(value) => setCaptcha(value)}
+          />
+        </div>
         <input type="submit" value="Enviar" className="btn btn-primary" />
+
       </form>
       <ModalAT
         title={title}
         message={message}
         showModal={showModal}
         setShowModal={setShowModal}
-        url="/auth/verificacion"
+        url={url}
+
       />
     </div>
   );

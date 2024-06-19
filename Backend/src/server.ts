@@ -11,7 +11,7 @@ import roadRouter from './routes/road.routes';
 import zoneRouter from './routes/zones.routes';
 import groupRouter from './routes/group.routes';
 import userRouter from './routes/user.routes';
-//import { disableOldReport } from './cron/disableOldReport.cron'
+import { disableOldReport } from './cron/disableOldReport.cron'
 
 const server = express();
 
@@ -49,7 +49,7 @@ server.use('/', (_req, res) => {
 server.use(errorHandler)
 const app = server.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
-    //disableOldReport.start()
+    disableOldReport.start()
 })
 
 export { server, app };
