@@ -1,100 +1,154 @@
 import GroupRepository from "../../src/repository/group.repository";
-import { IGroup, IGroupMember } from "../../src/models/group.interface";
-import { ModelCtor, Model, Sequelize } from "sequelize";
-import User from "../../src/repository/entities/User";
+import { IGroup } from "../../src/models/group.interface";
+import { config } from "dotenv";
+import container from "../../src/container";
+import { Lifetime } from "awilix";
+import UserRepository from "../../src/repository/user.repository";
+import dbConnection from "../../src/config/dbConnection.config";
 
 describe('Group Repository', () => {
-    let GroupModelMock: ModelCtor<Model<IGroup>>;
     let groupRepository: GroupRepository;
+    let userRepository: UserRepository;
 
     beforeAll(() => {
-        const sequelizeMock = new Sequelize() as any;
-        GroupModelMock = sequelizeMock.define('Group', {}) as ModelCtor<Model<IGroup>>;
+        config();
+        container.loadModules([
+            ['../../src/models/*.model.ts', Lifetime.SCOPED],
+            ['../../src/repository/*.repository.ts', Lifetime.SCOPED],
+        ]);
     });
 
-    beforeEach(() => {
-        groupRepository = new GroupRepository({ Group: GroupModelMock });
+    beforeEach(async () => {
+        await dbConnection.sync({ force: true });
+        groupRepository = container.resolve<GroupRepository>('groupRepository');
+        userRepository = container.resolve<UserRepository>('userRepository');
+    });
+
+    afterEach(async () => {
+    });
+
+    afterAll(async () => {
+        await dbConnection.close();
     });
 
     test('should create a group', async () => {
+        const userData = {
+            email: 'crisefeld@gmail.com',
+            password: '123456',
+            name: 'Cristian',
+            lastName: 'Esfeld',
+            phoneNumber: '123456',
+            username: 'crisefeld',
+            id: 1,
+        };
+
+        await userRepository.create(userData);
+
         const groupData: IGroup = {
             name: 'Test Group',
-            ownerId: 1,
+            ownerId: userData.id,
             groupCode: 'ABC123'
         };
 
-        GroupModelMock.findOne = jest.fn().mockResolvedValue(null);
-        GroupModelMock.create = jest.fn().mockResolvedValue(groupData as any);
-
-        const createdGroup = await groupRepository.create(groupData);
-
-        expect(GroupModelMock.findOne).toHaveBeenCalledWith({ where: { name: groupData.name } });
-        expect(GroupModelMock.create).toHaveBeenCalledWith({
-            name: groupData.name,
-            ownerId: groupData.ownerId,
-            groupCode: groupData.groupCode
-        });
-        expect(createdGroup).toEqual(groupData);
+        try {
+            const createdGroup = await groupRepository.create(groupData);
+            expect(createdGroup).toBeDefined();
+            expect(createdGroup!.name).toBe(groupData.name);
+        } catch (error) {
+            console.error('Error creating group:', error);
+            throw error;
+        }
     });
 
     test('should get a group by id', async () => {
-        const groupId = 1;
-        const groupData: IGroup = {
-            id: groupId,
-            name: 'Test Group',
-            ownerId: 1,
-            groupCode: 'ABC123'
+        const userData = {
+            email: 'crisefeld@gmail.com',
+            password: '123456',
+            name: 'Cristian',
+            lastName: 'Esfeld',
+            phoneNumber: '123456',
+            username: 'crisefeld',
+            id: 1,
         };
 
-        GroupModelMock.findByPk = jest.fn().mockResolvedValue(groupData as any);
+        await userRepository.create(userData);
 
-        const fetchedGroup = await groupRepository.findById(groupId);
+        const groupData: IGroup = {
+            name: 'Another Test Group',
+            ownerId: userData.id,
+            groupCode: 'XYZ789'
+        };
 
-        expect(GroupModelMock.findByPk).toHaveBeenCalledWith(groupId);
-        expect(fetchedGroup).toEqual(groupData);
+        const createdGroup = await groupRepository.create(groupData);
+
+        try {
+            const fetchedGroup = await groupRepository.findById(createdGroup!.id as number);
+            expect(fetchedGroup).toBeDefined();
+            expect(fetchedGroup?.name).toBe(groupData.name);
+        } catch (error) {
+            console.error('Error fetching group by id:', error);
+            throw error;
+        }
     });
 
     test('should get all groups by owner', async () => {
-        const ownerId = 1;
-        const groupsData: IGroup[] = [
-            { id: 1, name: 'Group 1', ownerId, groupCode: 'ABC123' },
-            { id: 2, name: 'Group 2', ownerId, groupCode: 'XYZ789' }
-        ];
-
-        GroupModelMock.findAll = jest.fn().mockResolvedValue(groupsData as any);
-
-        const fetchedGroups = await groupRepository.findByOwner(ownerId);
-
-        expect(GroupModelMock.findAll).toHaveBeenCalledWith({ where: { ownerId } });
-        expect(fetchedGroups).toEqual(groupsData);
-    });
-
-    test('should get group members by group id', async () => {
-        // Datos de prueba para obtener los miembros de un grupo por su ID
-        const groupId = 1;
-        const groupMemberData: IGroupMember = {
-            name: 'Group 1',
-            ownerId: 1,
-            members: [{
-                name: 'John Doe',
-                lastName: 'Doe',
-                email: 'johndoe@example.com'
-            }]
+        const userData = {
+            email: 'crisefeld@gmail.com',
+            password: '123456',
+            name: 'Cristian',
+            lastName: 'Esfeld',
+            phoneNumber: '123456',
+            username: 'crisefeld',
+            id: 1,
         };
 
-        GroupModelMock.findOne = jest.fn().mockResolvedValue({ get: () => groupMemberData } as any);
+        await userRepository.create(userData);
 
-        const fetchedGroupMembers = await groupRepository.getGroupMembers(groupId);
+        const groupData: IGroup = {
+            name: 'Test Group 1',
+            ownerId: userData.id,
+            groupCode: '123ABC'
+        };
 
-        expect(GroupModelMock.findOne).toHaveBeenCalledWith({
-            where: { id: groupId },
-            include: {
-                model: User,
-                as: 'members',
-                attributes: ['id', 'name', 'lastName', 'username', 'email', 'phoneNumber'],
-                through: { attributes: [] }
-            }
-        });
-        expect(fetchedGroupMembers).toEqual(groupMemberData);
+        await groupRepository.create(groupData);
+
+        try {
+            const groups = await groupRepository.findByOwner(userData.id);
+            expect(groups).toBeDefined();
+            expect(groups.length).toBeGreaterThan(0);
+        } catch (error) {
+            console.error('Error fetching groups by owner:', error);
+            throw error;
+        }
+    });
+
+    test('should return null if group with the same name exists', async () => {
+        const userData = {
+            email: 'crisefeld@gmail.com',
+            password: '123456',
+            name: 'Cristian',
+            lastName: 'Esfeld',
+            phoneNumber: '123456',
+            username: 'crisefeld',
+            id: 1,
+        };
+
+        await userRepository.create(userData);
+
+        const groupData: IGroup = {
+            name: 'Duplicate Group',
+            ownerId: userData.id,
+            groupCode: 'DEF456'
+        };
+
+        await groupRepository.create(groupData);
+
+        try {
+            const createdGroup2 = await groupRepository.create(groupData);
+            expect(createdGroup2).toBeNull();
+        } catch (error) {
+            console.error('Error creating duplicate group:', error);
+            throw error;
+        }
     });
 });

@@ -5,8 +5,8 @@ import { IReportService } from "../../src/services/interfaces/report.service.int
 import { IReportDto } from "../../src/models/reports.interface";
 import { GroupNotCreatedException } from "../../src/exceptions/group.exceptions";
 
-jest.mock('../repository/group.repository');
-jest.mock('../services/report.service');
+jest.mock('../../src/repository/group.repository');
+jest.mock('../../src/services/report.service');
 
 describe('GroupService', () => {
   let groupRepository: jest.Mocked<IGroupRepository<IGroup, IGroupMember>>;

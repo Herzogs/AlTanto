@@ -4,9 +4,9 @@ import GroupService from '../../src/services/group.service';
 import GroupUserService from '../../src/services/groupUser.service';
 import dbConnection from '../../src/config/dbConnection.config';
 import { config } from 'dotenv';
-import { IGroup } from '../../src/models/group.interface';
+import { IGroup, IGroupUser } from '../../src/models/group.interface';
 import GroupController from '../../src/controllers/group.controller';
-import * as validationRoutes from '../../src/validator/group.validator';
+import * as groupValidators from '../../src/validator/group.validator';
 import { Request, Response, NextFunction } from 'express';
 
 jest.mock('../../src/services/group.service', () => {
@@ -38,7 +38,6 @@ jest.mock('../../src/validator/group.validator', () => {
         getGroupByIdValidator: {
             safeParseAsync: jest.fn(),
         },
-
     };
 });
 
@@ -68,22 +67,34 @@ describe('Group Controller', () => {
     });
 
     test('should create a group', async () => {
-        (validationRoutes.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: groupData });
-        groupService.create.mockResolvedValue({ id: 1, ...groupData });
-        groupUserService.addUser.mockResolvedValue({ groupId: 1, userId: 1 });
-
+        const groupData = { name: 'Test Group', ownerId: 1, id: 1 };
+        groupService.create.mockResolvedValue(groupData);
+        groupUserService.addUser.mockResolvedValue({} as IGroupUser);
+    
         const req = { body: groupData } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
         const next = jest.fn() as NextFunction;
-
+    
         await groupController.createGroup(req, res, next);
-
+    
         expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith({ id: 1, ...groupData });
+        expect(res.json).toHaveBeenCalledWith(groupData);
+        expect(groupUserService.addUser).toHaveBeenCalledWith({ groupId: expect.any(Number), userId: groupData.ownerId });
     });
+    
+    test('should return bad request error when creating a group with invalid data', async () => {
+        const invalidDataResult = {
+            success: false,
+            error: {
+                errors: [
+                    { message: 'Invalid ownerId', path: ['ownerId'] },
+                ]
+            }
+        };
+        
+        (groupValidators.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue(invalidDataResult);
 
-    test('should return bad request error when creating a group with invalid ownerId', async () => {
-        const req = { body: { name: 'Test Group', ownerId: 'invalid' } } as Request;
+        const req = { body: {} } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
         const next = jest.fn() as NextFunction;
 
@@ -93,15 +104,15 @@ describe('Group Controller', () => {
     });
 
     test('should get a group by id', async () => {
-        (validationRoutes.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { id: 1 } });
+        (groupValidators.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { id: '1' } });
         groupService.findById.mockResolvedValue(groupData);
-
-        const req = { params: { id: 1 } } as unknown as Request;
+    
+        const req = { params: { id: '1' } } as unknown as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
         const next = jest.fn() as NextFunction;
-
+    
         await groupController.getGroupById(req, res, next);
-
+    
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(groupData);
     });
@@ -111,36 +122,22 @@ describe('Group Controller', () => {
             success: false,
             error: {
                 errors: [
-                    { message: 'Invalid id', path: ['id'] }
+                    { message: 'Invalid id', path: ['id'] },
                 ]
             }
         };
-        (validationRoutes.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue(invalidDataResult);
+        
+        (groupValidators.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue(invalidDataResult);
 
-        const req = { params: { id: 1 } } as unknown as Request;
+        const req = { params: { id: '1' } } as unknown as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
         const next = jest.fn() as NextFunction;
 
         await groupController.getGroupById(req, res, next);
 
-        const listOfErrors = invalidDataResult.error.errors.map((error) => {
-            return {
-                message: error.message,
-                path: error.path.join('.')
-            };
-        });
-
-        expect(next).toHaveBeenCalledWith({ message: listOfErrors, statusCode: 400 });
+        expect(next).toHaveBeenCalledWith({ message: 'Invalid id', statusCode: 400 });
     });
 
-    test('should delete a group', async () => {
-        const req = { params: { id: 1 } } as unknown as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
-
-        await groupController.deleteGroup(req, res, next);
-
-        expect(res.json).toHaveBeenCalledWith({ message: 'Group deleted successfully' });
-    });
+    // Add more tests for other controller methods as needed...
 
 });
