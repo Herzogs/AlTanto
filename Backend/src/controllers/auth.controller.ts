@@ -15,16 +15,19 @@ class AuthController{
     }
 
     async createUSer(req: Request, res: Response, next: NextFunction) {
+        console.log("Creating user");
         try {
+            console.log(req.body);
             const newUser: IUser = req.body as IUser;
             const newUserDatabase = await this.userService.createUser(newUser);
-            res.status(STATUS_CODE.SUCCESS).json(newUserDatabase);
+            res.status(STATUS_CODE.CREATED).json(newUserDatabase);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
     }
 
     async confirmUser(req: Request, res: Response, next: NextFunction) {
+        console.log("Creating user");
         const email = req.body.email;
         const code = req.body.code;
         try {
@@ -37,6 +40,7 @@ class AuthController{
     }
 
     async login(req: Request, res: Response, next: NextFunction) {
+        console.log("Creating user");
         const email = req.body.email;
         const password = req.body.password;
         try {
