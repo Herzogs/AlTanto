@@ -26,6 +26,7 @@ const nonProtectedRoutes = [
   { path: "/auth/logout", element: <Logout /> },
   { path: "/auth/verificacion", element: <ValidationCodeForm /> },
   { path: "/auth/login", element: <LoginForm /> },
+  { path: "/reportes/:id", element: <ReportDetail /> },
   { path: "/", element: <Home /> },
   {
     path: "*",
@@ -45,7 +46,6 @@ const protectedRoutes = [
   { path: "/form/zona", element: <ZoneForm /> },
   { path: "/zonas/:id", element: <ZoneID /> },
   { path: "/notificaciones", element: <Notifications /> },
-  { path: "/reportes/:id", element: <ReportDetail /> },
   { path: "/grupos", element: <Groups /> },
   { path: "/grupos/:id", element: <GroupDetail /> },
   { path: "/form/grupo", element: <GroupForm /> },

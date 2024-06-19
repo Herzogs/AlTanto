@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
-import {registerUser} from "@services/sendData";
+import { registerUser } from "@services/sendData";
 import { useState } from "react";
 import ModalAT from "@components/modal/ModalAT";
+import Header from "@components/header/Header";
+import { Container } from "react-bootstrap";
 
 function RegisterForm() {
   const {
@@ -22,6 +24,7 @@ function RegisterForm() {
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [fails, setFails] = useState(false);
 
   const onSubmit = async (data) => {
     try {
@@ -30,16 +33,17 @@ function RegisterForm() {
       setMessage(
         "Se le enviara un codigo de verifación a su correo electrónico"
       );
+      setShowModal(true)
     } catch (error) {
-      setTitle("Error");
-      setMessage(error.message);
-    } finally {
-      setShowModal(true);
+      console.log(error.message);
+      setFails(true);
     }
   };
 
   return (
-    <div className="container">
+   <>
+    <Header />
+    <Container className="pt-4 pt-lg-5">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="my-4 p-4 border rounded"
@@ -153,6 +157,7 @@ function RegisterForm() {
             <div className="invalid-feedback">{errors.email.message}</div>
           )}
         </div>
+        {fails && <p className="text-danger">* Error al crear el usuario</p>}
         <input type="submit" value="Enviar" className="btn btn-primary" />
       </form>
       <ModalAT
@@ -162,7 +167,8 @@ function RegisterForm() {
         setShowModal={setShowModal}
         url="/auth/verificacion"
       />
-    </div>
+    </Container>
+   </>
   );
 }
 
