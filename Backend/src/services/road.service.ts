@@ -19,8 +19,9 @@ class RoadService implements IRoadService<IRoadDto> {
 
     async getRouteById(id: number) {
         const road = await this.roadRepository.getById(id);
-        if (!road)
-            throw new RoadNotFoundException("Road not found");
+        if (!road){
+            return null
+        }
         return road;
     }
 

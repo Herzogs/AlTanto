@@ -15,8 +15,7 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
 
     async getAll(): Promise<IRoadDto[]> {
         const listOfRoad = await this.roadModel.findAll();
-        console.log("en road repository");
-
+        
         if (!listOfRoad) {
             return [];
         }
@@ -59,7 +58,6 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
                 attributes: { exclude: ['LocationId'] }
             }
         );
-
         if (!roadSearched) {
             return null;
         }
@@ -86,51 +84,63 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
     }
 
     async create(road: IRoadDto): Promise<IRoadDto | null> {
-
-        const routeSearched = await this.roadModel.findOne({
-            where: {
+        
+        try {
+            const routeSearched = await this.roadModel.findOne({
+                where: {
+                    addressOrigin: road.addressOrigin,
+                    addressDestiny: road.addressDestiny
+                }
+            })
+            
+            if (routeSearched) {
+                console.log("ya existe")
+                return null}
+    
+            const locationSearchedOrigin = await Location.findOrCreate({
+                where: { latitude: road.origin.lat, longitude: road.origin.lng }
+            })
+            
+            const locationSearchedDestiny = await Location.findOrCreate({
+                where: { latitude: road.destination.lat, longitude: road.destination.lng },
+            })
+            
+            const locationOrigin = locationSearchedOrigin[0].get({ plain: true });
+            const locationDestiny = locationSearchedDestiny[0].get({ plain: true });
+            
+            if (!locationOrigin || !locationDestiny) return null
+           
+            const roadCreated = await this.roadModel.create({
+                name: road.name,
                 addressOrigin: road.addressOrigin,
-                addressDestiny: road.addressDestiny
-            }
-        })
-
-        if (routeSearched) return null
-
-        const locationSearchedOrigin = await Location.findOrCreate({
-            where: { latitude: road.origin.lat, longitude: road.origin.lng }
-        })
-
-        const locationSearchedDestiny = await Location.findOrCreate({
-            where: { latitude: road.destination.lat, longitude: road.destination.lng },
-        })
-        const locationOrigin = locationSearchedOrigin[0].get({ plain: true });
-        const locationDestiny = locationSearchedDestiny[0].get({ plain: true });
-        if (!locationOrigin || !locationDestiny) return null
-
-        const roadCreated = await this.roadModel.create({
-            name: road.name,
-            addressOrigin: road.addressOrigin,
-            addressDestiny: road.addressDestiny,
-            origin: +locationOrigin.id!,
-            destination: +locationDestiny.id!,
-            distance: road.distance,
-            duration: road.duration,
-            user: road.user,
-        });
-        if (!roadCreated) return null
-        const savedRoad = roadCreated.get({ plain: true });
-        return {
-            id: savedRoad.id,
-            name: savedRoad.name,
-            addressOrigin: savedRoad.addressOrigin,
-            addressDestiny: savedRoad.addressDestiny,
-            origin: road.origin,
-            destination: road.destination,
-            distance: savedRoad.distance,
-            duration: savedRoad.duration,
-            user: savedRoad.user
-        };
-
+                addressDestiny: road.addressDestiny,
+                origin: +locationOrigin.id!,
+                destination: +locationDestiny.id!,
+                distance: road.distance,
+                duration: road.duration,
+                user: road.user,
+            });
+            
+            if (!roadCreated) return null
+            const savedRoad = roadCreated.get({ plain: true });
+            console.log(savedRoad)
+            return {
+                id: savedRoad.id,
+                name: savedRoad.name,
+                addressOrigin: savedRoad.addressOrigin,
+                addressDestiny: savedRoad.addressDestiny,
+                origin: road.origin,
+                destination: road.destination,
+                distance: savedRoad.distance,
+                duration: savedRoad.duration,
+                user: savedRoad.user
+            };
+        
+        } catch (error) {
+            console.log(error);
+            return null;            
+        }
+        
     }
 
     async getByUserId(id: number): Promise<IRoadDto[]> {

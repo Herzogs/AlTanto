@@ -23,6 +23,7 @@ class RoadController {
     async getRouteById(req: Request, res: Response, next: NextFunction) {
         const validData = await validationRouts.getRoadByIdValidator.safeParseAsync(req.params);
         if (!validData.success) {
+
             const listOffErrors = validData.error.errors.map((error) => {
                 return {
                     message: error.message,
@@ -34,6 +35,9 @@ class RoadController {
         }
         try {
             const road = await this.roadService.getRouteById(+req.params.id);
+            if (!road) {
+                return next({ message: 'Road not found', statusCode: STATUS_CODE.NOT_FOUND });
+            }
             res.status(STATUS_CODE.SUCCESS).json(road);
         } catch (error) {
             next({message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR});
