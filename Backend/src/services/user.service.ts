@@ -19,7 +19,7 @@ class UserService implements IUserService<IUser> {
             await this.cognitoService.createUser(user);
             return userCreated;
         } catch (error) {
-            await this.userRepository.delete(user.email)
+           // await this.userRepository.delete(user.email)
             throw new UserNotCreatedException((error as Error).message);
         }
     }
