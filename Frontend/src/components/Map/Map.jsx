@@ -2,7 +2,7 @@
 
 /* eslint-disable react/prop-types */
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { icons, getIconByCategoryId } from "./Icons";
+import { icons } from "./Icons";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
 import Routing from "@components/road/Routing";
@@ -28,7 +28,6 @@ const Map = ({
   zoneMode = false,
   startPoint = null,
   endPoint = null,
-  fetchingReport = false,
   showFilters = false,
   mapClick = false,
   noCircle = false,
@@ -54,6 +53,7 @@ const Map = ({
     fetchCategories();
   }, []);
 
+  console.log(reports)
   const filteredReports =
     reports && reports.length > 0
       ? reports.filter((report) =>

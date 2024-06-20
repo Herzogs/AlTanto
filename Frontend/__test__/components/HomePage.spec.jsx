@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import Home from '@pages/Home'; // Asegúrate de que la ruta es correcta
+import Home from '@pages/Home';
 import useReports from '@hook/useReports';
 import { useStore, userStore } from '@store';
 

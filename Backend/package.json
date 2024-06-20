@@ -7,7 +7,8 @@
     "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
     "build": "tsc",
     "dev": "ts-node-dev --respawn --transpile-only --env-file=.env src/server.ts",
-    "test": "jest --silent --runInBand --detectOpenHandles",
+    "test": "jest --coverage --silent --runInBand --detectOpenHandles --coverageReporters=text-summary",
+    "coverage": "jest --coverage --coverageReporters=text-summary",
     "test:watch": "jest --silent --watchAll --runInBand --detectOpenHandles "
   },
   "keywords": [],

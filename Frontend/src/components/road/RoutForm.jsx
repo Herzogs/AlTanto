@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
 import { useForm } from "react-hook-form";
@@ -68,8 +67,12 @@ function RoutForm() {
 
   const handleSetPoints = () => {
     if (startAddress !== "" && endAddress !== "") {
+      console.log("entro a setPoints")
+
       setPoints();
       setVisible(true);
+      console.log("visible --> ",visible)
+      console.log("userLocation --> ",userLocation)
     }
   };
 
