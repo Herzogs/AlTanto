@@ -8,7 +8,7 @@ import { GroupNotCreatedException } from "../../src/exceptions/group.exceptions"
 jest.mock('../../src/repository/group.repository');
 jest.mock('../../src/services/report.service');
 
-describe.skip('GroupService', () => {
+describe('GroupService', () => {
   let groupRepository: jest.Mocked<IGroupRepository<IGroup, IGroupMember>>;
   let reportService: jest.Mocked<IReportService<IReportDto>>;
   let groupService: GroupService;

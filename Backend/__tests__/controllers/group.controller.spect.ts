@@ -41,7 +41,7 @@ jest.mock('../../src/validator/group.validator', () => {
     };
 });
 
-describe.skip('Group Controller', () => {
+describe('Group Controller', () => {
     let groupService: jest.Mocked<GroupService>;
     let groupUserService: jest.Mocked<GroupUserService>;
     let groupController: GroupController;

@@ -110,7 +110,7 @@ describe("Zone Repository", () => {
         expect(reports![0].content).toBe(report1.content);
     });
 
-    test.skip('should give null if no report found', async () => {
+    test('should give null if no report found', async () => {
         const reports = await zoneRepository.getReports(zoneData);
         expect(reports).toHaveLength(0);
     });

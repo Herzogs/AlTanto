@@ -1,12 +1,12 @@
 export interface IReport {
-    id: number;
+    id?: number;
     content: string;
     createAt: Date;
-    file: string;
+    file?: string;
     duration: number;
     positiveScore: number;
     negativeScore: number;
-    enabled: boolean;
+    enabled?: boolean;
     categoryId: number;
     locationId: number;
     

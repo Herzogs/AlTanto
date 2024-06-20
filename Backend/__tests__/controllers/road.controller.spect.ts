@@ -1,8 +1,6 @@
 import { Lifetime } from 'awilix';
 import container from '../../src/container';
 import RoadService from '../../src/services/road.service';
-import dbConnection from '../../src/config/dbConnection.config';
-import { config } from 'dotenv';
 import { IRoadDto } from '../../src/models/road.interfaces';
 import RoadController from '../../src/controllers/road.controller';
 import * as validationRoutes from '../../src/validator/road.validatos';
@@ -33,7 +31,7 @@ jest.mock('../../src/validator/road.validatos', () => {
     };
 });
 
-describe.skip('Road Controller', () => {
+describe('Road Controller', () => {
     let roadService: jest.Mocked<RoadService>;
     let roadController: RoadController;
 
@@ -49,7 +47,7 @@ describe.skip('Road Controller', () => {
     };
 
     beforeAll(() => {
-        config();
+        //config();
         container.loadModules([
             ['../../src/repository/*.repository.ts', Lifetime.SCOPED],
             ['../../src/services/*.service.ts', Lifetime.SCOPED],
@@ -57,7 +55,7 @@ describe.skip('Road Controller', () => {
     });
 
     beforeEach(async () => {
-        await dbConnection.sync({ force: true });
+        //await dbConnection.sync({ force: true });
         roadService = container.resolve<RoadService>('roadService') as jest.Mocked<RoadService>;
         roadController = new RoadController({ roadService });
     });

@@ -18,7 +18,7 @@ jest.mock('../../src/repository/road.repository', () => {
     });
 });
 
-describe.skip('Road Service', () => {
+describe('Road Service', () => {
     let roadService: RoadService;
     let userRepository: UserRepository;
     let roadRepository: jest.Mocked<RoadRepository>;
