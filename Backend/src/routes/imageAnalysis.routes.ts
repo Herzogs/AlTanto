@@ -1,9 +1,14 @@
 import Router from 'express';
 import multer from 'multer';
 import analyzeImage from '../controllers/imageAnalysis.controller';
-const upload = multer({ storage: multer.memoryStorage() });
-const imageRouter = Router();
 
-imageRouter.post('/', upload.single('image'), analyzeImage);
+import { makeInvoker } from 'awilix-express';
+
+
+const imageRouter = Router();
+const api = makeInvoker(analyzeImage);
+const upload = multer({ storage: multer.memoryStorage() });
+
+imageRouter.post('/', upload.single('image'), api('analyzeImage'));
 
 export default imageRouter;

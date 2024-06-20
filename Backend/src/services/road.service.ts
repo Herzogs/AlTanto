@@ -1,36 +1,42 @@
-import { IRoad } from '../interfaces/road.interfaces';
-import * as roadRepository from '../repository/road.repository'
-import transformData from '../utilities/transformData.utilities'
+import { IRoadDto } from '../models/road.interfaces';
+import { IRoadRepository } from '../repository/interface/road.repository.interface'
 import { RoadNotCreatedException, RoadNotFoundException } from '../exceptions/road.exceptions';
+import { IRoadService } from './interfaces/road.service.interface';
 
-const getAllRoads = async () => {
-    const roads = await roadRepository.default.getAll();
-    if (!roads) 
-        throw new RoadNotFoundException("No roads found");
-    return roads.map((road) => transformData(road));
+class RoadService implements IRoadService<IRoadDto> {
+    private roadRepository: IRoadRepository<IRoadDto>;
+
+    constructor({roadRepository }: { roadRepository: IRoadRepository<IRoadDto> }) {
+        this.roadRepository = roadRepository;
+    }
+
+    async getAllRoads() {
+        const roads = await this.roadRepository.getAll();
+        if (!roads)
+            throw new RoadNotFoundException("No roads found");
+        return roads;
+    }
+
+    async getRouteById(id: number) {
+        const road = await this.roadRepository.getById(id);
+        if (!road)
+            throw new RoadNotFoundException("Road not found");
+        return road;
+    }
+
+    async createRoad(road: IRoadDto) {
+        const roadCreated = await this.roadRepository.create(road);
+        if (!roadCreated)
+            throw new RoadNotCreatedException("Road could not be created");
+        return roadCreated;
+    }
+
+    async getRoadsByUserId(id: string) {
+        const roads = await this.roadRepository.getByUserId(+id);
+        if (!roads)
+            return []
+        return roads
+    }
 }
 
-const getRouteById = async (id: number) => {
-    const road = await roadRepository.default.getById(id);
-    if (!road) 
-      throw new RoadNotFoundException("Road not found");
-    return transformData(road);
-}
-
-const createRoad = async (road: IRoad) => {
-    const roadCreated = await roadRepository.default.create(road);
-    if (!roadCreated) 
-        throw new RoadNotCreatedException("Road could not be created");
-    return transformData(roadCreated);
-}
-
-const getRoadsByUserId = async (id: string) => {
-    
-    const roads = await roadRepository.default.getByUserId(+id);
-   
-    if (!roads) 
-        throw new RoadNotFoundException("No roads found");
-    return roads.map((road) => transformData(road));
-}
-
-export { getAllRoads, createRoad, getRouteById, getRoadsByUserId};
+export default RoadService;

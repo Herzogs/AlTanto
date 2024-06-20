@@ -22,6 +22,7 @@ const createReportValidator = z.object({
     required_error: 'Longitude is required',
   }).min(1, { message: 'Longitude must be at least 1 character long' })
     .max(30, { message: 'Longitude must be at most 30 characters long' }),
+  
 
   groupId: z.string().optional(),
 
@@ -56,25 +57,5 @@ const getReportByUserIDValidator = z.object({
     .max(10, { message: 'UserId must be at most 10 characters long' })
 }).strict()
 
-const getReportByLatLongRadValidator = z.object({
-  lat: z.string({
-    message: 'Latitude must be a string',
-    required_error: 'Latitude is required'
-  })
-    .min(1, { message: 'Latitude must be at least 1 character long' })
-    .max(30, { message: 'Latitude must be at most 30 characters long' }),
-  lon: z.string({
-    message: 'Longitude must be a string',
-    required_error: 'Longitude is required'
-  })
-    .min(1, { message: 'Longitude must be at least 1 character long' })
-    .max(30, { message: 'Longitude must be at most 30 characters long' }),
-  rad: z.string({
-    message: 'Radius must be a string',
-    required_error: 'Radius is required'
-  })
-    .min(1, { message: 'Radius must be at least 1 character long' })
-    .max(30, { message: 'Radius must be at most 30 characters long' })
-}).strict()
 
-export { createReportValidator, getReportByIdValidator, getReportByUserIDValidator, getReportByLatLongRadValidator }
+export { createReportValidator, getReportByIdValidator, getReportByUserIDValidator}

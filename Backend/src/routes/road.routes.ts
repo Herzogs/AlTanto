@@ -1,12 +1,13 @@
 import {Router} from 'express'
-import * as routesController from '../controllers/road.controller'
-import { auth } from '../middlewares/auth.middlewares'
+import RoadController from '../controllers/road.controller'
+//import { auth } from '../middlewares/auth.middlewares'
+import { makeInvoker } from 'awilix-express'
 
 const roadRouter = Router()
-
-roadRouter.get('/', auth, routesController.getAllRoads)
-roadRouter.get('/:id', auth, routesController.getRouteById)
-roadRouter.post('/', auth, routesController.createRoad)
-roadRouter.get('/user/:id', auth, routesController.getRoadsByUserId)
+const api = makeInvoker(RoadController)
+roadRouter.get('/', api('getAllRoads'))
+roadRouter.get('/:id', api('getRouteById'))
+roadRouter.post('/', api('createRoad'))
+roadRouter.get('/user/:id', api('getRoadsByUserId'))
 
 export default roadRouter

@@ -1,9 +1,19 @@
-import User from "../models/User";
-import {IUser} from "../interfaces/user.interface";
+import User from "./entities/User";
+import {IUser} from "../models/user.interface";
+import { ModelCtor } from "sequelize";
+import { IUserRepository } from "./interface/user.repository.interface";
 
-class UserRepository {
-    static async create(user: IUser) {
-        return await User.create({
+
+class UserRepository implements IUserRepository<IUser>{
+
+    private userModal: ModelCtor<User>
+
+    constructor({ User }: { User: ModelCtor<User> }) {
+        this.userModal = User;
+    }
+
+    async create(user: IUser) {
+        const newUser = await this.userModal.create({
                 name: user.name,
                 lastName: user.lastName,
                 email: user.email,
@@ -12,18 +22,19 @@ class UserRepository {
                 rol: user.rol,
             }
         );
+        return newUser.get({ plain: true }) as IUser;
     }
 
-    static async deleteUser(email: string) {
-        await User.destroy({
+    async delete(email: string) {
+        await this.userModal.destroy({
             where: {
                 email: email
             }
         });
     }
 
-    static async getUserByEmail(email: string) {
-        const userSearched = await User.findOne({
+    async getByEmail(email: string): Promise<IUser | null> {
+        const userSearched = await this.userModal.findOne({
             where: {
                 email: email
             }
@@ -31,11 +42,11 @@ class UserRepository {
         if (userSearched === null) {
             return null;
         }
-        return userSearched;
+        return userSearched.get({ plain: true }) as IUser;
     }
 
-    static async getUserByUserName(userName: string) {
-        const userSearched = await User.findOne({
+    async getByUserName(userName: string): Promise<IUser | null>{
+        const userSearched = await this.userModal.findOne({
             where: {
                 userName: userName
             }
@@ -43,7 +54,7 @@ class UserRepository {
         if (userSearched === null) {
             return null;
         }
-        return userSearched;
+        return userSearched.get({ plain: true }) as IUser;
     }
 }
 

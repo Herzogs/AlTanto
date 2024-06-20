@@ -32,7 +32,7 @@ function Home() {
     setLoading(false);
 
   }, []);
-
+  
   useEffect(() => {
     if (userLocation) {
       fetchReports()

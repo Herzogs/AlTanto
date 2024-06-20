@@ -17,10 +17,12 @@ const LocationMarker = () => {
   const { userLocation, setUserLocation, setOldUserLocation } = useStore();
 
   useEffect(() => {
+
     if (!userLocation) {
-      map
-        .locate({ setView: true, maxZoom: 18 })
-        .on("locationfound", function (e) {
+
+      map.locate()
+      .locate({ setView: true, maxZoom: 18 })
+        .on("locationfound", (e) => {
           setUserLocation(e.latlng);
         })
         .on("locationerror", () => {
@@ -36,8 +38,9 @@ const LocationMarker = () => {
 
             setUserLocation(L.latLng(latitude, longitude))
           });
-        });
+        })
     }
+
   }, [map, userLocation, setUserLocation]);
 
   const eventHandlers = {

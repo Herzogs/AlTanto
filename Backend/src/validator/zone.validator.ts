@@ -38,6 +38,34 @@ const getZoneByIdValidator = z.object({
     .max(10)
 }).strict();
 
+const getNotificationValidator = z.object({
+    userId: z.string({
+        message: 'Id must be a string',
+        required_error: 'Id is required'
+    }).min(1).max(10)
+}).strict();
+
+const getAllByUserIdValidator = z.object({
+    id: z.string({
+        message: 'Id must be a string',
+        required_error: 'Id is required'
+    }).min(1).max(10)
+}).strict();
+
+const getFilteredReportsValidator = z.object({
+    lat: z.string({
+        message: 'Latitude must be a string',
+        required_error: 'Latitude is required'
+    }),
+    lon: z.string({
+        message: 'Longitude must be a string',
+        required_error: 'Longitude is required'
+    }),
+    rad: z.string({
+        message: 'Radius must be a string',
+        required_error: 'Radius is required'
+    })
+}).strict();
 
 
-export {createZoneValidator, getZoneByIdValidator};
+export {createZoneValidator, getZoneByIdValidator, getNotificationValidator, getAllByUserIdValidator, getFilteredReportsValidator};

@@ -1,13 +1,15 @@
 import {Router} from "express";
-import * as controller from '../controllers/auth.controller';
+import controller from '../controllers/auth.controller';
 import validateData from "../middlewares/validateData.middleware";
 import {createUser, login} from "../validator/user.validator";
+import { makeInvoker } from "awilix-express";
 
 const authRouter = Router();
+const api = makeInvoker(controller)
 
-authRouter.post('/register',validateData(createUser), controller.createUSer);
-authRouter.post('/validate-code', controller.confirmUser)
-authRouter.post('/login',validateData(login),controller.login)
+authRouter.post('/register',validateData(createUser), api('createUSer'));
+authRouter.post('/validate-code', api('confirmUser'))
+authRouter.post('/login',validateData(login),api('login'))
 
 
 

@@ -1,15 +1,16 @@
 import {Router} from "express";
-import * as controller from '../controllers/report.controller';
-import {upload} from '../middlewares/saveImages.middleware';
-import { auth } from "../middlewares/auth.middlewares";
+import controller from '../controllers/report.controller';
+//import { auth } from "../middlewares/auth.middlewares";
+import { makeInvoker } from "awilix-express";
+import {upload} from "../middlewares/saveImages.middleware";
 
 const reportRouter = Router();
+const api = makeInvoker(controller);
 
-reportRouter.get('/filterBy', controller.getReportsByLatLongRadius);
-reportRouter.get('/', auth, controller.getAllReports);
-reportRouter.get('/:id', auth, controller.getReportsById);
-reportRouter.get('/:userId', auth, controller.getReportByUser);
-reportRouter.post('/', auth, upload.single("image"), controller.createReport);
-reportRouter.get('/group/:groupId', auth, controller.getReportsByGroup);
+reportRouter.get('/', api('getAllReports'));
+reportRouter.get('/:id', api('getReportById'));
+//reportRouter.get('/user/:userId', api('getReportByUser'));
+reportRouter.post('/', upload.single('image'), api('createReport'));
+reportRouter.get('/group/:groupId', api('getReportsByGroup'));
 
 export default reportRouter;

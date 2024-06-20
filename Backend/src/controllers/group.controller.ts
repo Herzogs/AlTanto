@@ -1,169 +1,143 @@
 import { NextFunction, Request, Response } from 'express';
-import * as groupService from '../services/group.service';
 import { getGroupByIdValidator } from '../validator/group.validator';
+import { IGroupService } from '../services/interfaces/group.service.interface';
+import { IGroup, IGroupUser, IGroupMember } from '../models/group.interface';
+import { IGroupUserService } from '../services/interfaces/groupUser.service.interface';
+import { STATUS_CODE } from '../utilities/statusCode.utilities';
 
-const getAllGroups = async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-        const groups = await groupService.getAllGroups();
-        return res.json(groups);
-    } catch (error) {
-        return next({ message: (error as Error).message, statusCode: 500 });
-    }
-};
+class GroupController {
+    private groupService: IGroupService<IGroup, IGroupUser,IGroupMember>;
+    private groupUserService: IGroupUserService<IGroupUser>;
 
-const getGroupById = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const validationResult = getGroupByIdValidator.safeParse(req.params);
-    if (!validationResult.success) {
-        return next({ message: validationResult.error.errors[0].message, statusCode: 400 });
+    constructor({ groupService, groupUserService }: { groupService: IGroupService<IGroup, IGroupUser,IGroupMember>, groupUserService: IGroupUserService<IGroupUser> }) {
+        this.groupService = groupService;
+        this.groupUserService = groupUserService;
     }
 
-    const { id } = validationResult.data;
-    try {
-        const group = await groupService.getGroupById(+id);
-        return res.json(group);
-    } catch (error) {
-        return next({ message: (error as Error).message, statusCode: 500 });
-    }
-};
-
-const createGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const { name, ownerId } = req.body;
-    
-
-    try {
-        if (typeof ownerId !== 'number') {
-            throw new Error('Invalid ownerId');
-        }
-
-        const newGroup = await groupService.createGroup(name, ownerId);
-
-        if (newGroup && typeof newGroup.id === 'number') {
-            await groupService.addUserToGroup(newGroup.id, ownerId);
-        } else {
-            throw new Error('Invalid groupId');
-        }
-
-        return res.json(newGroup);
-    } catch (error) {
-        return next({ message: (error as Error).message, statusCode: 500 });
-    }
-};
-
-const updateGroupName = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const { id } = req.params;
-    const { name } = req.body;
-    try {
-        const updatedGroup = await groupService.updateGroupName(+id, name);
-        return res.json(updatedGroup);
-    } catch (error) {
-        return next({ message: (error as Error).message, statusCode: 500 });
-    }
-};
-
-const deleteGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    const { id } = req.params;
-    try {
-        await groupService.deleteGroup(+id);
-        return res.json({ message: 'Group deleted successfully' });
-    } catch (error) {
-        return next({ message: (error as Error).message, statusCode: 500 });
-    }
-};
-
-const addUserToGroupWithCode = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-    try {
-        const { groupId = null, userId, groupCode } = req.body;
-        const groupUser = await groupService.addUserToGroupWithCode(groupId, userId, groupCode);
-        return res.json(groupUser);
-    } catch (error) {
-        return next({ message: (error as Error).message, statusCode: 500 });
-    }
-}
-
-    const removeUserFromGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-        const { groupId, userId } = req.params;
+    async createGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const { name, ownerId } = req.body;
         try {
-            await groupService.removeUserFromGroup(Number(groupId), Number(userId));
-            return res.json({ message: 'User removed from group successfully' });
-        } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 500 });
-        }
-    };
-
-    const findGroupsByName = async (req: Request, res: Response): Promise<Response> => {
-        const { groupName } = req.params;
-        try {
-            const groups = await groupService.findGroupsByName(groupName);
-            return res.json(groups);
-        } catch (error) {
-            return res.status(500).json({ message: (error as Error).message });
-        }
-    };
-
-const getGroupsByUserId = async (req: Request, res: Response): Promise<Response> => {
-    const { userId } = req.params; 
-    try {
-        const groups = await groupService.getGroupsByUserId(Number(userId));
-
-            if (!groups || groups.length === 0) {
-                return res.status(200).json([]);
+            if (typeof ownerId !== 'number') {
+                return next({ message: 'Invalid ownerId', statusCode: STATUS_CODE.BAD_REQUEST });
             }
-
-            return res.json(groups);
+            const group: IGroup = { name, ownerId };
+            const newGroup = await this.groupService.create(group);
+            if (newGroup && typeof newGroup.id === 'number') {
+                await this.groupUserService.addUser({ groupId: newGroup.id, userId: ownerId });
+                return res.status(STATUS_CODE.CREATED).json(newGroup);
+            } else {
+                throw new Error('Invalid groupId');
+            }
         } catch (error) {
-            return res.status(500).json({ message: (error as Error).message });
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
-    };
+    }
 
-    const getGroupDetailsById = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    async getGroupById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+       
+        const validationResult = await getGroupByIdValidator.safeParseAsync(req.params);
+        if (!validationResult.success) {
+            return next({ message: validationResult.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
+        }
+        try {
+            const { id } = validationResult.data as { id: string };
+            const group = await this.groupService.findById(+id);
+            if (group) {
+                return res.json(group);
+            } else {
+                return next({ message: 'Group not found', statusCode: STATUS_CODE.BAD_REQUEST });
+            }
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async deleteGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        
         const { id } = req.params;
         try {
-            const groupDetails = await groupService.getGroupDetailsById(Number(id));
-            return res.json(groupDetails);
+            await this.groupService.remove(+id);
+            return res.json({ message: 'Group deleted successfully' });
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: 500 });
-        }
-    };
-
-const getUserByUserName = async (req: Request, res: Response): Promise<Response> => {
-    const { userName } = req.params; 
-    try {
-        const user = await groupService.getUser(userName);
-
-            if (!user) {
-                return res.status(500).json([]);
-            }
-            return res.json(user);
-
-        } catch (error) {
-            return res.status(500).json({ message: (error as Error).message });
-        }
-    };
-
-    const getGroupsAndNotifications = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const {userId} = req.body;
-            const zones = await groupService.getNotification(+userId);
-            return res.json(zones);
-        } catch (error) {
-            if (error ) {
-            console.log(error);
-            }
-            return next((error as Error).message);
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
     }
 
-    export {
-        getAllGroups,
-        getGroupById,
-        createGroup,
-        updateGroupName,
-        deleteGroup,
-        addUserToGroupWithCode,
-        removeUserFromGroup,
-        findGroupsByName,
-        getGroupsByUserId,
-        getGroupDetailsById,
-        getUserByUserName,
-        getGroupsAndNotifications
-    };
+    async addUserToGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        console.log("entro al addUserToGroup")
+        const { groupId = null, userId, groupCode } = req.body;
+        try {
+            if (!groupId || !userId || !groupCode) {
+                return next({ message: 'Invalid input', statusCode: STATUS_CODE.BAD_REQUEST });
+            }
+            const groupUser = await this.groupService.validateGroupCode(groupCode);
+            await this.groupUserService.addUser({ groupId, userId });
+            return res.status(201).json(groupUser);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async removeUserFromGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        
+        const { groupId, userId } = req.params;
+        try {
+            if (!groupId || !userId) {
+                return next({ message: 'Invalid input', statusCode: STATUS_CODE.BAD_REQUEST });
+            }
+            await this.groupUserService.removeUser({ groupId: Number(groupId), userId: Number(userId) });
+            return res.status(STATUS_CODE.SUCCESS).json({ message: 'User removed from group successfully' });
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async findGroupsByName(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        
+        const { name } = req.params;
+        try {
+            const groups = await this.groupService.findByName(name);
+            return res.json(groups);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async getGroupsByUserId(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        
+        const { userId } = req.params;
+        
+        try {
+            const groups = await this.groupService.getAllByOwner(+userId);
+            return res.status(STATUS_CODE.SUCCESS).json(groups);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async getGroupDetailsById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const { id } = req.params;
+        
+        try {
+            const group = await this.groupService.findMembersByGroupId(+id);
+            return res.json(group);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async getGroupNotifications (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        
+        const { id } = req.params;
+        
+        try {
+            const notifications = await this.groupService.getNotifications(+id);
+            return res.json(notifications);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+}
+
+export default GroupController;

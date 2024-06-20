@@ -1,37 +1,45 @@
-import User from "../models/User";
-import {IUser} from "../interfaces/user.interface";
-import userRepository from "../repository/user.repository";
+import {IUser} from "../models/user.interface";
 import {UserNotCreatedException, UserNotFoundException} from "../exceptions/users.exceptions";
-import * as cognitoService from '../services/cognito.service'
-import {Error} from "sequelize";
+import { IUserRepository } from "../repository/interface/user.repository.interface";
+import { IUserService } from "./interfaces/user.service.interface";
+import { ICognitoService } from "./interfaces/cognito.service.interface";
 
-const createUser = async (user: IUser): Promise<User> => {
-    try {
-        const userCreated = await userRepository.create(user);
-      await cognitoService.createUser(user);
-        return userCreated;
-    } catch (error) {
-        await userRepository.deleteUser(user.email)
-        throw new UserNotCreatedException((error as Error).message);
+
+class UserService implements IUserService<IUser> {
+    private userRepository: IUserRepository<IUser>;
+    private cognitoService: ICognitoService;
+    constructor({ userRepository, cognitoService }: { userRepository: IUserRepository<IUser>, cognitoService: ICognitoService}) {
+        this.userRepository = userRepository;
+        this.cognitoService = cognitoService;
     }
 
-};
-
-const getUserByEmail = async (email: string): Promise<IUser> => {
-    const userSearched = await userRepository.getUserByEmail(email);
-    if (userSearched === null) {
-        throw new UserNotFoundException("User not found.");
+    async createUser(user: IUser): Promise<IUser> {
+        try {
+            const userCreated = await this.userRepository.create(user);
+            await this.cognitoService.createUser(user);
+            return userCreated;
+        } catch (error) {
+            await this.userRepository.delete(user.email)
+            throw new UserNotCreatedException((error as Error).message);
+        }
     }
-    return userSearched.get({plain: true}) as IUser;
+
+    async getUserByEmail(email: string): Promise<IUser> {
+        const userSearched = await this.userRepository.getByEmail(email);
+        if (userSearched === null) {
+            throw new UserNotFoundException("User not found.");
+        }
+        return userSearched;
+    }
+
+    async getUserByUserName(userName: string): Promise<IUser> {
+        const userSearched = await this.userRepository.getByUserName(userName);
+        if (userSearched === null) {
+            throw new UserNotFoundException("User not found.");
+        }
+        return userSearched;
+    }
+
 }
 
-const getUserByUserName = async (userName: string): Promise<IUser> => {
-    const userSearched = await userRepository.getUserByUserName(userName);
-    if (userSearched === null) {
-        throw new UserNotFoundException("User not found.");
-    }
-    return userSearched.get({plain: true}) as IUser;
-}
-
-
-export {createUser, getUserByEmail, getUserByUserName};
+export default UserService;

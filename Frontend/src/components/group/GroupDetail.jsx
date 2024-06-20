@@ -17,12 +17,14 @@ function GroupDetail() {
   const [username, setUsername] = useState("");
   const [foundUser, setFoundUser] = useState(null);
   const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const { user } = userStore();
   const userId = user?.id;
 
   useEffect(() => {
+    setLoading(true);
     const fetchGroupDetails = async () => {
       try {
         const details = await getGroupById(Number(id));
@@ -41,13 +43,14 @@ function GroupDetail() {
       }
     };
 
-    fetchGroupDetails();
+    fetchGroupDetails().finally(() => setLoading(false));
     fetchGroupReports();
   }, [id]);
 
   const handleSearchUser = async () => {
     try {
       const userFound = await getUserByUsername(username);
+      
       setFoundUser(userFound);
     } catch (error) {
       setError(error.message);
@@ -123,7 +126,7 @@ function GroupDetail() {
 
         <h3 className="mt-4">Miembros:</h3>
         <ul>
-          {groupDetails.members.map((member) => (
+          {!loading && groupDetails.members.map((member) => (
             <li key={member.id}>
               <h5 className="mt-3">{member.name}</h5>
               <strong>

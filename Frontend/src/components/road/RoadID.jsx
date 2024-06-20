@@ -51,14 +51,12 @@ function RoadID() {
           if (!data) {
             throw new Error("No se encontraron datos");
           }
-
           setName(data.name);
           setOrigin(data.origin);
           setAddressOrigin(data.addressOrigin);
           setAddressDestination(data.addressDestiny);
           setDestination(data.destination);
           setDistance(data.distance);
-
           setLoading(false);
         } catch (error) {
           setShowModal(true);
@@ -86,7 +84,6 @@ function RoadID() {
     }
   }, [routeCoordinates, setUserLocation, setReports]);
   
-
   return (
     <>
       {!loading && (
@@ -103,12 +100,9 @@ function RoadID() {
           {origin && destination && (
             <Map
               key={`${userLocation.lat}-${userLocation.lng}`}
-              userLocation={userLocation}
-              startPoint={{ lat: origin.latitude, lon: origin.longitude }}
-              endPoint={{
-                lat: destination.latitude,
-                lon: destination.longitude,
-              }}
+              userLocation={origin}
+              startPoint={origin}
+              endPoint={destination}
               zoneMode={true}
               routingMode={true}
               showFilters={true}

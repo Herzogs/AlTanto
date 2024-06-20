@@ -35,10 +35,10 @@ function ZoneHome() {
         if (!id) throw new Error("El id de la zona no es válido");
         setMarkerPosition(null);
         const data = await getZone(id);
-        setRadiusZone(data.radio);
+        setRadiusZone(data.rad);
         setUserLocation({
-          lat: data.location.latitude,
-          lng: data.location.longitude,
+          lat: data.location.lat,
+          lng: data.location.lon,
         });
         setZona(data);
         setLoading(false);

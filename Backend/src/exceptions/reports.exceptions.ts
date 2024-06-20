@@ -1,14 +1,12 @@
-import ApiError from "../utilities/apiError";
-
-class ReportNotFoundException extends ApiError {
+class ReportNotFoundException extends Error {
     constructor(message: string = "Report not found") {
-        super(message, 404);
+        super(message);
     }
 }
 
-class ReportNotCreatedException extends ApiError {
+class ReportNotCreatedException extends Error {
     constructor(message: string = "Report could not be created") {
-        super(message, 400);
+        super(message);
     }
 }
 
