@@ -1,28 +1,27 @@
 import { Lifetime } from 'awilix';
 import container from '../../src/container';
-import RoadService from '../../src/services/road.service';
-import RoadRepository from '../../src/repository/road.repository';
-import UserRepository from '../../src/repository/user.repository';
+import ReportService from '../../src/services/report.service';
+import ReportRepository from '../../src/repository/reports.repository';
 import dbConnection from '../../src/config/dbConnection.config';
 import { config } from 'dotenv';
-import { IRoadDto } from '../../src/models/road.interfaces';
-import { IUser } from '../../src/models/user.interface'; 
+import { IReportDto } from '../../src/models/reports.interface';
 
-jest.mock('../../src/repository/road.repository', () => {
+jest.mock('../../src/repository/reports.repository', () => {
     return jest.fn().mockImplementation(() => {
         return {
             create: jest.fn(),
             getById: jest.fn(),
             getAll: jest.fn(),
-            getByUserId: jest.fn(),
+            getByUser: jest.fn(),
+            getByGroup: jest.fn(),
+            disableOldReports: jest.fn(),
         };
     });
 });
 
-describe('Road Service', () => {
-    let roadService: RoadService;
-    let userRepository: UserRepository;
-    let roadRepository: jest.Mocked<RoadRepository>;
+describe('Report Service', () => {
+    let reportService: ReportService;
+    let reportRepository: jest.Mocked<ReportRepository>;
 
     beforeAll(() => {
         config();
@@ -30,122 +29,148 @@ describe('Road Service', () => {
             ['../../src/repository/*.repository.ts', Lifetime.SCOPED],
             ['../../src/services/*.service.ts', Lifetime.SCOPED],
         ]);
-        roadRepository = container.resolve<RoadRepository>('roadRepository') as jest.Mocked<RoadRepository>;
+        reportRepository = container.resolve<ReportRepository>('reportRepository') as jest.Mocked<ReportRepository>;
     });
 
     beforeEach(async () => {
         await dbConnection.sync({ force: true });
-        roadService = container.resolve<RoadService>('roadService');
-        userRepository = container.resolve<UserRepository>('userRepository');    
+        reportService = container.resolve<ReportService>('reportService');
     });
 
-    test('should create a road', async () => {
-        const user: IUser = {
+    afterAll(async () => {
+        await dbConnection.close(); 
+    });
+
+    test('should create a report', async () => {
+        const reportData: IReportDto = {
             id: 1,
-            name: 'John',
-            lastName: 'Doe',
-            username: 'johndoe',
-            password: 'password123',
-            phoneNumber: '1234567890',
-            email: 'john.doe@example.com',
+            content: 'Test Report',
+            createAt: new Date(),
+            image: 'test-image.png',
+            positiveScore: 5,
+            negativeScore: 1,
+            category: 'Test Category',
+            location: {
+                latitude: 10.0,
+                longitude: 20.0,
+            },
+            groupId: 1,
         };
 
-        await userRepository.create(user);
+        reportRepository.create.mockResolvedValue(reportData);
 
-        const roadData: IRoadDto = {
-            name: 'Test Road',
-            addressOrigin: '123 Test St',
-            addressDestiny: '456 Test Ave',
-            origin: { lat: 10.0, lng: 20.0 },
-            destination: { lat: 30.0, lng: 40.0 },
-            distance: 50,
-            duration: 60,
-            user: 1, 
-        };
+        const createdReport = await reportService.createReport(reportData);
 
-        roadRepository.create.mockResolvedValue(roadData);
-        
-        const createdRoad = await roadService.createRoad(roadData);
-        
-        expect(createdRoad).toBeDefined();
-        expect(createdRoad!.name).toBe(roadData.name);
+        expect(createdReport).toBeDefined();
+        expect(createdReport!.content).toBe(reportData.content);
     });
 
-    test('should get road by id', async () => {
-        const user: IUser = {
+    test('should get report by id', async () => {
+        const reportData: IReportDto = {
             id: 1,
-            name: 'John',
-            lastName: 'Doe',
-            username: 'johndoe',
-            password: 'password123',
-            phoneNumber: '1234567890',
-            email: 'john.doe@example.com',
+            content: 'Test Report',
+            createAt: new Date(),
+            image: 'test-image.png',
+            positiveScore: 5,
+            negativeScore: 1,
+            category: 'Test Category',
+            location: {
+                latitude: 10.0,
+                longitude: 20.0,
+            },
+            groupId: 1,
         };
 
-        await userRepository.create(user);
+        reportRepository.getById.mockResolvedValue(reportData);
 
-        const roadData: IRoadDto = {
-            name: 'Test Road',
-            addressOrigin: '123 Test St',
-            addressDestiny: '456 Test Ave',
-            origin: { lat: 10.0, lng: 20.0 },
-            destination: { lat: 30.0, lng: 40.0 },
-            distance: 50,
-            duration: 60,
-            user: 1, // Debe ser el ID del usuario creado
-        };
+        const report = await reportService.getById(1);
 
-        roadRepository.getById.mockResolvedValue(roadData);
-
-        const road = await roadService.getRouteById(1);
-
-        expect(road).toBeDefined();
-        expect(road!.name).toBe(roadData.name);
+        expect(report).toBeDefined();
+        expect(report!.content).toBe(reportData.content);
     });
 
-    test('should return null when road not found', async () => {
-        roadRepository.getById.mockResolvedValue(null);
-        const road = await roadService.getRouteById(1);
-        expect(road).toBeNull();
+    test('should return null when report not found', async () => {
+        reportRepository.getById.mockResolvedValue(null);
+        await expect(reportService.getById(1)).rejects.toThrow('Report not found.');
     });
 
-    test('should get all roads del usuario', async () => {
-        const user: IUser = {
+    test('should get all reports by user', async () => {
+        const reportData: IReportDto = {
             id: 1,
-            name: 'John',
-            lastName: 'Doe',
-            username: 'johndoe',
-            password: 'password123',
-            phoneNumber: '1234567890',
-            email: 'john.doe@example.com',
+            content: 'Test Report',
+            createAt: new Date(),
+            image: 'test-image.png',
+            positiveScore: 5,
+            negativeScore: 1,
+            category: 'Test Category',
+            location: {
+                latitude: 10.0,
+                longitude: 20.0,
+            },
+            groupId: 1,
         };
 
-        await userRepository.create(user);
+        reportRepository.getByUser.mockResolvedValue([reportData]);
 
-        const roadData: IRoadDto = {
-            name: 'Test Road',
-            addressOrigin: '123 Test St',
-            addressDestiny: '456 Test Ave',
-            origin: { lat: 10.0, lng: 20.0 },
-            destination: { lat: 30.0, lng: 40.0 },
-            distance: 50,
-            duration: 60,
-            user: 1, 
-        };
+        const reports = await reportService.getByUser(1);
 
-        roadRepository.getByUserId.mockResolvedValue([roadData]);
-
-        const roads = await roadService.getRoadsByUserId('1');
-
-        expect(roads).toBeDefined();
-        expect(roads).toHaveLength(1);
-        expect(roads[0].name).toBe(roadData.name);
+        expect(reports).toBeDefined();
+        expect(reports).toHaveLength(1);
+        expect(reports[0].content).toBe(reportData.content);
     });
 
-    test('should return empty array when no roads found', async () => {
-        roadRepository.getByUserId.mockResolvedValue([]);
-        const roads = await roadService.getRoadsByUserId('1');
-        expect(roads).toBeDefined();
-        expect(roads).toHaveLength(0);
+    test('should get all reports by group', async () => {
+        const reportData: IReportDto = {
+            id: 1,
+            content: 'Test Report',
+            createAt: new Date(),
+            image: 'test-image.png',
+            positiveScore: 5,
+            negativeScore: 1,
+            category: 'Test Category',
+            location: {
+                latitude: 10.0,
+                longitude: 20.0,
+            },
+            groupId: 1,
+        };
+
+        reportRepository.getByGroup.mockResolvedValue([reportData]);
+
+        const reports = await reportService.getReportsByGroup(1);
+
+        expect(reports).toBeDefined();
+        expect(reports).toHaveLength(1);
+        expect(reports[0].content).toBe(reportData.content);
+    });
+
+    test('should get all reports', async () => {
+        const reportData: IReportDto = {
+            id: 1,
+            content: 'Test Report',
+            createAt: new Date(),
+            image: 'test-image.png',
+            positiveScore: 5,
+            negativeScore: 1,
+            category: 'Test Category',
+            location: {
+                latitude: 10.0,
+                longitude: 20.0,
+            },
+            groupId: 1,
+        };
+
+        reportRepository.getAll.mockResolvedValue([reportData]);
+
+        const reports = await reportService.getAll();
+
+        expect(reports).toBeDefined();
+        expect(reports).toHaveLength(1);
+        expect(reports[0].content).toBe(reportData.content);
+    });
+
+    test('should disable old reports', async () => {
+        await reportService.disableOldReports();
+        expect(reportRepository.disableOldReports).toHaveBeenCalledTimes(1);
     });
 });
