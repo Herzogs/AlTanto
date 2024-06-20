@@ -46,7 +46,7 @@ describe("Zone Repository", () => {
     });
 
     test('should create a zone', async () => {
-        
+
         const createdZone = await zoneRepository.create(zoneData);
         expect(createdZone).toBeDefined();
         expect(createdZone!.name).toBe(zoneData.name);
@@ -57,16 +57,16 @@ describe("Zone Repository", () => {
     });
 
     test('should get all zones', async () => {
-       
+
         const createdZone = await zoneRepository.create(zoneData);
-        
+
         const zones = await zoneRepository.getAll();
         expect(zones).toBeDefined();
         expect(zones.length).toBe(1);
         expect(zones[0].name).toBe(createdZone?.name);
         expect(zones[0].location.lat).toBe(createdZone?.location.lat);
         expect(zones[0].location.lon).toBe(createdZone?.location.lon);
-        
+
     });
 
     test('should get all zones by userId', async () => {
@@ -103,8 +103,14 @@ describe("Zone Repository", () => {
 
     test('should give report of zones', async () => {
         await zoneRepository.create(zoneData);
-        await reportRepository.create(report1);
+        const obtain = await reportRepository.getAll()
+        console.log(obtain)
+        const created = await reportRepository.create(report1);
+        console.log(created)
+        const test = await reportRepository.getAll()
+        console.log(test)
         const reports = await zoneRepository.getReports(zoneData) as IReportDto[];
+        console.log(reports);
         expect(reports).toBeDefined();
         expect(reports!.length).toBeGreaterThan(0);
         expect(reports![0].content).toBe(report1.content);

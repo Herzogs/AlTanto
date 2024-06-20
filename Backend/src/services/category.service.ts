@@ -3,8 +3,7 @@ import { CategoryNotCreatedException, CategoryNotFoundException } from '../excep
 import { IService } from './interfaces/category.service.interface';
 import { IRepository } from '../repository/interface/category.repository.interface';
 
-class CategoryService implements IService<ICategory>{
-
+class CategoryService implements IService<ICategory> {
     private categoryRepository: IRepository<ICategory>;
 
     constructor({ categoryRepository }: { categoryRepository: IRepository<ICategory> }) {
@@ -13,17 +12,25 @@ class CategoryService implements IService<ICategory>{
     
     async getAll(): Promise<ICategory[]> {
         const categories = await this.categoryRepository.getAll();
-        if(!categories) throw new CategoryNotFoundException('Categories not found');
-        return categories as ICategory[];
+        if (!categories || categories.length === 0) {
+            throw new CategoryNotFoundException('Categories not found');
+        }
+        return categories;
     }
+
     async getByID(categoryId: number): Promise<ICategory> {
         const categorySearched = await this.categoryRepository.getByID(categoryId);
-        if (categorySearched == null) throw new CategoryNotFoundException('Categories not found');
+        if (!categorySearched) {
+            throw new CategoryNotFoundException(`Category with ID ${categoryId} not found`);
+        }
         return categorySearched;
     }
-    async create(name:string): Promise<ICategory> {
+
+    async create(name: string): Promise<ICategory> {
         const newCategory = await this.categoryRepository.create(name);
-        if(!newCategory) throw new CategoryNotCreatedException('Category not created');
+        if (!newCategory) {
+            throw new CategoryNotCreatedException('Category not created');
+        }
         return newCategory;
     }
 }
