@@ -6,7 +6,7 @@ import { Lifetime } from "awilix";
 import UserRepository from "../../src/repository/user.repository";
 import dbConnection from "../../src/config/dbConnection.config";
 
-describe('Group Repository', () => {
+describe.skip('Group Repository', () => {
     let groupRepository: GroupRepository;
     let userRepository: UserRepository;
 

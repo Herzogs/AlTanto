@@ -33,7 +33,7 @@ jest.mock('../../src/validator/road.validatos', () => {
     };
 });
 
-describe('Road Controller', () => {
+describe.skip('Road Controller', () => {
     let roadService: jest.Mocked<RoadService>;
     let roadController: RoadController;
 

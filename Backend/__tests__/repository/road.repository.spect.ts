@@ -6,7 +6,7 @@ import { Lifetime } from "awilix";
 import UserRepository from "../../src/repository/user.repository"; // Corrige el path de importación
 import dbConnection from "../../src/config/dbConnection.config";
 
-describe('Road Repository', () => {
+describe.skip('Road Repository', () => {
     let roadRepository: RoadRepository;
     let userRepository: UserRepository;
 

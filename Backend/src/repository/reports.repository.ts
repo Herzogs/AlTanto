@@ -1,11 +1,11 @@
 import Category from "./entities/Category";
 import Report from "./entities/Report";
 import { Location } from "./entities/Location";
-import { IReportDto} from "../models/reports.interface";
+import { IReportDto } from "../models/reports.interface";
 import { ModelCtor } from "sequelize";
 import { IReportRepository } from "./interface/report.repository.interface";
 
-class ReportRepository implements IReportRepository<IReportDto>{
+class ReportRepository implements IReportRepository<IReportDto> {
 
     private reportModel: ModelCtor<Report>;
 
@@ -61,7 +61,7 @@ class ReportRepository implements IReportRepository<IReportDto>{
         return listOfReports.map((report) => report.get({ plain: true }));
     }
 
-    async create(newReport: IReportDto): Promise< IReportDto | null> {
+    async create(newReport: IReportDto): Promise<IReportDto | null> {
         const categorySearch = await Category.findByPk(newReport.category);
         if (!categorySearch) {
             return null
@@ -69,7 +69,7 @@ class ReportRepository implements IReportRepository<IReportDto>{
         const locationSearched = await Location.findOrCreate({
             where: { latitude: newReport.location.latitude, longitude: newReport.location.longitude },
         })
-        
+
         const location = locationSearched[0].get({ plain: true });
         const reporCreated = await this.reportModel.create({
             content: newReport.content,
