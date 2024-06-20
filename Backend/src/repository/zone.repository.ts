@@ -1,7 +1,7 @@
 import { ModelCtor, QueryTypes } from "sequelize";
 import Zone from "./entities/Zone";
 import { Location } from "./entities/Location";
-import { IZoneDto } from "models/zone.interface";
+import { IZoneDto } from "../models/zone.interface";
 import { IZoneRepository } from "./interface/zone.repository.interface";
 
 class ZoneRepository implements IZoneRepository<IZoneDto, object>{

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { IRoadDto } from 'models/road.interfaces';
+import { IRoadDto } from '../models/road.interfaces';
 import * as validationRouts from '../validator/road.validatos';
 import { IRoadService } from '../services/interfaces/road.service.interface';
 import { STATUS_CODE } from '../utilities/statusCode.utilities';

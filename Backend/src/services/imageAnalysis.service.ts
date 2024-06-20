@@ -10,8 +10,8 @@ class ImageAnalysis implements IImageAnalysisService<Buffer>{
     private credential: AzureKeyCredential;
     
     constructor() {
-        this.endpoint = process.env.CV_ENDPOINT;
-        this.key = process.env.CV_KEY;
+        this.endpoint = process.env.CV_ENDPOINT as string;
+        this.key = process.env.CV_KEY as string;
         this.credential = new AzureKeyCredential(this.key);
         this.client = createImageAnalysisClient(this.endpoint, this.credential);
     }
