@@ -84,7 +84,7 @@ describe('RoutForm component', () => {
     fireEvent.change(screen.getByLabelText('Dirección destino:'), {
       target: { value: '456 Elm St' },
     });
-
+    
     fireEvent.click(screen.getByText('Ver Ruta'));
 
     await waitFor(() => {
