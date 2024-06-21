@@ -10,7 +10,7 @@ import PopupAT from "@components/Map/PopupAT";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
 import MarkerClusterGroup from "@changey/react-leaflet-markercluster";
-import { getCategoryFromApi } from "../../services/getCategory";
+import { getCategoryFromApi } from "@/services/getCategory";
 import { useEffect, useState } from "react";
 import MarkerMapClick from "./MarkerMapClick";
 

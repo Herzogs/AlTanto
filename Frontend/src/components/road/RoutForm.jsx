@@ -19,15 +19,21 @@ function RoutForm() {
   const [error, setError] = useState(false);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-
   const [showModal, setShowModal] = useState(false);
+  
   const {
     userLocation,
     setUserLocation,
     setReports,
     routeCoordinates,
     setRouteCoordinates,
+    distance,
+    time,
   } = useStore();
+
+  const {
+    user
+  } = userStore();
 
   const {
     register,
@@ -67,12 +73,8 @@ function RoutForm() {
 
   const handleSetPoints = () => {
     if (startAddress !== "" && endAddress !== "") {
-      console.log("entro a setPoints")
-
       setPoints();
       setVisible(true);
-      console.log("visible --> ",visible)
-      console.log("userLocation --> ",userLocation)
     }
   };
 
@@ -99,14 +101,19 @@ function RoutForm() {
         endAddress,
         startPoint,
         endPoint,
-        distance: useStore.getState().distance,
-        time: useStore.getState().time,
-        id: userStore.getState().user.id,
+        distance: distance,
+        time: time,
+        id: user.id,
       });
+
+      console.log(response.title);
+      console.log(response.message);
 
       setTitle(response.title);
       setMessage(response.message);
       setShowModal(true);
+      console.log(response.title === "Ruta guardada");
+      console.log(showModal);
     } catch (error) {
       console.error("Error al guardar la ruta", error);
     }
@@ -201,48 +208,49 @@ function RoutForm() {
           )}
 
           {visible && (
-            <Form.Group as={Row} controlId="name">
-              <Form.Label className="mt-3 mb-2" column>
-                Nombre:
-              </Form.Label>
-              <Col sm={12}>
-                <Form.Control
-                  type="text"
-                  isInvalid={!!errors.name}
-                  {...register("name", {
-                    required: "Campo requerido",
-                    maxLength: {
-                      value: 50,
-                      message: "Máximo 50 caracteres",
-                    },
-                    minLength: {
-                      value: 3,
-                      message: "Mínimo 3 caracteres",
-                    },
-                  })}
-                />
-                {errors.name && (
-                  <Form.Control.Feedback type="invalid">
-                    {errors.name.message}
-                  </Form.Control.Feedback>
-                )}
-              </Col>
-            </Form.Group>
+            <>
+              <Form.Group as={Row} controlId="name">
+                <Form.Label className="mt-3 mb-2" column>
+                  Nombre:
+                </Form.Label>
+                <Col sm={12}>
+                  <Form.Control
+                    type="text"
+                    isInvalid={!!errors.name}
+                    {...register("name", {
+                      required: "Campo requerido",
+                      maxLength: {
+                        value: 50,
+                        message: "Máximo 50 caracteres",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "Mínimo 3 caracteres",
+                      },
+                    })}
+                  />
+                  {errors.name && (
+                    <Form.Control.Feedback type="invalid">
+                      {errors.name.message}
+                    </Form.Control.Feedback>
+                  )}
+                </Col>
+              </Form.Group>
+              <Form.Group className="my-4" as={Row} controlId="submit">
+                <Col sm={12}>
+                  {userLocation && (
+                    <Button
+                      className="btn-success px-5"
+                      type="submit"
+                    >
+                      Guardar
+                    </Button>
+                  )}
+                </Col>
+              </Form.Group>
+            </>
           )}
 
-          <Form.Group className="my-4" as={Row} controlId="submit">
-            <Col sm={12}>
-              {visible && userLocation && (
-                <Button
-                  className="btn-success px-5"
-                  type="submit"
-                  disabled={!visible}
-                >
-                  Guardar
-                </Button>
-              )}
-            </Col>
-          </Form.Group>
         </Form>
 
         <ModalAT

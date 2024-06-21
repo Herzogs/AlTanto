@@ -27,6 +27,8 @@ function RoadID() {
   const [loading, setLoading] = useState(true);
 
   const { id } = useParams();
+
+  console.log(id);
   const {
     routeCoordinates,
     userLocation,
