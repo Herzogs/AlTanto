@@ -35,7 +35,6 @@ class RoadController {
         try {
             const road = await this.roadService.getRouteById(+req.params.id);
             if (road) {
-                console.log("Road: ", road)
                 return res.status(STATUS_CODE.SUCCESS).json(road);
             }
             return next({ message: 'Road not found', statusCode: STATUS_CODE.SUCCESS });

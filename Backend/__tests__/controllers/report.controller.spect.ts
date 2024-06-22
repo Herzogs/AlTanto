@@ -129,4 +129,4 @@ describe('Report Repository', () => {
         expect(groupReports.length).toBeGreaterThanOrEqual(1);
         expect(groupReports[0].groupId).toBe(1);
     });
-})h
+})

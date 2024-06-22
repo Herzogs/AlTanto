@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import RoadID from '@components/road/RoadID';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -7,11 +7,14 @@ import { fetchReports } from '@services/getReportsInRoutings';
 import { getDataOfRoadById } from '@services/getRoutesByUser';
 import '@testing-library/jest-dom';
 
-
 // Mocking the necessary services and hooks
-vi.mock('@store', () => ({
-  useStore: vi.fn(),
-}));
+vi.mock("@store", async (importOriginal) => {
+  const actual = await importOriginal()
+  return {
+    ...actual,
+    useStore: vi.fn(),
+  }
+})
 
 vi.mock('@services/getReportsInRoutings', () => ({
   fetchReports: vi.fn(),
@@ -28,13 +31,7 @@ vi.mock('@changey/react-leaflet-markercluster', () => ({
 
 describe('RoadID Component', () => {
   beforeEach(() => {
-    useStore.mockReturnValue({
-      routeCoordinates: [],
-      userLocation: null,
-      setUserLocation: vi.fn(),
-      reports: [],
-      setReports: vi.fn(),
-    });
+
 
     getDataOfRoadById.mockResolvedValue({
       status: 200,
@@ -53,6 +50,14 @@ describe('RoadID Component', () => {
 
   const renderWithRouter = (ui, { route = '/' } = {}) => {
     window.history.pushState({}, 'Test page', route);
+    useStore.mockReturnValue({
+      routeCoordinates: [{ lat: 10, lng: 10 }],
+      userLocation: { lat: 10, lng: 10 },
+      setUserLocation: vi.fn(),
+      reports: [],
+      setReports: vi.fn(),
+    });
+
     return render(
       <MemoryRouter initialEntries={[route]}>
         <Routes>
@@ -63,27 +68,6 @@ describe('RoadID Component', () => {
   };
 
   it('should render the road information correctly', async () => {
-    renderWithRouter(<RoadID />, { route: '/recorridos/1' });
-
-    await waitFor(() => {
-      expect(screen.getByText('Test Road')).toBeInTheDocument();
-      expect(screen.getByText('Orien:')).toBeInTheDocument();
-      expect(screen.getByText('Destino:')).toBeInTheDocument();
-      expect(screen.getByText('Distancia')).toBeInTheDocument();
-    });
-  });
-
-  it('should show error toast if no data found', async () => {
-    getDataOfRoadById.mockRejectedValueOnce(new Error('No se encontraron datos'));
-
-    renderWithRouter(<RoadID />, { route: '/recorridos/2' });
-
-    await waitFor(() => {
-      expect(screen.getByText("No se encontraron datos")).toBeInTheDocument();
-    });
-  });
-
-  it('should call fetchReports when routeCoordinates are set', async () => {
     useStore.mockReturnValueOnce({
       routeCoordinates: [{ lat: 10, lng: 10 }],
       userLocation: null,
@@ -92,10 +76,41 @@ describe('RoadID Component', () => {
       setReports: vi.fn(),
     });
 
+    await act(async () => {
+      renderWithRouter(<RoadID />, { route: '/recorridos/1' });
+    });
+
+    await waitFor(() => {
+      screen.debug()
+      expect(screen.getByText('Test Road')).toBeInTheDocument();
+      expect(screen.getByText('Origen:')).toBeInTheDocument();
+      expect(screen.getByText('Destino:')).toBeInTheDocument();
+      expect(screen.getByText('Distancia:')).toBeInTheDocument();
+    });
+  });
+
+  it('should show error toast if no data found', async () => {
+    getDataOfRoadById.mockResolvedValue({
+      status: 200,
+      data: "Road not found",
+    });
+
+    await act(async () => {
+      renderWithRouter(<RoadID />, { route: '/recorridos/2' });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("No se encontraron datos")).toBeInTheDocument();
+    });
+  });
+
+  it('should call fetchReports when routeCoordinates are set', async () => {
+
     renderWithRouter(<RoadID />, { route: '/recorridos/3' });
+
 
     await waitFor(() => {
       expect(fetchReports).toHaveBeenCalled();
     });
-  });
+  })
 });
