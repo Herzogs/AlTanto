@@ -74,6 +74,7 @@ function ZoneForm() {
   };
 
   const onSubmit = async (data) => {
+    console.log(data);
     try {
       await saveZone(data, userLocation, userStore.getState().user.id);
 

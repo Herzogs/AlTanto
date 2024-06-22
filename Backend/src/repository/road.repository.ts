@@ -58,7 +58,9 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
                 attributes: { exclude: ['LocationId'] }
             }
         );
-        if (!roadSearched) {
+        console.log(roadSearched)
+        if (roadSearched === null) {
+            console.log("no existe")    
             return null;
         }
         const road = roadSearched.get({ plain: true });

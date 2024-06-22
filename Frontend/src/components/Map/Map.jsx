@@ -1,25 +1,19 @@
 /* eslint-disable no-unused-vars */
-
 /* eslint-disable react/prop-types */
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { icons } from "./Icons";
+import { MapContainer, TileLayer} from "react-leaflet";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
 import Routing from "@components/road/Routing";
-import PopupAT from "@components/Map/PopupAT";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
-import MarkerClusterGroup from "@changey/react-leaflet-markercluster";
-import { getCategoryFromApi } from "../../services/getCategory";
+import { getCategoryFromApi } from "@/services/getCategory";
 import { useEffect, useState } from "react";
 import MarkerMapClick from "./MarkerMapClick";
-
 import Filters from "@components/filter/Filters";
-import { useStore, userStore } from "@store";
-
+import { userStore } from "@store";
 import "leaflet/dist/leaflet.css";
-import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import "./styles.css";
+import MapReport from "@components/Map/MapReport";
 
 const Map = ({
   userLocation,
@@ -34,16 +28,12 @@ const Map = ({
 }) => {
   const { MapClickHandler } = useMapClickHandler();
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  const { reports } = useStore();
   const { id } = userStore.getState().user;
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const fetchedCategories = await getCategoryFromApi();
-        setCategories(fetchedCategories);
         setSelectedCategories(fetchedCategories.map((category) => category.id));
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -52,29 +42,6 @@ const Map = ({
 
     fetchCategories();
   }, []);
-
-  console.log(reports)
-  const filteredReports =
-    reports && reports.length > 0
-      ? reports.filter((report) =>
-          selectedCategories.includes(report.categoryId)
-        )
-      : [];
-
-  const getIconByCategoryId = (categoryId) => {
-    switch (categoryId) {
-      case 1:
-        return icons.category1;
-      case 2:
-        return icons.category2;
-      case 3:
-        return icons.category3;
-      case 4:
-        return icons.category4;
-      default:
-        return icons.default;
-    }
-  };
 
   return (
     <section className="altanto-map">
@@ -114,20 +81,7 @@ const Map = ({
           />
         )}
 
-        {filteredReports && filteredReports.length > 0 && (
-          <MarkerClusterGroup>
-            {filteredReports.map((report) => (
-              <Marker
-                key={report.id}
-                position={[report.latitude, report.longitude]}
-                icon={getIconByCategoryId(report.categoryId)}
-              >
-                <PopupAT report={report} />
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
-        )}
-
+        <MapReport selectedCategories={selectedCategories} />
         {/* ROUTING PARA RECORIDO */}
         {routingMode && startPoint && endPoint && (
           <Routing startPoint={startPoint} endPoint={endPoint} />

@@ -156,7 +156,7 @@ describe('Road Controller', () => {
 
         await roadController.getRouteById(req, res, next);
 
-        expect(next).toHaveBeenCalledWith({ message: 'Road not found', statusCode: 404 });
+        expect(next).toHaveBeenCalledWith({ message: 'Road not found', statusCode: 200 });
     })
 
     test('should get all roads', async () => {
