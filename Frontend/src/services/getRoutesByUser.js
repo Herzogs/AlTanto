@@ -5,8 +5,8 @@ const getRoutesByUserId = async (id) => {
   try {
     const NEW_URL = `${URL_BASE}/user/${id}`;
     const response = await axiosInstance.get(NEW_URL);
-    if(!response) throw new Error("Error al obtener la zona");
-    if(response.status === 200){
+    if (!response) throw new Error("Error al obtener la zona");
+    if (response.status === 200) {
       const data = await response.data;
       return data;
     }
@@ -18,10 +18,11 @@ const getRoutesByUserId = async (id) => {
 const getDataOfRoadById = async (id) => {
   try {
     const response = await axiosInstance.get(URL_BASE + `/${id}`);
-    if(!response) throw new Error("Error al obtener la zona");
-    if(response.status === 200){
+
+    if (!response) throw new Error("Error al obtener la zona");
+    if (response.status === 200) {
       const data = await response.data;
-      return data;
+      return { data, status: response.status };
     }
   } catch (error) {
     throw new Error(error.message);

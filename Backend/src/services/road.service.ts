@@ -19,7 +19,8 @@ class RoadService implements IRoadService<IRoadDto> {
 
     async getRouteById(id: number) {
         const road = await this.roadRepository.getById(id);
-        if (!road){
+        console.log("EN EL SERVICIO: ", road)
+        if (road === null){
             return null
         }
         return road;

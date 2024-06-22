@@ -5,22 +5,20 @@ import { useStore, userStore } from "@store";
 import { useForm } from "react-hook-form";
 import { Container, Button, Form, Row, Col } from "react-bootstrap";
 import Header from "@components/header/Header";
-import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link } from "react-router-dom";
 import { sendRoute } from "@services/sendData";
 import { fetchReports } from "@services/getReportsInRoutings";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
-  const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  
+
   const {
     userLocation,
     setUserLocation,
@@ -65,9 +63,11 @@ function RoutForm() {
       setEndPoint(endCoords);
       setError(false);
     } catch (error) {
-      console.error("Error al obtener coordenadas:", error);
       setError(true);
       setVisible(false);
+      toast.error(error.message, {
+        position: "top-right",
+      });
     }
   }, [startAddress, endAddress]);
 
@@ -86,9 +86,9 @@ function RoutForm() {
           setReports(reports);
         })
         .catch((error) => {
-          setShowModal(true);
-          setTitle("Error");
-          setMessage(error.message);
+          toast.error(error.message, {
+            position: "top-right",
+          });
         });
     }
   }, [routeCoordinates, setUserLocation, setReports]);
@@ -106,16 +106,14 @@ function RoutForm() {
         id: user.id,
       });
 
-      console.log(response.title);
-      console.log(response.message);
-
-      setTitle(response.title);
-      setMessage(response.message);
-      setShowModal(true);
+      toast.success(response.message, {
+        position: "top-right",
+      });
       console.log(response.title === "Ruta guardada");
-      console.log(showModal);
     } catch (error) {
-      console.error("Error al guardar la ruta", error);
+      toast.error(error.message, {
+        position: "top-right",
+      });
     }
   };
 
@@ -160,7 +158,7 @@ function RoutForm() {
             <Col sm={12}>
               <Form.Control
                 type="text"
-                isInvalid={!!errors.des}
+                isInvalid={!!errors.destination}
                 {...register("destination", {
                   required: "Campo requerido",
                   maxLength: {
@@ -238,14 +236,13 @@ function RoutForm() {
               </Form.Group>
               <Form.Group className="my-4" as={Row} controlId="submit">
                 <Col sm={12}>
-                  {userLocation && (
-                    <Button
-                      className="btn-success px-5"
-                      type="submit"
-                    >
-                      Guardar
-                    </Button>
-                  )}
+                  <Button
+                    className="btn-success px-5"
+                    type="submit"
+                  >
+                    Guardar
+                  </Button>
+
                 </Col>
               </Form.Group>
             </>
@@ -253,13 +250,7 @@ function RoutForm() {
 
         </Form>
 
-        <ModalAT
-          title={title}
-          message={message}
-          showModal={showModal}
-          setShowModal={setShowModal}
-          url="/"
-        />
+        <ToastContainer />
       </Container>
     </>
   );

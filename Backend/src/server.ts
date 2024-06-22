@@ -47,9 +47,9 @@ server.use('/', (_req, res) => {
 
 
 server.use(errorHandler)
-const app = server.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
     //disableOldReport.start()
 })
 
-export { server, app };
+export { server};

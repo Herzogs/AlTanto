@@ -1,220 +1,132 @@
-import { Lifetime } from 'awilix';
-import container from '../../src/container';
-import RoadService from '../../src/services/road.service';
-import dbConnection from '../../src/config/dbConnection.config';
-import { config } from 'dotenv';
-import { IRoadDto } from '../../src/models/road.interfaces';
-import RoadController from '../../src/controllers/road.controller';
-import * as validationRoutes from '../../src/validator/road.validatos';
-import { Request, Response, NextFunction } from 'express';
+import ReportRepository from "../../src/repository/reports.repository";
+import { IReportDto } from "../../src/models/reports.interface";
+import container from "../../src/container";
+import { config } from "dotenv";
+import { Lifetime } from "awilix";
+import GroupRepository from "../../src/repository/group.repository";
+import dbConnection from "../../src/config/dbConnection.config";
+import UserRepository from "../../src/repository/user.repository";
+import { IGroup } from "../../src/models/group.interface";
 
-jest.mock('../../src/services/road.service', () => {
-    return jest.fn().mockImplementation(() => {
-        return {
-            createRoad: jest.fn(),
-            getRouteById: jest.fn(),
-            getAllRoads: jest.fn(),
-            getRoadsByUserId: jest.fn(),
-        };
-    });
-});
+describe('Report Repository', () => {
+    let reportRepository: ReportRepository;
+    let userRepository: UserRepository;
+    let groupRepository: GroupRepository;
 
-jest.mock('../../src/validator/road.validatos', () => {
-    return {
-        getRoadByIdValidator: {
-            safeParseAsync: jest.fn(),
-        },
-        getRoadsByUserIDlValidator: {
-            safeParseAsync: jest.fn(),
-        },
-        createRoadValidator: {
-            safeParseAsync: jest.fn(),
-        },
-    };
-});
-
-describe('Road Controller', () => {
-    let roadService: jest.Mocked<RoadService>;
-    let roadController: RoadController;
-
-    const roadData: IRoadDto = {
-        name: 'Test Road',
-        addressOrigin: '123 Test St',
-        addressDestiny: '456 Test Ave',
-        origin: { lat: 10.0, lng: 20.0 },
-        destination: { lat: 30.0, lng: 40.0 },
-        distance: 50,
-        duration: 60,
-        user: 1,
-    };
-
-    beforeAll(() => {
+    beforeAll(async () => {
         config();
         container.loadModules([
-            ['../../src/repository/*.repository.ts', Lifetime.SCOPED],
-            ['../../src/services/*.service.ts', Lifetime.SCOPED],
+            ['../../src/models/*.model.ts', Lifetime.SCOPED]
         ]);
+        reportRepository = container.resolve<ReportRepository>('reportRepository');
+        userRepository = container.resolve<UserRepository>('userRepository');
+        groupRepository = container.resolve<GroupRepository>('groupRepository');
     });
+
 
     beforeEach(async () => {
         await dbConnection.sync({ force: true });
-        roadService = container.resolve<RoadService>('roadService') as jest.Mocked<RoadService>;
-        roadController = new RoadController({ roadService });
     });
 
-    test('should create a road', async () => {
-        (validationRoutes.createRoadValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: roadData });
-        roadService.createRoad.mockResolvedValue(roadData);
-
-        const req = { body: roadData } as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
-
-        await roadController.createRoad(req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith(roadData);
-    });
-
-    test('should return bad request error when creating a road with invalid data', async () => {
-        const invalidDataResult = {
-            success: false,
-            error: {
-                errors: [
-                    { message: 'Invalid name', path: ['name'] },
-                    { message: 'Invalid address', path: ['addressOrigin'] }
-                ]
-            }
-        };
-        
-        (validationRoutes.createRoadValidator.safeParseAsync as jest.Mock).mockResolvedValue(invalidDataResult);
-
-        const req = { body: {} } as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
-
-        await roadController.createRoad(req, res, next);
-
-        const listOfErrors = invalidDataResult.error.errors.map((error) => {
-            return {
-                message: error.message,
-                path: error.path.join('.')
-            };
-        });
-
-        expect(next).toHaveBeenCalledWith({ message: listOfErrors, statusCode: 400 });
-    });
-
-    test('should get a road by id', async () => {
-        (validationRoutes.getRoadByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { id: 1 } });
-        roadService.getRouteById.mockResolvedValue(roadData);
-
-        const req = { params: { id: 1 } } as unknown as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
-
-        await roadController.getRouteById(req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(roadData);
-    });
-
-    test('should return bad request error when getting a road by id with validation failed', async () => {
-        const invalidDataResult = {
-            success: false,
-            error: {
-                errors: [
-                    { message: 'Invalid name', path: ['name'] },
-                    { message: 'Invalid address', path: ['addressOrigin'] }
-                ]
-            }
+    test('should create a report', async () => {
+        const newReport: IReportDto = {
+            content: 'Test report content',
+            category: '1',
+            location: { latitude: 10.0, longitude: 20.0 },
+            image: 'test.jpg'
         };
 
-        (validationRoutes.getRoadByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue(invalidDataResult);
-
-        const req = { params: { id: 1 } } as unknown as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
-
-        await roadController.getRouteById(req, res, next);
-
-        const listOfErrors = invalidDataResult.error.errors.map((error) => {
-            return {
-                message: error.message,
-                path: error.path.join('.')
-            };
-        });
-
-        expect(next).toHaveBeenCalledWith({ message: listOfErrors, statusCode: 400 });
+        const createdReport = await reportRepository.create(newReport);
+        expect(createdReport).toBeDefined();
+        expect(createdReport!.content).toBe(newReport.content);
     });
 
-    test('should return not found error when getting a road by id that does not exist', async () => {
-        (validationRoutes.getRoadByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { id: 1 } });
-        roadService.getRouteById.mockResolvedValue(null);
-
-        const req = { params: { id: 1 } } as unknown as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
-
-        await roadController.getRouteById(req, res, next);
-
-        expect(next).toHaveBeenCalledWith({ message: 'Road not found', statusCode: 404 });
-    });
-
-    test('should get all roads', async () => {
-        const roads = [roadData];
-        roadService.getAllRoads.mockResolvedValue(roads);
-
-        const req = {} as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
-
-        await roadController.getAllRoads(req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(roads);
-    });
-
-    test('should get roads by user id', async () => {
-        (validationRoutes.getRoadsByUserIDlValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { id: 1 } });
-        const roads = [roadData];
-        roadService.getRoadsByUserId.mockResolvedValue(roads);
-
-        const req = { params: { id: 1 } } as unknown as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
-
-        await roadController.getRoadsByUserId(req, res, next);
-
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(roads);
-    });
-
-    test('should return bad request error when getting roads by user id with validation failed', async () => {
-        const invalidDataResult = {
-            success: false,
-            error: {
-                errors: [
-                    { message: 'Invalid id', path: ['id'] }
-                ]
-            }
+    test('should get a report by id', async () => {
+        const newReport: IReportDto = {
+            content: 'Another test report content',
+            category: '2',
+            location: { latitude: 11.0, longitude: 21.0 },
+            image: 'test2.jpg'
         };
 
-        (validationRoutes.getRoadsByUserIDlValidator.safeParseAsync as jest.Mock).mockResolvedValue(invalidDataResult);
+        const createdReport = await reportRepository.create(newReport);
 
-        const req = { params: { id: 1 } } as unknown as Request;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-        const next = jest.fn() as NextFunction;
+        expect(createdReport).toBeDefined();
 
-        await roadController.getRoadsByUserId(req, res, next);
+        const fetchedReport = await reportRepository.getById(createdReport!.id as number);
+        expect(fetchedReport).toBeDefined();
+        expect(fetchedReport!.content).toBe(newReport.content);
+    });
 
-        const listOfErrors = invalidDataResult.error.errors.map((error) => {
-            return {
-                message: error.message,
-                path: error.path.join('.')
-            };
+    test('should get all reports', async () => {
+
+
+        const newReport1: IReportDto = {
+            content: 'Test report 1 content',
+            category: '1',
+            location: { latitude: 12.0, longitude: 22.0 },
+            image: 'test3.jpg'
+        };
+
+        const newReport2: IReportDto = {
+            content: 'Test report 2 content',
+            category: '2',
+            location: { latitude: 13.0, longitude: 23.0 },
+            image: 'test4.jpg',
+        };
+
+        await reportRepository.create(newReport1);
+        await reportRepository.create(newReport2);
+
+        const reports = await reportRepository.getAll();
+
+        expect(reports).toBeDefined();
+        expect(reports.length).toBeGreaterThanOrEqual(2);
+    });
+
+    test('should get reports by group id', async () => {
+        await userRepository.create({
+            email: 'test@example.com',
+            password: 'password',
+            name: 'John',
+            lastName: 'Doe',
+            phoneNumber: '123456789',
+            username: 'johndoe',
+            id: 1,
         });
 
-        expect(next).toHaveBeenCalledWith({ message: listOfErrors, statusCode: 400 });
+        const newGroup: IGroup = {
+            name: 'Test Group',
+            ownerId: 1,
+        };
+
+        await groupRepository.create(newGroup);
+
+        const newReport1: IReportDto = {
+            content: 'Group specific report 1',
+            category: '1',
+            location: { latitude: 15.0, longitude: 25.0 },
+            image: 'test6.jpg',
+            groupId: 1,
+
+        };
+
+        const newReport2: IReportDto = {
+            content: 'Group specific report 2',
+            category: '2',
+            location: { latitude: 16.0, longitude: 26.0 },
+            image: 'test7.jpg',
+            groupId: 1
+        };
+
+        await reportRepository.create(newReport1);
+        await reportRepository.create(newReport2);
+
+        const groupReports = await reportRepository.getByGroup(1);
+
+
+        expect(groupReports).toBeDefined();
+        expect(groupReports.length).toBeGreaterThanOrEqual(1);
+        expect(groupReports[0].groupId).toBe(1);
     });
-});
+})h
