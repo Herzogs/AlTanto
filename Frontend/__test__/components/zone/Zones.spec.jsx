@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen, fireEvent} from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Zones from '@components/Zone/Zones';
 import { getZoneByUserId } from '@services/getZone';
@@ -66,7 +65,7 @@ describe('Zones component', () => {
         <Zones handleClose={handleClose} />
       </Router>
     );
-    userEvent.click(screen.getByText('Crear'));
+    fireEvent.click(screen.getByText('Crear'));
     await vi.waitFor(() => {
       expect(window.location.pathname).toBe('/form/zona');
     });
