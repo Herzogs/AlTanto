@@ -3,7 +3,7 @@ import { IUser } from "../models/user.interface";
 import { ICognitoService } from "../services/interfaces/cognito.service.interface";
 import { IUserService } from "../services/interfaces/user.service.interface";
 import { STATUS_CODE } from "../utilities/statusCode.utilities";
-import WhatsAppService from "../services/whatsApp.service";
+
 
 class AuthController{
 
@@ -46,23 +46,7 @@ class AuthController{
     async login(req: Request, res: Response, next: NextFunction) {
 
 
-    
-        async function enviarMensaje() {
-            try {
-                const whatsappService = new WhatsAppService(); // Esto no es necesario si ya tienes la instancia
-        
-                const to = '+5491173663711'; // Número al que deseas enviar el mensaje (ajusta según tus necesidades)
-                const message = 'Hola desde mi aplicación'; // Mensaje a enviar
-        
-                await whatsappService.sendMessage(to, message);
-                console.log('Mensaje enviado correctamente');
-            } catch (error) {
-                console.error('Error al enviar el mensaje:', error);
-            }
-        }
-        
-        // Llama a la función enviarMensaje cuando sea necesario
-        enviarMensaje();
+  
 
         console.log("Creating user");
         const email = req.body.email;

@@ -1,3 +1,2 @@
-2024/06/27-00:53:33.103 2444 Reusing MANIFEST E:\AlTanto1\AlTanto\Backend\.wwebjs_auth\session-client-one\Default\Site Characteristics Database/MANIFEST-000001
-2024/06/27-00:53:33.105 2444 Recovering log #3
-2024/06/27-00:53:33.105 2444 Reusing old log E:\AlTanto1\AlTanto\Backend\.wwebjs_auth\session-client-one\Default\Site Characteristics Database/000003.log 
+2024/06/27-10:51:41.754 3bce Creating DB /home/gabriel/visual-workspace/AlTanto1/Backend/.wwebjs_auth/session-client-one/Default/Site Characteristics Database since it was missing.
+2024/06/27-10:51:41.799 3bce Reusing MANIFEST /home/gabriel/visual-workspace/AlTanto1/Backend/.wwebjs_auth/session-client-one/Default/Site Characteristics Database/MANIFEST-000001
