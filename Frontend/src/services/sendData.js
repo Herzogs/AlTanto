@@ -123,11 +123,12 @@ const validateCode = async (data) => {
 };
 
 const updateScoring = async (scoring) => {
-  const response = axiosInstance.post(UPDATE_SCORING, {
+  const response = await axiosInstance.post(UPDATE_SCORING, {
     reportId: scoring.reportId,
     vote: scoring.vote,
     userId: scoring.userId
   })
+  console.log(response)
   if (response.status === 200) {
     console.log("Scoring actualizado");
   } else {

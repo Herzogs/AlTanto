@@ -10,6 +10,7 @@ const api = makeInvoker(controller)
 authRouter.post('/register',validateData(createUser), api('createUSer'));
 authRouter.post('/validate-code', api('confirmUser'))
 authRouter.post('/login',validateData(login),api('login'))
+authRouter.post('/recovery',api('recovery'))
 
 
 

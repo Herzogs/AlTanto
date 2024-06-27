@@ -1,10 +1,12 @@
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
-import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
-import { promisify } from 'util';
-import { IUserCognito } from '../models/user.interface';
-import { UserNotCreatedException } from "../exceptions/users.exceptions";
-import { generateToken } from "../utilities/jwt.utilities";
-import { ICognitoService } from './interfaces/cognito.service.interface';
+import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js';
+import {promisify} from 'util';
+import {IUserCognito} from '../models/user.interface';
+import {UserNotCreatedException} from "../exceptions/users.exceptions";
+import {generateToken} from "../utilities/jwt.utilities";
+import {ICognitoService} from './interfaces/cognito.service.interface';
+import {Error} from "sequelize";
+import * as console from "node:console";
 
 const poolData = {
     UserPoolId: process.env.USER_POOL_ID as string,
@@ -84,6 +86,11 @@ export class CognitoService implements ICognitoService{
             });
         });
     }
+
+    // accountRecovery(email: string): Promise<void> {
+    //     console.log(email, "mi email")
+    //     return Promise.resolve(undefined);
+    // }
 }
 
 export default CognitoService;

@@ -51,7 +51,7 @@ class ReportController {
     }
 
     async createReport(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-
+console.log(req.body, "que hay en la reques")
         const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
         if (!validData.success) {
             const listofErrors = validData.error.errors.map((error) => {

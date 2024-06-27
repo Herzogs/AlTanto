@@ -1,15 +1,15 @@
-import { NextFunction, Request, Response } from "express";
-import { IUser } from "../models/user.interface";
-import { ICognitoService } from "../services/interfaces/cognito.service.interface";
-import { IUserService } from "../services/interfaces/user.service.interface";
-import { STATUS_CODE } from "../utilities/statusCode.utilities";
+import {NextFunction, Request, Response} from "express";
+import {IUser} from "../models/user.interface";
+import {ICognitoService} from "../services/interfaces/cognito.service.interface";
+import {IUserService} from "../services/interfaces/user.service.interface";
+import {STATUS_CODE} from "../utilities/statusCode.utilities";
 
-class AuthController{
+class AuthController {
 
     private userService: IUserService<IUser>;
     private cognitoService: ICognitoService;
-    
-    constructor({ userService, cognitoService }: { userService: IUserService<IUser>, cognitoService: ICognitoService}) {
+
+    constructor({userService, cognitoService}: { userService: IUserService<IUser>, cognitoService: ICognitoService }) {
         this.userService = userService;
         this.cognitoService = cognitoService;
     }
@@ -22,7 +22,7 @@ class AuthController{
             const newUserDatabase = await this.userService.createUser(newUser);
             res.status(STATUS_CODE.CREATED).json(newUserDatabase);
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
+            return next({message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST});
         }
     }
 
@@ -34,7 +34,7 @@ class AuthController{
             await this.cognitoService.confirmUser(email, code);
             res.status(STATUS_CODE.SUCCESS).json("Validated code");
         } catch (error) {
-            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
+            return next({message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST});
         }
 
     }
@@ -61,8 +61,21 @@ class AuthController{
 
         } catch (error) {
 
-            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
+            return next({message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST});
         }
+    }
+
+    async recovery(req: Request, res: Response, next: NextFunction) {
+        console.log("Recovering user");
+        const email = req.body.email;
+        try {
+            await this.cognitoService.accountRecovery(email);
+            res.status(STATUS_CODE.SUCCESS).json("Validated code");
+        } catch (error) {
+            return next({message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST});
+        }
+
+
     }
 
 }
