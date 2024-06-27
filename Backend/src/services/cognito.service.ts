@@ -85,10 +85,6 @@ export class CognitoService implements ICognitoService{
         });
     }
 
-     accountRecovery(email: string): Promise<void> {
-         console.log(email, "mi email")
-         return Promise.resolve(undefined);
-     }
 }
 
 export default CognitoService;
