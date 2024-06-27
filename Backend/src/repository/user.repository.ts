@@ -56,6 +56,28 @@ class UserRepository implements IUserRepository<IUser>{
         }
         return userSearched.get({ plain: true }) as IUser;
     }
+
+    async getUserById(id: number): Promise<IUser | null> {
+        const userSearched = await this.userModal.findByPk(id);
+        if (userSearched === null) {
+            return null;
+        }
+        return userSearched.get({ plain: true }) as IUser;
+    }
+
+    async updateUser(id: number, userData: Partial<IUser>): Promise<IUser | null> {
+        const [updatedRowsCount, updatedUsers] = await this.userModal.update(userData, {
+            where: { id: id },
+            returning: true,
+        });
+    
+        if (updatedRowsCount === 0 || !updatedUsers || updatedUsers.length === 0) {
+            return null;
+        }
+    
+        const updatedUser = updatedUsers[0];
+        return updatedUser.get({ plain: true }) as IUser;
+    }
 }
 
 export default UserRepository;
