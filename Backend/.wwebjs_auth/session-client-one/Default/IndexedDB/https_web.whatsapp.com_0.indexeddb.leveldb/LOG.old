@@ -1,0 +1,16 @@
+2024/06/27-00:53:37.012 44d4 Reusing MANIFEST E:\AlTanto1\AlTanto\Backend\.wwebjs_auth\session-client-one\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/06/27-00:53:37.013 44d4 Recovering log #1263
+2024/06/27-00:53:37.033 44d4 Reusing old log E:\AlTanto1\AlTanto\Backend\.wwebjs_auth\session-client-one\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/001263.log 
+2024/06/27-00:53:39.754 4f2c Compacting 1@1 + 4@2 files
+2024/06/27-00:53:58.466 4f2c Generated table #1270@1: 31457 keys, 2184783 bytes
+2024/06/27-00:53:58.524 4f2c Generated table #1271@1: 3075 keys, 2150865 bytes
+2024/06/27-00:53:58.579 4f2c Generated table #1272@1: 3002 keys, 2146989 bytes
+2024/06/27-00:54:11.546 4f2c Generated table #1273@1: 15498 keys, 2184446 bytes
+2024/06/27-00:54:11.606 4f2c Generated table #1274@1: 9817 keys, 824367 bytes
+2024/06/27-00:54:11.606 4f2c Compacted 1@1 + 4@2 files => 9491450 bytes
+2024/06/27-00:54:11.607 4f2c compacted to: files[ 0 3 5 0 0 0 0 ]
+2024/06/27-00:54:11.608 4f2c Delete type=2 #1259
+2024/06/27-00:54:11.608 4f2c Delete type=2 #1260
+2024/06/27-00:54:11.608 4f2c Delete type=2 #1261
+2024/06/27-00:54:11.609 4f2c Delete type=2 #1262
+2024/06/27-00:54:11.609 4f2c Delete type=2 #1265

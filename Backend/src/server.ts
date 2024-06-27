@@ -12,6 +12,7 @@ import zoneRouter from './routes/zones.routes';
 import groupRouter from './routes/group.routes';
 import userRouter from './routes/user.routes';
 //import { disableOldReport } from './cron/disableOldReport.cron'
+import WhatsAppService from './services/whatsApp.service'; // Asegúrate de que la ruta sea correcta y coincida con tu estructura de archivos
 
 const server = express();
 
@@ -46,10 +47,19 @@ server.use('/', (_req, res) => {
 });
 
 
+let whatsappService: WhatsAppService | null = null;
+try {
+    whatsappService = new WhatsAppService();
+} catch (error) {
+    console.error('Error al inicializar WhatsAppService:', error);
+}
+
+
 server.use(errorHandler)
 server.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
     //disableOldReport.start()
+
 })
 
 export { server};
