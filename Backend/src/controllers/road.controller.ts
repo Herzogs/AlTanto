@@ -14,9 +14,9 @@ class RoadController {
     async getAllRoads(_req: Request, res: Response, next: NextFunction) {
         try {
             const roads = await this.roadService.getAllRoads();
-            res.status(STATUS_CODE.SUCCESS).json(roads);
+            return res.status(STATUS_CODE.SUCCESS).json(roads);
         } catch (error) {
-            next({message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR});
+            return next({message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR});
         }
     }
 
@@ -27,16 +27,19 @@ class RoadController {
                 return {
                     message: error.message,
                     path: error.path.join('.')
-
-                }
+                };
             });
             return next({ message: listOffErrors, statusCode: STATUS_CODE.BAD_REQUEST });
         }
+
         try {
             const road = await this.roadService.getRouteById(+req.params.id);
-            res.status(STATUS_CODE.SUCCESS).json(road);
+            if (road) {
+                return res.status(STATUS_CODE.SUCCESS).json(road);
+            }
+            return next({ message: 'Road not found', statusCode: STATUS_CODE.SUCCESS });
         } catch (error) {
-            next({message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR});
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }
     }
 
@@ -54,9 +57,9 @@ class RoadController {
         }
         try {
             const roads = await this.roadService.getRoadsByUserId(req.params.id);
-            res.status(STATUS_CODE.SUCCESS).json(roads);
+            return res.status(STATUS_CODE.SUCCESS).json(roads);
         } catch (error) {
-            next({message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR});
+            return next({message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR});
         }
     }
 
@@ -74,9 +77,9 @@ class RoadController {
         }
         try {
             const road = await this.roadService.createRoad(req.body as IRoadDto);
-            res.status(STATUS_CODE.CREATED).json(road);
+            return res.status(STATUS_CODE.CREATED).json(road);
         } catch (error) {
-            next({message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR});
+            return next({message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR});
         }
 
     }

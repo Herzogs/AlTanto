@@ -1,24 +1,19 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { icons, getIconByCategoryId } from "./Icons";
+import { MapContainer, TileLayer} from "react-leaflet";
 import LocationMarker from "@components/Map/LocationMarker";
 import RadiusCircle from "@components/Map/RadiusCircle";
 import Routing from "@components/road/Routing";
-import PopupAT from "@components/Map/PopupAT";
 import MenuButton from "@components/Map/MenuButton";
 import useMapClickHandler from "@hook/useMapClickHandler";
-import MarkerClusterGroup from "@changey/react-leaflet-markercluster";
-import { getCategoryFromApi } from "../../services/getCategory";
+import { getCategoryFromApi } from "@/services/getCategory";
 import { useEffect, useState } from "react";
 import MarkerMapClick from "./MarkerMapClick";
-
 import Filters from "@components/filter/Filters";
-import { useStore, userStore } from "@store";
-
+import { userStore } from "@store";
 import "leaflet/dist/leaflet.css";
-import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 import "./styles.css";
+import MapReport from "@components/Map/MapReport";
 
 const Map = ({
   userLocation,
@@ -27,17 +22,12 @@ const Map = ({
   zoneMode = false,
   startPoint = null,
   endPoint = null,
-  fetchingReport = false,
   showFilters = false,
   mapClick = false,
   noCircle = false,
 }) => {
   const { MapClickHandler } = useMapClickHandler();
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado de carga
-
-  const { reports } = useStore();
   const { id } = userStore.getState().user;
 
 
@@ -45,7 +35,6 @@ const Map = ({
     const fetchCategories = async () => {
       try {
         const fetchedCategories = await getCategoryFromApi();
-        setCategories(fetchedCategories);
         setSelectedCategories(fetchedCategories.map((category) => category.id));
         setLoading(false);
       } catch (error) {
@@ -55,28 +44,6 @@ const Map = ({
 
     fetchCategories();
   }, []);
-
-  const filteredReports =
-    reports && reports.length > 0
-      ? reports.filter((report) =>
-        selectedCategories.includes(report.categoryId)
-      )
-      : [];
-
-  const getIconByCategoryId = (categoryId) => {
-    switch (categoryId) {
-      case 1:
-        return icons.category1;
-      case 2:
-        return icons.category2;
-      case 3:
-        return icons.category3;
-      case 4:
-        return icons.category4;
-      default:
-        return icons.default;
-    }
-  };
 
   return (
     <section className="altanto-map">
@@ -116,20 +83,7 @@ const Map = ({
           />
         )}
 
-        {!loading && filteredReports && filteredReports.length > 0 && (
-          <MarkerClusterGroup>
-            {filteredReports.map((report) => (
-              <Marker
-                key={report.id}
-                position={[report.latitude, report.longitude]}
-                icon={getIconByCategoryId(report.categoryId)}
-              >
-                <PopupAT report={report} />
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
-        )}
-
+        <MapReport selectedCategories={selectedCategories} />
         {/* ROUTING PARA RECORIDO */}
         {routingMode && startPoint && endPoint && (
           <Routing startPoint={startPoint} endPoint={endPoint} />

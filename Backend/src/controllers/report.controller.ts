@@ -71,7 +71,7 @@ class ReportController {
                     longitude: +validData.data.longitude,
                 },
                 groupId: validData.data.groupId ? +validData.data.groupId : undefined,
-                image: req.file?.filename as string,
+                image: req.file?.path as string,
             }
             const reportCreated = await this.reportService.createReport(newReport);
             return res.status(201).json(reportCreated);

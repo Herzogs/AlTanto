@@ -1,34 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
 import { useForm } from "react-hook-form";
 import { Container, Button, Form, Row, Col } from "react-bootstrap";
 import Header from "@components/header/Header";
-import ModalAT from "@components/modal/ModalAT";
 import Map from "@components/Map/Map";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link } from "react-router-dom";
 import { sendRoute } from "@services/sendData";
 import { fetchReports } from "@services/getReportsInRoutings";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
-  const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
 
-  const [showModal, setShowModal] = useState(false);
   const {
     userLocation,
     setUserLocation,
     setReports,
     routeCoordinates,
     setRouteCoordinates,
+    distance,
+    time,
   } = useStore();
+
+  const {
+    user
+  } = userStore();
 
   const {
     register,
@@ -60,9 +63,11 @@ function RoutForm() {
       setEndPoint(endCoords);
       setError(false);
     } catch (error) {
-      console.error("Error al obtener coordenadas:", error);
       setError(true);
       setVisible(false);
+      toast.error(error.message, {
+        position: "top-right",
+      });
     }
   }, [startAddress, endAddress]);
 
@@ -81,9 +86,9 @@ function RoutForm() {
           setReports(reports);
         })
         .catch((error) => {
-          setShowModal(true);
-          setTitle("Error");
-          setMessage(error.message);
+          toast.error(error.message, {
+            position: "top-right",
+          });
         });
     }
   }, [routeCoordinates, setUserLocation, setReports]);
@@ -96,16 +101,19 @@ function RoutForm() {
         endAddress,
         startPoint,
         endPoint,
-        distance: useStore.getState().distance,
-        time: useStore.getState().time,
-        id: userStore.getState().user.id,
+        distance: distance,
+        time: time,
+        id: user.id,
       });
 
-      setTitle(response.title);
-      setMessage(response.message);
-      setShowModal(true);
+      toast.success(response.message, {
+        position: "top-right",
+      });
+      console.log(response.title === "Ruta guardada");
     } catch (error) {
-      console.error("Error al guardar la ruta", error);
+      toast.error(error.message, {
+        position: "top-right",
+      });
     }
   };
 
@@ -150,7 +158,7 @@ function RoutForm() {
             <Col sm={12}>
               <Form.Control
                 type="text"
-                isInvalid={!!errors.des}
+                isInvalid={!!errors.destination}
                 {...register("destination", {
                   required: "Campo requerido",
                   maxLength: {
@@ -198,57 +206,51 @@ function RoutForm() {
           )}
 
           {visible && (
-            <Form.Group as={Row} controlId="name">
-              <Form.Label className="mt-3 mb-2" column>
-                Nombre:
-              </Form.Label>
-              <Col sm={12}>
-                <Form.Control
-                  type="text"
-                  isInvalid={!!errors.name}
-                  {...register("name", {
-                    required: "Campo requerido",
-                    maxLength: {
-                      value: 50,
-                      message: "Máximo 50 caracteres",
-                    },
-                    minLength: {
-                      value: 3,
-                      message: "Mínimo 3 caracteres",
-                    },
-                  })}
-                />
-                {errors.name && (
-                  <Form.Control.Feedback type="invalid">
-                    {errors.name.message}
-                  </Form.Control.Feedback>
-                )}
-              </Col>
-            </Form.Group>
+            <>
+              <Form.Group as={Row} controlId="name">
+                <Form.Label className="mt-3 mb-2" column>
+                  Nombre:
+                </Form.Label>
+                <Col sm={12}>
+                  <Form.Control
+                    type="text"
+                    isInvalid={!!errors.name}
+                    {...register("name", {
+                      required: "Campo requerido",
+                      maxLength: {
+                        value: 50,
+                        message: "Máximo 50 caracteres",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "Mínimo 3 caracteres",
+                      },
+                    })}
+                  />
+                  {errors.name && (
+                    <Form.Control.Feedback type="invalid">
+                      {errors.name.message}
+                    </Form.Control.Feedback>
+                  )}
+                </Col>
+              </Form.Group>
+              <Form.Group className="my-4" as={Row} controlId="submit">
+                <Col sm={12}>
+                  <Button
+                    className="btn-success px-5"
+                    type="submit"
+                  >
+                    Guardar
+                  </Button>
+
+                </Col>
+              </Form.Group>
+            </>
           )}
 
-          <Form.Group className="my-4" as={Row} controlId="submit">
-            <Col sm={12}>
-              {visible && userLocation && (
-                <Button
-                  className="btn-success px-5"
-                  type="submit"
-                  disabled={!visible}
-                >
-                  Guardar
-                </Button>
-              )}
-            </Col>
-          </Form.Group>
         </Form>
 
-        <ModalAT
-          title={title}
-          message={message}
-          showModal={showModal}
-          setShowModal={setShowModal}
-          url="/"
-        />
+        <ToastContainer />
       </Container>
     </>
   );

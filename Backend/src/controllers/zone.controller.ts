@@ -17,7 +17,6 @@ class ZoneController {
         if (!validData.success) {
             return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
-
         try {
             const miZona: IZoneDto = {
                 name: validData.data.name,
@@ -28,6 +27,7 @@ class ZoneController {
                 rad: validData.data.radio,
                 userId: validData.data.userId
             }
+            
             const zone = await this.zoneService.create(miZona);
             return res.status(STATUS_CODE.CREATED).json(zone);
         } catch (error) {

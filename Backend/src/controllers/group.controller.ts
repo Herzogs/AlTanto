@@ -24,7 +24,7 @@ class GroupController {
             const newGroup = await this.groupService.create(group);
             if (newGroup && typeof newGroup.id === 'number') {
                 await this.groupUserService.addUser({ groupId: newGroup.id, userId: ownerId });
-                return res.status(STATUS_CODE.CREATED).json(newGroup);
+                res.status(201).json(newGroup);
             } else {
                 throw new Error('Invalid groupId');
             }
@@ -34,7 +34,6 @@ class GroupController {
     }
 
     async getGroupById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-       
         const validationResult = await getGroupByIdValidator.safeParseAsync(req.params);
         if (!validationResult.success) {
             return next({ message: validationResult.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
@@ -43,7 +42,7 @@ class GroupController {
             const { id } = validationResult.data as { id: string };
             const group = await this.groupService.findById(+id);
             if (group) {
-                return res.json(group);
+                res.status(200).json(group);
             } else {
                 return next({ message: 'Group not found', statusCode: STATUS_CODE.BAD_REQUEST });
             }
