@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Header from "@components/header/Header";
+//import Footer from "@components/footer/Footer";
 import { lazy, Suspense } from "react";
 import { AuthGuard } from "./guards/auth.guard";
 import Spinner from 'react-bootstrap/Spinner';

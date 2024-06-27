@@ -32,6 +32,7 @@ function ZoneForm() {
       address: "",
       radio: "500", // Valor por defecto para el radio
     },
+    resolver: zodResolver(zoneScheme),
   });
 
   const address = watch("address");

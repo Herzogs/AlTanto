@@ -4,7 +4,7 @@ import { IReportDto } from "../../src/models/reports.interface";
 import container from "../../src/container";
 import dbConnection from "../../src/config/dbConnection.config";
 import ReportRepository from "../../src/repository/reports.repository";
-import UserRepository from "repository/user.repository";
+import UserRepository from "../../src/repository/user.repository";
 
 describe("Zone Repository", () => {
     let zoneRepository: ZoneRepository;

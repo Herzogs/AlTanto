@@ -38,4 +38,5 @@ const transformData = (plainData: any) => {
     return transformedReport
 }
 
-export default transformData;
+
+export default transformData

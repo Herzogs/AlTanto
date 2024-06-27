@@ -47,6 +47,7 @@ function Home() {
     setDistance(0);
     setRoutingMode(false);
     setRouteCoordinates(null);
+    setMarkerPosition(null);
   }, [setRoutingMode]);
 
 

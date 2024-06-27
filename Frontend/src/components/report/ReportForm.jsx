@@ -1,28 +1,26 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
 import { getCategoryFromApi } from "@services/getCategory";
 import { sendReport } from "@services/sendData";
 import { useStore, userStore } from "@store";
-import Header from "@components/header/Header";
+import { Header } from "@components/Header";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Link } from "react-router-dom";
 import { reverseGeocode } from "@services/getGeoAdress";
+import { Link, useParams } from "react-router-dom";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 
 function ReportForm() {
-  const { groupId } = useParams();
   const { userLocation, markerPosition, setReports } = useStore();
   const { id } = userStore.getState().user;
   const [address, setAddress] = useState("");
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [file, setFile] = useState(null);
-
+  const { groupId } = useParams();
+  
   const [formData, setFormData] = useState({
     content: "",
     category: "",
@@ -35,7 +33,9 @@ function ReportForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+
+  });
 
   useEffect(() => {
     setReports([]);
@@ -43,10 +43,7 @@ function ReportForm() {
       setCategories(data);
     });
 
-    const location =
-      markerPosition !== null
-        ? { lat: markerPosition[0], lng: markerPosition[1] }
-        : userLocation;
+    const location = markerPosition !== null ? { lat: markerPosition[0], lng: markerPosition[1] } : userLocation;
     if (location) {
       const reverse = async () => {
         const data = await reverseGeocode(location);
@@ -61,14 +58,12 @@ function ReportForm() {
   useEffect(() => {
     if (markerPosition) {
       const reverse = async () => {
-        const data = await reverseGeocode({
-          lat: markerPosition[0],
-          lng: markerPosition[1],
-        });
+        const data = await reverseGeocode({ lat: markerPosition[0], lng: markerPosition[1] });
         return data;
       };
       reverse().then((data) => {
         setAddress(data);
+
       });
     }
   }, [markerPosition]);
@@ -77,7 +72,7 @@ function ReportForm() {
     if (groupId !== undefined) {
       data.groupId = groupId;
     }
-    
+
     data.image = file;
     data.latitude = markerPosition ? markerPosition[0] : userLocation.lat;
     data.longitude = markerPosition ? markerPosition[1] : userLocation.lng;
@@ -111,107 +106,90 @@ function ReportForm() {
       <Container className="pt-4 pt-lg-5">
         <p className="text-end"><Link to="/"><ArrowBackIcon /> Regresar</Link></p>
         <h2>Crear Reporte</h2>
-        <Row>
-          <Col lg={4}>
-            <Form onSubmit={handleSubmit(onSubmit)}>
-              <Form.Group as={Row} controlId="category">
-                <Form.Label className="mt-3 mb-2">Categoría:</Form.Label>
-                <Col sm={12}>
-                  <Form.Control
-                    as="select"
-                    isInvalid={errors.category}
-                    {...register("category", {
-                      required: "Campo requerido",
-                      onChange: (e) =>
-                        setFormData({ ...formData, category: e.target.value }),
-                    })}
-                  >
-                    <option value="">Seleccione una categoría</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </Form.Control>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.category?.message}
-                  </Form.Control.Feedback>
-                </Col>
-              </Form.Group>
+        <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form.Group as={Row} controlId="category">
+            <Form.Label className="mt-3 mb-2">Categoría:</Form.Label>
+            <Col sm={12}>
+              <Form.Control
+                as="select"
+                isInvalid={errors.category}
+                {...register("category", {
+                  required: "Campo requerido",
+                  onChange: (e) =>
+                    setFormData({ ...formData, category: e.target.value }),
+                })}
+              >
+                <option value="">Seleccione una categoría</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </Form.Control>
+              <Form.Control.Feedback type="invalid">
+                {errors.category?.message}
+              </Form.Control.Feedback>
+            </Col>
+          </Form.Group>
 
-              <Form.Group as={Row} controlId="content">
-                <Form.Label className="mt-3 mb-2">Descripción:</Form.Label>
-                <Col sm={12}>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    isInvalid={errors.content}
-                    {...register("content", {
-                      required: "Campo requerido",
-                      maxLength: {
-                        value: 100,
-                        message: "Máximo 100 caracteres",
-                      },
-                      onChange: (e) =>
-                        setFormData({ ...formData, content: e.target.value }),
-                    })}
-                    value={formData.content}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.content?.message}
-                  </Form.Control.Feedback>
-                </Col>
-              </Form.Group>
+          <Form.Group as={Row} controlId="content">
+            <Form.Label className="mt-3 mb-2">Descripción:</Form.Label>
+            <Col sm={12}>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                isInvalid={errors.content}
+                {...register("content", {
+                  onChange: (e) =>
+                    setFormData({ ...formData, content: e.target.value }),
+                })}
+                value={formData.content}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.content?.message}
+              </Form.Control.Feedback>
+            </Col>
+          </Form.Group>
 
-              <Form.Group as={Row} controlId="ubicacion">
-                <Form.Label className="mt-3 mb-2">Ubicación:</Form.Label>
-                <Col sm={12}>
-                  <Form.Control type="text" value={address} readOnly={true} />
-                </Col>
-              </Form.Group>
+          <label className="mt-3 mb-2">Ubicación:</label>
+          <input type="text" className="mt-3 mb-2 w-100" value={address} readOnly="true" />
 
-              <Form.Group as={Row} controlId="image">
-                <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>
-                <Col sm={12}>
-                  {file && (
-                    <Image
-                      src={URL.createObjectURL(file)}
-                      alt="Report"
-                      style={{
-                        maxWidth: "440px",
-                        maxHeight: "300px",
-                        width: "100%",
-                      }}
-                    />
-                  )}
-                  {!file && (
-                    <Form.Control
-                      type="file"
-                      {...register("image")}
-                      onChange={handleImageChange}
-                    />
-                  )}
-                </Col>
-              </Form.Group>
-
-              <Button type="submit" variant="success" className="my-4 px-5">
-                Guardar
-              </Button>
-            </Form>
-          </Col>
-          <Col lg={8} style={{ minHeight: "400px" }}>
-            {userLocation && (
-              <div style={{ height: "100%", padding: "16px 0px" }}>
-                <Map
-                  userLocation={userLocation}
-                  zoneMode={true}
-                  mapClick={true}
-                  noCircle={true}
+          <Form.Group as={Row} controlId="image">
+            <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>
+            <Col sm={12}>
+              {file && (
+                <Image
+                  src={URL.createObjectURL(file)}
+                  alt="Report"
+                  style={{ maxWidth: "400px", maxHeight: "300px", width: "100%" }}
                 />
-              </div>
-            )}
-          </Col>
-        </Row>
+              )}
+              {!file && (
+                <Form.Control
+                  type="file"
+                  {...register("image")}
+                  onChange={handleImageChange}
+                />
+              )}
+            </Col>
+          </Form.Group>
+
+          <Button type="submit" variant="success" className="my-4 px-4">
+            Guardar
+          </Button>
+        </Form>
+
+        {userLocation && (
+          <div style={{ height: "300px", marginTop: "16px" }}>
+            <Map
+              userLocation={userLocation}
+              zoneMode={true}
+              noDrag={true}
+              mapClick={true}
+              noCircle={true}
+            />
+          </div>
+        )}
 
         <ModalAT
           title="Reporte guardado"
@@ -224,5 +202,4 @@ function ReportForm() {
     </>
   );
 }
-
 export default ReportForm;
