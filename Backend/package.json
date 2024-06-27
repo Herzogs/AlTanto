@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "Backend del proyecto final de carrera - Al Tanto",
   "scripts": {
-    "dev": "ts-node-dev --env-file=.env src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --env-file=.env src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
-    "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpile-only --env-file=.env src/server.ts",
     "test": "jest --coverage --silent --runInBand --detectOpenHandles",
     "test:watch": "jest --silent --watchAll --runInBand --detectOpenHandles "
   },
@@ -46,6 +44,7 @@
     "@azure-rest/ai-vision-image-analysis": "^1.0.0-beta.2",
     "@azure/ai-text-analytics": "^5.1.0",
     "amazon-cognito-identity-js": "^6.3.12",
+    "atob": "^2.1.2",
     "awilix": "^10.0.2",
     "awilix-express": "^9.0.1",
     "axios": "^1.7.2",

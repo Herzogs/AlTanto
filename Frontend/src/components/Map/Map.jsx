@@ -28,6 +28,7 @@ const Map = ({
 }) => {
   const { MapClickHandler } = useMapClickHandler();
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { id } = userStore.getState().user;
 
 

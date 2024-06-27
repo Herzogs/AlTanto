@@ -7,10 +7,12 @@ import iconGreen from "@assets/iconGreen.png";
 import iconYellow from "@assets/iconYellow.png";
 import iconOrange from "@assets/iconOrange.png";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 import "./styles.css";
 
 function Report({ report }) {
   const navigate = useNavigate();
+  const formattedDate = format(new Date(report.createAt), "HH:mm - dd/MM/yyyy");
 
   const getIcon = (categoryId) => {
     switch (categoryId) {
@@ -41,6 +43,7 @@ function Report({ report }) {
       </div>
 
       <div className="at-report-footer">
+        <p className="my-2">{formattedDate}</p>
         <button
           className="btn btn-sm btn-primary"
           onClick={() => {
