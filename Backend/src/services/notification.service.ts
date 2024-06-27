@@ -1,15 +1,14 @@
-import twilio from 'twilio';
 import { INotificationService } from './interfaces/notification.service.interface';
 import { IReportDto } from '../models/reports.interface';
 import { IGroupService } from './interfaces/group.service.interface';
 import { IGroup, IGroupMember, IGroupUser } from '../models/group.interface';
+import axios from 'axios';
 
 class NotificationService implements INotificationService {
-  private twilioClient: twilio.Twilio;
+
   private groupService: IGroupService<IGroup, IGroupUser, IGroupMember>;
 
   constructor({ groupService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember> }) {
-    this.twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID as string, process.env.TWILIO_AUTH_TOKEN as string);
     this.groupService = groupService;
   }
 
@@ -17,10 +16,9 @@ class NotificationService implements INotificationService {
     const group: IGroupMember = await this.groupService.findMembersByGroupId(groupId);
     const listofmembers = group?.members;
     listofmembers?.forEach(async (member) => {
-      console.log(member);
-      const message = `ATENCIÓN GRUPO ${group.name}\n${member.name} ${member.lastName} ha subido un reporte\nContenido: ${report.content}\nFecha: ${report.createAt}`;
+      const message = `${report.content} - Fecha: ${report.createAt}`;
       const aux = await this.sendNotification(member.phoneNumber, message);
-      if (aux.status === 'failed') {
+      if (aux?.status === 'failed') {
         console.error(`Error al enviar mensaje a ${member.phoneNumber}`);
       }
     });
@@ -29,11 +27,51 @@ class NotificationService implements INotificationService {
 
   private async sendNotification(to: string, message: string) {
     const formattedNumber = this.formatPhoneNumber(to);
-    return this.twilioClient.messages.create({
-      body: message,
-      from: 'whatsapp:+14155238886', // Número de WhatsApp de Twilio
-      to: `whatsapp:${formattedNumber}`,
-    });
+    try {
+      
+      const response = await axios.post('https://graph.facebook.com/v19.0/364446776749815/messages',
+        {
+          messaging_product: "whatsapp",
+          recipient_type: "individual",
+          to: formattedNumber,
+          type: "template",
+          template: {
+            name: "nuevo",
+            language: {
+              code: "es_AR"
+            },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  {
+                    type: "text",
+                    text: message
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env. WHATSAPP_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      console.log(response);
+      if (response.status === 200) {
+        console.log('Notificación enviada con éxito');
+        return { status: 'success' };
+      } else {
+        console.error('Error enviando notificación:', response.statusText);
+        return { status: 'failed' };
+      }
+    } catch (error) {
+      console.error('Error enviando notificación:', (error as Error).message);
+      return { status: 'failed', error: (error as Error).message };
+    }
   }
 
   private formatPhoneNumber(phoneNumber: string): string {
