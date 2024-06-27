@@ -20,7 +20,7 @@ describe('User Repository', () => {
 
     beforeEach(async () => {
         await dbConnection.sync({ force: true });
-        const UserModal: ModelCtor<User> = container.resolve<ModelCtor<User>>('User'); // Asegúrate de obtener el modelo correcto desde el contenedor
+        const UserModal: ModelCtor<User> = container.resolve<ModelCtor<User>>('User');
         userRepository = new UserRepository({ User: UserModal });
     });
 
@@ -33,7 +33,7 @@ describe('User Repository', () => {
             phoneNumber: '123456789',
             username: 'testuser',
             rol: 'USER',
-            id:3
+            id: 1
         };
 
         const createdUser = await userRepository.create(newUser);
@@ -50,7 +50,7 @@ describe('User Repository', () => {
             phoneNumber: '123456789',
             username: 'testuser',
             rol: 'USER',
-            id:3
+            id: 2
         };
 
         await userRepository.create(newUser);
@@ -76,7 +76,7 @@ describe('User Repository', () => {
             phoneNumber: '123456789',
             username: 'testuser',
             rol: 'USER',
-            id:3
+            id: 3
         };
 
         await userRepository.create(newUser);
@@ -91,5 +91,69 @@ describe('User Repository', () => {
 
         const fetchedUser = await userRepository.getByUserName(nonExistentUserName);
         expect(fetchedUser).toBeNull();
+    });
+
+    test('should get a user by id', async () => {
+        const newUser: IUser = {
+            email: 'testuser@gmail.com',
+            password: 'password123',
+            name: 'Test',
+            lastName: 'User',
+            phoneNumber: '123456789',
+            username: 'testuser',
+            rol: 'USER',
+            id: 4
+        };
+
+        const createdUser = await userRepository.create(newUser);
+
+        const fetchedUser = await userRepository.getUserById(createdUser.id);
+        console.log('Fetched User by ID:', fetchedUser);
+        expect(fetchedUser).toBeDefined();
+        expect(fetchedUser!.id).toBe(createdUser.id);
+    });
+
+    test('should return null when user not found by id', async () => {
+        const nonExistentId = 999;
+
+        const fetchedUser = await userRepository.getUserById(nonExistentId);
+        expect(fetchedUser).toBeNull();
+    });
+
+    // test('should update a user', async () => {
+    //     const newUser: IUser = {
+    //         email: 'testuser@gmail.com',
+    //         password: 'password123',
+    //         name: 'Test',
+    //         lastName: 'User',
+    //         phoneNumber: '123456789',
+    //         username: 'testuser',
+    //         rol: 'USER',
+    //         id: 5
+    //     };
+    
+    //     const createdUser = await userRepository.create(newUser);
+    //     expect(createdUser).toBeDefined();
+    //     expect(createdUser.id).toBeDefined();
+    
+    //     const updatedData: Partial<IUser> = {
+    //         name: 'UpdatedTest',
+    //         email: 'updateduser@gmail.com'
+    //     };
+    
+    //     const updatedUser = await userRepository.updateUser(createdUser.id, updatedData);
+    //     expect(updatedUser).toBeDefined();
+    //     expect(updatedUser!.name).toBe(updatedData.name);
+    //     expect(updatedUser!.email).toBe(updatedData.email);
+    // });
+
+    test('should return null when user not found for update', async () => {
+        const nonExistentId = 999;
+        const updatedData: Partial<IUser> = {
+            name: 'UpdatedTest'
+        };
+
+        const updatedUser = await userRepository.updateUser(nonExistentId, updatedData);
+        expect(updatedUser).toBeNull();
     });
 });

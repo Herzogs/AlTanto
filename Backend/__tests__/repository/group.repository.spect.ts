@@ -84,7 +84,7 @@ describe('Group Repository', () => {
         try {
             const fetchedGroup = await groupRepository.findById(createdGroup!.id as number);
             expect(fetchedGroup).toBeDefined();
-            expect(fetchedGroup?.name).toBe(groupData.name);
+            expect(fetchedGroup!.name).toBe(groupData.name);
         } catch (error) {
             console.error('Error fetching group by id:', error);
             throw error;
@@ -151,4 +151,39 @@ describe('Group Repository', () => {
             throw error;
         }
     });
+
+    test('should remove a group by id', async () => {
+        const userData = {
+            email: 'crisefeld@gmail.com',
+            password: '123456',
+            name: 'Cristian',
+            lastName: 'Esfeld',
+            phoneNumber: '123456',
+            username: 'crisefeld',
+            id: 1,
+        };
+
+        await userRepository.create(userData);
+
+        const groupData: IGroup = {
+            name: 'Group to be deleted',
+            ownerId: userData.id,
+            groupCode: 'DELETE123'
+        };
+
+        const createdGroup = await groupRepository.create(groupData);
+
+        try {
+            const groupId = createdGroup!.id as number;
+            const isRemoved = await groupRepository.remove(groupId);
+            expect(isRemoved).toBeTruthy();
+
+            const fetchedGroup = await groupRepository.findById(groupId);
+            expect(fetchedGroup).toBeNull();
+        } catch (error) {
+            console.error('Error removing group:', error);
+            throw error;
+        }
+    });
 });
+

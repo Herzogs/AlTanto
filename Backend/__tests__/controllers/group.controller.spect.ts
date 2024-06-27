@@ -68,18 +68,18 @@ describe('Group Controller', () => {
         const groupData = { name: 'Test Group', ownerId: 1, id: 1 };
         groupService.create.mockResolvedValue(groupData);
         groupUserService.addUser.mockResolvedValue({} as IGroupUser);
-    
+
         const req = { body: groupData } as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
         const next = jest.fn() as NextFunction;
-    
+
         await groupController.createGroup(req, res, next);
-    
+
         expect(res.status).toHaveBeenCalledWith(201);
         expect(res.json).toHaveBeenCalledWith(groupData);
         expect(groupUserService.addUser).toHaveBeenCalledWith({ groupId: expect.any(Number), userId: groupData.ownerId });
     });
-    
+
     test('should return bad request error when creating a group with invalid data', async () => {
         const invalidDataResult = {
             success: false,
@@ -89,7 +89,7 @@ describe('Group Controller', () => {
                 ]
             }
         };
-        
+
         (groupValidators.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue(invalidDataResult);
 
         const req = { body: {} } as Request;
@@ -104,13 +104,13 @@ describe('Group Controller', () => {
     test('should get a group by id', async () => {
         (groupValidators.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { id: '1' } });
         groupService.findById.mockResolvedValue(groupData);
-    
+
         const req = { params: { id: '1' } } as unknown as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
         const next = jest.fn() as NextFunction;
-    
+
         await groupController.getGroupById(req, res, next);
-    
+
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith(groupData);
     });
@@ -124,7 +124,7 @@ describe('Group Controller', () => {
                 ]
             }
         };
-        
+
         (groupValidators.getGroupByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue(invalidDataResult);
 
         const req = { params: { id: '1' } } as unknown as Request;
@@ -136,6 +136,61 @@ describe('Group Controller', () => {
         expect(next).toHaveBeenCalledWith({ message: 'Invalid id', statusCode: 400 });
     });
 
-    // Add more tests for other controller methods as needed...
+    test('should return error when deleting a group fails', async () => {
+        groupService.remove.mockRejectedValue(new Error('Deletion error'));
 
+        const req = { params: { id: '1' } } as unknown as Request;
+        const res = { json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
+
+        await groupController.deleteGroup(req, res, next);
+
+        expect(next).toHaveBeenCalledWith({ message: 'Deletion error', statusCode: 400 });
+    });
+
+    test('should return error when adding a user to a group with invalid data', async () => {
+        const req = { body: {} } as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
+
+        await groupController.addUserToGroup(req, res, next);
+
+        expect(next).toHaveBeenCalledWith({ message: 'Invalid input', statusCode: 400 });
+    });
+
+    test('should return error when removing a user from a group with invalid data', async () => {
+        const req = { params: {} } as unknown as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
+
+        await groupController.removeUserFromGroup(req, res, next);
+
+        expect(next).toHaveBeenCalledWith({ message: 'Invalid input', statusCode: 400 });
+    });
+
+    test('should get groups by user id successfully', async () => {
+        const groups = [groupData];
+        groupService.getAllByOwner.mockResolvedValue(groups);
+
+        const req = { params: { userId: '1' } } as unknown as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
+
+        await groupController.getGroupsByUserId(req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith(groups);
+    });
+
+    test('should return error when getting groups by user id fails', async () => {
+        groupService.getAllByOwner.mockRejectedValue(new Error('Fetch error'));
+
+        const req = { params: { userId: '1' } } as unknown as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
+
+        await groupController.getGroupsByUserId(req, res, next);
+
+        expect(next).toHaveBeenCalledWith({ message: 'Fetch error', statusCode: 500 });
+    });
 });

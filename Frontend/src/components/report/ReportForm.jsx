@@ -136,7 +136,7 @@ function ReportForm() {
         </Form.Group>
 
         <Form.Group as={Row} controlId="content">
-          <Form.Label className="mt-3 mb-2">Descripción:</Form.Label>
+          <Form.Label htmlFor="content" className="mt-3 mb-2">Descripción:</Form.Label>
           <Col sm={12}>
             <Form.Control
               as="textarea"
@@ -155,7 +155,7 @@ function ReportForm() {
         </Form.Group>
 
         <Form.Group as={Row}>
-          <Form.Label className="mt-3 mb-2">Imagen:</Form.Label>
+          <Form.Label htmlFor="image" className="mt-3 mb-2">Imagen:</Form.Label>
           <Col sm={12}>
             <Form.Control
               type="file"
@@ -167,16 +167,24 @@ function ReportForm() {
 
         {userLocation && (
           <>
-            <label className="mt-3">Ubicación:</label>
-            <input type="text" className="mb-2 w-100" value={address} readOnly={true} />
-            <div style={{ height: "300px", marginTop: "10px" }}>
+            <Form.Group as={Row} controlId="address">
+                <Form.Label htmlFor="address" className="mt-3">Ubicación:</Form.Label>
+                <Col sm={12}>
+                  <Form.Control
+                    type="text"
+                    id="address"
+                    className="mb-2 w-100"
+                    value={address}
+                    readOnly
+                  />
+                </Col>
+              </Form.Group>
               <Map
                 userLocation={userLocation}
                 zoneMode={true}
                 mapClick={true}
                 noCircle={true}
               />
-            </div>
           </>
         )}
 

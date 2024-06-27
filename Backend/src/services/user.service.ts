@@ -40,6 +40,21 @@ class UserService implements IUserService<IUser> {
         return userSearched;
     }
 
+    async getUserById(id: number): Promise<IUser> {
+        const userSearched = await this.userRepository.getUserById(id);
+        if (userSearched === null) {
+            throw new UserNotFoundException("User not found.");
+        }
+        return userSearched;
+    }
+
+    async updateUser(id: number, userData: Partial<IUser>): Promise<IUser> {
+        const updatedUser = await this.userRepository.updateUser(id, userData);
+        if (updatedUser === null) {
+            throw new UserNotFoundException("User not found.");
+        }
+        return updatedUser;
+    }
 }
 
 export default UserService;

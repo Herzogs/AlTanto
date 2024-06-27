@@ -31,6 +31,12 @@ function CardHome() {
         {id && (
           <>
             <h5>
+              <Link to="/profile" className="d-flex align-items-center">
+                <AccountCircleIcon className="me-3" /> Perfil
+              </Link>
+            </h5>
+            <hr />
+            <h5>
               <Link to="/grupos">
                 <GroupsIcon className="me-3" /> Grupos
               </Link>
