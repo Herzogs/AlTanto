@@ -8,11 +8,14 @@ import iconYellow from "@assets/iconYellow.png";
 import iconOrange from "@assets/iconOrange.png";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { updateScoring } from "@services/sendData";
+import { IconButton } from "@mui/material";
 import "./styles.css";
 
 function Report({ report }) {
   const navigate = useNavigate();
-  const formattedDate = format(new Date(report.createAt), "HH:mm - dd/MM/yyyy");
+  const { createAt, categoryId, content, id, positiveScore, negativeScore } = report;
+  const formattedDate = format(new Date(createAt), "HH:mm - dd/MM/yyyy");
 
   const getIcon = (categoryId) => {
     switch (categoryId) {
@@ -38,8 +41,8 @@ function Report({ report }) {
   return (
     <article className="at-report">
       <div className="at-report-header">
-        <p>{report.content}</p>
-        {getIcon(report.categoryId)}
+        <p>{content}</p>
+        {getIcon(categoryId)}
       </div>
 
       <div className="at-report-footer">
@@ -47,14 +50,20 @@ function Report({ report }) {
         <button
           className="btn btn-sm btn-primary"
           onClick={() => {
-            handleViewDetails(report.id);
+            handleViewDetails(id);
           }}
         >
           Ver detalle
         </button>
         <div>
-          <ThumbUpIcon style={{ color: "#537ac9", marginRight: "32px" }} />
-          <ThumbDownAltIcon style={{ color: "#cc545d" }} />
+          <IconButton onClick={() => updateScoring({ reportId: id, vote: 1, userId: 1 })}>
+            {positiveScore}
+            <ThumbUpIcon style={{ color: "#537ac9" }} />
+          </IconButton>
+          <IconButton onClick={() => updateScoring({ reportId: id, vote: 0, userId: 1 })}>
+            {negativeScore}
+            <ThumbDownAltIcon style={{ color: "#cc545d" }} />
+          </IconButton>
         </div>
       </div>
     </article>

@@ -5,4 +5,5 @@ export interface IReportRepository<T> {
     create(newReport: T): Promise<T | null>;
     disableOldReports(): Promise<void>;
     getByGroup(groupId: number): Promise<T[] | null>;
+    scoringReport(id: number, vote: number, userId: number): Promise<void>;
 }

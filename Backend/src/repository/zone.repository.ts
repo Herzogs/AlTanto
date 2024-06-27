@@ -140,7 +140,7 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
         
         const { location, rad } = zone;
         const reports = await Zone.sequelize?.query(
-            `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.createAt, Report.categoryId,
+            `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.createAt, User.name, User.lastName, Report.categoryId,
                 Location.latitude, Location.longitude, 
                 Category.name AS categoryName,
                 (6371000 * acos(
@@ -150,6 +150,7 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
             FROM Location
             JOIN Report ON Location.id = Report.LocationId
             JOIN Category ON Report.CategoryId = Category.id
+            JOIN User ON Report.userId = User.id
             WHERE Report.enabled = true AND Report.groupId IS NULL
             HAVING distancia <= :radius
             ORDER BY distancia;`,

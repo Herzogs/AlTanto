@@ -5,4 +5,5 @@ export interface IReportService<T> {
     getByUser(userId: number): Promise<T[]>;
     getReportsByGroup(groupId: number): Promise<T[]>;
     disableOldReports(): Promise<void>;
+    scoringReport(id: number, vote: number, userId: number): Promise<void>;
 }

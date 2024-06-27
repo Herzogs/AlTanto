@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, Image } from "react-bootstrap";
 import { getCategoryFromApi } from "@services/getCategory";
 import { sendReport } from "@services/sendData";
-import { useStore } from "@store";
+import { useStore, userStore } from "@store";
 import Header from "@components/header/Header";
 import Map from "@components/Map/Map.jsx";
 import ModalAT from "@components/modal/ModalAT";
@@ -17,6 +17,7 @@ import { reverseGeocode } from "@services/getGeoAdress";
 function ReportForm() {
   const { groupId } = useParams();
   const { userLocation, markerPosition, setReports } = useStore();
+  const { id } = userStore.getState().user;
   const [address, setAddress] = useState("");
   const [categories, setCategories] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -76,9 +77,11 @@ function ReportForm() {
     if (groupId !== undefined) {
       data.groupId = groupId;
     }
+    
     data.image = file;
     data.latitude = markerPosition ? markerPosition[0] : userLocation.lat;
     data.longitude = markerPosition ? markerPosition[1] : userLocation.lng;
+    data.userId = id;
 
     try {
       await sendReport(data);
@@ -106,7 +109,7 @@ function ReportForm() {
     <>
       <Header />
       <Container className="pt-4 pt-lg-5">
-      <p className="text-end"><Link to="/"><ArrowBackIcon/> Regresar</Link></p>
+        <p className="text-end"><Link to="/"><ArrowBackIcon /> Regresar</Link></p>
         <h2>Crear Reporte</h2>
         <Row>
           <Col lg={4}>

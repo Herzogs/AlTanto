@@ -6,7 +6,7 @@ const upload = multer({
     bucketName: process.env.FIREBASE_STORAGEBUCKET,
     credentials: {
       clientEmail: process.env.FIREBASE_EMAIL as string,
-      privateKey: JSON.parse(process.env.FIREBASE_PRIVATEKEY) as string,
+      privateKey: process.env.FIREBASE_PRIVATEKEY as string,
       projectId: process.env.FIREBASE_PROJECTID as string,
     },
     directoryPath: 'reports',

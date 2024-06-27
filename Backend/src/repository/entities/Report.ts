@@ -3,6 +3,7 @@ import dbConnection from '../../config/dbConnection.config';
 import Category from './Category';
 import {Location} from './Location';
 import Group from "./Group";
+import User from './User';
 
 class Report extends Model {
 }
@@ -35,6 +36,7 @@ Report.init({
 
 Report.belongsTo(Category);
 Report.belongsTo(Location);
-Report.belongsTo(Group, { foreignKey: 'groupId' }); 
+Report.belongsTo(Group, { foreignKey: 'groupId' });
+Report.belongsTo(User, { foreignKey: 'userId' });
 
 export default Report;

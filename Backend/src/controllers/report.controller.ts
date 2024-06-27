@@ -51,6 +51,7 @@ class ReportController {
     }
 
     async createReport(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+
         const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
         if (!validData.success) {
             const listofErrors = validData.error.errors.map((error) => {
@@ -72,6 +73,7 @@ class ReportController {
                 },
                 groupId: validData.data.groupId ? +validData.data.groupId : undefined,
                 image: req.file?.path as string,
+                userId: +validData.data.userId
             }
             const reportCreated = await this.reportService.createReport(newReport);
             return res.status(201).json(reportCreated);
@@ -85,6 +87,22 @@ class ReportController {
             const { groupId } = req.params
             const reports = await this.reportService.getReportsByGroup(+groupId);
             return res.json(reports);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async scoringReport(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        console.log(req.body);
+        const validData = await reportValidator.scoringReportValidator.safeParseAsync(req.body);
+        if (!validData.success) {
+            console.log(validData);
+            return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
+        }
+        try {
+            const { reportId, vote, userId } = validData.data as { reportId: number, vote: number, userId: number };
+            await this.reportService.scoringReport(reportId, vote, userId);
+            return res.status(STATUS_CODE.SUCCESS).json({ message: 'Report scored successfully' });
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }
