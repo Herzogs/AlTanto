@@ -70,14 +70,23 @@ class AuthController {
         const email = req.body.email;
         try {
             await this.cognitoService.accountRecovery(email);
-            res.status(STATUS_CODE.SUCCESS).json("Validated code");
+            res.status(STATUS_CODE.SUCCESS).json("code sender");
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
-
-
     }
+    async updatePassword(req: Request, res: Response, next: NextFunction) {
 
+        try {
+            const email = req.body.email;
+            const newPassword = req.body.password;
+            const code = req.body.code;
+            await this.cognitoService.updatePassword(email, code, newPassword);
+            res.status(STATUS_CODE.SUCCESS).json("Password updated successfully");
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
+        }
+    }
 }
 
 export default AuthController;

@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
-import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js';
-import {promisify} from 'util';
-import {IUserCognito} from '../models/user.interface';
-import {UserNotCreatedException} from "../exceptions/users.exceptions";
-import {generateToken} from "../utilities/jwt.utilities";
-import {ICognitoService} from './interfaces/cognito.service.interface';
+import { AuthenticationDetails, CognitoUser } from 'amazon-cognito-identity-js';
+import { promisify } from 'util';
+import { IUserCognito } from '../models/user.interface';
+import { UserNotCreatedException } from "../exceptions/users.exceptions";
+import { generateToken } from "../utilities/jwt.utilities";
+import { ICognitoService } from './interfaces/cognito.service.interface';
 
 const poolData = {
     UserPoolId: process.env.USER_POOL_ID as string,
@@ -13,8 +12,9 @@ const poolData = {
 };
 
 
-export class CognitoService implements ICognitoService{
+export class CognitoService implements ICognitoService {
     private userPool: AmazonCognitoIdentity.CognitoUserPool;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     private signUpAsync: Function;
 
     constructor() {
@@ -80,6 +80,49 @@ export class CognitoService implements ICognitoService{
                 onFailure: (err) => {
                     console.error(`Login failed: ${err}`);
                     reject(new Error('Login failed'));
+                },
+            });
+        });
+    }
+
+    async accountRecovery(email: string): Promise<void> {
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+        return new Promise<void>((resolve, reject) => {
+            cognitoUser.forgotPassword({
+                onSuccess: () => {
+                    console.log('Password recovery initiated successfully');
+                    resolve();
+                },
+                onFailure: (err) => {
+                    console.error(`Error initiating password recovery: ${err}`);
+                    reject(new Error('Failed to initiate password recovery'));
+                },
+            });
+        });
+    }
+    async updatePassword(email: string, verificationCode: string, newPassword: string): Promise<void> {
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+        return new Promise<void>((resolve, reject) => {
+            cognitoUser.confirmPassword(verificationCode, newPassword, {
+                onSuccess: () => {
+                    console.log('Password changed successfully');
+                    resolve();
+                },
+                onFailure: (err) => {
+                    console.error(`Error changing password: ${err}`);
+                    reject(new Error('Failed to change password'));
                 },
             });
         });
