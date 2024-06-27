@@ -16,6 +16,7 @@ class GroupController {
 
     async createGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const { name, ownerId } = req.body;
+        console.log(req.body);
         try {
             if (typeof ownerId !== 'number') {
                 return next({ message: 'Invalid ownerId', statusCode: STATUS_CODE.BAD_REQUEST });
@@ -63,14 +64,14 @@ class GroupController {
     }
 
     async addUserToGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        console.log("entro al addUserToGroup")
-        const { groupId = null, userId, groupCode } = req.body;
+        const { userId, groupCode } = req.body;
         try {
-            if (!groupId || !userId || !groupCode) {
+            if (!userId || !groupCode) {
                 return next({ message: 'Invalid input', statusCode: STATUS_CODE.BAD_REQUEST });
             }
             const groupUser = await this.groupService.validateGroupCode(groupCode);
-            await this.groupUserService.addUser({ groupId, userId });
+            console.log(groupUser);
+            await this.groupUserService.addUser({ groupId: groupUser.id as number, userId });
             return res.status(201).json(groupUser);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });

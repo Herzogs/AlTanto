@@ -24,6 +24,7 @@ import RoadRepository from "./repository/road.repository";
 import RoadService from "./services/road.service";
 import ZoneRepository from "./repository/zone.repository";
 import ZoneService from "./services/zone.service";
+import NotificationService from "./services/notification.service";
 
 const container = createContainer();
 
@@ -52,7 +53,8 @@ container.register({
     zoneRepository: asClass(ZoneRepository).scoped(),
     zoneService: asClass(ZoneService).scoped(),
     imageAnalysis: asClass(ImageAnalysis).scoped(),
-    translateText: asClass(TranslateText).scoped()
+    translateText: asClass(TranslateText).scoped(),
+    notificationService: asClass(NotificationService).scoped()
 });
 
 export default container;

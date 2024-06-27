@@ -3,12 +3,15 @@ import { IReportDto } from '../models/reports.interface'
 import * as reportValidator from '../validator/report.validator'
 import { IReportService } from '../services/interfaces/report.service.interface'
 import { STATUS_CODE } from '../utilities/statusCode.utilities'
+import { INotificationService } from '../services/interfaces/notification.service.interface'
 
 class ReportController {
     private reportService: IReportService<IReportDto>;
+    private notificationService: INotificationService;
 
-    constructor({ reportService }: { reportService: IReportService<IReportDto> }) {
+    constructor({ reportService, notificationService }: { reportService: IReportService<IReportDto>, notificationService: INotificationService }) {
         this.reportService = reportService;
+        this.notificationService = notificationService;
     }
 
     async getAllReports(_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -51,7 +54,7 @@ class ReportController {
     }
 
     async createReport(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-console.log(req.body, "que hay en la reques")
+
         const validData = await reportValidator.createReportValidator.safeParseAsync(req.body);
         if (!validData.success) {
             const listofErrors = validData.error.errors.map((error) => {
@@ -76,6 +79,9 @@ console.log(req.body, "que hay en la reques")
                 userId: +validData.data.userId
             }
             const reportCreated = await this.reportService.createReport(newReport);
+            if(newReport.groupId !== undefined) {
+                await this.notificationService.sendNotificationToGroup(newReport.groupId, reportCreated);
+            }
             return res.status(201).json(reportCreated);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });

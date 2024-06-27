@@ -1,10 +1,10 @@
 import User from "./entities/User";
-import {IUser} from "../models/user.interface";
+import { IUser } from "../models/user.interface";
 import { ModelCtor } from "sequelize";
 import { IUserRepository } from "./interface/user.repository.interface";
 
 
-class UserRepository implements IUserRepository<IUser>{
+class UserRepository implements IUserRepository<IUser> {
 
     private userModal: ModelCtor<User>
 
@@ -14,14 +14,15 @@ class UserRepository implements IUserRepository<IUser>{
 
     async create(user: IUser) {
         const newUser = await this.userModal.create({
-                name: user.name,
-                lastName: user.lastName,
-                email: user.email,
-                phoneNumber: user.phoneNumber,
-                username: user.username,
-                rol: user.rol,
-            }
+            name: user.name,
+            lastName: user.lastName,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            username: user.username,
+            rol: user.rol,
+        }
         );
+
         return newUser.get({ plain: true }) as IUser;
     }
 
@@ -45,7 +46,7 @@ class UserRepository implements IUserRepository<IUser>{
         return userSearched.get({ plain: true }) as IUser;
     }
 
-    async getByUserName(userName: string): Promise<IUser | null>{
+    async getByUserName(userName: string): Promise<IUser | null> {
         const userSearched = await this.userModal.findOne({
             where: {
                 userName: userName
@@ -70,11 +71,11 @@ class UserRepository implements IUserRepository<IUser>{
             where: { id: id },
             returning: true,
         });
-    
+
         if (updatedRowsCount === 0 || !updatedUsers || updatedUsers.length === 0) {
             return null;
         }
-    
+
         const updatedUser = updatedUsers[0];
         return updatedUser.get({ plain: true }) as IUser;
     }

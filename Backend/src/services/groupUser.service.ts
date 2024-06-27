@@ -12,6 +12,7 @@ class GroupUserService implements IGroupUserService<IGroupUser>{
         }
     
         async addUser(groupUser: IGroupUser): Promise<IGroupUser> {
+            console.log(groupUser);
             const groupUserCreated = await this.groupUserRepository.create(groupUser);
             if (!groupUserCreated) throw new UserNotFoundException('User not found in group');
             return groupUser;

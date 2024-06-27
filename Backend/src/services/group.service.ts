@@ -33,11 +33,11 @@ class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
         return groupRemoved;
     }
 
-    async validateGroupCode(groupCode: string): Promise<boolean> {
+    async validateGroupCode(groupCode: string): Promise<IGroup> {
         const result = await this.groupRepository.findByCode(groupCode);
         if (!result)
             throw new Error(`Error validating group code`);
-        return true;
+        return result;
     }
 
     async findByName(name: string): Promise<IGroup> {
