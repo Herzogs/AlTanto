@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { sendReport } from "@services/sendData";
 import { getCategoryFromApi } from "@services/getCategory";
 import { reverseGeocode } from "@services/getGeoAdress";
-import { useStore } from "@store";
+import {userStore, useStore} from "@store";
 
 const categories = [
   {
@@ -60,7 +60,7 @@ function ReportIA() {
   const [categories, setCategories] = useState([]);
   const videoRef = useRef(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-
+  const { id } = userStore.getState().user;
   const { userLocation, setReports, markerPosition } = useStore();
   const [showModal, setShowModal] = useState(false);
 
@@ -179,6 +179,7 @@ function ReportIA() {
       latitude: lat,
       longitude: lng,
       image: file,
+      userId: id,
     };
 
     if (groupId) {
