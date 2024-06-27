@@ -20,6 +20,7 @@ import Groups from "@components/group/Groups";
 import GroupDetail from "@components/group/GroupDetail";
 import GroupSearch from "@components/group/GroupSearch";
 import GroupForm from "@components/group/GroupForm";
+import UserProfile from "@pages/Profile"; 
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
@@ -50,6 +51,7 @@ const protectedRoutes = [
   { path: "/grupos/:id", element: <GroupDetail /> },
   { path: "/form/grupo", element: <GroupForm /> },
   { path: "group-search", element: <GroupSearch /> },
+  { path: "/profile", element: <UserProfile /> },
 ];
 
 const App = () => {
