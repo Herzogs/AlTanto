@@ -21,6 +21,12 @@ declare global {
             CV_ENDPOINT: string
             CV_KEY: string
             CORS_ORIGIN: string
+            FIREBASE_APIKEY: string
+            FIREBASE_AUTHDOMAIN: string
+            FIREBASE_PROJECTID: string
+            FIREBASE_STORAGEBUCKET: string
+            FIREBASE_MESSAGINGSENDERID: string
+            FIREBASE_APPID: string
         }
     }
 }
