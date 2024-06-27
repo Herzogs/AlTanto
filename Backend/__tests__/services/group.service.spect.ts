@@ -99,7 +99,7 @@ describe('GroupService', () => {
 
     const result = await groupService.validateGroupCode('12345');
 
-    expect(result).toBe(true);
+    expect(result).toEqual(mockGroup);
     expect(groupRepository.findByCode).toHaveBeenCalledWith('12345');
   });
 
@@ -130,7 +130,8 @@ describe('GroupService', () => {
         {
           name: 'John',
           lastName: 'Doe',
-          email: 'johndoe@example.com'
+          email: 'johndoe@example.com',
+          phoneNumber: '1234567890'
         }
       ]
     };
