@@ -87,10 +87,49 @@ export class CognitoService implements ICognitoService{
         });
     }
 
-    // accountRecovery(email: string): Promise<void> {
-    //     console.log(email, "mi email")
-    //     return Promise.resolve(undefined);
-    // }
+    async accountRecovery(email: string): Promise<void> {
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+        return new Promise<void>((resolve, reject) => {
+            cognitoUser.forgotPassword({
+                onSuccess: () => {
+                    console.log('Password recovery initiated successfully');
+                    resolve();
+                },
+                onFailure: (err) => {
+                    console.error(`Error initiating password recovery: ${err}`);
+                    reject(new Error('Failed to initiate password recovery'));
+                },
+            });
+        });
+    }
+    async updatePassword(email: string, verificationCode: string, newPassword: string): Promise<void> {
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+        return new Promise<void>((resolve, reject) => {
+            cognitoUser.confirmPassword(verificationCode, newPassword, {
+                onSuccess: () => {
+                    console.log('Password changed successfully');
+                    resolve();
+                },
+                onFailure: (err) => {
+                    console.error(`Error changing password: ${err}`);
+                    reject(new Error('Failed to change password'));
+                },
+            });
+        });
+    }
+
 }
 
 export default CognitoService;

@@ -25,4 +25,15 @@ const login= z.object({
 
 }).strict();
 
-export { createUser,login };
+const updatePassword= z.object({
+    email: z.string()
+        .email('Invalid email format detected'),
+    password: z.string()
+        .max(22, 'It cannot be more than 22 characters')
+        .min(8, 'cannot be less than 8 characters')
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, 'must have at least one uppercase letter, one lowercase letter, and one number'),
+    code: z.string().min(4, 'Code is required'),
+})
+
+
+export { createUser,login , updatePassword };

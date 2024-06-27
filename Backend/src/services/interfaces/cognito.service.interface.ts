@@ -5,4 +5,5 @@ export interface ICognitoService {
     confirmUser(email: string, confirmationCode: string): Promise<void>;
     login(email: string, password: string): Promise<string>;
     accountRecovery(email: string): Promise<void>;
+    updatePassword(email: string, code: string, password: string): Promise<void>;
 }

@@ -16,6 +16,7 @@ class UserService implements IUserService<IUser> {
     async createUser(user: IUser): Promise<IUser> {
         try {
             const userCreated = await this.userRepository.create(user);
+            console.log("new user service", userCreated);
             await this.cognitoService.createUser(user);
             return userCreated;
         } catch (error) {
