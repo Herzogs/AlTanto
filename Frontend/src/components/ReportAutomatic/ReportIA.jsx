@@ -295,7 +295,7 @@ function ReportIA() {
 
             <Form.Group controlId="ubicacion">
               <Form.Label className="mt-3 mb-2">Ubicación:</Form.Label>
-              <Form.Control type="text" value={address} readOnly="true" />
+              <Form.Control type="text" value={address} readOnly={true} />
             </Form.Group>
 
             {description && userLocation && (
