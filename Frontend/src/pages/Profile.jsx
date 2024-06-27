@@ -52,6 +52,7 @@ const UserProfile = () => {
                     <div className="zonas-item">
                         <h5>Nombre de usuario: {userData.username}</h5>
                         <p>Nombre: {userData.name}</p>
+                        <p>Apellido: {userData.lastName}</p>
                         <p>Email: {userData.email}</p>
                         {/* Agrega más detalles según sea necesario */}
                     </div>
