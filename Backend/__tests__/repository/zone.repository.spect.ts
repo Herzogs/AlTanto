@@ -4,7 +4,7 @@ import { IReportDto } from "../../src/models/reports.interface";
 import container from "../../src/container";
 import dbConnection from "../../src/config/dbConnection.config";
 import ReportRepository from "../../src/repository/reports.repository";
-import UserRepository from "repository/user.repository";
+import UserRepository from "../../src/repository/user.repository";
 
 describe("Zone Repository", () => {
     let zoneRepository: ZoneRepository;
@@ -22,7 +22,8 @@ describe("Zone Repository", () => {
         content: 'Test Report 1',
         image: 'test.jpg',
         category: "1",
-        location: { latitude: 10.0, longitude: 20.0 }
+        location: { latitude: 10.0, longitude: 20.0 },
+        userId: 1,
     };
 
     beforeAll(async () => {

@@ -1,4 +1,7 @@
-public/
-.env.deploy
+.env
+.env.test
 fly.toml
+.vercel
+.env.deploy
 ./vercel
+altanto-credential.json

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getGroupById, removeUserFromGroup, deleteGroup } from "@/services/groupService";
+import { getGroupById, removeUserFromGroup, deleteGroup } from "@services/groupService";
 import { getUserByUsername } from "@services/userService";
 import { fetchReportsByGroup } from "@services/getReportByGroup";
-import { userStore } from "@/store/index";
+import { userStore } from "@store";
 import { Container } from "react-bootstrap";
 import Header from "@components/header/Header";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

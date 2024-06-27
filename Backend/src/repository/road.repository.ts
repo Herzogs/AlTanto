@@ -91,7 +91,8 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
             const routeSearched = await this.roadModel.findOne({
                 where: {
                     addressOrigin: road.addressOrigin,
-                    addressDestiny: road.addressDestiny
+                    addressDestiny: road.addressDestiny,
+                
                 }
             })
             

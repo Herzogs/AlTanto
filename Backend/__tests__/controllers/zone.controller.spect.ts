@@ -58,7 +58,7 @@ describe('ZoneController', () => {
 
         await zoneController.create(req, res, next);
 
-        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.status).toHaveBeenCalledWith(201);
         expect(res.json).toHaveBeenCalledWith(zoneData);
     });
 

@@ -45,6 +45,7 @@ function ZoneHome() {
       } catch (error) {
         setError(error.message);
         setShowModal(true);
+        setLoading(false);
       }
     };
 
@@ -75,7 +76,10 @@ function ZoneHome() {
             noCircle={false}
           />
           {reports && reports.length > 0 && <SliderButton />}
-          {!error && (
+  
+        </section>
+      )}
+           {error && (
             <ModalAT
               title="Encontramos un error"
               message={error}
@@ -84,8 +88,6 @@ function ZoneHome() {
               handleAccept={() => navigate("/")}
             />
           )}
-        </section>
-      )}
     </>
   );
 }

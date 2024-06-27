@@ -67,7 +67,8 @@ class ReportRepository implements IReportRepository<IReportDto> {
                 CategoryId: newReport.category,
                 LocationId: location.id,
                 images: newReport.image,
-                groupId: newReport.groupId
+                groupId: newReport.groupId,
+                userId: newReport.userId
             });
             const reportPlain = reporCreated.get({ plain: true });
             return {
@@ -79,7 +80,8 @@ class ReportRepository implements IReportRepository<IReportDto> {
                     longitude: +location.longitude
                 },
                 image: reportPlain.images,
-                groupId: reportPlain.groupId
+                groupId: reportPlain.groupId,
+                userId: reportPlain.userId
             }
         } catch (error) {
             console.error("Error while creating report:", error);
@@ -133,6 +135,23 @@ class ReportRepository implements IReportRepository<IReportDto> {
         } catch (error) {
             console.error(`Error while fetching reports for group with id ${groupId}:`, error);
             return [];
+        }
+    }
+
+    async scoringReport(id: number, vote: number, _userId: number): Promise<void> {
+        try {
+            const report = await this.reportModel.findByPk(id);
+            if (!report) {
+                return;
+            }
+            if (vote === 1) {
+                await report.increment('positiveScore');
+            } else {
+                await report.increment('negativeScore');
+            }
+
+        } catch (error) {
+            console.error(`Error while scoring report with id ${id}:`, error);
         }
     }
 }

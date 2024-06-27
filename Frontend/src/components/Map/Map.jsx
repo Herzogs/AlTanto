@@ -28,13 +28,16 @@ const Map = ({
 }) => {
   const { MapClickHandler } = useMapClickHandler();
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { id } = userStore.getState().user;
+
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const fetchedCategories = await getCategoryFromApi();
         setSelectedCategories(fetchedCategories.map((category) => category.id));
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -45,7 +48,7 @@ const Map = ({
 
   return (
     <section className="altanto-map">
-      {showFilters && (
+      {!loading && showFilters && (
         <Filters
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}

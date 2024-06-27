@@ -16,8 +16,6 @@ function Aside() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
-
   return (
     <aside>
       <article className="at-aside_button">

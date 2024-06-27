@@ -29,4 +29,5 @@ const getZoneByUserId = async (id = null) => {
   }
 };
 
-export {getZoneByUserId, getZone};
+
+export {getZone, getZoneByUserId};

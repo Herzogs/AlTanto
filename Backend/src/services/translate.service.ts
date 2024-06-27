@@ -1,12 +1,12 @@
 import axios from 'axios';
-import {ITranslateText} from './interfaces/translate.service.interface';
+import { ITranslateText } from './interfaces/translate.service.interface';
 
-class TranslateText implements ITranslateText{
+class TranslateText implements ITranslateText {
 
   private googleTranslateApiKey: string;
 
-  constructor(){
-    this.googleTranslateApiKey = process.env.GOOGLE_TRANSLATE_API_KEY;
+  constructor() {
+    this.googleTranslateApiKey = process.env.GOOGLE_TRANSLATE_API_KEY as string;
   }
 
   async translate(text: string) {
@@ -14,7 +14,7 @@ class TranslateText implements ITranslateText{
       q: text,
       target: 'es' // Traducir a español
     });
-  
+
     return response.data.data.translations[0].translatedText;
   }
 

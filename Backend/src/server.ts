@@ -16,7 +16,6 @@ import userRouter from './routes/user.routes';
 const server = express();
 
 server.use(express.json());
-server.use("/static", express.static('public'));
 server.use(express.urlencoded({ extended: true }));
 server.use(cors({
     origin: '*',
@@ -52,4 +51,4 @@ server.listen(process.env.PORT, () => {
     //disableOldReport.start()
 })
 
-export { server};
+export { server };

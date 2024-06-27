@@ -45,6 +45,10 @@ class ReportService implements IReportService<IReportDto>{
         await this.reportRepository.disableOldReports();
     }
 
+    async scoringReport(id: number, vote: number, userId: number): Promise<void> {
+        await this.reportRepository.scoringReport(id, vote, userId);
+    }
+
 }
 
 export default ReportService;

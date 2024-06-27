@@ -25,6 +25,7 @@ export interface IReportDto{
         longitude: number;
     }
     groupId?: number;
+    userId: number;
 }
 
 export interface IReportWithRadius {

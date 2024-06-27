@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import { Container, Image } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -6,6 +5,7 @@ import Header from "@components/header/Header";
 import Map from "@components/Map/Map";
 import { useStore } from "@store";
 import { fetchReportById } from "@services/getReport";
+import { format } from "date-fns";
 
 function ReportDetail() {
   const { id } = useParams();
@@ -13,7 +13,7 @@ function ReportDetail() {
   const { userLocation, setUserLocation, setReports } = useStore();
 
   useEffect(() => {
-    setReports();
+    setReports([]);
     const getReport = async () => {
       try {
         const data = await fetchReportById(id);
@@ -34,7 +34,8 @@ function ReportDetail() {
     return <div>Cargando...</div>;
   }
 
-  const { content, images } = report;
+  const { content, images, createAt } = report;
+  const formattedDate = format(new Date(createAt), "HH:mm - dd/MM/yyyy");
 
   return (
     <section className="container_home">
@@ -43,9 +44,11 @@ function ReportDetail() {
         <article className="text-center mb-5">
           <h2 className="my-4">Detalle del reporte</h2>
           <h5>Descripción: {content}</h5>
+          <h5>Fecha: {formattedDate}</h5>
+
           {images && (
             <Image
-              src={`http://localhost:3000/static/images/${images}`}
+              src={images}
               style={{ width: "100%", maxWidth: "600px" }}
               alt="Imagen del reporte"
             />

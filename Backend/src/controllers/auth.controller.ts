@@ -40,12 +40,13 @@ class AuthController{
     }
 
     async login(req: Request, res: Response, next: NextFunction) {
-        console.log("Creating user");
+        console.log("login");
         const email = req.body.email;
         const password = req.body.password;
         try {
             const jwt = await this.cognitoService.login(email, password);
             const user = await this.userService.getUserByEmail(email);
+            console.log(user);
             return res.status(STATUS_CODE.SUCCESS).send({
                 message: "Login success",
                 token: jwt,

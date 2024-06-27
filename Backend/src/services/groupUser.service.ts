@@ -1,5 +1,5 @@
 import { IGroupUser } from "../models/group.interface";
-import { IGroupUserRepository } from "repository/interface/groupUser.repository.interface";
+import { IGroupUserRepository } from "../repository/interface/groupUser.repository.interface";
 import { UserNotFoundException } from "../exceptions/users.exceptions";
 import { IGroupUserService } from "./interfaces/groupUser.service.interface";
 
