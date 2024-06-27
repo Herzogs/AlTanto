@@ -2,7 +2,7 @@ import { Lifetime } from 'awilix';
 import container from '../../src/container';
 import ImageAnalysis from '../../src/services/imageAnalysis.service';
 import { Request, Response, NextFunction } from 'express';
-import TranslateText from 'services/translate.service';
+import TranslateText from '../../src/services/translate.service';
 import AnalysisController from '../../src/controllers/imageAnalysis.controller';
 
 jest.mock('../../src/services/imageAnalysis.service', () => {
@@ -48,7 +48,7 @@ describe('ImageAnalysisController', () => {
         expect(imageAnalysis.analyzeImage).toHaveBeenCalledWith(Buffer.from('image'));
         expect(translateText.translate).toHaveBeenCalledWith('description');
         expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith({ description: 'translated description' });
+        expect(res.json).toHaveBeenCalledWith({ description: 'translated description', category: { id: 4, name: 'Alerta', tags: [] }});
     });
 
     test('should return an error if no image is provided', async () => {

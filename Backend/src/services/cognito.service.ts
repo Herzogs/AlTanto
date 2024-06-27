@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js';
 import {AuthenticationDetails, CognitoUser} from 'amazon-cognito-identity-js';
 import {promisify} from 'util';
@@ -5,22 +6,19 @@ import {IUserCognito} from '../models/user.interface';
 import {UserNotCreatedException} from "../exceptions/users.exceptions";
 import {generateToken} from "../utilities/jwt.utilities";
 import {ICognitoService} from './interfaces/cognito.service.interface';
-import {Error} from "sequelize";
-import * as console from "node:console";
 
 const poolData = {
     UserPoolId: process.env.USER_POOL_ID as string,
     ClientId: process.env.CLIENT_ID as string,
 };
 
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 export class CognitoService implements ICognitoService{
     private userPool: AmazonCognitoIdentity.CognitoUserPool;
     private signUpAsync: Function;
 
     constructor() {
-        this.userPool = userPool;
+        this.userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
         this.signUpAsync = promisify(this.userPool.signUp).bind(this.userPool);
     }
 
@@ -87,10 +85,10 @@ export class CognitoService implements ICognitoService{
         });
     }
 
-    // accountRecovery(email: string): Promise<void> {
-    //     console.log(email, "mi email")
-    //     return Promise.resolve(undefined);
-    // }
+     accountRecovery(email: string): Promise<void> {
+         console.log(email, "mi email")
+         return Promise.resolve(undefined);
+     }
 }
 
 export default CognitoService;

@@ -4,7 +4,6 @@ import container from "../../src/container";
 import { config } from "dotenv";
 import { Lifetime } from "awilix";
 import GroupRepository from "../../src/repository/group.repository";
-import dbConnection from "../../src/config/dbConnection.config";
 import UserRepository from "../../src/repository/user.repository";
 import { IGroup } from "../../src/models/group.interface";
 
@@ -23,17 +22,23 @@ describe('Report Repository', () => {
         groupRepository = container.resolve<GroupRepository>('groupRepository');
     });
 
-
-    beforeEach(async () => {
-        await dbConnection.sync({ force: true });
-    });
-
     test('should create a report', async () => {
+        await userRepository.create({
+            email: 'test@example.com',
+            password: 'password',
+            name: 'John',
+            lastName: 'Doe',
+            phoneNumber: '123456789',
+            username: 'johndoe',
+            id: 1,
+        });
+
         const newReport: IReportDto = {
             content: 'Test report content',
             category: '1',
             location: { latitude: 10.0, longitude: 20.0 },
-            image: 'test.jpg'
+            image: 'test.jpg',
+            userId: 1,
         };
 
         const createdReport = await reportRepository.create(newReport);
@@ -42,11 +47,22 @@ describe('Report Repository', () => {
     });
 
     test('should get a report by id', async () => {
+        await userRepository.create({
+            email: 'test@example.com',
+            password: 'password',
+            name: 'John',
+            lastName: 'Doe',
+            phoneNumber: '123456789',
+            username: 'johndoe',
+            id: 1,
+        });
+
         const newReport: IReportDto = {
             content: 'Another test report content',
             category: '2',
             location: { latitude: 11.0, longitude: 21.0 },
-            image: 'test2.jpg'
+            image: 'test2.jpg',
+            userId: 1,
         };
 
         const createdReport = await reportRepository.create(newReport);
@@ -59,13 +75,22 @@ describe('Report Repository', () => {
     });
 
     test('should get all reports', async () => {
-
+        await userRepository.create({
+            email: 'test@example.com',
+            password: 'password',
+            name: 'John',
+            lastName: 'Doe',
+            phoneNumber: '123456789',
+            username: 'johndoe',
+            id: 1,
+        });
 
         const newReport1: IReportDto = {
             content: 'Test report 1 content',
             category: '1',
             location: { latitude: 12.0, longitude: 22.0 },
-            image: 'test3.jpg'
+            image: 'test3.jpg',
+            userId: 1,
         };
 
         const newReport2: IReportDto = {
@@ -73,6 +98,7 @@ describe('Report Repository', () => {
             category: '2',
             location: { latitude: 13.0, longitude: 23.0 },
             image: 'test4.jpg',
+            userId: 1,
         };
 
         await reportRepository.create(newReport1);
@@ -108,6 +134,7 @@ describe('Report Repository', () => {
             location: { latitude: 15.0, longitude: 25.0 },
             image: 'test6.jpg',
             groupId: 1,
+            userId: 1,
 
         };
 
@@ -116,7 +143,8 @@ describe('Report Repository', () => {
             category: '2',
             location: { latitude: 16.0, longitude: 26.0 },
             image: 'test7.jpg',
-            groupId: 1
+            groupId: 1,
+            userId: 1,
         };
 
         await reportRepository.create(newReport1);

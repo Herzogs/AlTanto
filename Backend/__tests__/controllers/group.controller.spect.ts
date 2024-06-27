@@ -2,7 +2,6 @@ import { Lifetime } from 'awilix';
 import container from '../../src/container';
 import GroupService from '../../src/services/group.service';
 import GroupUserService from '../../src/services/groupUser.service';
-import dbConnection from '../../src/config/dbConnection.config';
 import { config } from 'dotenv';
 import { IGroup, IGroupUser } from '../../src/models/group.interface';
 import GroupController from '../../src/controllers/group.controller';
@@ -60,7 +59,6 @@ describe('Group Controller', () => {
     });
 
     beforeEach(async () => {
-        await dbConnection.sync({ force: true });
         groupService = container.resolve<GroupService>('groupService') as jest.Mocked<GroupService>;
         groupUserService = container.resolve<GroupUserService>('groupUserService') as jest.Mocked<GroupUserService>;
         groupController = new GroupController({ groupService, groupUserService });

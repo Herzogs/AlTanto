@@ -32,7 +32,8 @@ describe('GroupService', () => {
       latitude: 40.7128,
       longitude: -74.0060
     },
-    groupId: 1
+    groupId: 1,
+    userId: 1
   };
 
   beforeEach(() => {
@@ -52,7 +53,8 @@ describe('GroupService', () => {
       createReport: jest.fn(),
       getByUser: jest.fn(),
       getReportsByGroup: jest.fn(),
-      disableOldReports: jest.fn()
+      disableOldReports: jest.fn(),
+      scoringReport: jest.fn()
     } as jest.Mocked<IReportService<IReportDto>>;
 
     groupService = new GroupService({ groupRepository, reportService });

@@ -3,10 +3,9 @@ import container from '../../src/container';
 import ZoneService from '../../src/services/zone.service';
 import ZoneRepository from '../../src/repository/zone.repository';
 import UserRepository from '../../src/repository/user.repository';
-import dbConnection from '../../src/config/dbConnection.config';
 import { config } from 'dotenv';
 import { IZoneDto} from '../../src/models/zone.interface';
-import { IReportDto } from 'models/reports.interface';
+import { IReportDto } from '../../src/models/reports.interface';
 
 
 jest.mock('../../src/repository/zone.repository', () => {
@@ -46,7 +45,8 @@ describe('Zone Service', () => {
         content: 'Test Report 1',
         image: 'test.jpg',
         category: "1",
-        location: { latitude: 10.0, longitude: 20.0 }
+        location: { latitude: 10.0, longitude: 20.0 },
+        userId: 1,
     };
 
     const zoneReport = [{
@@ -55,7 +55,6 @@ describe('Zone Service', () => {
     }];
 
     beforeEach(async () => {
-        await dbConnection.sync({ force: true });
         zoneService = container.resolve<ZoneService>('zoneService');
         userRepository = container.resolve<UserRepository>('userRepository');
         

@@ -3,7 +3,6 @@ import container from '../../src/container';
 import RoadService from '../../src/services/road.service';
 import RoadRepository from '../../src/repository/road.repository';
 import UserRepository from '../../src/repository/user.repository';
-import dbConnection from '../../src/config/dbConnection.config';
 import { config } from 'dotenv';
 import { IRoadDto } from '../../src/models/road.interfaces';
 import { IUser } from '../../src/models/user.interface'; 
@@ -34,7 +33,6 @@ describe('Road Service', () => {
     });
 
     beforeEach(async () => {
-        await dbConnection.sync({ force: true });
         roadService = container.resolve<RoadService>('roadService');
         userRepository = container.resolve<UserRepository>('userRepository');    
     });

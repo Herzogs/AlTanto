@@ -2,7 +2,6 @@ import {Lifetime} from 'awilix';
 import UserService from "../../src/services/user.service";
 import UserRepository from "../../src/repository/user.repository";
 import CognitoService from "../../src/services/cognito.service";
-import dbConnection from "../../src/config/dbConnection.config";
 import {config} from "dotenv";
 import container from "../../src/container";
 import {IUser} from "../../src/models/user.interface";
@@ -43,7 +42,7 @@ describe('User Service', () => {
 
 
     beforeEach(async () => {
-        await dbConnection.sync({force: true});
+        
         userService = container.resolve<UserService>('userService');
 
     });
