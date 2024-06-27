@@ -22,7 +22,8 @@ describe("Zone Repository", () => {
         content: 'Test Report 1',
         image: 'test.jpg',
         category: "1",
-        location: { latitude: 10.0, longitude: 20.0 }
+        location: { latitude: 10.0, longitude: 20.0 },
+        userId: 1,
     };
 
     beforeAll(async () => {
