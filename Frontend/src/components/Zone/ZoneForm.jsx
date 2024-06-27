@@ -10,6 +10,8 @@ import { saveZone } from "@services/sendData";
 import ModalAT from "@components/modal/ModalAT";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Link } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import zoneScheme from "@schemes/zoneScheme";
 
 function ZoneForm() {
   const [visible, setVisible] = useState(false);
@@ -89,7 +91,7 @@ function ZoneForm() {
     <>
       <Header />
       <Container className="h-100 pt-4 pt-lg-5">
-        <p className="text-end"><Link to="/"><ArrowBackIcon/> Regresar</Link></p>
+        <p className="text-end"><Link to="/"><ArrowBackIcon /> Regresar</Link></p>
         <h2>Crear zona</h2>
         <Form onSubmit={handleSubmit(onSubmit)} className="h-100">
           <Form.Group as={Row} controlId="name">
