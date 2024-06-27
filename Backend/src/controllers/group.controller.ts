@@ -63,13 +63,13 @@ class GroupController {
     }
 
     async addUserToGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        console.log("entro al addUserToGroup")
         const { groupId = null, userId, groupCode } = req.body;
         try {
             if (!groupId || !userId || !groupCode) {
                 return next({ message: 'Invalid input', statusCode: STATUS_CODE.BAD_REQUEST });
             }
             const groupUser = await this.groupService.validateGroupCode(groupCode);
+            console.log(groupUser)
             await this.groupUserService.addUser({ groupId, userId });
             return res.status(201).json(groupUser);
         } catch (error) {

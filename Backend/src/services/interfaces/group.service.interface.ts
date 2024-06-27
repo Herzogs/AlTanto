@@ -1,4 +1,4 @@
-import { IGroupReport } from "models/group.interface";
+import { IGroupReport } from "../../models/group.interface";
 
 export interface IGroupService<T,K,E> {
     getAllByOwner(id: number): Promise<T[]>;

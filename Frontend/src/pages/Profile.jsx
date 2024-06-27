@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { updateUser, getUserById } from '../services/userService';
 import { userStore } from "@store";
 import { Container, Button } from "react-bootstrap";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import EditIcon from '@mui/icons-material/Edit';
+import { Link } from "react-router-dom";
 
-const UserProfile = () => {
+function UserProfile({ handleClose }) {
     const { user } = userStore();
     const userId = user?.id;
     const [userData, setUserData] = useState(null);
@@ -12,6 +15,7 @@ const UserProfile = () => {
         const fetchUser = async () => {
             try {
                 const userData = await getUserById(userId);
+                console.log(userData)
                 setUserData(userData);
             } catch (error) {
                 console.error('Error fetching user:', error);
@@ -42,8 +46,12 @@ const UserProfile = () => {
     return (
         <Container fluid className="pb-footer">
             <div className="text-center">
-                <h1>Perfil de Usuario</h1>
-                <Button variant="success" className="mt-3" onClick={handleUpdateUser}>Guardar</Button>
+                <h1>
+                    <AccountCircleIcon /> Perfil de Usuario
+                </h1>
+                <Button variant="success" className="mt-3" onClick={handleUpdateUser}>
+                    <EditIcon /> Guardar
+                </Button>
             </div>
 
             <div className="mt-5">
@@ -60,6 +68,6 @@ const UserProfile = () => {
             </div>
         </Container>
     );
-};
+}
 
 export default UserProfile;
