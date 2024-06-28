@@ -11,44 +11,8 @@ import { Link } from "react-router-dom";
 import { sendReport } from "@services/sendData";
 import { getCategoryFromApi } from "@services/getCategory";
 import { reverseGeocode } from "@services/getGeoAdress";
-import { useStore } from "@store";
+import { userStore, useStore } from "@store";
 
-const categories = [
-  {
-    id: 1,
-    name: "Seguridad",
-    tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca"],
-  },
-  {
-    id: 2,
-    name: "Transporte",
-    tags: ["accidente", "colectivo", "transporte", "trafico", "tirada"],
-  },
-  {
-    id: 3,
-    name: "Via publica",
-    tags: ["árbol", "caído", "vereda", "bache", "rampa"],
-  },
-  {
-    id: 4,
-    name: "Alerta",
-  },
-];
-
-function categorizeDescription(description) {
-  const words = description.toLowerCase().split(" ");
-
-  for (const categoryObj of categories) {
-    const categoryTags = categoryObj.tags || [];
-
-    for (const tag of categoryTags) {
-      if (words.includes(tag.toLowerCase())) {
-        return categoryObj;
-      }
-    }
-  }
-  return { id: 4, name: "Alerta", tags: [] };
-}
 
 function ReportIA() {
   const { groupId } = useParams();
@@ -60,7 +24,7 @@ function ReportIA() {
   const [categories, setCategories] = useState([]);
   const videoRef = useRef(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-
+  const { id } = userStore.getState().user;
   const { userLocation, setReports, markerPosition } = useStore();
   const [showModal, setShowModal] = useState(false);
 
@@ -161,10 +125,11 @@ function ReportIA() {
           },
         }
       );
-
+      console.log(response.data);
       const description = response.data.description;
+      const category = response.data.category;
       setDescription(description);
-      setCategory(categorizeDescription(description));
+      setCategory(category);
     } catch (error) {
       console.error("Error analyzing image:", error);
     }
@@ -179,6 +144,7 @@ function ReportIA() {
       latitude: lat,
       longitude: lng,
       image: file,
+      userId: id,
     };
 
     if (groupId) {
@@ -294,7 +260,7 @@ function ReportIA() {
 
             <Form.Group controlId="ubicacion">
               <Form.Label className="mt-3 mb-2">Ubicación:</Form.Label>
-              <Form.Control type="text" value={address} readOnly="true" />
+              <Form.Control type="text" value={address} readOnly={true} />
             </Form.Group>
 
             {description && userLocation && (

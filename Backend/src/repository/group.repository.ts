@@ -3,6 +3,7 @@ import {IGroupRepository}  from "./interface/group.repository.interface";
 import { ModelCtor, Model } from "sequelize";
 import User from "./entities/User";
 
+
 class GroupRepository implements IGroupRepository<IGroup,IGroupMember>{
 
     private model: ModelCtor<Model<IGroup>>;

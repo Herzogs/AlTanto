@@ -9,6 +9,7 @@ class ImageAnalysis implements IImageAnalysisService<Buffer>{
     private client: ImageAnalysisClient
     private credential: AzureKeyCredential;
     
+    
     constructor() {
         this.endpoint = process.env.CV_ENDPOINT as string;
         this.key = process.env.CV_KEY as string;
@@ -17,8 +18,8 @@ class ImageAnalysis implements IImageAnalysisService<Buffer>{
     }
 
     async analyzeImage(image: Buffer): Promise<string> {
-        console.log("ENTRE AL SERVICIO IA ")
         try {
+            
             const analysis = await this.client.path('/imageanalysis:analyze').post({
                 body: image,
                 queryParameters: {

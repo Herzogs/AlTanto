@@ -16,7 +16,6 @@ import userRouter from './routes/user.routes';
 const server = express();
 
 server.use(express.json());
-server.use('/static', express.static('public'));
 server.use(express.urlencoded({ extended: true }));
 server.use(cors({
     origin: '*',
@@ -47,9 +46,9 @@ server.use('/', (_req, res) => {
 
 
 server.use(errorHandler)
-const app = server.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
     //disableOldReport.start()
 })
 
-export default server;
+export { server };

@@ -3,4 +3,5 @@ export interface IRepository<T> {
     getAll(): Promise<T[]>;
     getById?(id: number): Promise<T | null>;
     getByName?(name: string): Promise<T | null>;
+    
 }

@@ -15,13 +15,20 @@ declare global {
             USER_POOL_ID: string
             CLIENT_ID: string
             AWS_REGION: string
-            CRON_TIME: string
+            CRON_TIME_PROD: string
             CRON_TIME_TEST: string
             GOOGLE_TRANSLATE_API_KEY: string
             CV_ENDPOINT: string
             CV_KEY: string
+            GOOGLE_RECAPTCHA_SITE_KEY: string
+            GOOGLE_RECAPTCHA_SECRET_KEY: string
             CORS_ORIGIN: string
-            DB_SSL_CA: string
+            FIREBASE_APIKEY: string
+            FIREBASE_AUTHDOMAIN: string
+            FIREBASE_PROJECTID: string
+            FIREBASE_STORAGEBUCKET: string
+            FIREBASE_MESSAGINGSENDERID: string
+            FIREBASE_APPID: string
         }
     }
 }

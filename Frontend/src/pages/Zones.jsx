@@ -7,7 +7,7 @@ function Zones() {
   const [zones, setZones] = useState([]);
 
   useEffect(() => {
-    getZoneByUserId(userStore.getState().user.id).then((data) => {
+    getZoneByUserId(userStore.getState().user.id.toString()).then((data) => {
       setZones(data);
     }).catch((error) => {
       console.error(error);

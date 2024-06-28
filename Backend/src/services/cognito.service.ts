@@ -11,14 +11,14 @@ const poolData = {
     ClientId: process.env.CLIENT_ID as string,
 };
 
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-export class CognitoService implements ICognitoService{
+export class CognitoService implements ICognitoService {
     private userPool: AmazonCognitoIdentity.CognitoUserPool;
+    // eslint-disable-next-line @typescript-eslint/ban-types
     private signUpAsync: Function;
 
     constructor() {
-        this.userPool = userPool;
+        this.userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
         this.signUpAsync = promisify(this.userPool.signUp).bind(this.userPool);
     }
 
@@ -84,6 +84,50 @@ export class CognitoService implements ICognitoService{
             });
         });
     }
+
+    async accountRecovery(email: string): Promise<void> {
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+        return new Promise<void>((resolve, reject) => {
+            cognitoUser.forgotPassword({
+                onSuccess: () => {
+                    console.log('Password recovery initiated successfully');
+                    resolve();
+                },
+                onFailure: (err) => {
+                    console.error(`Error initiating password recovery: ${err}`);
+                    reject(new Error('Failed to initiate password recovery'));
+                },
+            });
+        });
+    }
+    async updatePassword(email: string, verificationCode: string, newPassword: string): Promise<void> {
+        const userData = {
+            Username: email,
+            Pool: this.userPool,
+        };
+
+        const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
+        return new Promise<void>((resolve, reject) => {
+            cognitoUser.confirmPassword(verificationCode, newPassword, {
+                onSuccess: () => {
+                    console.log('Password changed successfully');
+                    resolve();
+                },
+                onFailure: (err) => {
+                    console.error(`Error changing password: ${err}`);
+                    reject(new Error('Failed to change password'));
+                },
+            });
+        });
+    }
+
 }
 
 export default CognitoService;

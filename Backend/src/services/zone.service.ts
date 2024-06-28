@@ -5,10 +5,10 @@ import { IReport } from "../models/reports.interface";
 import { IZoneService } from "./interfaces/zone.service.interface";
 
 
-class ZoneService implements IZoneService<IZoneDto, IZoneReport>{
-    private zoneRepository: IZoneRepository<IZoneDto,object>;
+class ZoneService implements IZoneService<IZoneDto, IZoneReport> {
+    private zoneRepository: IZoneRepository<IZoneDto, object>;
 
-    constructor({ zoneRepository }: { zoneRepository: IZoneRepository<IZoneDto,object> }) {
+    constructor({ zoneRepository }: { zoneRepository: IZoneRepository<IZoneDto, object> }) {
         this.zoneRepository = zoneRepository;
     }
 

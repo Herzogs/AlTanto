@@ -3,7 +3,6 @@ import { lazy, Suspense } from "react";
 import { AuthGuard } from "./guards/auth.guard";
 import Spinner from 'react-bootstrap/Spinner';
 
-// Lazy load the components
 const Home = lazy(() => import("@pages/Home"));
 const Roads = lazy(() => import("@pages/Roads"));
 const Zones = lazy(() => import("@pages/Zones"));
@@ -24,6 +23,8 @@ const Groups = lazy(() => import("@components/group/Groups"));
 const GroupDetail = lazy(() => import("@components/group/GroupDetail"));
 const GroupSearch = lazy(() => import("@components/group/GroupSearch"));
 const GroupForm = lazy(() => import("@components/group/GroupForm"));
+const UserProfile = lazy(() => import("@pages/Profile"));
+const JoinGroup = lazy(() => import("@components/group/JoinGroup"));
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
@@ -54,6 +55,8 @@ const protectedRoutes = [
   { path: "/grupos/:id", element: <GroupDetail /> },
   { path: "/form/grupo", element: <GroupForm /> },
   { path: "group-search", element: <GroupSearch /> },
+  { path: "/perfil", element: <UserProfile /> },
+  { path: "/join-group", element: <JoinGroup /> },
 ];
 
 const App = () => {

@@ -28,20 +28,52 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
         if (!zone) {
             return null
         }
-        return zone.get({ plain: true });
+        const zonePlain = zone.get({ plain: true });
+        const aux: IZoneDto = {
+            id: zonePlain.id,
+            name: zonePlain.name,
+            location: {
+                lat: location.latitude,
+                lon: location.longitude
+            },
+            rad: zonePlain.radio,
+            userId: zonePlain.userId
+        }
+        return aux
     }
 
     async getAll(): Promise<IZoneDto[]> {
-        const listOfZones = await this.zoneModel.findAll({
-            include: [
-                { model: Location, attributes: ['latitude', 'longitude'] }
-            ],
-            attributes: { exclude: ['LocationId'] }
-        });
-        if (!listOfZones) {
-            return [];
+        try{
+            const listOfZones = await this.zoneModel.findAll({
+                include: [
+                    { model: Location, attributes: ['latitude', 'longitude'] }
+                ],
+                attributes: { exclude: ['LocationId'] }
+            });
+            if (!listOfZones) {
+                return [];
+            }
+            const aux = listOfZones.map((zone) => zone.get({ plain: true }));
+            const aux2: IZoneDto[] = []
+            aux.forEach((zone) => {
+                aux2.push({
+                    id: zone.id,
+                    name: zone.name,
+                    location: {
+                        lat: zone.Location.latitude,
+                        lon: zone.Location.longitude 
+                    },
+                    rad: zone.radio,
+                    userId: zone.userId
+                })
+            })
+            
+            return aux2
+        }catch(e){
+            console.log(e)
+            return []
         }
-        return listOfZones.map((zone) => zone.get({ plain: true }));
+        
     }
 
     async getAllByUserId(userId: number): Promise<IZoneDto[]> {
@@ -105,10 +137,10 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
     }
 
     async getReports(zone: IZoneDto): Promise<NonNullable<object[]> | null> {
+        
         const { location, rad } = zone;
-        console.log(location, rad)
         const reports = await Zone.sequelize?.query(
-            `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.categoryId,
+            `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.createAt, User.name, User.lastName, Report.categoryId,
                 Location.latitude, Location.longitude, 
                 Category.name AS categoryName,
                 (6371000 * acos(
@@ -118,6 +150,7 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
             FROM Location
             JOIN Report ON Location.id = Report.LocationId
             JOIN Category ON Report.CategoryId = Category.id
+            JOIN User ON Report.userId = User.id
             WHERE Report.enabled = true AND Report.groupId IS NULL
             HAVING distancia <= :radius
             ORDER BY distancia;`,

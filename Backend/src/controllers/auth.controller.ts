@@ -4,12 +4,12 @@ import { ICognitoService } from "../services/interfaces/cognito.service.interfac
 import { IUserService } from "../services/interfaces/user.service.interface";
 import { STATUS_CODE } from "../utilities/statusCode.utilities";
 
-class AuthController{
+class AuthController {
 
     private userService: IUserService<IUser>;
     private cognitoService: ICognitoService;
-    
-    constructor({ userService, cognitoService }: { userService: IUserService<IUser>, cognitoService: ICognitoService}) {
+
+    constructor({ userService, cognitoService }: { userService: IUserService<IUser>, cognitoService: ICognitoService }) {
         this.userService = userService;
         this.cognitoService = cognitoService;
     }
@@ -40,12 +40,13 @@ class AuthController{
     }
 
     async login(req: Request, res: Response, next: NextFunction) {
-        console.log("Creating user");
+        console.log("login");
         const email = req.body.email;
         const password = req.body.password;
         try {
             const jwt = await this.cognitoService.login(email, password);
             const user = await this.userService.getUserByEmail(email);
+
             return res.status(STATUS_CODE.SUCCESS).send({
                 message: "Login success",
                 token: jwt,
@@ -64,6 +65,28 @@ class AuthController{
         }
     }
 
+    async recovery(req: Request, res: Response, next: NextFunction) {
+        console.log("Recovering user");
+        const email = req.body.email;
+        try {
+            await this.cognitoService.accountRecovery(email);
+            res.status(STATUS_CODE.SUCCESS).json("code sender");
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
+        }
+    }
+    async updatePassword(req: Request, res: Response, next: NextFunction) {
+
+        try {
+            const email = req.body.email;
+            const newPassword = req.body.password;
+            const code = req.body.code;
+            await this.cognitoService.updatePassword(email, code, newPassword);
+            res.status(STATUS_CODE.SUCCESS).json("Password updated successfully");
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
+        }
+    }
 }
 
 export default AuthController;

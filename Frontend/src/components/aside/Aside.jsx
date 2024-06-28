@@ -9,14 +9,10 @@ import Notifications from "@components/notification/Notifications";
 import { Link } from "react-router-dom";
 import "./styles.css";
 
-
-
 function Aside() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-
 
   return (
     <aside>
@@ -26,9 +22,15 @@ function Aside() {
         </Button>
       </article>
 
-      <Offcanvas className="at-aside_offcanvas" show={show} onHide={handleClose}>
+      <Offcanvas
+        className="at-aside_offcanvas"
+        show={show}
+        onHide={handleClose}
+      >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title><Link to="/">Mantenete Al Tanto</Link></Offcanvas.Title>
+          <Offcanvas.Title>
+            <Link to="/">Mantenete Al Tanto</Link>
+          </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Zones handleClose={handleClose} />

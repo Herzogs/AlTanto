@@ -33,11 +33,11 @@ class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
         return groupRemoved;
     }
 
-    async validateGroupCode(groupCode: string): Promise<boolean> {
+    async validateGroupCode(groupCode: string): Promise<IGroup> {
         const result = await this.groupRepository.findByCode(groupCode);
         if (!result)
             throw new Error(`Error validating group code`);
-        return true;
+        return result;
     }
 
     async findByName(name: string): Promise<IGroup> {
@@ -49,12 +49,12 @@ class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
 
     async findAllByGroupId(groupUser: IGroupUser[]): Promise<IGroup[]> {
         const listOfGroups: IGroup[] = [];
-        groupUser.forEach(async (group) => {
+        for await (const group of groupUser) {
             const groupSearched = await this.groupRepository.findById(group.groupId);
             if (groupSearched) {
                 listOfGroups.push(groupSearched);
             }
-        });
+        }
         return listOfGroups;
     }
 
@@ -67,16 +67,14 @@ class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
 
     async findMembersByGroupId(groupId: number): Promise<IGroupMember> {
         const result = await this.groupRepository.getGroupMembers(groupId);
-        console.log(result);
         if (!result)
             throw new Error(`Error searching group members by group id`);
         return result;
     }
 
-    async getNotifications(id: number): Promise<IGroupReport[]> {
-        const groupUser = await this.groupRepository.findByOwner(id);
+    async getNotifications(listGroups: IGroup[]): Promise<IGroupReport[]> {
         const reportByZone: IGroupReport[] = [];
-        for (const group of groupUser) {
+        for (const group of listGroups) {
             const result = await this.reportService.getReportsByGroup(group.id as number);
             reportByZone.push({
                 groupName: group.name,

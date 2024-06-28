@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState, useCallback } from "react";
 import HeaderHome from "@components/header/HeaderHome";
 import Map from "@components/Map/Map.jsx";
-import ModalAT from "@components/modal/ModalAT";
 import Aside from "@components/aside/Aside";
 import SliderButton from "@components/slider/SliderButton";
 import { useParams } from "react-router-dom";
@@ -9,23 +9,16 @@ import { useStore } from "@store";
 import { fetchReports } from "@services/getReportsInRoutings";
 import { getDataOfRoadById } from "@services/getRoutesByUser";
 import { formatDistance } from "@/utilities/conversion";
-
 import "./styles.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function RoadID() {
-  const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState(null);
-  const [modalTitle, setModalTitle] = useState(null);
-  const [addressOrigin, setAddressOrigin] = useState(null);
-  const [addressDestination, setAddressDestination] = useState(null);
-  const [distance, setDistance] = useState(0);
-
-  const [name, setName] = useState(null);
-  const [origin, setOrigin] = useState(null);
-  const [destination, setDestination] = useState(null);
+  const [road, setRoad] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [error, setError] = useState(false);
   const { id } = useParams();
+
   const {
     routeCoordinates,
     userLocation,
@@ -34,91 +27,90 @@ function RoadID() {
     setReports,
   } = useStore();
 
-  useEffect(() => {
-    setReports([]);
+  const loadRoadData = useCallback(async () => {
+    try {
+      setError(false);
+      setRoad(null);
+      const data = await getDataOfRoadById(id);
+      if (data.status !== 200) {
+        setError(true);
+        throw new Error("Hubo un error en el servidor");
+      }
 
-  }, [setReports]);
-
-  useEffect(() => {
-    setLoading(true);
-    setOrigin(null);
-    setDestination(null);
-
-    if (id) {
-      const getData = async () => {
-        try {
-          const data = await getDataOfRoadById(id);
-          if (!data) {
-            throw new Error("No se encontraron datos");
-          }
-          setName(data.name);
-          setOrigin(data.origin);
-          setAddressOrigin(data.addressOrigin);
-          setAddressDestination(data.addressDestiny);
-          setDestination(data.destination);
-          setDistance(data.distance);
-          setLoading(false);
-        } catch (error) {
-          setShowModal(true);
-          setModalTitle("Error");
-          setModalContent(error.message);
-        }
-      };
-
-      getData();
+      if (data.data === "Road not found") {
+        setError(true);
+        throw new Error("No se encontraron datos");
+      }
+      setRoad(data.data);
+    } catch (error) {
+      toast.error(error.message, {
+        position: "top-right",
+      });
+    } finally {
+      setLoading(false);
     }
   }, [id]);
 
   useEffect(() => {
-    if (routeCoordinates && routeCoordinates.length > 0) {
+    setReports([]);
+  }, [setReports]);
+
+  useEffect(() => {
+    if (id) {
+      loadRoadData();
+    }
+  }, [id, loadRoadData]);
+
+  useEffect(() => {
+    if (!error && routeCoordinates && routeCoordinates.length > 0) {
       setUserLocation(routeCoordinates[0]);
       fetchReports(routeCoordinates, 4)
-        .then((reports) => {
-          setReports(reports);
-        })
+        .then(setReports)
         .catch((error) => {
-          setShowModal(true);
-          setModalTitle("Error");
-          setModalContent(error.message);
+          toast.error(error.message, {
+            position: "top-right",
+          });
         });
     }
-  }, [routeCoordinates, setUserLocation, setReports]);
-  
-  return (
-    <>
-      {!loading && (
-        <section className="w-100 h-100 roads-section">
-          <HeaderHome />
-          <h2 className="float-title">{name}</h2>
-          <div className="float-box">
-            <p><strong>Origen:</strong> {addressOrigin}</p>
-            <p><strong>Destino:</strong> {addressDestination}</p>
-            <p><strong>Distancia:</strong> {formatDistance(distance)}</p>
-          </div>
-          {id && <Aside />}
+  }, [error, routeCoordinates, setUserLocation, setReports]);
 
-          {origin && destination && (
-            <Map
-              key={`${userLocation.lat}-${userLocation.lng}`}
-              userLocation={origin}
-              startPoint={origin}
-              endPoint={destination}
-              zoneMode={true}
-              routingMode={true}
-              showFilters={true}
-            />
-          )}
-          {reports && reports.length > 0 && <SliderButton />}
-          <ModalAT
-            title={modalTitle}
-            message={modalContent}
-            showModal={showModal}
-            setShowModal={setShowModal}
-            url="/recorridos"
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <section className="w-100 h-100 roads-section">
+      <HeaderHome />
+      {id && <Aside />}
+      {!error && road && (
+        <>
+          <h2 className="float-title">{road.name}</h2>
+          <div className="float-box">
+            <p>
+              <strong>Origen:</strong> {road.addressOrigin}
+            </p>
+            <p>
+              <strong>Destino:</strong> {road.addressDestiny}
+            </p>
+            <p>
+              <strong>Distancia:</strong> {formatDistance(road.distance)}
+            </p>
+          </div>
+
+          <Map
+            key={`${userLocation.lat}-${userLocation.lng}`}
+            userLocation={!error ? road.origin : userLocation}
+            startPoint={!error ? road.origin : null}
+            endPoint={!error ? road.destination : null}
+            zoneMode={true}
+            routingMode={true}
+            showFilters={true}
           />
-        </section>
+        </>
       )}
-    </>
+      {!error && reports.length > 0 && <SliderButton />}
+      <ToastContainer />
+    </section>
   );
 }
 

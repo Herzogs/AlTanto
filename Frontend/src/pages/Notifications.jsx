@@ -29,7 +29,7 @@ function Notifications() {
 
     const getGroupsAndNotifications = async () => {
 
-      
+      console.log(user.id)
       const response = await axiosInstance.get(`/group/notifications/${user.id}`);
       if (response.status === 200) {
         return response.data;

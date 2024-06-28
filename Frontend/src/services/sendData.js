@@ -5,6 +5,7 @@ const FORM_URI_ROAD = "/road";
 const FORM_URI_ZONE = "/zones";
 const FORM_URI_REGISTER = "/auth/register";
 const VALIDATION_URI = "/auth/validate-code";
+const UPDATE_SCORING = "/reports/scoring"
 
 const sendReport = async (data) => {
   try {
@@ -13,11 +14,11 @@ const sendReport = async (data) => {
     formData.append("categoryId", data.category);
     formData.append("latitude", data.latitude.toString());
     formData.append("longitude", data.longitude.toString());
+    formData.append("userId", data.userId);
     if (data && data.image) formData.append("image", data.image);
-    if(data.groupId !== undefined){
+    if (data.groupId !== undefined) {
       formData.append("groupId", data.groupId);
     }
-    console.log("formData", formData);
 
     const response = await axiosInstance.post(FORM_URI_REPORT, formData, {
       headers: {
@@ -72,11 +73,12 @@ const sendRoute = async ({ data, startAddress, endAddress, startPoint, endPoint,
   }
 }
 
-const saveZone = async (data, coordinates,id) => {
+const saveZone = async (data, coordinates, id) => {
+  console.log(data, coordinates);
   try {
     if (!data || !coordinates) throw new Error("Error al guardar la zona");
     const { name, radio } = data;
-  
+
 
     const zone = {
       name,
@@ -86,7 +88,7 @@ const saveZone = async (data, coordinates,id) => {
       userId: id
     };
     const response = await axiosInstance.post(FORM_URI_ZONE, zone);
-    if (response.status !== 201) throw new Error("Error al guardar la zona");
+    if (response.status !== 201) throw new Error("Error al procesar la solicitud");
     return response.data;
   } catch (error) {
     throw new Error(error.message);
@@ -96,7 +98,7 @@ const saveZone = async (data, coordinates,id) => {
 
 const registerUser = async (userData) => {
   try {
-    
+
     const response = await axiosInstance.post(FORM_URI_REGISTER, userData);
     if (response.status !== 201) {
       throw new Error("Error al registrar usuario");
@@ -120,4 +122,18 @@ const validateCode = async (data) => {
   }
 };
 
-export { sendReport, sendRoute, saveZone, registerUser, validateCode };
+const updateScoring = async (scoring) => {
+  const response = await axiosInstance.post(UPDATE_SCORING, {
+    reportId: scoring.reportId,
+    vote: scoring.vote,
+    userId: scoring.userId
+  })
+  console.log(response)
+  if (response.status === 200) {
+    console.log("Scoring actualizado");
+  } else {
+    console.log("Error al actualizar el scoring");
+  }
+}
+
+export { sendReport, sendRoute, saveZone, registerUser, validateCode, updateScoring };

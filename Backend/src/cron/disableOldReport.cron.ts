@@ -7,7 +7,8 @@ export const disableOldReport = cron.schedule(process.env.CRON_TIME_TEST as stri
   
   try {
     await reportRepository.disableOldReport();
+    
   } catch (error) {
-    console.error('An error occurred while disabling reports:', error);
+     console.log(error);
   }
 });

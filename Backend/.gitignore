@@ -3,5 +3,5 @@
 fly.toml
 .vercel
 .env.deploy
-fly.toml
 ./vercel
+altanto-credential.json

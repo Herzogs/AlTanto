@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getGroupById, removeUserFromGroup, deleteGroup } from "@/services/groupService";
+import {
+  getGroupById,
+  removeUserFromGroup,
+  deleteGroup,
+} from "@services/groupService";
 import { getUserByUsername } from "@services/userService";
 import { fetchReportsByGroup } from "@services/getReportByGroup";
-import { userStore } from "@/store/index";
+import { userStore } from "@store";
 import { Container } from "react-bootstrap";
 import Header from "@components/header/Header";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuButton from "../Map/MenuButton";
 import Report from "@components/report/Report";
 
+import { reverseGeocode } from "@services/getGeoAdress";
+import { useStore } from "@store";
+import { sendSOS } from "@services/groupService";
+
 function GroupDetail() {
   const { id } = useParams();
+  const { userLocation  } = useStore();
+
   const [groupDetails, setGroupDetails] = useState(null);
   const [error, setError] = useState(null);
   const [username, setUsername] = useState("");
@@ -50,26 +60,40 @@ function GroupDetail() {
   const handleSearchUser = async () => {
     try {
       const userFound = await getUserByUsername(username);
-      
+
       setFoundUser(userFound);
     } catch (error) {
       setError(error.message);
     }
   };
 
-  const handleInviteUser = () => {
+  const handleInviteUser = async () => {
     const { phoneNumber } = foundUser;
     if (!phoneNumber) {
       setError("El usuario no tiene un número de teléfono registrado.");
       return;
     }
 
-    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nCódigo del grupo: ${groupDetails.groupCode}\n\n¡Únete a nosotros en WhatsApp!`;
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      inviteMessage
-    )}`;
+    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nCódigo del grupo: ${groupDetails.groupCode}\n\nÚnete al grupo aquí:`;
 
-    window.open(whatsappUrl, "_blank");
+    try {
+      const appUrl = "http://localhost:5173/join-group";
+
+      const groupLink = `${appUrl}?groupId=${groupDetails.id}&groupCode=${groupDetails.groupCode}`;
+
+      const whatsappMessage = `${inviteMessage}\n${groupLink}`;
+
+      window.open(
+        `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(
+          whatsappMessage
+        )}`,
+        "_blank"
+      );
+
+      navigate(`/grupos/${groupDetails.id}`);
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const handleLeaveGroup = async (groupId, userIdToRemove) => {
@@ -86,7 +110,9 @@ function GroupDetail() {
       await removeUserFromGroup({ groupId, userId: userIdToRemove });
       setGroupDetails((prevDetails) => ({
         ...prevDetails,
-        members: prevDetails.members.filter((member) => member.id !== userIdToRemove),
+        members: prevDetails.members.filter(
+          (member) => member.id !== userIdToRemove
+        ),
       }));
     } catch (error) {
       setError(error.message);
@@ -110,50 +136,71 @@ function GroupDetail() {
     return <div>Loading...</div>;
   }
 
+  const sendNotificationSOS = async () => {
+    console.log(userLocation)
+    const address = await reverseGeocode({lat: userLocation.lat , lng: userLocation.lng})
+    await sendSOS(id, userId, address)
+  }
+
   return (
     <>
-    <Header/>
+      <Header />
       <Container className="container-md_stop">
-      <p className="text-end"><Link to="/form/grupo"><ArrowBackIcon/> Regresar</Link></p>
-        <h1>{groupDetails.name}</h1>
-        <p>
-          Código de Grupo: <strong>{groupDetails.groupCode}</strong>
+        <p className="text-end">
+          <Link to="/form/grupo">
+            <ArrowBackIcon /> Regresar
+          </Link>
         </p>
+
+        <button className="btn btn-danger px-5" onClick={() => sendNotificationSOS()}>
+          SOS
+        </button>
+
+        <h1>{groupDetails.name}</h1>
         <MenuButton groupId={groupDetails.id} />
-        <button className="btn btn-sm btn-danger" onClick={() => handleDeleteGroup(groupDetails.id)}>
+        <button
+          className="btn btn-sm btn-danger"
+          onClick={() => handleDeleteGroup(groupDetails.id)}
+        >
           Borrar Grupo
         </button>
 
         <h3 className="mt-4">Miembros:</h3>
         <ul>
-          {!loading && groupDetails.members.map((member) => (
-            <li key={member.id}>
-              <h5 className="mt-3">{member.name}</h5>
-              <strong>
-                {member.id === groupDetails.ownerId && "* Propietario"}
-              </strong>
+          {!loading &&
+            groupDetails.members.map((member) => (
+              <li key={member.id}>
+                <h5 className="mt-3">{member.name}</h5>
+                <strong>
+                  {member.id === groupDetails.ownerId && "* Propietario"}
+                </strong>
 
-              {userId === member.id && (
-                <>
-                  <br />
-                  <button
-                    className="btn btn-sm btn-secondary"
-                    onClick={() => handleLeaveGroup(groupDetails.id, member.id)}
-                  >
-                    Abandonar grupo
-                  </button>
-                </>
-              )}
-              {groupDetails.ownerId === userId && member.id !== groupDetails.ownerId && (
-                <button
-                  className="btn btn-sm btn-warning"
-                  onClick={() => handleRemoveUser(groupDetails.id, member.id)}
-                >
-                  Eliminar usuario
-                </button>
-              )}
-            </li>
-          ))}
+                {userId === member.id && (
+                  <>
+                    <br />
+                    <button
+                      className="btn btn-sm btn-secondary"
+                      onClick={() =>
+                        handleLeaveGroup(groupDetails.id, member.id)
+                      }
+                    >
+                      Abandonar grupo
+                    </button>
+                  </>
+                )}
+                {groupDetails.ownerId === userId &&
+                  member.id !== groupDetails.ownerId && (
+                    <button
+                      className="btn btn-sm btn-warning"
+                      onClick={() =>
+                        handleRemoveUser(groupDetails.id, member.id)
+                      }
+                    >
+                      Eliminar usuario
+                    </button>
+                  )}
+              </li>
+            ))}
         </ul>
 
         {groupDetails.ownerId === userId && (
@@ -186,7 +233,6 @@ function GroupDetail() {
             <h3>No se encontraron reportes</h3>
           )}
         </section>
-
       </Container>
     </>
   );
