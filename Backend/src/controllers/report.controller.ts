@@ -79,6 +79,7 @@ class ReportController {
                 userId: +validData.data.userId
             }
             const reportCreated = await this.reportService.createReport(newReport);
+            await this.notificationService.sendNotificationToZone(reportCreated);
             if (newReport.groupId !== undefined) {
                 await this.notificationService.sendNotificationToGroup(newReport.groupId, reportCreated);
                 console.log('Notification sent to group');

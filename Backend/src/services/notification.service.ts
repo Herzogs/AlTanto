@@ -3,13 +3,21 @@ import { IReportDto } from '../models/reports.interface';
 import { IGroupService } from './interfaces/group.service.interface';
 import { IGroup, IGroupMember, IGroupUser } from '../models/group.interface';
 import axios from 'axios';
+import { IZoneService } from './interfaces/zone.service.interface';
+import { IZoneReport, IZoneDto } from '../models/zone.interface';
+import { IUserService } from './interfaces/user.service.interface';
+import { IUser } from '../models/user.interface';
 
 class NotificationService implements INotificationService {
 
   private groupService: IGroupService<IGroup, IGroupUser, IGroupMember>;
+  private zoneService: IZoneService<IZoneDto, IZoneReport>;
+  private userService: IUserService<IUser>
 
-  constructor({ groupService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember> }) {
+  constructor({ groupService, zoneService, userService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, zoneService: IZoneService<IZoneDto, IZoneReport>, userService: IUserService<IUser> }) {
     this.groupService = groupService;
+    this.zoneService = zoneService;
+    this.userService = userService;
   }
 
   async sendNotificationToGroup(groupId: number, report: IReportDto): Promise<boolean> {
@@ -40,6 +48,21 @@ class NotificationService implements INotificationService {
       }
 
     });
+    return true;
+  }
+
+  async sendNotificationToZone(report: IReportDto): Promise<boolean> {
+    const listOfZones = await this.zoneService.findZoneByLocation(+report.location.latitude, +report.location.longitude);
+    if(!listOfZones) return false;
+    console.log(report.createAt)
+    for await (const zone of listOfZones) {
+      const { name, phoneNumber } = zone;
+      const message = `Atención Zona: ${name} - ${report.content} - Fecha: ${report.createAt}`;
+      const aux = await this.sendNotification(phoneNumber, message);
+      if (aux?.status === 'failed') {
+        console.error(`Error al enviar mensaje a ${phoneNumber}`);
+      }
+    }
     return true;
   }
 
@@ -91,10 +114,11 @@ class NotificationService implements INotificationService {
     }
   }
 
-  private formatPhoneNumber(phoneNumber: string): any {
+  private formatPhoneNumber(phoneNumber: string): string {
     if (phoneNumber) {
       return `"+549${phoneNumber}"`
     }
+    return '';
   }
 }
 

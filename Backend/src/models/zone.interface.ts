@@ -24,3 +24,9 @@ export type IZoneReport = {
     zoneName: string;
     reports: IReport[];
 }
+
+export type ZoneUser = {
+    name: string;
+    lastName: string;
+    phoneNumber: string;
+}

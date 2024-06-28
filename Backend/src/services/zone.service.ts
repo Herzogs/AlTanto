@@ -1,4 +1,4 @@
-import { IZoneDto, IZoneReport } from "../models/zone.interface";
+import { IZoneDto, IZoneReport, ZoneUser } from "../models/zone.interface";
 import { IZoneRepository } from "../repository/interface/zone.repository.interface";
 import { ZoneNotFoundException } from "../exceptions/zone.exceptions";
 import { IReport } from "../models/reports.interface";
@@ -49,6 +49,12 @@ class ZoneService implements IZoneService<IZoneDto, IZoneReport> {
     async getFilteredReports(obj: IZoneDto): Promise<IZoneReport[]> {
         const zones = await this.zoneRepository.getReports(obj);
         return zones as IZoneReport[];
+    }
+
+    async findZoneByLocation(lat: number, lon: number): Promise<NonNullable<ZoneUser[]>> {
+        const zone = await this.zoneRepository.findZoneByReport({ lat: lat.toString(), lon: lon.toString() });
+        if (zone === null) throw new ZoneNotFoundException("Zone not found");
+        return zone as NonNullable<ZoneUser[]>;
     }
 
 }

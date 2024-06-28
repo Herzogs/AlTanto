@@ -128,10 +128,11 @@ describe('GroupService', () => {
       ownerId: 1,  
       members: [
         {
+          id: 1,
           name: 'John',
           lastName: 'Doe',
           email: 'johndoe@example.com',
-          phoneNumber: '1234567890'
+          phoneNumber: '1234567890',
         }
       ]
     };
@@ -144,16 +145,13 @@ describe('GroupService', () => {
   });
 
   test('should get notifications', async () => {
-    groupRepository.findByOwner.mockResolvedValue([mockGroup]);
     reportService.getReportsByGroup.mockResolvedValue([mockReport]);
-
-    const result = await groupService.getNotifications(1);
+    const result = await groupService.getNotifications([mockGroup]);
 
     expect(result).toEqual([{
       groupName: mockGroup.name,
       reports: [mockReport]
     }]);
-    expect(groupRepository.findByOwner).toHaveBeenCalledWith(1);
     expect(reportService.getReportsByGroup).toHaveBeenCalledWith(mockGroup.id);
   });
 });
