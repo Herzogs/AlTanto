@@ -49,9 +49,9 @@ function UserProfile({ handleClose }) {
                 <h1>
                     <AccountCircleIcon /> Perfil de Usuario
                 </h1>
-                <Button variant="success" className="mt-3" onClick={handleUpdateUser}>
+                {/* <Button variant="success" className="mt-3" onClick={handleUpdateUser}>
                     <EditIcon /> Guardar
-                </Button>
+                </Button> */}
             </div>
 
             <div className="mt-5">

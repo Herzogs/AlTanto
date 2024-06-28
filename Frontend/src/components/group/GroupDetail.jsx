@@ -64,23 +64,29 @@ function GroupDetail() {
       return;
     }
   
-    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nCódigo del grupo: ${groupDetails.groupCode}\n\nÚnete al grupo aquí:`;
+    const formattedPhoneNumber = phoneNumber.replace(/\D/g, '');
+  
+    const includesCountryCode = formattedPhoneNumber.startsWith('+54'); 
+  
+    const internationalPhoneNumber = includesCountryCode ? formattedPhoneNumber : `+54${formattedPhoneNumber}`; 
+  
+    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nÚnete al grupo haciendo click aquí:`;
   
     try {
-      const appUrl = "http://localhost:5173/join-group"; 
+      const appUrl = "http://localhost:5173/join-group";
   
       const groupLink = `${appUrl}?groupId=${groupDetails.id}&groupCode=${groupDetails.groupCode}`;
-
+  
       const whatsappMessage = `${inviteMessage}\n${groupLink}`;
   
-      window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(whatsappMessage)}`, "_blank");
+      window.open(`https://api.whatsapp.com/send?phone=${internationalPhoneNumber}&text=${encodeURIComponent(whatsappMessage)}`, "_blank");
   
       navigate(`/grupos/${groupDetails.id}`);
-  
     } catch (error) {
       setError(error.message);
     }
   };
+  
   
   const handleLeaveGroup = async (groupId, userIdToRemove) => {
     try {
