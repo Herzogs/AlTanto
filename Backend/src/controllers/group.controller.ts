@@ -6,17 +6,16 @@ import { IGroupUserService } from '../services/interfaces/groupUser.service.inte
 import { STATUS_CODE } from '../utilities/statusCode.utilities';
 
 class GroupController {
-    private groupService: IGroupService<IGroup, IGroupUser,IGroupMember>;
+    private groupService: IGroupService<IGroup, IGroupUser, IGroupMember>;
     private groupUserService: IGroupUserService<IGroupUser>;
 
-    constructor({ groupService, groupUserService }: { groupService: IGroupService<IGroup, IGroupUser,IGroupMember>, groupUserService: IGroupUserService<IGroupUser> }) {
+    constructor({ groupService, groupUserService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, groupUserService: IGroupUserService<IGroupUser> }) {
         this.groupService = groupService;
         this.groupUserService = groupUserService;
     }
 
     async createGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const { name, ownerId } = req.body;
-        console.log(req.body);
         try {
             if (typeof ownerId !== 'number') {
                 return next({ message: 'Invalid ownerId', statusCode: STATUS_CODE.BAD_REQUEST });
@@ -53,7 +52,7 @@ class GroupController {
     }
 
     async deleteGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        
+
         const { id } = req.params;
         try {
             await this.groupService.remove(+id);
@@ -70,7 +69,6 @@ class GroupController {
                 return next({ message: 'Invalid input', statusCode: STATUS_CODE.BAD_REQUEST });
             }
             const groupUser = await this.groupService.validateGroupCode(groupCode);
-            console.log(groupUser);
             await this.groupUserService.addUser({ groupId: groupUser.id as number, userId });
             return res.status(201).json(groupUser);
         } catch (error) {
@@ -79,7 +77,7 @@ class GroupController {
     }
 
     async removeUserFromGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        
+
         const { groupId, userId } = req.params;
         try {
             if (!groupId || !userId) {
@@ -93,7 +91,7 @@ class GroupController {
     }
 
     async findGroupsByName(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        
+
         const { name } = req.params;
         try {
             const groups = await this.groupService.findByName(name);
@@ -104,11 +102,19 @@ class GroupController {
     }
 
     async getGroupsByUserId(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        
+
         const { userId } = req.params;
-        
+        console.log(userId);
+
         try {
             const groups = await this.groupService.getAllByOwner(+userId);
+            const groupUser = await this.groupUserService.findAllByUserId(+userId);
+            const listOfGroups = await this.groupService.findAllByGroupId(groupUser);
+            listOfGroups.forEach((group) => {
+                if (!groups.find((g) => g.id === group.id))
+                    groups.push(group);
+            })
+            console.log(groups);
             return res.status(STATUS_CODE.SUCCESS).json(groups);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
@@ -117,7 +123,7 @@ class GroupController {
 
     async getGroupDetailsById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const { id } = req.params;
-        
+
         try {
             const group = await this.groupService.findMembersByGroupId(+id);
             return res.json(group);
@@ -126,10 +132,10 @@ class GroupController {
         }
     }
 
-    async getGroupNotifications (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        
+    async getGroupNotifications(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+
         const { id } = req.params;
-        
+
         try {
             const notifications = await this.groupService.getNotifications(+id);
             return res.json(notifications);

@@ -49,12 +49,12 @@ class GroupService implements IGroupService<IGroup, IGroupUser, IGroupMember> {
 
     async findAllByGroupId(groupUser: IGroupUser[]): Promise<IGroup[]> {
         const listOfGroups: IGroup[] = [];
-        groupUser.forEach(async (group) => {
+        for await (const group of groupUser) {
             const groupSearched = await this.groupRepository.findById(group.groupId);
             if (groupSearched) {
                 listOfGroups.push(groupSearched);
             }
-        });
+        }
         return listOfGroups;
     }
 

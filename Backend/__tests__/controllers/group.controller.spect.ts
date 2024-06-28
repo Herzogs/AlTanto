@@ -19,6 +19,7 @@ jest.mock('../../src/services/group.service', () => {
             getAllByOwner: jest.fn(),
             findMembersByGroupId: jest.fn(),
             getNotifications: jest.fn(),
+            findAllByGroupId: jest.fn(),
         };
     });
 });
@@ -28,6 +29,7 @@ jest.mock('../../src/services/groupUser.service', () => {
         return {
             addUser: jest.fn(),
             removeUser: jest.fn(),
+            findAllByUserId: jest.fn(),
         };
     });
 });
@@ -170,7 +172,10 @@ describe('Group Controller', () => {
 
     test('should get groups by user id successfully', async () => {
         const groups = [groupData];
+        const groupUser = { groupId: 1, userId: 1 } as IGroupUser;
         groupService.getAllByOwner.mockResolvedValue(groups);
+        groupService.findAllByGroupId.mockResolvedValue(groups);
+        groupUserService.findAllByUserId.mockResolvedValue([groupUser]);
 
         const req = { params: { userId: '1' } } as unknown as Request;
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
