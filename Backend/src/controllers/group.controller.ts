@@ -69,6 +69,7 @@ class GroupController {
                 return next({ message: 'Invalid input', statusCode: STATUS_CODE.BAD_REQUEST });
             }
             const groupUser = await this.groupService.validateGroupCode(groupCode);
+            console.log(groupUser)
             await this.groupUserService.addUser({ groupId: groupUser.id as number, userId });
             return res.status(201).json(groupUser);
         } catch (error) {

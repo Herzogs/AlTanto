@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 //import Header from "@components/header/Header";
-//import Footer from "@components/footer/Footer";
+// import Footer from "@components/footer/Footer";
 import { lazy, Suspense } from "react";
 import { AuthGuard } from "./guards/auth.guard";
 //import RegisterForm from "@components/auth/RegisterForm.jsx";
@@ -37,6 +37,7 @@ const GroupDetail = lazy(() => import("@components/group/GroupDetail"));
 const GroupSearch = lazy(() => import("@components/group/GroupSearch"));
 const GroupForm = lazy(() => import("@components/group/GroupForm"));
 const UserProfile = lazy(() => import("@pages/Profile"));
+const JoinGroup = lazy(() => import("@components/group/JoinGroup"));
 
 const nonProtectedRoutes = [
   { path: "/auth/registro", element: <RegisterForm /> },
@@ -68,6 +69,7 @@ const protectedRoutes = [
   { path: "/form/grupo", element: <GroupForm /> },
   { path: "group-search", element: <GroupSearch /> },
   { path: "/profile", element: <UserProfile /> },
+  { path: "/join-group", element: <JoinGroup /> },
 ];
 
 const App = () => {

@@ -57,21 +57,31 @@ function GroupDetail() {
     }
   };
 
-  const handleInviteUser = () => {
+  const handleInviteUser = async () => {
     const { phoneNumber } = foundUser;
     if (!phoneNumber) {
       setError("El usuario no tiene un número de teléfono registrado.");
       return;
     }
+  
+    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nCódigo del grupo: ${groupDetails.groupCode}\n\nÚnete al grupo aquí:`;
+  
+    try {
+      const appUrl = "http://localhost:5173/join-group"; 
+  
+      const groupLink = `${appUrl}?groupId=${groupDetails.id}&groupCode=${groupDetails.groupCode}`;
 
-    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nCódigo del grupo: ${groupDetails.groupCode}\n\n¡Únete a nosotros en WhatsApp!`;
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      inviteMessage
-    )}`;
-
-    window.open(whatsappUrl, "_blank");
+      const whatsappMessage = `${inviteMessage}\n${groupLink}`;
+  
+      window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(whatsappMessage)}`, "_blank");
+  
+      navigate(`/grupos/${groupDetails.id}`);
+  
+    } catch (error) {
+      setError(error.message);
+    }
   };
-
+  
   const handleLeaveGroup = async (groupId, userIdToRemove) => {
     try {
       await removeUserFromGroup({ groupId, userId: userIdToRemove });

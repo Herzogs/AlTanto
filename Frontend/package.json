@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "dev": "vite preview",
-    "test": "vitest",
+    "test": "vitest --coverage",
     "testui": "vitest --ui"
   },
   "dependencies": {
