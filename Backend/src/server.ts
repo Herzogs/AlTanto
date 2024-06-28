@@ -36,7 +36,6 @@ const routes: { route: Router; uri: string }[] = [
 ];
 
 routes.forEach(({ route, uri }) => {
-    console.log(`Adding route /api${uri}`);
     server.use(`/api${uri}`, route);
 });
 
@@ -47,8 +46,8 @@ server.use('/', (_req, res) => {
 
 server.use(errorHandler)
 server.listen(process.env.PORT, () => {
-    console.log(`Server running on port ${process.env.PORT}`);
+    
     //disableOldReport.start()
 })
 
-export { server };
+export default server;

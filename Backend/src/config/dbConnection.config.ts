@@ -15,21 +15,21 @@ const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     dialectModule: mysql2,
     timezone: '-03:00',
     logging: false,
-    /* dialectOptions: {
-        ssl:{
+    dialectOptions: {
+        ssl: {
             require: true,
             rejectUnauthorized: true,
             ca: process.env.DB_SSL_CA,
         }
-    } */
-        
+    }
+
 });
 
 dbConnection.authenticate()
     .then(() => {
         console.log('Connection has been established successfully.');
         if (process.env.CREATE_TABLE === "true") {
-            dbConnection.sync({ 
+            dbConnection.sync({
                 force: true,
             });
         }
