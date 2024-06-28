@@ -2,6 +2,7 @@ import axiosInstance from "@interceptors/axiosConfig";
 
 export const getGroupsByUserId = async (userId) => {
   try {
+    console.log('userId:', userId);
     const response = await axiosInstance.get(`/group/user/${userId}`);
     return response.data;
   } catch (error) {

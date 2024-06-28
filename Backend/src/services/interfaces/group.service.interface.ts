@@ -9,5 +9,5 @@ export interface IGroupService<T,K,E> {
     findAllByGroupId(user: K[]): Promise<T[]>;
     findById(id: number): Promise<T | null>;
     findMembersByGroupId(id: number): Promise<E>;
-    getNotifications(id: number): Promise<IGroupReport[]>;
+    getNotifications(obj: T[]): Promise<IGroupReport[]>;
 }

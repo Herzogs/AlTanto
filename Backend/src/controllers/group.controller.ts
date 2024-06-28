@@ -103,7 +103,7 @@ class GroupController {
     }
 
     async getGroupsByUserId(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-
+        console.log(req.params);
         const { userId } = req.params;
         console.log(userId);
 
@@ -134,11 +134,18 @@ class GroupController {
     }
 
     async getGroupNotifications(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-
+        console.log(req.params);
         const { id } = req.params;
 
         try {
-            const notifications = await this.groupService.getNotifications(+id);
+            const listGroups: IGroup[] = [];
+            const groupUser = await this.groupUserService.findAllByUserId(+id);
+            const listOfGroups = await this.groupService.findAllByGroupId(groupUser);
+            listOfGroups.forEach((group) => {
+                if (!groupUser.find((g) => g.id === group.id))
+                    listGroups.push(group);
+            })
+            const notifications = await this.groupService.getNotifications(listGroups);
             return res.json(notifications);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });

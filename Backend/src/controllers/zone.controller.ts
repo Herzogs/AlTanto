@@ -62,7 +62,7 @@ class ZoneController {
 
     async getNotification(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
 
-
+        console.log(req.params)
         const validData = await zoneValidator.getNotificationValidator.safeParseAsync(req.params);
         if (!validData.success) {
             return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
