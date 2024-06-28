@@ -98,7 +98,8 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
             
             if (routeSearched) {
                 console.log("ya existe")
-                return null}
+                return null
+            }
     
             const locationSearchedOrigin = await Location.findOrCreate({
                 where: { latitude: road.origin.lat, longitude: road.origin.lng }

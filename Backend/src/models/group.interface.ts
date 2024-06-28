@@ -12,6 +12,7 @@ export interface IGroupMember {
     name: string;
     ownerId: number;
     members: {
+        id: number;
         name: string;
         lastName: string;
         email: string;

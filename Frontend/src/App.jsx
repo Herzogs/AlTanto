@@ -1,21 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-//import Header from "@components/header/Header";
-// import Footer from "@components/footer/Footer";
 import { lazy, Suspense } from "react";
 import { AuthGuard } from "./guards/auth.guard";
-//import RegisterForm from "@components/auth/RegisterForm.jsx";
-//import ValidationCodeForm from "@components/auth/CodeForm.jsx";
-//import LoginForm from "@components/auth/LoginForm.jsx";
-//import RoadID from "@components/road/RoadID";
-//import ReportIA from "@components/ReportAutomatic/ReportIA";
-//import Groups from "@components/group/Groups";
-//import GroupDetail from "@components/group/GroupDetail";
-//import GroupSearch from "@components/group/GroupSearch";
-//import GroupForm from "@components/group/GroupForm";
-//import UserProfile from "@pages/Profile"; 
 import Spinner from 'react-bootstrap/Spinner';
 
-// Lazy load the components
 const Home = lazy(() => import("@pages/Home"));
 const Roads = lazy(() => import("@pages/Roads"));
 const Zones = lazy(() => import("@pages/Zones"));
@@ -68,7 +55,7 @@ const protectedRoutes = [
   { path: "/grupos/:id", element: <GroupDetail /> },
   { path: "/form/grupo", element: <GroupForm /> },
   { path: "group-search", element: <GroupSearch /> },
-  { path: "/profile", element: <UserProfile /> },
+  { path: "/perfil", element: <UserProfile /> },
   { path: "/join-group", element: <JoinGroup /> },
 ];
 

@@ -4,14 +4,17 @@ import { IGroupService } from '../services/interfaces/group.service.interface';
 import { IGroup, IGroupUser, IGroupMember } from '../models/group.interface';
 import { IGroupUserService } from '../services/interfaces/groupUser.service.interface';
 import { STATUS_CODE } from '../utilities/statusCode.utilities';
+import { INotificationService } from '../services/interfaces/notification.service.interface';
 
 class GroupController {
     private groupService: IGroupService<IGroup, IGroupUser, IGroupMember>;
     private groupUserService: IGroupUserService<IGroupUser>;
+    private notificationService: INotificationService;
 
-    constructor({ groupService, groupUserService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, groupUserService: IGroupUserService<IGroupUser> }) {
+    constructor({ groupService, groupUserService, notificationService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, groupUserService: IGroupUserService<IGroupUser>, notificationService: INotificationService }) {
         this.groupService = groupService;
         this.groupUserService = groupUserService;
+        this.notificationService = notificationService;
     }
 
     async createGroup(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -147,6 +150,17 @@ class GroupController {
             })
             const notifications = await this.groupService.getNotifications(listGroups);
             return res.json(notifications);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async sendSOS(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const { groupId, userId, address } = req.body;
+
+        try {
+             const response = await this.notificationService.sendNotificationToGroupSOS(groupId, userId, address);
+            return res.json(response);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }

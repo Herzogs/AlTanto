@@ -61,7 +61,7 @@ const LocationMarker = () => {
       zIndexOffset={9991}
       icon={userIcon}
     >
-      <Popup>Estas aquí</Popup>
+      <Popup>Estás aquí</Popup>
     </Marker>
   ) : null;
 };

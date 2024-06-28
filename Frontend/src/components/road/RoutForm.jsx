@@ -10,14 +10,14 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link } from "react-router-dom";
 import { sendRoute } from "@services/sendData";
 import { fetchReports } from "@services/getReportsInRoutings";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ModalAT from "@components/modal/ModalAT";
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
   const [endPoint, setEndPoint] = useState(null);
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const {
     userLocation,
@@ -55,27 +55,24 @@ function RoutForm() {
   const endAddress = watch("destination");
 
   const setPoints = useCallback(async () => {
+    setVisible(false);
     try {
       const startCoords = await geocodeAddress(startAddress);
       const endCoords = await geocodeAddress(endAddress);
-      setUserLocation({ lat: startCoords.lat, lng: startCoords.lon });
+      console.log("gooo")
+     /*  setUserLocation({ lat: startCoords.lat, lng: startCoords.lon }); */
       setStartPoint(startCoords);
       setEndPoint(endCoords);
       setError(false);
+      setVisible(true);
     } catch (error) {
       setError(true);
       setVisible(false);
-      toast.error(error.message, {
-        position: "top-right",
-      });
     }
   }, [startAddress, endAddress]);
 
   const handleSetPoints = () => {
-    if (startAddress !== "" && endAddress !== "") {
       setPoints();
-      setVisible(true);
-    }
   };
 
   useEffect(() => {
@@ -84,11 +81,11 @@ function RoutForm() {
       fetchReports(routeCoordinates, 4)
         .then((reports) => {
           setReports(reports);
+          setError(false);
         })
         .catch((error) => {
-          toast.error(error.message, {
-            position: "top-right",
-          });
+          console.log(error)
+          setError(true);
         });
     }
   }, [routeCoordinates, setUserLocation, setReports]);
@@ -105,15 +102,9 @@ function RoutForm() {
         time: time,
         id: user.id,
       });
-
-      toast.success(response.message, {
-        position: "top-right",
-      });
-      console.log(response.title === "Ruta guardada");
+      setShowModal(true);
     } catch (error) {
-      toast.error(error.message, {
-        position: "top-right",
-      });
+      console.log(error);
     }
   };
 
@@ -188,7 +179,7 @@ function RoutForm() {
               >
                 Ver Ruta
               </Button>
-              {error && <p style={{ color: "red" }}>{error}</p>}
+              {error && <p style={{ color: "red" }}>* Error al procesar los datos</p>}
             </Col>
           </Form.Group>
 
@@ -250,7 +241,13 @@ function RoutForm() {
 
         </Form>
 
-        <ToastContainer />
+        <ModalAT
+          title="Recorrido guardado"
+          message="Se registraron correctamente los datos."
+          showModal={showModal}
+          setShowModal={setShowModal}
+          url={"/"}
+        />
       </Container>
     </>
   );

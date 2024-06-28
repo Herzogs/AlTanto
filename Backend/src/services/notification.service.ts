@@ -25,6 +25,24 @@ class NotificationService implements INotificationService {
     return true;
   }
 
+  async sendNotificationToGroupSOS(groupId: number, userId: number, address: string): Promise<boolean> {
+    const group: IGroupMember = await this.groupService.findMembersByGroupId(groupId);
+    const listofmembers = group?.members;
+    const userSOS = listofmembers.find(user => user.id == userId )
+
+    listofmembers?.forEach(async (member) => {
+      if (member.id != userSOS?.id){
+        const message = `El usuario ${userSOS?.name} ${userSOS?.lastName} esta teniendo un problema y envio una alerta SOS. Ubicación detectada ${address}`;
+        const aux = await this.sendNotification(member.phoneNumber, message);
+        if (aux?.status === 'failed') {
+          console.error(`Error al enviar mensaje a ${member.phoneNumber}`);
+        }
+      }
+
+    });
+    return true;
+  }
+
   private async sendNotification(to: string, message: string) {
     const formattedNumber = this.formatPhoneNumber(to);
     try {
@@ -55,12 +73,11 @@ class NotificationService implements INotificationService {
         },
         {
           headers: {
-            Authorization: `Bearer ${process.env. WHATSAPP_TOKEN}`,
+            Authorization: `Bearer ${process.env.CV_WHASTAPP_TOKEN}`,
             'Content-Type': 'application/json'
           }
         }
       );
-      console.log(response);
       if (response.status === 200) {
         console.log('Notificación enviada con éxito');
         return { status: 'success' };
@@ -74,21 +91,10 @@ class NotificationService implements INotificationService {
     }
   }
 
-  private formatPhoneNumber(phoneNumber: string): string {
-    let formattedNumber = phoneNumber.replace(/[^0-9]/g, '');
-    if (formattedNumber.startsWith('54')) {
-      if (formattedNumber.length === 10) {
-        // Número local (sin código de país) -> agregar 9 para móviles
-        formattedNumber = `549${formattedNumber}`;
-      } else if (formattedNumber.length === 11 && formattedNumber[2] !== '9') {
-        // Número nacional (con código de país) pero sin 9 para móviles
-        formattedNumber = `549${formattedNumber.slice(2)}`;
-      }
-    } else if (!formattedNumber.startsWith('54')) {
-      // Número internacional sin código de país
-      formattedNumber = `549${formattedNumber}`;
+  private formatPhoneNumber(phoneNumber: string): any {
+    if (phoneNumber) {
+      return `"+549${phoneNumber}"`
     }
-    return `+${formattedNumber}`;
   }
 }
 

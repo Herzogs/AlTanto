@@ -6,7 +6,6 @@ import ModalAT from "@components/modal/ModalAT";
 import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import loginScheme from "@schemes/loginScheme";
-
 import Header from "@components/header/Header";
 import { Container } from "react-bootstrap";
 
@@ -44,10 +43,9 @@ function LoginForm() {
   };
 
   return (
-    
-
-    
-    <div className="container">
+    <>
+    <Header />
+    <Container className="pt-4 pt-lg-5">
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Iniciar Sesión</h2>
         <div className="mb-3">
@@ -90,7 +88,8 @@ function LoginForm() {
         setShowModal={setShowModal}
         url={url}
       />
-    </div>
+    </Container>
+    </>
   );
 }
 

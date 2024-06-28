@@ -20,16 +20,14 @@ function HeaderHome() {
       <article className="at-header_login">
         {token ? (
           <Dropdown>
-            <Dropdown.Toggle
-              
-              id="dropdown-basic"
-              as="span"
-            >
+            <Dropdown.Toggle id="dropdown-basic" as="span">
               <UserAvatar name={name} lastName={lastName} />
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
-              <p className="dropdown-item">{`${name} ${lastName}`}</p>
+              <Dropdown.Item as={Link} to="/perfil">
+                Perfil
+              </Dropdown.Item>
               <Dropdown.Item as={Link} to="/auth/logout">
                 Cerrar sesión
               </Dropdown.Item>

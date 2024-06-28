@@ -10,8 +10,8 @@ import { fetchReports } from "@services/getReportsInRoutings";
 import { getDataOfRoadById } from "@services/getRoutesByUser";
 import { formatDistance } from "@/utilities/conversion";
 import "./styles.css";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function RoadID() {
   const [road, setRoad] = useState(null);
@@ -29,6 +29,8 @@ function RoadID() {
 
   const loadRoadData = useCallback(async () => {
     try {
+      setError(false);
+      setRoad(null);
       const data = await getDataOfRoadById(id);
       if (data.status !== 200) {
         setError(true);
@@ -75,30 +77,37 @@ function RoadID() {
   if (loading) {
     return <div>Loading...</div>;
   }
-  
+
   return (
     <section className="w-100 h-100 roads-section">
       <HeaderHome />
+      {id && <Aside />}
       {!error && road && (
         <>
           <h2 className="float-title">{road.name}</h2>
           <div className="float-box">
-            <p><strong>Origen:</strong> {road.addressOrigin}</p>
-            <p><strong>Destino:</strong> {road.addressDestiny}</p>
-            <p><strong>Distancia:</strong> {formatDistance(road.distance)}</p>
+            <p>
+              <strong>Origen:</strong> {road.addressOrigin}
+            </p>
+            <p>
+              <strong>Destino:</strong> {road.addressDestiny}
+            </p>
+            <p>
+              <strong>Distancia:</strong> {formatDistance(road.distance)}
+            </p>
           </div>
+
+          <Map
+            key={`${userLocation.lat}-${userLocation.lng}`}
+            userLocation={!error ? road.origin : userLocation}
+            startPoint={!error ? road.origin : null}
+            endPoint={!error ? road.destination : null}
+            zoneMode={true}
+            routingMode={true}
+            showFilters={true}
+          />
         </>
       )}
-      {id && <Aside />}
-      <Map
-        key={`${userLocation.lat}-${userLocation.lng}`}
-        userLocation={!error ? road.origin : userLocation}
-        startPoint={!error ? road.origin : null}
-        endPoint={!error ? road.destination : null}
-        zoneMode={true}
-        routingMode={true}
-        showFilters={true}
-      />
       {!error && reports.length > 0 && <SliderButton />}
       <ToastContainer />
     </section>
