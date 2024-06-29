@@ -104,14 +104,10 @@ describe("Zone Repository", () => {
 
     test('should give report of zones', async () => {
         await zoneRepository.create(zoneData);
-        const obtain = await reportRepository.getAll()
-        console.log(obtain)
-        const created = await reportRepository.create(report1);
-        console.log(created)
-        const test = await reportRepository.getAll()
-        console.log(test)
+        await reportRepository.getAll()
+        await reportRepository.create(report1);
+        await reportRepository.getAll()
         const reports = await zoneRepository.getReports(zoneData) as IReportDto[];
-        console.log(reports);
         expect(reports).toBeDefined();
         expect(reports!.length).toBeGreaterThan(0);
         expect(reports![0].content).toBe(report1.content);

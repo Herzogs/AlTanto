@@ -5,19 +5,17 @@ import { IGroup, IGroupMember, IGroupUser } from '../models/group.interface';
 import axios from 'axios';
 import { IZoneService } from './interfaces/zone.service.interface';
 import { IZoneReport, IZoneDto } from '../models/zone.interface';
-import { IUserService } from './interfaces/user.service.interface';
-import { IUser } from '../models/user.interface';
+
 
 class NotificationService implements INotificationService {
 
   private groupService: IGroupService<IGroup, IGroupUser, IGroupMember>;
   private zoneService: IZoneService<IZoneDto, IZoneReport>;
-  private userService: IUserService<IUser>
 
-  constructor({ groupService, zoneService, userService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, zoneService: IZoneService<IZoneDto, IZoneReport>, userService: IUserService<IUser> }) {
+
+  constructor({ groupService, zoneService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, zoneService: IZoneService<IZoneDto, IZoneReport> }) {
     this.groupService = groupService;
     this.zoneService = zoneService;
-    this.userService = userService;
   }
 
   async sendNotificationToGroup(groupId: number, report: IReportDto): Promise<boolean> {
@@ -38,10 +36,10 @@ class NotificationService implements INotificationService {
   async sendNotificationToGroupSOS(groupId: number, userId: number, address: string): Promise<boolean> {
     const group: IGroupMember = await this.groupService.findMembersByGroupId(groupId);
     const listofmembers = group?.members;
-    const userSOS = listofmembers.find(user => user.id == userId )
+    const userSOS = listofmembers.find(user => user.id == userId)
 
     listofmembers?.forEach(async (member) => {
-      if (member.id != userSOS?.id){
+      if (member.id != userSOS?.id) {
         const message = `El usuario ${userSOS?.name} ${userSOS?.lastName} esta teniendo un problema y envio una alerta SOS. Ubicación detectada ${address}`;
         const aux = await this.sendNotification(member.phoneNumber, message);
         if (aux?.status === 'failed') {
@@ -55,15 +53,17 @@ class NotificationService implements INotificationService {
 
   async sendNotificationToZone(report: IReportDto): Promise<boolean> {
     const listOfZones = await this.zoneService.findZoneByLocation(+report.location.latitude, +report.location.longitude);
-    if(!listOfZones) return false;
-    const dateNow = new Date().toLocaleString()
-    
+    if (!listOfZones) return false;
+    const dateNow = new Date().toLocaleString("es-AR")
+
     for await (const zone of listOfZones) {
-      const { name, phoneNumber } = zone;
-      const message = `Atención Zona: ${name} - ${report.content} - Fecha: ${dateNow}`;
-      const aux = await this.sendNotification(phoneNumber, message);
-      if (aux?.status === 'failed') {
-        console.error(`Error al enviar mensaje a ${phoneNumber}`);
+      const { name, phoneNumber, userId } = zone;
+      if (report.id !== +userId) {
+        const message = `Atención Zona: ${name} - ${report.content} - Fecha: ${dateNow}`;
+        const aux = await this.sendNotification(phoneNumber, message);
+        if (aux?.status === 'failed') {
+          console.error(`Error al enviar mensaje a ${phoneNumber}`);
+        }
       }
     }
     return true;
@@ -72,7 +72,7 @@ class NotificationService implements INotificationService {
   private async sendNotification(to: string, message: string) {
     const formattedNumber = this.formatPhoneNumber(to);
     try {
-      
+
       const response = await axios.post('https://graph.facebook.com/v19.0/364446776749815/messages',
         {
           messaging_product: "whatsapp",

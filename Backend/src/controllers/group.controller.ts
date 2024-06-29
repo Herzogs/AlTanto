@@ -106,7 +106,6 @@ class GroupController {
 
     async getGroupsByUserId(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const { userId } = req.params;
-
         try {
             const groups = await this.groupService.getAllByOwner(+userId);
             const groupUser = await this.groupUserService.findAllByUserId(+userId);
@@ -154,7 +153,7 @@ class GroupController {
         const { groupId, userId, address } = req.body;
 
         try {
-             const response = await this.notificationService.sendNotificationToGroupSOS(groupId, userId, address);
+            const response = await this.notificationService.sendNotificationToGroupSOS(groupId, userId, address);
             return res.json(response);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });

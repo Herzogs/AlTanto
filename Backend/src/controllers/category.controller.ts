@@ -4,7 +4,7 @@ import { ICategory } from '../models/category.interface';
 import { IService } from '../services/interfaces/category.service.interface';
 import { STATUS_CODE } from '../utilities/statusCode.utilities';
 
-class CategoryController{
+class CategoryController {
     private service: IService<ICategory>;
 
     constructor({ categoryService }: { categoryService: IService<ICategory> }) {
@@ -16,11 +16,11 @@ class CategoryController{
             const categories = await this.service.getAll();
             return res.status(STATUS_CODE.SUCCESS).json(categories);
         } catch (error) {
-            return next({message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST});
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
     }
-    
-    async getCategoriesById (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+
+    async getCategoriesById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const validationResult = await categoryValidator.getCategoriesByIdValidator.safeParseAsync(req.params);
         if (!validationResult.success) {
             return next({ message: validationResult.error.errors[0].message, statusCode: STATUS_CODE.INVALID_TOKEN });
@@ -36,7 +36,7 @@ class CategoryController{
         }
     }
 
-    async createCategory (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    async createCategory(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const validationResult = await categoryValidator.createCategoryValidator.safeParseAsync(req.body);
         if (!validationResult.success) {
             return next({ message: validationResult.error.errors[0].message, statusCode: STATUS_CODE.INVALID_TOKEN });
