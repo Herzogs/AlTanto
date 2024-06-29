@@ -81,11 +81,11 @@ function GroupDetail() {
       return;
     }
 
-    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nCódigo del grupo: ${groupDetails.groupCode}\n\nÚnete al grupo aquí:`;
+    const inviteMessage = `Hola ${foundUser.name},\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nÚnete al grupo aquí:`;
 
     try {
       const appUrl = "https://altanto.vercel.app/join-group";
-      const groupLink = `${appUrl}?groupId=${groupDetails.id}`;
+      const groupLink = `${appUrl}?groupId=${groupDetails.id}&groupCode=${groupDetails.groupCode}`;
       const whatsappMessage = `${inviteMessage}\n${groupLink}`;
 
       window.open(
