@@ -72,7 +72,6 @@ class GroupController {
                 return next({ message: 'Invalid input', statusCode: STATUS_CODE.BAD_REQUEST });
             }
             const groupUser = await this.groupService.validateGroupCode(groupCode);
-            console.log(groupUser)
             await this.groupUserService.addUser({ groupId: groupUser.id as number, userId });
             return res.status(201).json(groupUser);
         } catch (error) {
@@ -106,9 +105,7 @@ class GroupController {
     }
 
     async getGroupsByUserId(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        console.log(req.params);
         const { userId } = req.params;
-        console.log(userId);
 
         try {
             const groups = await this.groupService.getAllByOwner(+userId);
@@ -118,7 +115,6 @@ class GroupController {
                 if (!groups.find((g) => g.id === group.id))
                     groups.push(group);
             })
-            console.log(groups);
             return res.status(STATUS_CODE.SUCCESS).json(groups);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
@@ -137,7 +133,6 @@ class GroupController {
     }
 
     async getGroupNotifications(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        console.log(req.params);
         const { id } = req.params;
 
         try {

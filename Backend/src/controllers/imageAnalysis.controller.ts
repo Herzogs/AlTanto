@@ -11,7 +11,7 @@ class AnalysisController {
         {
           id: 1,
           name: "Seguridad",
-          tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca"],
+          tags: ["seguridad", "robo", "vidrio", "pinchada", "llanta", "palanca", "pistola"],
         },
         {
           id: 2,

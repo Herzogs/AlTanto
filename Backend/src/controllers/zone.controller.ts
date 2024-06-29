@@ -12,13 +12,11 @@ class ZoneController {
     }
 
     async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        console.log(req.body)
         const validData = await zoneValidator.createZoneValidator.safeParseAsync(req.body);
         if (!validData.success) {
             return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
         try {
-            console.log(validData.data)
             const miZona: IZoneDto = {
                 name: validData.data.name,
                 location: {
@@ -62,7 +60,6 @@ class ZoneController {
 
     async getNotification(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
 
-        console.log(req.params)
         const validData = await zoneValidator.getNotificationValidator.safeParseAsync(req.params);
         if (!validData.success) {
             return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
@@ -77,14 +74,10 @@ class ZoneController {
     }
 
     async getAllByUserId(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-
-
-
         const validData = await zoneValidator.getAllByUserIdValidator.safeParseAsync(req.params);
         if (!validData.success) {
             return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
-        console.log(validData.data)
         try {
             const { id } = validData.data as { id: string };
             const zones = await this.zoneService.getAllByUserId(+id);
