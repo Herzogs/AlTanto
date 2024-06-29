@@ -160,7 +160,8 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object> {
                     lon: parseFloat(location.lon),
                     radius: parseFloat(rad.toString())
                 },
-                type: QueryTypes.SELECT
+            
+                type: QueryTypes.SELECT,
             }
         );
         if (!reports) {

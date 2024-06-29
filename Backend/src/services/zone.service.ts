@@ -1,7 +1,7 @@
 import { IZoneDto, IZoneReport, ZoneUser } from "../models/zone.interface";
 import { IZoneRepository } from "../repository/interface/zone.repository.interface";
 import { ZoneNotFoundException } from "../exceptions/zone.exceptions";
-import { IReport, IReportDto } from "../models/reports.interface";
+//import { IReport, IReportDto } from "../models/reports.interface";
 import { IZoneService } from "./interfaces/zone.service.interface";
 
 
