@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { validateCode } from "@services/sendData";
 import ModalAT from "@components/modal/ModalAT";
 import Header from "@components/header/Header";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
 function ValidationCodeForm() {
   const [showModal, setShowModal] = useState(false);
@@ -29,12 +29,13 @@ function ValidationCodeForm() {
   };
 
   return (
-    <>
+    <Row className="justify-content-center">
+    <Col lg={6} className="at-desk_form">
       <Header />
       <Container className="pt-4 pt-lg-5">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="my-4 p-4 border rounded"
+          className="my-4 p-4"
         >
           <h2 className="mb-4">Validar Código</h2>
           <div className="mb-3">
@@ -87,7 +88,8 @@ function ValidationCodeForm() {
           url="/auth/login"
         />
       </Container>
-    </>
+      </Col>
+    </Row>
   );
 }
 

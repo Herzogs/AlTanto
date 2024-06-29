@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
 import { memo } from "react";
 import Slider from "react-slick";
@@ -7,8 +8,9 @@ import { useStore } from "@store";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-function SliderAT() {
-  const { reports } = useStore();
+function SliderAT({ reports: propReports }) {
+  const { reports: storeReports } = useStore();
+  const reports = propReports || storeReports;
 
   return (
     <>

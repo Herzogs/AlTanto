@@ -16,7 +16,9 @@ function Notifications() {
 
   useEffect(() => {
     const getZonesAndNotifications = async () => {
-      const response = await axiosInstance.get(`/zones/notification/${user.id}`);
+      const response = await axiosInstance.get(
+        `/zones/notification/${user.id}`
+      );
       if (response.status === 200) {
         return response.data;
       }
@@ -28,9 +30,9 @@ function Notifications() {
     });
 
     const getGroupsAndNotifications = async () => {
-
-      console.log(user.id)
-      const response = await axiosInstance.get(`/group/notifications/${user.id}`);
+      const response = await axiosInstance.get(
+        `/group/notifications/${user.id}`
+      );
       if (response.status === 200) {
         return response.data;
       }
@@ -69,11 +71,15 @@ function Notifications() {
                       {zone.reports.length > 3 && (
                         <Accordion>
                           <Accordion.Item eventKey="0">
-                            <Accordion.Header><strong>Ver más</strong></Accordion.Header>
+                            <Accordion.Header>
+                              <strong>Ver más</strong>
+                            </Accordion.Header>
                             <Accordion.Body>
-                              {zone.reports.slice(3).map((report) => (
-                                <Report key={report.id} report={report} />
-                              ))}
+                              <article className="d-lg-flex gap-3">
+                                {zone.reports.slice(3).map((report) => (
+                                  <Report key={report.id} report={report} />
+                                ))}
+                              </article>
                             </Accordion.Body>
                           </Accordion.Item>
                         </Accordion>
@@ -89,24 +95,32 @@ function Notifications() {
               {infoGroups.map(
                 (group, index) =>
                   group.reports.length > 0 && (
-                    <div key={index} className="mb-5">
+                    <>
                       <h3>Grupo: {group.groupName}</h3>
-                      {group.reports.slice(0, 3).map((report) => (
-                        <Report key={report.id} report={report} />
-                      ))}
-                      {group.reports.length > 3 && (
-                        <Accordion>
-                          <Accordion.Item eventKey="0">
-                            <Accordion.Header><strong>Ver más</strong></Accordion.Header>
-                            <Accordion.Body>
-                              {group.reports.slice(3).map((report) => (
-                                <Report key={report.id} report={report} />
-                              ))}
-                            </Accordion.Body>
-                          </Accordion.Item>
-                        </Accordion>
-                      )}
-                    </div>
+                      <div key={index} className="mb-5">
+                        <article className="d-lg-flex gap-3">
+                          {group.reports.slice(0, 3).map((report) => (
+                            <Report key={report.id} report={report} />
+                          ))}
+                        </article>
+                        {group.reports.length > 3 && (
+                          <Accordion>
+                            <Accordion.Item eventKey="0">
+                              <Accordion.Header>
+                                <strong>Ver más</strong>
+                              </Accordion.Header>
+                              <Accordion.Body>
+                                <article className="d-lg-flex gap-3">
+                                  {group.reports.slice(3).map((report) => (
+                                    <Report key={report.id} report={report} />
+                                  ))}
+                                </article>
+                              </Accordion.Body>
+                            </Accordion.Item>
+                          </Accordion>
+                        )}
+                      </div>
+                    </>
                   )
               )}
             </div>

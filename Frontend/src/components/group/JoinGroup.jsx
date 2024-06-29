@@ -16,9 +16,6 @@ function JoinGroup() {
   useEffect(() => {
     const joinGroup = async () => {
       try {
-        console.log(groupId)
-        console.log(groupCode)
-        console.log(userId)
         if (groupId && groupCode && userId) {
           await addUserToGroupWithCode({ groupId: Number(groupId), userId, groupCode });
           navigate(`/grupos/${groupId}`);

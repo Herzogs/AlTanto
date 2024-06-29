@@ -33,7 +33,7 @@ const UserAvatar = ({name, lastName}) => {
 
 
   return (
-    <Avatar {...stringAvatar(`${name} ${lastName}`)} sx={{ width: 50, height: 50 }} />
+    <Avatar {...stringAvatar(`${name} ${lastName}`)} sx={{ width: 50, height: 50, backgroundColor: "#09f" }} />
   )
 }
 export default UserAvatar

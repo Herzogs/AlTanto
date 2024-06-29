@@ -90,6 +90,7 @@ function ReportForm() {
       setShowModal(true);
       resetForm();
     } catch (error) {
+      setShowModal(false);
       console.log(error);
     }
   };

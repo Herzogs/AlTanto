@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import loginScheme from "@schemes/loginScheme";
 import Header from "@components/header/Header";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 
 function LoginForm() {
   const [showModal, setShowModal] = useState(false);
@@ -43,7 +43,8 @@ function LoginForm() {
   };
 
   return (
-    <>
+    <Row className="justify-content-center">
+    <Col lg={6} className="at-desk_form">
     <Header />
     <Container className="pt-4 pt-lg-5">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -74,6 +75,7 @@ function LoginForm() {
             <div className="invalid-feedback">{errors.password.message}</div>
           )}
         </div>
+        {fails && <p className="text-danger">* Error al procesar los datos</p>}
         <button type="submit" className="btn btn-primary">
           Iniciar Sesión
         </button>
@@ -89,7 +91,8 @@ function LoginForm() {
         url={url}
       />
     </Container>
-    </>
+    </Col>
+    </Row>
   );
 }
 

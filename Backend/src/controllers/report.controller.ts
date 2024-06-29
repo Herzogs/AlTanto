@@ -79,8 +79,9 @@ class ReportController {
                 userId: +validData.data.userId
             }
             const reportCreated = await this.reportService.createReport(newReport);
+            await this.notificationService.sendNotificationToZone(reportCreated);
             if (newReport.groupId !== undefined) {
-                await this.notificationService.sendNotificationToGroup(newReport.groupId, reportCreated);
+                 await this.notificationService.sendNotificationToGroup(newReport.groupId, reportCreated);
                 console.log('Notification sent to group');
             }
             return res.status(201).json(reportCreated);
@@ -100,10 +101,8 @@ class ReportController {
     }
 
     async scoringReport(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        console.log(req.body);
         const validData = await reportValidator.scoringReportValidator.safeParseAsync(req.body);
         if (!validData.success) {
-            console.log(validData);
             return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
         }
         try {

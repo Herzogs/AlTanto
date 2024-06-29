@@ -29,6 +29,7 @@ declare global {
             FIREBASE_STORAGEBUCKET: string
             FIREBASE_MESSAGINGSENDERID: string
             FIREBASE_APPID: string
+            WHATSAPP_TOKEN: string
         }
     }
 }

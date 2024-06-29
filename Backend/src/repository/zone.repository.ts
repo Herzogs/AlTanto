@@ -4,14 +4,14 @@ import { Location } from "./entities/Location";
 import { IZoneDto } from "../models/zone.interface";
 import { IZoneRepository } from "./interface/zone.repository.interface";
 
-class ZoneRepository implements IZoneRepository<IZoneDto, object>{
+class ZoneRepository implements IZoneRepository<IZoneDto, object> {
 
     private zoneModel: ModelCtor<Zone>;
 
     constructor({ Zone }: { Zone: ModelCtor<Zone> }) {
         this.zoneModel = Zone;
     }
-
+    
     async create(newZone: IZoneDto): Promise<IZoneDto | null> {
         const locationSearched = await Location.findOrCreate({
             where: { latitude: newZone.location.lat, longitude: newZone.location.lon },
@@ -43,7 +43,7 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
     }
 
     async getAll(): Promise<IZoneDto[]> {
-        try{
+        try {
             const listOfZones = await this.zoneModel.findAll({
                 include: [
                     { model: Location, attributes: ['latitude', 'longitude'] }
@@ -61,19 +61,19 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
                     name: zone.name,
                     location: {
                         lat: zone.Location.latitude,
-                        lon: zone.Location.longitude 
+                        lon: zone.Location.longitude
                     },
                     rad: zone.radio,
                     userId: zone.userId
                 })
             })
-            
+
             return aux2
-        }catch(e){
+        } catch (e) {
             console.log(e)
             return []
         }
-        
+
     }
 
     async getAllByUserId(userId: number): Promise<IZoneDto[]> {
@@ -137,7 +137,7 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
     }
 
     async getReports(zone: IZoneDto): Promise<NonNullable<object[]> | null> {
-        
+
         const { location, rad } = zone;
         const reports = await Zone.sequelize?.query(
             `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.createAt, User.name, User.lastName, Report.categoryId,
@@ -160,14 +160,65 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object>{
                     lon: parseFloat(location.lon),
                     radius: parseFloat(rad.toString())
                 },
-                type: QueryTypes.SELECT
+            
+                type: QueryTypes.SELECT,
             }
         );
         if (!reports) {
             return null;
         }
-        return reports;
+
+        const mappedReports = reports.map((report: any) => ({
+            id: report.id,
+            content: report.content,
+            images: report.images,
+            positiveScore: report.positiveScore,
+            negativeScore: report.negativeScore,
+            createAt: report.createAt,
+            user: {
+                name: report.userName,
+                lastName: report.userLastName
+            },
+            location: {
+                latitude: report.latitude,
+                longitude: report.longitude
+            },
+            category: {
+                id: report.categoryId,
+                name: report.categoryName
+            },
+            distancia: report.distancia
+        }));
+
+        return mappedReports
     }
+
+    async findZoneByReport(obj: { lat: string; lon: string; }): Promise<NonNullable<object[]> | null> {
+        const zones = await Zone.sequelize?.query(
+            `SELECT User.phoneNumber, Zone.name, Zone.radio, Zone.userId,
+                (6371000 * acos(
+                    least(1, cos(radians(:lat)) * cos(radians(Location.latitude)) * cos(radians(Location.longitude) - radians(:lon)) +
+                    sin(radians(:lat)) * sin(radians(Location.latitude)))
+                )) AS distancia
+            FROM Location
+            JOIN Zone ON Location.id = Zone.LocationId
+            JOIN User ON Zone.userId = User.id
+            HAVING distancia <= Zone.radio
+            ORDER BY distancia;`,
+            {
+                replacements: {
+                    lat: parseFloat(obj.lat),
+                    lon: parseFloat(obj.lon),
+                },
+                type: QueryTypes.SELECT
+            }
+        );
+        if (!zones) {
+            return null;
+        }
+        return zones;
+    }
+    
 }
 
 export default ZoneRepository;

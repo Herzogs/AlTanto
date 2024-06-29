@@ -7,6 +7,7 @@ import { IGroup, IGroupUser } from '../../src/models/group.interface';
 import GroupController from '../../src/controllers/group.controller';
 import * as groupValidators from '../../src/validator/group.validator';
 import { Request, Response, NextFunction } from 'express';
+import NotificationService from '../../src/services/notification.service';
 
 jest.mock('../../src/services/group.service', () => {
     return jest.fn().mockImplementation(() => {
@@ -45,6 +46,7 @@ jest.mock('../../src/validator/group.validator', () => {
 describe('Group Controller', () => {
     let groupService: jest.Mocked<GroupService>;
     let groupUserService: jest.Mocked<GroupUserService>;
+    let notificationService: jest.Mocked<NotificationService>;
     let groupController: GroupController;
 
     const groupData: IGroup = {
@@ -63,7 +65,8 @@ describe('Group Controller', () => {
     beforeEach(async () => {
         groupService = container.resolve<GroupService>('groupService') as jest.Mocked<GroupService>;
         groupUserService = container.resolve<GroupUserService>('groupUserService') as jest.Mocked<GroupUserService>;
-        groupController = new GroupController({ groupService, groupUserService });
+        notificationService = container.resolve<NotificationService>('notificationService') as jest.Mocked<NotificationService>;
+        groupController = new GroupController({ groupService, groupUserService, notificationService });
     });
 
     test('should create a group', async () => {

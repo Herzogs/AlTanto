@@ -21,7 +21,6 @@ const RoadID = lazy(() => import("@components/road/RoadID"));
 const ReportIA = lazy(() => import("@components/ReportAutomatic/ReportIA"));
 const Groups = lazy(() => import("@components/group/Groups"));
 const GroupDetail = lazy(() => import("@components/group/GroupDetail"));
-const GroupSearch = lazy(() => import("@components/group/GroupSearch"));
 const GroupForm = lazy(() => import("@components/group/GroupForm"));
 const UserProfile = lazy(() => import("@pages/Profile"));
 const JoinGroup = lazy(() => import("@components/group/JoinGroup"));
@@ -54,7 +53,6 @@ const protectedRoutes = [
   { path: "/grupos", element: <Groups /> },
   { path: "/grupos/:id", element: <GroupDetail /> },
   { path: "/form/grupo", element: <GroupForm /> },
-  { path: "group-search", element: <GroupSearch /> },
   { path: "/perfil", element: <UserProfile /> },
   { path: "/join-group", element: <JoinGroup /> },
 ];

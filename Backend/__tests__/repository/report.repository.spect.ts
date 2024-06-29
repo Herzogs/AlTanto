@@ -50,7 +50,6 @@ describe('Report Repository', () => {
         };
 
         const createdReport = await reportRepository.create(newReport);
-        console.log(createdReport);
         expect(createdReport).toBeDefined();
         expect(createdReport!.content).toBe(newReport.content);
     });

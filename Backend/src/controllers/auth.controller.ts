@@ -15,9 +15,7 @@ class AuthController {
     }
 
     async createUSer(req: Request, res: Response, next: NextFunction) {
-        console.log("Creating user");
         try {
-            console.log(req.body);
             const newUser: IUser = req.body as IUser;
             const newUserDatabase = await this.userService.createUser(newUser);
             res.status(STATUS_CODE.CREATED).json(newUserDatabase);
@@ -27,7 +25,7 @@ class AuthController {
     }
 
     async confirmUser(req: Request, res: Response, next: NextFunction) {
-        console.log("Creating user");
+
         const email = req.body.email;
         const code = req.body.code;
         try {
@@ -40,7 +38,6 @@ class AuthController {
     }
 
     async login(req: Request, res: Response, next: NextFunction) {
-        console.log("login");
         const email = req.body.email;
         const password = req.body.password;
         try {
@@ -66,7 +63,6 @@ class AuthController {
     }
 
     async recovery(req: Request, res: Response, next: NextFunction) {
-        console.log("Recovering user");
         const email = req.body.email;
         try {
             await this.cognitoService.accountRecovery(email);

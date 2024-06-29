@@ -1,21 +1,21 @@
 import Router from 'express'
 import GroupController from '../controllers/group.controller';
-//import { auth } from '../middlewares/auth.middlewares';
+import { auth } from '../middlewares/auth.middlewares';
 import { makeInvoker } from 'awilix-express';
 
 const groupRouter = Router();
 const api = makeInvoker(GroupController);
 
-groupRouter.get('/user/:userId', api('getGroupsByUserId'));
-groupRouter.get('/:id', api('getGroupById'));
-groupRouter.post('/', api('createGroup'));
-groupRouter.delete('/:id', api('deleteGroup'));
-groupRouter.post('/:id/add-user', api('addUserToGroup'));
-groupRouter.delete('/:groupId/remove-user/:userId', api('removeUserFromGroup'));
-groupRouter.get('/find/:name', api('findGroupsByName')); 
-groupRouter.get('/members/:id', api('getGroupDetailsById'));
-groupRouter.get('/notifications/:id', api('getGroupNotifications'));
-groupRouter.post('/sos', api('sendSOS'));
+groupRouter.get('/user/:userId', auth, api('getGroupsByUserId'));
+groupRouter.get('/:id', auth, api('getGroupById'));
+groupRouter.post('/', auth, api('createGroup'));
+groupRouter.delete('/:id', auth, api('deleteGroup'));
+groupRouter.post('/:id/add-user', auth, api('addUserToGroup'));
+groupRouter.delete('/:groupId/remove-user/:userId', auth, api('removeUserFromGroup'));
+groupRouter.get('/find/:name', auth, api('findGroupsByName'));
+groupRouter.get('/members/:id', auth, api('getGroupDetailsById'));
+groupRouter.get('/notifications/:id', auth, api('getGroupNotifications'));
+groupRouter.post('/sos', auth, api('sendSOS'));
 
 
 export default groupRouter;
