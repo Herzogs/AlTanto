@@ -166,20 +166,43 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object> {
         if (!reports) {
             return null;
         }
-        return reports;
+
+        const mappedReports = reports.map((report: any) => ({
+            id: report.id,
+            content: report.content,
+            images: report.images,
+            positiveScore: report.positiveScore,
+            negativeScore: report.negativeScore,
+            createAt: report.createAt,
+            user: {
+                name: report.userName,
+                lastName: report.userLastName
+            },
+            location: {
+                latitude: report.latitude,
+                longitude: report.longitude
+            },
+            category: {
+                id: report.categoryId,
+                name: report.categoryName
+            },
+            distancia: report.distancia
+        }));
+
+        return mappedReports
     }
 
     async findZoneByReport(obj: { lat: string; lon: string; }): Promise<NonNullable<object[]> | null> {
         const zones = await Zone.sequelize?.query(
-            `SELECT User.phoneNumber, Zone.name, Zone.radio
+            `SELECT User.phoneNumber, Zone.name, Zone.radio,
                 (6371000 * acos(
                     least(1, cos(radians(:lat)) * cos(radians(Location.latitude)) * cos(radians(Location.longitude) - radians(:lon)) +
                     sin(radians(:lat)) * sin(radians(Location.latitude)))
                 )) AS distancia
             FROM Location
             JOIN Zone ON Location.id = Zone.LocationId
-            JOIN User ON Report.userId = User.id
-            HAVING distancia <= radio
+            JOIN User ON Zone.userId = User.id
+            HAVING distancia <= Zone.radio
             ORDER BY distancia;`,
             {
                 replacements: {

@@ -2,25 +2,21 @@
 import { useState, useEffect } from "react";
 import {
   getGroupsByUserId,
-  createGroup,
-  findGroupByName,
-  addUserToGroupWithCode,
+  createGroup
 } from "@services/groupService";
-import { useNavigate } from "react-router-dom";
 import { userStore } from "@store";
-import { Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import Header from "@components/header/Header";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link } from "react-router-dom";
-
+import ModalAT from "@components/modal/ModalAT";
 
 function GroupForm() {
   const [groupName, setGroupName] = useState("");
-  const [searchName, setSearchName] = useState("");
-  const [groupCode, setGroupCode] = useState("");
+  const [errorForm, setErrorForm] = useState(false);
   const [groups, setGroups] = useState([]);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const { user } = userStore();
   const userId = user?.id;
@@ -42,90 +38,56 @@ function GroupForm() {
 
   const handleCreateGroup = async () => {
     try {
-      const groupData = { name: groupName, ownerId: userId };
-      const createdGroup = await createGroup(groupData);
-      setGroups([...groups, createdGroup]);
+      if (groupName) {
+        setErrorForm(false)
+        const groupData = { name: groupName, ownerId: userId };
+        const createdGroup = await createGroup(groupData);
+        setGroups([...groups, createdGroup]);
+        setShowModal(true);
+      } else setErrorForm(true);
     } catch (error) {
+      setShowModal(false);
       setError(error.message);
     }
   };
 
-  const handleViewDetails = (groupId) => {
-    navigate(`/grupos/${groupId}`);
-  };
-
-  const handleSearchGroup = async () => {
-    try {
-      const foundGroups = await findGroupByName(searchName);
-      navigate("/group-search", { state: { groups: foundGroups } });
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
-  const handleJoinGroupByCode = async () => {
-    try {
-      await addUserToGroupWithCode({ userId, groupCode });
-      const userGroups = await getGroupsByUserId(userId);
-      setGroups(userGroups);
-      setGroupCode("");
-    } catch (error) {
-      setError(error.message);
-    }
-  };
 
   return (
-    <>
-      <Header />
-      <Container className="container-md_stop pt-4 pt-lg-5">
-      <p className="text-end"><Link to="/"><ArrowBackIcon/> Regresar</Link></p>
-        <h2>Crear Grupo</h2>
+    <Row className="justify-content-center">
+      <Col lg={6} className="at-desk_form">
+        <Header />
+        <Container className="container-md_stop pt-4 pt-lg-5">
+          <p className="text-end">
+            <Link to="/">
+              <ArrowBackIcon /> Regresar
+            </Link>
+          </p>
+          <h2>Crear Grupo</h2>
 
-        <input
-          className="form-control"
-          type="text"
-          value={groupName}
-          onChange={(e) => setGroupName(e.target.value)}
-          placeholder="Ingresar nombre"
-        />
-        <button className="btn btn-success mt-3" onClick={handleCreateGroup}>
-          Crear Grupo
-        </button>
+          <input
+            className="form-control"
+            type="text"
+            value={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
+            placeholder="Ingresar nombre"
+          />
+          {errorForm && <p className="text-danger">* Error al crear el grupo</p>}
+          <button className="btn btn-success mt-3" onClick={handleCreateGroup}>
+            Crear Grupo
+          </button>
 
-        <h3 className="mt-5">Mis Grupos</h3>
-      <div className="d-flex gap-3">
-        {groups.map((group) => (
-          <div key={group.id} className="mt-4 bg-secondary p-4 rounded">
-            <h5>{group.name}</h5>
-            <button
-              className="btn btn-sm btn-primary"
-              onClick={() => handleViewDetails(group.id)}
-            >
-              Ver Detalle
-            </button>
-          </div>
-        ))}
-      </div>
-      {groups.length === 0 && <p>No estás en ningún grupo.</p>}
+          <ModalAT
+            title="Grupo guardado"
+            message="Se registraron correctamente los datos."
+            showModal={showModal}
+            setShowModal={setShowModal}
+            url={"/"}
+          />
 
-        <h3 className="mt-5">Unirse a un Grupo</h3>
-        <input
-          className="form-control"
-          type="text"
-          value={groupCode}
-          onChange={(e) => setGroupCode(e.target.value)}
-          placeholder="Ingrese el código del grupo"
-        />
-        <button
-          className="btn btn-primary mt-3"
-          onClick={handleJoinGroupByCode}
-        >
-          Unirse al Grupo
-        </button>
-
-        {error && <p>Error: {error}</p>}
-      </Container>
-    </>
+          {error && <p>* Error al procesar los datos</p>}
+        </Container>
+      </Col>
+    </Row>
   );
 }
 

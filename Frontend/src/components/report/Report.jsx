@@ -1,6 +1,4 @@
 /* eslint-disable react/prop-types */
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import iconRed from "@assets/iconRed.png";
 import iconBlue from "@assets/iconBlue.png";
 import iconGreen from "@assets/iconGreen.png";
@@ -8,17 +6,15 @@ import iconYellow from "@assets/iconYellow.png";
 import iconOrange from "@assets/iconOrange.png";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import { updateScoring } from "@services/sendData";
-import { IconButton } from "@mui/material";
 import "./styles.css";
 
 function Report({ report }) {
   const navigate = useNavigate();
-  const { createAt, categoryId, content, id, positiveScore, negativeScore } = report;
+  const { createAt, category, content, id } = report;
   const formattedDate = format(new Date(createAt), "HH:mm - dd/MM/yyyy");
 
-  const getIcon = (categoryId) => {
-    switch (categoryId) {
+  const getIcon = (id) => {
+    switch (id) {
       case 1:
         return <img src={iconRed} />;
       case 2:
@@ -27,10 +23,8 @@ function Report({ report }) {
         return <img src={iconGreen} />;
       case 4:
         return <img src={iconYellow} />;
-      case 5:
-        return <img src={iconOrange} />;
       default:
-        return <img src={iconYellow} />;
+        return <img src={iconOrange} />;
     }
   };
 
@@ -41,12 +35,18 @@ function Report({ report }) {
   return (
     <article className="at-report">
       <div className="at-report-header">
-        <p>{content}</p>
-        {getIcon(categoryId)}
+        <h6 className="fw-bold">{category.name}</h6>
+        {getIcon(category.id)}
+      </div>
+
+      <div className="at-report-body text-start">
+        <p className="my-2 h6">{content}</p>
       </div>
 
       <div className="at-report-footer">
-        <p className="my-2">{formattedDate}</p>
+        <p style={{ fontSize: "12px", fontWeight: "300", margin: "2px" }}>
+          {formattedDate}hs
+        </p>
         <button
           className="btn btn-sm btn-primary"
           onClick={() => {
@@ -55,16 +55,6 @@ function Report({ report }) {
         >
           Ver detalle
         </button>
-        <div>
-          <IconButton onClick={() => updateScoring({ reportId: id, vote: 1, userId: 1 })}>
-            {positiveScore}
-            <ThumbUpIcon style={{ color: "#537ac9" }} />
-          </IconButton>
-          <IconButton onClick={() => updateScoring({ reportId: id, vote: 0, userId: 1 })}>
-            {negativeScore}
-            <ThumbDownAltIcon style={{ color: "#cc545d" }} />
-          </IconButton>
-        </div>
       </div>
     </article>
   );

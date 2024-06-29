@@ -1,7 +1,7 @@
 import { IZoneDto, IZoneReport, ZoneUser } from "../models/zone.interface";
 import { IZoneRepository } from "../repository/interface/zone.repository.interface";
 import { ZoneNotFoundException } from "../exceptions/zone.exceptions";
-import { IReport } from "../models/reports.interface";
+import { IReport, IReportDto } from "../models/reports.interface";
 import { IZoneService } from "./interfaces/zone.service.interface";
 
 
@@ -40,7 +40,7 @@ class ZoneService implements IZoneService<IZoneDto, IZoneReport> {
             if (result === undefined) throw new ZoneNotFoundException("Reports not found");
             reportByZone.push({
                 zoneName: myZone.name,
-                reports: result as IReport[]
+                reports: result as object[]
             });
         }
         return reportByZone;

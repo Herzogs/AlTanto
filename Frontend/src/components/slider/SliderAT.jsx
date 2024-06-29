@@ -7,8 +7,9 @@ import { useStore } from "@store";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-function SliderAT() {
-  const { reports } = useStore();
+function SliderAT({ reports: propReports }) {
+  const { reports: storeReports } = useStore();
+  const reports = propReports || storeReports;
 
   return (
     <>

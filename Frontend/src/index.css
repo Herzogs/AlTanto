@@ -154,6 +154,10 @@ a {
   max-width: 768px !important;
 }
 
+.container-lg_stop {
+  max-width: 996px !important;
+}
+
 .pb-footer {
   padding-bottom: 76px;
 }
@@ -229,6 +233,17 @@ a {
 
 .pt-header {
   padding-top: 60px;
+}
+
+
+@media only screen and (min-width: 996px) {
+/* FORM DESK */
+.at-desk_form{
+  background-color: var(--color-at-black);
+  border-radius: 12px;
+  padding: 32px !important;
+  margin: 20px !important;
+}
 }
 
 @media only screen and (min-width: 1200px) {

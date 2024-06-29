@@ -23,8 +23,10 @@ class NotificationService implements INotificationService {
   async sendNotificationToGroup(groupId: number, report: IReportDto): Promise<boolean> {
     const group: IGroupMember = await this.groupService.findMembersByGroupId(groupId);
     const listofmembers = group?.members;
+    const dateNow = new Date().toLocaleString()
+
     listofmembers?.forEach(async (member) => {
-      const message = `${report.content} - Fecha: ${report.createAt}`;
+      const message = `${report.content} - Fecha: ${dateNow}`;
       const aux = await this.sendNotification(member.phoneNumber, message);
       if (aux?.status === 'failed') {
         console.error(`Error al enviar mensaje a ${member.phoneNumber}`);
@@ -54,10 +56,11 @@ class NotificationService implements INotificationService {
   async sendNotificationToZone(report: IReportDto): Promise<boolean> {
     const listOfZones = await this.zoneService.findZoneByLocation(+report.location.latitude, +report.location.longitude);
     if(!listOfZones) return false;
-    console.log(report.createAt)
+    const dateNow = new Date().toLocaleString()
+    
     for await (const zone of listOfZones) {
       const { name, phoneNumber } = zone;
-      const message = `Atención Zona: ${name} - ${report.content} - Fecha: ${report.createAt}`;
+      const message = `Atención Zona: ${name} - ${report.content} - Fecha: ${dateNow}`;
       const aux = await this.sendNotification(phoneNumber, message);
       if (aux?.status === 'failed') {
         console.error(`Error al enviar mensaje a ${phoneNumber}`);

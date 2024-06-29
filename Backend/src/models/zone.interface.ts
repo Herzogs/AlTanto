@@ -1,4 +1,4 @@
-import { IReport } from "./reports.interface";
+import { IReport, IReportDto } from "./reports.interface";
 
 export interface IZone {
     id?: number;
@@ -22,7 +22,7 @@ export interface IZoneDto {
 
 export type IZoneReport = {
     zoneName: string;
-    reports: IReport[];
+    reports: object[];
 }
 
 export type ZoneUser = {
