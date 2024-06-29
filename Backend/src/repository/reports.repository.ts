@@ -154,6 +154,79 @@ class ReportRepository implements IReportRepository<IReportDto> {
             console.error(`Error while scoring report with id ${id}:`, error);
         }
     }
+
+    async reportRoad(routeCoordinates: { lat: number, lng: number }[], maxDistance: number): Promise<object[]> {
+        try {
+            const conditions = routeCoordinates.map((c, index) => {
+                if (index === 0) return ''; // Ignorar el primer punto de la ruta para evitar duplicados en la consulta
+                return `
+                    ST_Distance(
+                        POINT(${c.lng}, ${c.lat}),
+                        POINT(l.longitude, l.latitude)
+                    ) < ${maxDistance}
+                `;
+            }).filter(condition => condition !== '').join(' OR ');
+
+            const [results] = await Report.sequelize?.query(`
+                SELECT DISTINCT 
+                    r.id, 
+                    r.content, 
+                    r.createAt, 
+                    r.images, 
+                    r.positiveScore, 
+                    r.negativeScore,
+                    c.id AS categoryId, 
+                    c.name AS categoryName,
+                    u.name AS userName,
+                    u.lastName as userLastName,
+                    l.latitude as latitude, 
+                    l.longitude AS longitude
+                FROM Report r
+                JOIN Location l ON r.LocationId = l.id
+                JOIN Category c ON r.CategoryId = c.id
+                JOIN User u ON r.userId = u.id
+                WHERE (${conditions})
+            `) || [[], []];
+
+            const arrayOfReports: object[] = results.map((report: any) => ({
+                id: report.id,
+                content: report.content,
+                createAt: report.createAt,
+                images: report.images,
+                positiveScore: report.positiveScore,
+                negativeScore: report.negativeScore,
+                category: {
+                    id: report.categoryId,
+                    name: report.categoryName
+                },
+                location: {
+                    latitude: report.latitude,
+                    longitude: report.longitude
+                },
+                user: {
+                    name: report.userName,
+                    lastName: report.userLastName
+                }
+            }));
+
+            return arrayOfReports;
+        } catch (error) {
+            console.error("Error while reporting along route:", error);
+            return [];
+        }
+    }
+
+    async disableNegativeReports(): Promise<void> {
+        await this.reportModel.update({ enabled: false }, {
+            where: {
+                negativeScore: {
+                    $gte: 10
+                }
+            }
+        });
+    }
+
 }
+
 
 export default ReportRepository;

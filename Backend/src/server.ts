@@ -12,6 +12,7 @@ import zoneRouter from './routes/zones.routes';
 import groupRouter from './routes/group.routes';
 import userRouter from './routes/user.routes';
 //import { disableOldReport } from './cron/disableOldReport.cron'
+//import { disableNegativeReport } from './cron/disableNegativeReport.cron'
 
 const server = express();
 
@@ -46,7 +47,7 @@ server.use('/', (_req, res) => {
 
 server.use(errorHandler)
 server.listen(process.env.PORT, () => {
-    
+    //disableNegativeReport.start()
     //disableOldReport.start()
 })
 

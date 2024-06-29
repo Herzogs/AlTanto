@@ -9,9 +9,9 @@ const api = makeInvoker(controller);
 
 reportRouter.get('/', api('getAllReports'));
 reportRouter.get('/:id', api('getReportById'));
-//reportRouter.get('/user/:userId', api('getReportByUser'));
 reportRouter.post('/', auth, upload.single('image'), api('createReport'));
 reportRouter.get('/group/:groupId', auth, api('getReportsByGroup'));
 reportRouter.post('/scoring', auth, api('scoringReport'))
+reportRouter.post('/road', auth, api('reportRoad'))
 
 export default reportRouter;

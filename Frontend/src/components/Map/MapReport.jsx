@@ -9,7 +9,6 @@ import "@changey/react-leaflet-markercluster/dist/styles.min.css";
 
 const MapReport = ({ selectedCategories }) => {
     const { reports } = useStore();
-
     const filteredReports = useMemo(() => {
         return reports && reports.length > 0
             ? reports.filter(report => selectedCategories.includes(report.category.id))

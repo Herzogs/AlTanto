@@ -41,8 +41,6 @@ const createReportValidator = z.object({
   }).optional().nullable()
 }).strict();
 
-
-
 const getReportByIdValidator = z.object({
   id: z.string({
     message: 'Id must be a string',
@@ -73,5 +71,18 @@ const scoringReportValidator = z.object({
   })
 }).strict()
 
+const reportRoadValidator = z.object({
+  coordinates: z.array(z.object({
+    lat: z.number(),
+    lng: z.number()
+  })).min(2, { message: 'Coordinates must be at least 2' }),
+  segments: z.number({
+    required_error: 'Segments is required'
+  }).positive({ message: 'Segments must be a positive number' })
+}).strict();
 
-export { createReportValidator, getReportByIdValidator, getReportByUserIDValidator, scoringReportValidator }
+export default reportRoadValidator;
+
+
+
+export { createReportValidator, getReportByIdValidator, getReportByUserIDValidator, scoringReportValidator, reportRoadValidator }

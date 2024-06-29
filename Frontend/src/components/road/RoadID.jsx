@@ -64,7 +64,7 @@ function RoadID() {
   useEffect(() => {
     if (!error && routeCoordinates && routeCoordinates.length > 0) {
       setUserLocation(routeCoordinates[0]);
-      fetchReports(routeCoordinates, 4)
+      fetchReports(routeCoordinates, 0.0005)
         .then(setReports)
         .catch((error) => {
           toast.error(error.message, {

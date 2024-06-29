@@ -15,7 +15,7 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
 
     async getAll(): Promise<IRoadDto[]> {
         const listOfRoad = await this.roadModel.findAll();
-        
+
         if (!listOfRoad) {
             return [];
         }
@@ -58,9 +58,9 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
                 attributes: { exclude: ['LocationId'] }
             }
         );
-        console.log(roadSearched)
+
         if (roadSearched === null) {
-            console.log("no existe")    
+
             return null;
         }
         const road = roadSearched.get({ plain: true });
@@ -86,34 +86,34 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
     }
 
     async create(road: IRoadDto): Promise<IRoadDto | null> {
-        
+
         try {
             const routeSearched = await this.roadModel.findOne({
                 where: {
                     addressOrigin: road.addressOrigin,
                     addressDestiny: road.addressDestiny,
-                
+
                 }
             })
-            
+
             if (routeSearched) {
-                console.log("ya existe")
+
                 return null
             }
-    
+
             const locationSearchedOrigin = await Location.findOrCreate({
                 where: { latitude: road.origin.lat, longitude: road.origin.lng }
             })
-            
+
             const locationSearchedDestiny = await Location.findOrCreate({
                 where: { latitude: road.destination.lat, longitude: road.destination.lng },
             })
-            
+
             const locationOrigin = locationSearchedOrigin[0].get({ plain: true });
             const locationDestiny = locationSearchedDestiny[0].get({ plain: true });
-            
+
             if (!locationOrigin || !locationDestiny) return null
-           
+
             const roadCreated = await this.roadModel.create({
                 name: road.name,
                 addressOrigin: road.addressOrigin,
@@ -124,10 +124,10 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
                 duration: road.duration,
                 user: road.user,
             });
-            
+
             if (!roadCreated) return null
             const savedRoad = roadCreated.get({ plain: true });
-            console.log(savedRoad)
+
             return {
                 id: savedRoad.id,
                 name: savedRoad.name,
@@ -139,12 +139,12 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
                 duration: savedRoad.duration,
                 user: savedRoad.user
             };
-        
+
         } catch (error) {
             console.log(error);
-            return null;            
+            return null;
         }
-        
+
     }
 
     async getByUserId(id: number): Promise<IRoadDto[]> {

@@ -79,9 +79,9 @@ class ReportController {
                 userId: +validData.data.userId
             }
             const reportCreated = await this.reportService.createReport(newReport);
-            await this.notificationService.sendNotificationToZone(reportCreated);
+            //await this.notificationService.sendNotificationToZone(reportCreated);
             if (newReport.groupId !== undefined) {
-                 await this.notificationService.sendNotificationToGroup(newReport.groupId, reportCreated);
+                await this.notificationService.sendNotificationToGroup(newReport.groupId, reportCreated);
                 console.log('Notification sent to group');
             }
             return res.status(201).json(reportCreated);
@@ -109,6 +109,20 @@ class ReportController {
             const { reportId, vote, userId } = validData.data as { reportId: number, vote: number, userId: number };
             await this.reportService.scoringReport(reportId, vote, userId);
             return res.status(STATUS_CODE.SUCCESS).json({ message: 'Report scored successfully' });
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
+    async reportRoad(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const validData = await reportValidator.reportRoadValidator.safeParseAsync(req.body);
+        if (!validData.success) {
+            return next({ message: validData.error.errors[0].message, statusCode: STATUS_CODE.BAD_REQUEST });
+        }
+        try {
+            const { coordinates, segments } = validData.data as { coordinates: { lat: number, lng: number }[], segments: number };
+            const report = await this.reportService.reportRoad(coordinates, segments);
+            return res.status(STATUS_CODE.SUCCESS).json(report);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }

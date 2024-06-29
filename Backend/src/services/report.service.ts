@@ -1,10 +1,10 @@
 import transformData from '../utilities/transformData.utilities';
-import { IReportDto} from '../models/reports.interface';
+import { IReportDto } from '../models/reports.interface';
 import { ReportNotCreatedException, ReportNotFoundException } from '../exceptions/reports.exceptions';
 import { IReportRepository } from '../repository/interface/report.repository.interface';
 import { IReportService } from './interfaces/report.service.interface';
 
-class ReportService implements IReportService<IReportDto>{
+class ReportService implements IReportService<IReportDto> {
     private reportRepository: IReportRepository<IReportDto>;
 
     constructor({ reportRepository }: { reportRepository: IReportRepository<IReportDto> }) {
@@ -23,7 +23,7 @@ class ReportService implements IReportService<IReportDto>{
         return transformData(reportSearched);
     }
 
-    async createReport(newReport: IReportDto): Promise<IReportDto > {
+    async createReport(newReport: IReportDto): Promise<IReportDto> {
         const reportCreated = await this.reportRepository.create(newReport);
         if (!reportCreated) throw new ReportNotCreatedException("Report not created.");
         return reportCreated;
@@ -47,6 +47,12 @@ class ReportService implements IReportService<IReportDto>{
 
     async scoringReport(id: number, vote: number, userId: number): Promise<void> {
         await this.reportRepository.scoringReport(id, vote, userId);
+    }
+
+    async reportRoad(coordinates: { lat: number, lng: number }[], segments: number): Promise<NonNullable<object[]>> {
+        const reports = await this.reportRepository.reportRoad(coordinates, segments);
+        if (!reports) throw new ReportNotFoundException("Reports not found for the given road.");
+        return reports;
     }
 
 }
