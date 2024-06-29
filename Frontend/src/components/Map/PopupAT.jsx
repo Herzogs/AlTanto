@@ -6,10 +6,10 @@ import { IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { updateScoring } from "@services/sendData";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 
 function PopupAT({ report }) {
-  const { createAt, categoryName, content, id, positiveScore, negativeScore } = report;
+  const { createAt, category, content, id, positiveScore, negativeScore } = report;
   const [posScore, setPosScore] = useState(positiveScore);
   const [negScore, setNegScore] = useState(negativeScore);
 
@@ -28,9 +28,9 @@ function PopupAT({ report }) {
 
   return (
     <Popup className="at-popup">
-      <h6 className="fw-bold">{categoryName}</h6>
+      <h6 className="fw-bold">{category.name}</h6>
       <p className="my-2 h6">{content}</p>
-      <p style={{fontSize:'12px', fontWeight: '300', margin: '2px'}}>{formattedDate}hs</p>
+      <p style={{ fontSize: '12px', fontWeight: '300', margin: '2px' }}>{formattedDate}hs</p>
       <Link className="me-4 text-primary" to={`/reportes/${id}`}>
         Ver detalle
       </Link>

@@ -1,4 +1,4 @@
-import { IReport, IReportDto } from "./reports.interface";
+//import { IReport, IReportDto } from "./reports.interface";
 
 export interface IZone {
     id?: number;
@@ -29,4 +29,5 @@ export type ZoneUser = {
     name: string;
     lastName: string;
     phoneNumber: string;
+    userId: string;
 }

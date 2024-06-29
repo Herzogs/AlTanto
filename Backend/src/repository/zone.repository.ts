@@ -195,7 +195,7 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object> {
 
     async findZoneByReport(obj: { lat: string; lon: string; }): Promise<NonNullable<object[]> | null> {
         const zones = await Zone.sequelize?.query(
-            `SELECT User.phoneNumber, Zone.name, Zone.radio,
+            `SELECT User.phoneNumber, Zone.name, Zone.radio, Zone.userId,
                 (6371000 * acos(
                     least(1, cos(radians(:lat)) * cos(radians(Location.latitude)) * cos(radians(Location.longitude) - radians(:lon)) +
                     sin(radians(:lat)) * sin(radians(Location.latitude)))
