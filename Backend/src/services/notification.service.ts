@@ -58,7 +58,7 @@ class NotificationService implements INotificationService {
 
     for await (const zone of listOfZones) {
       const { name, phoneNumber, userId } = zone;
-      if (report.id !== +userId) {
+      if (report.userId !== +userId) {
         const message = `Atención Zona: ${name} - ${report.content} - Fecha: ${dateNow}`;
         const aux = await this.sendNotification(phoneNumber, message);
         if (aux?.status === 'failed') {
