@@ -55,7 +55,7 @@ class NotificationService implements INotificationService {
     const listOfZones = await this.zoneService.findZoneByLocation(+report.location.latitude, +report.location.longitude);
     if (!listOfZones) return false;
     const dateNow = new Date().toLocaleString("es-AR")
-
+    console.log(listOfZones)
     for await (const zone of listOfZones) {
       const { name, phoneNumber, userId } = zone;
       if (report.userId !== +userId) {
