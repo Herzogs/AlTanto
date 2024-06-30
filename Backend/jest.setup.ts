@@ -1,4 +1,4 @@
-import dbConnection from './src/config/dbConnection.config';
+/* import dbConnection from './src/config/dbConnection.config';
 
 beforeEach(async () => {
     await dbConnection.sync({ force: true });
@@ -7,3 +7,4 @@ beforeEach(async () => {
 afterAll(async () => {
     await dbConnection.close();
 });
+ */
