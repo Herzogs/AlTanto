@@ -15,13 +15,13 @@ const dbConnection = new Sequelize(dbName, dbUser, dbPassword, {
     dialectModule: mysql2,
     timezone: '-03:00',
     logging: false,
-    /* dialectOptions: {
+    dialectOptions: {
         ssl: {
             require: true,
             rejectUnauthorized: true,
             ca: process.env.DB_SSL_CA,
         }
-    } */
+    }
 
 });
 
