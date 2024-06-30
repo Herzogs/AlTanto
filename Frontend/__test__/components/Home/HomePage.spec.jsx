@@ -50,7 +50,6 @@ describe('Home component', () => {
   it('renders the Home component correctly', () => {
     render(<Home />);
 
-    // Verificar que los componentes secundarios se renderizan
     expect(screen.getByText('HeaderHome')).toBeInTheDocument();
     expect(screen.getByText('Map')).toBeInTheDocument();
     expect(screen.getByText('Aside')).toBeInTheDocument();
@@ -100,7 +99,6 @@ describe('Home component', () => {
     render(<Home />);
     expect(screen.getByText('SliderButton')).toBeInTheDocument();
   });
-});
 
   it('does not render SliderButton when reports are null or an empty array', () => {
     useStore.mockReturnValue({
