@@ -5,7 +5,6 @@ const fetchReports = async (routeCoordinates, numSegments) => {
         coordinates: routeCoordinates,
         segments: numSegments
     });
-    console.log(response)
     if (response.status === 200) {
         return response.data;
     } else {

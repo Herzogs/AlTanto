@@ -60,7 +60,7 @@ function RoutForm() {
       const startCoords = await geocodeAddress(startAddress);
       const endCoords = await geocodeAddress(endAddress);
       console.log("gooo")
-     /*  setUserLocation({ lat: startCoords.lat, lng: startCoords.lon }); */
+      /*  setUserLocation({ lat: startCoords.lat, lng: startCoords.lon }); */
       setStartPoint(startCoords);
       setEndPoint(endCoords);
       setError(false);
@@ -72,13 +72,14 @@ function RoutForm() {
   }, [startAddress, endAddress]);
 
   const handleSetPoints = () => {
-      setPoints();
+    setPoints();
   };
 
   useEffect(() => {
     if (routeCoordinates && routeCoordinates.length > 0) {
+      setReports([]);
       setUserLocation(routeCoordinates[0]);
-      fetchReports(routeCoordinates, 4)
+      fetchReports(routeCoordinates, 0.0005)
         .then((reports) => {
           setReports(reports);
           setError(false);
@@ -92,7 +93,7 @@ function RoutForm() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await sendRoute({
+      await sendRoute({
         data,
         startAddress,
         endAddress,
