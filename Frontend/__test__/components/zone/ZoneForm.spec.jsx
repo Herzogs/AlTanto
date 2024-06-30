@@ -54,25 +54,19 @@ describe('ZoneForm Component', () => {
       </MemoryRouter>
     );
 
-    // Verificar que el título "Crear zona" esté presente
     expect(screen.getByText('Crear zona')).toBeInTheDocument();
     expect(screen.getByLabelText('Nombre:')).toBeInTheDocument();
 
-    // Verificar la existencia del campo "Dirección" usando una expresión regular
     expect(screen.getByText(/Dirección:/i)).toBeInTheDocument();
     expect(screen.getByText(/Calle, Número y Localidad/i)).toBeInTheDocument();
 
-    // Verificar la existencia del botón "Buscar dirección"
     expect(screen.getByText('Buscar dirección')).toBeInTheDocument();
-    // Verificar que el input de nombre esté presente
     const inputName = screen.getByRole('textbox', { name: /nombre/i });
     expect(inputName).toBeInTheDocument();
 
-    // Verificar que el input de dirección esté presente
     const inputAddress = screen.getByRole('textbox', { name: /dirección/i });
     expect(inputAddress).toBeInTheDocument();
 
-    // Verificar que el botón "Buscar dirección" esté presente
     const buttonSearch = screen.getByRole('button', { name: /buscar dirección/i });
     expect(buttonSearch).toBeInTheDocument();
     const headerHomeElement = screen.queryByText('HeaderHome');
