@@ -43,6 +43,7 @@ function ValidationCodeForm() {
               Email:
             </label>
             <input
+            id="email"
               type="text"
               {...register("email", {
                 required: "Campo requerido",
@@ -63,6 +64,7 @@ function ValidationCodeForm() {
               Código:
             </label>
             <input
+             id="code"
               type="text"
               {...register("code", {
                 required: "Campo requerido",
