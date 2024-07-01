@@ -13,7 +13,6 @@ import { getCategoryFromApi } from "@services/getCategory";
 import { reverseGeocode } from "@services/getGeoAdress";
 import { userStore, useStore } from "@store";
 
-
 function ReportIA() {
   const { groupId } = useParams();
   const [file, setFile] = useState(null);
@@ -24,6 +23,7 @@ function ReportIA() {
   const [categories, setCategories] = useState([]);
   const videoRef = useRef(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [useRearCamera, setUseRearCamera] = useState(true);
   const { id } = userStore.getState().user;
   const { userLocation, setReports, markerPosition } = useStore();
   const [showModal, setShowModal] = useState(false);
@@ -75,14 +75,29 @@ function ReportIA() {
     setFile(null);
     setPreviewUrl(null);
     setIsCameraOpen(true);
+    const facingMode = useRearCamera ? { exact: "environment" } : "user";
+
     navigator.mediaDevices
-      .getUserMedia({ video: true })
+      .getUserMedia({ video: { facingMode } })
       .then((stream) => {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
       })
       .catch((err) => {
         console.error("Error accessing camera: ", err);
+        // Intentar con la otra cámara si falla
+        if (useRearCamera) {
+          setUseRearCamera(false);
+          navigator.mediaDevices
+            .getUserMedia({ video: { facingMode: "user" } })
+            .then((stream) => {
+              videoRef.current.srcObject = stream;
+              videoRef.current.play();
+            })
+            .catch((err) => {
+              console.error("Error accessing camera: ", err);
+            });
+        }
       });
   };
 
@@ -159,6 +174,20 @@ function ReportIA() {
     }
   };
 
+  const handleCancelCamera = () => {
+    setIsCameraOpen(false);
+    videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+  }
+
+
+  const toggleCamera = () => {
+    setUseRearCamera((prev) => !prev);
+    if (isCameraOpen) {
+      videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+      handleOpenCamera();
+    }
+  };
+
   return (
     <>
       <Header />
@@ -195,6 +224,16 @@ function ReportIA() {
         {isCameraOpen && (
           <div>
             <video ref={videoRef} style={{ width: "100%" }}></video>
+            <Button  className="mt-3" variant="danger" onClick={handleCancelCamera}>
+              Cancelar
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={toggleCamera}
+              className="mt-3"
+            >
+              Cambiar a {useRearCamera ? "frontal" : "trasera"}
+            </Button>
             <Button variant="primary" onClick={handleCapture} className="mt-3">
               Capturar foto
             </Button>
