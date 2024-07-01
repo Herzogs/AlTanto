@@ -274,7 +274,7 @@ function GroupDetail() {
                           />
                         )}
 
-                      {groupDetails.ownerId === userId &&
+                      {groupDetails.ownerId != userId &&
                         member.id !== groupDetails.ownerId && (
                           <DeleteForeverIcon
                             className="ms-2 mt-3 text-danger"
