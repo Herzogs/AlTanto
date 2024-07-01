@@ -30,15 +30,9 @@ class CategoryRepository implements IRepository<ICategory> {
 
     async create(name: string): Promise<ICategory | null> {
         try {
-            // Verificar si la categoría ya existe
-            const existingCategory = await this.categoryModel.findOne({where: {name}});
-            if (existingCategory) {
-                console.log(`Category '${name}' already exists. repository 36`);
-          console
+            const category = await this.categoryModel.findOne({where: {name}})
 
-                return null; // Devolver null si la categoría ya existe
-            }
-
+            if (category) return null
             // Si la categoría no existe, crearla
             const newCategory = await this.categoryModel.create({name});
             return newCategory.get({plain: true}) as ICategory;
