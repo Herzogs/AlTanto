@@ -101,6 +101,27 @@ function GroupDetail() {
     }
   };
 
+  const handleInviteUsers = async () => {
+    const inviteMessage = `Hola,\n\n${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nÚnete al grupo aquí:`;
+
+    try {
+      const appUrl = "https://altanto.vercel.app/join-group";
+      const groupLink = `${appUrl}?groupId=${groupDetails.id}&groupCode=${groupDetails.groupCode}`;
+      const whatsappMessage = `${inviteMessage}\n${groupLink}`;
+
+      window.open(
+        `https://api.whatsapp.com/send?text=${encodeURIComponent(
+          whatsappMessage
+        )}`,
+        "_blank"
+      );
+
+      navigate(`/grupos/${groupDetails.id}`);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   const handleLeaveGroup = async (groupId, userIdToRemove) => {
     try {
       await removeUserFromGroup({ groupId, userId: userIdToRemove });
@@ -210,6 +231,13 @@ function GroupDetail() {
                   </button>
                 </article>
               )}
+              
+              <button
+                className="btn btn-sm btn-secondary mt-2"
+                onClick={handleInviteUsers}
+              >
+                Invitar Usuarios
+              </button>
             </div>
           )}
 
