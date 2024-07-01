@@ -5,17 +5,21 @@ import { IGroup, IGroupMember, IGroupUser } from '../models/group.interface';
 import axios from 'axios';
 import { IZoneService } from './interfaces/zone.service.interface';
 import { IZoneReport, IZoneDto } from '../models/zone.interface';
+import { IUserService } from './interfaces/user.service.interface';
+import { IUser } from '../models/user.interface';
 
 
 class NotificationService implements INotificationService {
 
   private groupService: IGroupService<IGroup, IGroupUser, IGroupMember>;
   private zoneService: IZoneService<IZoneDto, IZoneReport>;
+  private userService: IUserService<IUser>;
 
 
-  constructor({ groupService, zoneService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, zoneService: IZoneService<IZoneDto, IZoneReport> }) {
+  constructor({ groupService, zoneService,userService }: { groupService: IGroupService<IGroup, IGroupUser, IGroupMember>, zoneService: IZoneService<IZoneDto, IZoneReport>, userService: IUserService<IUser> }) {
     this.groupService = groupService;
     this.zoneService = zoneService;
+    this.userService = userService;
   }
 
   async sendNotificationToGroup(groupId: number, report: IReportDto): Promise<boolean> {
@@ -50,6 +54,21 @@ class NotificationService implements INotificationService {
       }
 
     });
+    return true;
+  }
+
+  async sendNotificationRemoveUser(groupId: number, userId: number): Promise<boolean> {
+    const user: IUser = await this.userService.getUserById(userId);
+    const group = await this.groupService.findById(groupId)
+    
+    if (user) {
+      const message = `Hola ${user.name}. Sentimos informarte que has sido eliminado del grupo ${group?.name} por el administrador.`;
+      const aux = await this.sendNotification(user.phoneNumber, message);
+      if (aux?.status === 'failed') {
+        console.error(`Error al enviar mensaje a ${user.phoneNumber}`);
+      }
+    }
+
     return true;
   }
 

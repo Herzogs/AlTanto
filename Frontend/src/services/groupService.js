@@ -101,4 +101,17 @@ export const sendSOS = async (groupId, userId, address) => {
     console.error("Error SOS:", error);
     throw new Error("Failed to SOS Group.");
   }
+}
+
+  export const notificationRemoveUser = async (groupId, userId) => {
+    try {
+      const response = await axiosInstance.post(`/group/notification`, {
+        groupId,
+        userId
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error al notificar al usuario:", error);
+      throw new Error("Failed to remove user from group.");
+    }
 };
