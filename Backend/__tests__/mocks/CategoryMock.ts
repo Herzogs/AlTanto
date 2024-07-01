@@ -1,9 +1,10 @@
-import DBConnectionMock from '../DbConnection';
-//import Category from '../../src/repository/entities/Category';
+import {sequelizeMock} from '../../src/config/dbConnection.mock'
 
-const CategoryMock = DBConnectionMock.define('Category', {
+
+
+const CategoryModel = sequelizeMock.define('Category', {
     id: 1,
-    name: 'Test Category'
+    name: 'Seguridad'
 });
 
-export { CategoryMock };
+export default {  CategoryModel };

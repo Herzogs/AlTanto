@@ -10,7 +10,7 @@ Category.init({
     primaryKey: true,
     autoIncrement: true
   },
-  name: { type: DataTypes.STRING, allowNull: false }
+  name: { type: DataTypes.STRING, allowNull: false, unique:true }
 },
   {
     sequelize: dbConnection,
@@ -25,7 +25,7 @@ Category.init({
             { name: 'Transito' },
             { name: 'Via publica' },
             { name: 'Alerta' }
-          ], { ignoreDuplicates: true });
+          ], );
           console.log('Default categories have been created.');
         } catch (error) {
           console.error('Error creating default categories:', error);
