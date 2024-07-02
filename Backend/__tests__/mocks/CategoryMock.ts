@@ -1,9 +1,6 @@
 import MockSequelize from 'sequelize-mock';
 
-//
 const sequelizeMock = new MockSequelize();
-
-
 
 const CategoryMock = sequelizeMock.define('Category', {
     id: 1,

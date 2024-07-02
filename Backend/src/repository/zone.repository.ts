@@ -7,44 +7,50 @@ import { IZoneRepository } from "./interface/zone.repository.interface";
 class ZoneRepository implements IZoneRepository<IZoneDto, object> {
 
     private zoneModel: ModelCtor<Zone>;
+    private locationModel: ModelCtor<Location>;
 
-    constructor({ Zone }: { Zone: ModelCtor<Zone> }) {
+    constructor({ Zone, Location }: { Zone: ModelCtor<Zone>, Location: ModelCtor<Location> }) {
         this.zoneModel = Zone;
+        this.locationModel = Location;
     }
-    
+
     async create(newZone: IZoneDto): Promise<IZoneDto | null> {
-        const locationSearched = await Location.findOrCreate({
+        const locationSearched = await this.locationModel.findOrCreate({
+            raw:true,
             where: { latitude: newZone.location.lat, longitude: newZone.location.lon },
         })
 
-        const location = locationSearched[0].get({ plain: true });
+        const location = locationSearched[0]
         const zone = await this.zoneModel.create({
             name: newZone.name,
             radio: newZone.rad,
             LocationId: location.id,
             userId: newZone.userId
 
-        })
+        },)
         if (!zone) {
             return null
         }
-        const zonePlain = zone.get({ plain: true });
+
+        const zonePlain= zone.get({plain:true})
+
         const aux: IZoneDto = {
-            id: zonePlain.id,
-            name: zonePlain.name,
-            location: {
-                lat: location.latitude,
-                lon: location.longitude
-            },
-            rad: zonePlain.radio,
-            userId: zonePlain.userId
+             id: zonePlain.id,
+             name: zonePlain.name,
+             location: {
+                 lat: location.latitude,
+                 lon: location.longitude
+             },
+             rad: zonePlain.radio,
+             userId: zonePlain.userId
         }
-        return aux
+        return aux ;
     }
 
     async getAll(): Promise<IZoneDto[]> {
         try {
             const listOfZones = await this.zoneModel.findAll({
+                raw:true,
                 include: [
                     { model: Location, attributes: ['latitude', 'longitude'] }
                 ],
@@ -127,19 +133,19 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object> {
         };
     }
 
-    async deleteById(zoneId: number): Promise<boolean> {
-        const zone = await this.zoneModel.findByPk(zoneId);
-        if (!zone) {
-            return false
-        }
-        await zone.destroy();
-        return true
-    }
+    // async deleteById(zoneId: number): Promise<boolean> {
+    //     const zone = await this.zoneModel.findByPk(zoneId);
+    //     if (!zone) {
+    //         return false
+    //     }
+    //     await zone.destroy();
+    //     return true
+    // }
 
     async getReports(zone: IZoneDto): Promise<NonNullable<object[]> | null> {
 
         const { location, rad } = zone;
-        const reports = await Zone.sequelize?.query(
+        const reports = await this.zoneModel.sequelize?.query(
             `SELECT Report.id, Report.content, Report.images, Report.positiveScore, Report.negativeScore, Report.createAt, User.name, User.lastName, Report.categoryId,
                 Location.latitude, Location.longitude, 
                 Category.name AS categoryName,
@@ -194,7 +200,7 @@ class ZoneRepository implements IZoneRepository<IZoneDto, object> {
     }
 
     async findZoneByReport(obj: { lat: string; lon: string; }): Promise<NonNullable<object[]> | null> {
-        const zones = await Zone.sequelize?.query(
+        const zones = await this.zoneModel.sequelize?.query(
             `SELECT User.phoneNumber, Zone.name, Zone.radio, Zone.userId,
                 (6371000 * acos(
                     least(1, cos(radians(:lat)) * cos(radians(Location.latitude)) * cos(radians(Location.longitude) - radians(:lon)) +
