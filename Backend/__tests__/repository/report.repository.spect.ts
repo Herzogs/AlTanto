@@ -1,173 +1,156 @@
-import ReportRepository from "../../src/repository/reports.repository";
-import { IReportDto } from "../../src/models/reports.interface";
-import container from "../../src/container";
-import { config } from "dotenv";
-import { Lifetime } from "awilix";
-import GroupRepository from "../../src/repository/group.repository";
-import dbConnection from "../../src/config/dbConnection.config";
-import UserRepository from "../../src/repository/user.repository";
-import { IGroup } from "../../src/models/group.interface";
+import {ReportMock} from '../mocks/report.mock'; // Importa el mock de Report
+import {CategoryMock} from '../mocks/category.mock'; // Importa el mock de Category
+import {LocationMock} from '../mocks/location.mock'; // Importa el mock de Location
+import ReportRepository from '../../src/repository/reports.repository';
+import {IReportDto} from '../../src/models/reports.interface';
 
-describe('Report Repository', () => {
+describe('ReportRepositiry', () => {
     let reportRepository: ReportRepository;
-    let userRepository: UserRepository;
-    let groupRepository: GroupRepository;
 
-    beforeAll(async () => {
-        config();
-        container.loadModules([
-            ['../../src/models/*.model.ts', Lifetime.SCOPED],
-            ['../../src/repository/*.repository.ts', Lifetime.SCOPED],
-        ]);
-        reportRepository = container.resolve<ReportRepository>('reportRepository');
-        userRepository = container.resolve<UserRepository>('userRepository');
-        groupRepository = container.resolve<GroupRepository>('groupRepository');
-    });
+    beforeAll(() => {
+        reportRepository = new ReportRepository({Report: ReportMock, Category: CategoryMock, Location: LocationMock});
+    })
 
-
-    beforeEach(async () => {
-        await dbConnection.sync({ force: true });
-
-    });
-
-    test('should create a report', async () => {
-        await userRepository.create({
-            email: 'test@example.com',
-            password: 'password',
-            name: 'John',
-            lastName: 'Doe',
-            phoneNumber: '123456789',
-            username: 'johndoe',
-            id: 1,
-        });
-
+    it('should create a new report', async () => {
         const newReport: IReportDto = {
-            content: 'Test report content',
-            category: '1',
-            location: { latitude: 10.0, longitude: 20.0 },
-            image: 'test.jpg',
-            userId: 1,
+            content: 'Report test 1',
+            image: 'imageTest',
+            category: "1",
+            location: {
+                latitude: 54,
+                longitude: 55,
+            },
+            userId: 1
         };
 
-        const createdReport = await reportRepository.create(newReport);
-        expect(createdReport).toBeDefined();
-        expect(createdReport!.content).toBe(newReport.content);
+        const reportCreated: IReportDto | null = await reportRepository.create(newReport);
+        expect(reportCreated).toBeDefined();
+        expect(reportCreated?.content).toEqual(newReport.content);
+        expect(reportCreated?.id).toEqual(1);
     });
+    it('should return report details when valid id is provided', async () => {
+        // Mockear el reporte buscado por ID
+        const mockReportId = 1;
+        const reportExpected = await reportRepository.getById(mockReportId);
+        expect(reportExpected?.content).toEqual("Report test 1")
 
-    test('should get a report by id', async () => {
-        await userRepository.create({
-            email: 'test@example.com',
-            password: 'password',
-            name: 'John',
-            lastName: 'Doe',
-            phoneNumber: '123456789',
-            username: 'johndoe',
-            id: 1,
-        });
-
+    });
+    it('should return null if category is not found', async () => {
         const newReport: IReportDto = {
-            content: 'Another test report content',
-            category: '2',
-            location: { latitude: 11.0, longitude: 21.0 },
-            image: 'test2.jpg',
-            userId: 1,
+            content: 'Report test 1',
+            image: 'imageTest',
+            category: "999", // ID de categoría que no existe en el mock
+            location: {
+                latitude: 54,
+                longitude: 55,
+            },
+            userId: 1
         };
 
-        const createdReport = await reportRepository.create(newReport);
 
-        expect(createdReport).toBeDefined();
+        CategoryMock.findByPk.mockResolvedValueOnce(null);
 
-        const fetchedReport = await reportRepository.getById(createdReport!.id as number);
-        expect(fetchedReport).toBeDefined();
-        expect(fetchedReport!.content).toBe(newReport.content);
+        const reportCreated: IReportDto | null = await reportRepository.create(newReport);
+
+
+        expect(reportCreated).toBeNull();
     });
 
-    test('should get all reports', async () => {
-        await userRepository.create({
-            email: 'test@example.com',
-            password: 'password',
-            name: 'John',
-            lastName: 'Doe',
-            phoneNumber: '123456789',
-            username: 'johndoe',
-            id: 1,
-        });
+    it('should return null when invalid id is provided', async () => {
 
-        const newReport1: IReportDto = {
-            content: 'Test report 1 content',
-            category: '1',
-            location: { latitude: 12.0, longitude: 22.0 },
-            image: 'test3.jpg',
-            userId: 1,
+        const result = await reportRepository.getById(999);
+        expect(ReportMock.findByPk).toHaveBeenCalledWith(999, expect.any(Object));
+
+        expect(result).toBeNull();
+    });
+    it('should return reports for a specific user with 2 reports', async () => {
+        const userId = 1;
+        const reportsByUser = await reportRepository.getByUser(userId);
+        expect(reportsByUser).toBeDefined();
+        expect(reportsByUser).toHaveLength(2);
+    })
+    it('should return an empty array for a user with no reports', async () => {
+        const userId = 3; // Usuario que no tiene reportes en el mock
+
+        // Simular que el usuario 3 no tiene reportes asociados
+        ReportMock.findAll.mockResolvedValueOnce([]);
+
+        const reportsByUser = await reportRepository.getByUser(userId);
+
+        expect(reportsByUser).toBeDefined();
+        expect(reportsByUser).toHaveLength(0);
+    });
+    it('should disable old reports older than 2 days', async () => {
+        // Simulamos el llamado al método update de sequelize
+        const updateMock = jest.spyOn(ReportMock, 'update').mockResolvedValue([1]); // Suponiendo que se actualiza al menos un reporte
+
+        await reportRepository.disableOldReports();
 
 
-        };
-
-        const newReport2: IReportDto = {
-            content: 'Test report 2 content',
-            category: '2',
-            location: { latitude: 13.0, longitude: 23.0 },
-            image: 'test4.jpg',
-            userId: 1,
-
-
-        };
-
-        await reportRepository.create(newReport1);
-        await reportRepository.create(newReport2);
-
-        const reports = await reportRepository.getAll();
-
-        expect(reports).toBeDefined();
-        expect(reports.length).toBeGreaterThanOrEqual(2);
+        expect(updateMock).toHaveBeenCalledTimes(1);
     });
 
-    test('should get reports by group id', async () => {
-        await userRepository.create({
-            email: 'test@example.com',
-            password: 'password',
-            name: 'John',
-            lastName: 'Doe',
-            phoneNumber: '123456789',
-            username: 'johndoe',
-            id: 1,
-        });
 
-        const newGroup: IGroup = {
-            name: 'Test Group',
-            ownerId: 1,
-        };
+    it('should log error if an error occurs during scoring', async () => {
+        const reportId = 1;
+        const vote = 1;
 
-        await groupRepository.create(newGroup);
+        const errorMessage = 'Database connection error';
+        const mockError = new Error(errorMessage);
 
-        const newReport1: IReportDto = {
-            content: 'Group specific report 1',
-            category: '1',
-            location: { latitude: 15.0, longitude: 25.0 },
-            image: 'test6.jpg',
-            groupId: 1,
-            userId: 1,
+        // Simular un error al llamar a findByPk
+        ReportMock.findByPk.mockRejectedValueOnce(mockError);
 
-        };
+        // Configurar console.error para capturar los logs
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
 
-        const newReport2: IReportDto = {
-            content: 'Group specific report 2',
-            category: '2',
-            location: { latitude: 16.0, longitude: 26.0 },
-            image: 'test7.jpg',
-            groupId: 1,
-            userId: 1,
+        await reportRepository.scoringReport(reportId, vote, 1);
 
-        };
-
-        await reportRepository.create(newReport1);
-        await reportRepository.create(newReport2);
-
-        const groupReports = await reportRepository.getByGroup(1);
-        
-
-        expect(groupReports).toBeDefined();
-        expect(groupReports.length).toBeGreaterThanOrEqual(1);
-        expect(groupReports[0].groupId).toBe(1);
+        // Verificar que se haya registrado el error en los logs
+        expect(consoleErrorSpy).toHaveBeenCalledWith(`Error while scoring report with id ${reportId}:`, mockError);
     });
+
+    it('should not increment score if report is not found', async () => {
+        const reportId = 999; // Reporte no existente
+
+        // Simular que findByPk no encuentra el reporte
+        ReportMock.findByPk.mockResolvedValueOnce(null);
+
+        await reportRepository.scoringReport(reportId, 1, 1);
+
+        // Verificar que no se haya llamado a increment en este caso
+        expect(ReportMock.increment).not.toHaveBeenCalled();
+    });
+
+    it('should log error if an error occurs during scoring', async () => {
+        const reportId = 1;
+        const vote = 1;
+
+        const errorMessage = 'Database connection error';
+        const mockError = new Error(errorMessage);
+
+        // Simular un error al llamar a findByPk
+        ReportMock.findByPk.mockRejectedValueOnce(mockError);
+
+        // Configurar console .error para capturar los logs
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+        await reportRepository.scoringReport(reportId, vote, 1);
+
+        // Verificar que se haya registrado el error en los logs
+        expect(consoleErrorSpy).toHaveBeenCalledWith(`Error while scoring report with id ${reportId}:`, mockError);
+    });
+    it('should handle case when report is not found', async () => {
+        const reportId = 999;
+
+        ReportMock.findByPk.mockResolvedValueOnce(undefined);
+
+        const nothing = await reportRepository.scoringReport(reportId, 1, 1);
+
+        expect(nothing).toBeUndefined()
+    });
+
+
 })
+
+

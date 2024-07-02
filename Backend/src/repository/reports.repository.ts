@@ -1,15 +1,19 @@
 import Report from "./entities/Report";
 import Category from "./entities/Category";
-import { Location } from "./entities/Location";
-import { IReportDto } from "../models/reports.interface";
-import { ModelCtor } from "sequelize";
-import { IReportRepository } from "./interface/report.repository.interface";
+import {Location} from "./entities/Location";
+import {IReportDto} from "../models/reports.interface";
+import {ModelCtor} from "sequelize";
+import {IReportRepository} from "./interface/report.repository.interface";
 
 class ReportRepository implements IReportRepository<IReportDto> {
     private reportModel: ModelCtor<Report>;
+    private categoryModel: ModelCtor<Category>;
+    private locationModel: ModelCtor<Location>;
 
-    constructor({ Report }: { Report: ModelCtor<Report> }) {
+    constructor({ Report, Category, Location }: { Report: ModelCtor<Report> , Category: ModelCtor<Category>, Location :ModelCtor<Location>}) {
         this.reportModel = Report;
+        this.categoryModel= Category;
+        this.locationModel=Location;
     }
 
     async getAll(): Promise<IReportDto[]> {
@@ -51,18 +55,16 @@ class ReportRepository implements IReportRepository<IReportDto> {
 
     async create(newReport: IReportDto): Promise<IReportDto | null> {
         try {
-
-            const categorySearch = await Category.findByPk(newReport.category);
+            const categorySearch = await this.categoryModel.findByPk(+newReport.category);
             if (!categorySearch) {
                 return null
             }
-
-            const locationSearched = await Location.findOrCreate({
+            const locationSearched = await this.locationModel.findOrCreate({
                 where: { latitude: newReport.location.latitude, longitude: newReport.location.longitude },
             })
             const location = locationSearched[0].get({ plain: true });
 
-            const reporCreated = await this.reportModel.create({
+            const reportCreated = await this.reportModel.create({
                 content: newReport.content,
                 CategoryId: newReport.category,
                 LocationId: location.id,
@@ -70,7 +72,7 @@ class ReportRepository implements IReportRepository<IReportDto> {
                 groupId: newReport.groupId,
                 userId: newReport.userId
             });
-            const reportPlain = reporCreated.get({ plain: true });
+            const reportPlain = reportCreated.get({ plain: true });
             return {
                 id: reportPlain.id,
                 content: reportPlain.content,
@@ -141,17 +143,18 @@ class ReportRepository implements IReportRepository<IReportDto> {
     async scoringReport(id: number, vote: number, _userId: number): Promise<void> {
         try {
             const report = await this.reportModel.findByPk(id);
+
             if (!report) {
                 return;
             }
             if (vote === 1) {
-                await report.increment('positiveScore');
+                await this.reportModel.increment('positiveScore', { where: { id: id } });
             } else {
-                await report.increment('negativeScore');
+                await this.reportModel.increment('negativeScore', { where: { id: id } });
             }
-
         } catch (error) {
             console.error(`Error while scoring report with id ${id}:`, error);
+
         }
     }
 }

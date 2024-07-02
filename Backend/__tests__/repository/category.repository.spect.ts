@@ -1,5 +1,5 @@
 import CategoryRepository from '../../src/repository/category.repository';
-import { CategoryMock} from '../mocks/CategoryMock';
+import { CategoryMock} from '../mocks/category.mock';
 
 describe('CategoryRepository', () => {
     let categoryRepository: CategoryRepository;
