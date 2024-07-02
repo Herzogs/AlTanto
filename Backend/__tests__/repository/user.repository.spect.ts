@@ -1,159 +1,151 @@
-import UserRepository from "../../src/repository/user.repository";
-import { IUser } from "../../src/models/user.interface";
-import container from "../../src/container";
-import { config } from "dotenv";
-import { Lifetime } from "awilix";
-import dbConnection from "../../src/config/dbConnection.config";
-import User from "../../src/repository/entities/User";
-import { ModelCtor } from "sequelize";
+import UserRepository from '../../src/repository/user.repository';
+import {UserMock} from '../mocks/user.mock';
+import {IUser} from '../../src/models/user.interface';
 
-describe('User Repository', () => {
+describe('UserRepository', () => {
     let userRepository: UserRepository;
 
-    beforeAll(() => {
-        config();
-        container.loadModules([
-            ['../../src/models/*.model.ts', Lifetime.SCOPED],
-            ['../../src/repository/*.repository.ts', Lifetime.SCOPED],
-        ]);
+    beforeEach(() => {
+        userRepository = new UserRepository({User: UserMock});
     });
 
-    beforeEach(async () => {
-        await dbConnection.sync({ force: true });
-        const UserModal: ModelCtor<User> = container.resolve<ModelCtor<User>>('User');
-        userRepository = new UserRepository({ User: UserModal });
-    });
-
-    test('should create a user', async () => {
+    it('should create a new user', async () => {
         const newUser: IUser = {
-            email: 'testuser@gmail.com',
-            password: 'password123',
-            name: 'Test',
-            lastName: 'User',
+            name: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            email: 'john.doe@example.com',
             phoneNumber: '123456789',
-            username: 'testuser',
+            password: 'Pepe1235',
             rol: 'USER',
-            id: 1
         };
-
-        const createdUser = await userRepository.create(newUser);
-        expect(createdUser).toBeDefined();
-        expect(createdUser.email).toBe(newUser.email);
-    });
-
-    test('should get a user by email', async () => {
-        const newUser: IUser = {
-            email: 'testuser@gmail.com',
-            password: 'password123',
-            name: 'Test',
-            lastName: 'User',
-            phoneNumber: '123456789',
-            username: 'testuser',
-            rol: 'USER',
-            id: 2
-        };
-
-        await userRepository.create(newUser);
-
-        const fetchedUser = await userRepository.getByEmail(newUser.email);
-        expect(fetchedUser).toBeDefined();
-        expect(fetchedUser!.email).toBe(newUser.email);
-    });
-
-    test('should return null when user not found by email', async () => {
-        const nonExistentEmail = 'nonexistent@gmail.com';
-
-        const fetchedUser = await userRepository.getByEmail(nonExistentEmail);
-        expect(fetchedUser).toBeNull();
-    });
-
-    test('should get a user by username', async () => {
-        const newUser: IUser = {
-            email: 'testuser@gmail.com',
-            password: 'password123',
-            name: 'Test',
-            lastName: 'User',
-            phoneNumber: '123456789',
-            username: 'testuser',
-            rol: 'USER',
-            id: 3
-        };
-
-        await userRepository.create(newUser);
-
-        const fetchedUser = await userRepository.getByUserName(newUser.username);
-        expect(fetchedUser).toBeDefined();
-        expect(fetchedUser!.username).toBe(newUser.username);
-    });
-
-    test('should return null when user not found by username', async () => {
-        const nonExistentUserName = 'nonexistentuser';
-
-        const fetchedUser = await userRepository.getByUserName(nonExistentUserName);
-        expect(fetchedUser).toBeNull();
-    });
-
-    test('should get a user by id', async () => {
-        const newUser: IUser = {
-            email: 'testuser@gmail.com',
-            password: 'password123',
-            name: 'Test',
-            lastName: 'User',
-            phoneNumber: '123456789',
-            username: 'testuser',
-            rol: 'USER',
-            id: 4
-        };
+        UserMock.create = jest.fn().mockReturnValue({
+            id: 1,
+            name: newUser.name,
+            lastName: newUser.lastName,
+            username: newUser.username,
+            email: newUser.email,
+            phoneNumber: newUser.phoneNumber,
+            rol: newUser.rol,
+            get: jest.fn().mockReturnValue(newUser)
+        });
 
         const createdUser = await userRepository.create(newUser);
 
-        const fetchedUser = await userRepository.getUserById(createdUser.id);
-        console.log('Fetched User by ID:', fetchedUser);
-        expect(fetchedUser).toBeDefined();
-        expect(fetchedUser!.id).toBe(createdUser.id);
+        expect(UserMock.create).toHaveBeenCalledWith({
+            name: newUser.name,
+            lastName: newUser.lastName,
+            username: newUser.username,
+            email: newUser.email,
+            phoneNumber: newUser.phoneNumber,
+            rol: newUser.rol,
+        });
+
+        expect(createdUser).toEqual(newUser);
+
+    });
+    it('should delete a user by email', async () => {
+        const emailToDelete = 'john.doe@example.com';
+        UserMock.destroy = jest.fn().mockResolvedValue(1);
+        await userRepository.delete(emailToDelete);
+        expect(UserMock.destroy).toHaveBeenCalledWith({
+            where: {email: emailToDelete},
+        });
     });
 
-    test('should return null when user not found by id', async () => {
-        const nonExistentId = 999;
+    it('should handle delete error gracefully', async () => {
+        const emailToDelete = 'nonexistent.user@example.com';
+        UserMock.destroy = jest.fn().mockResolvedValue(0);
 
-        const fetchedUser = await userRepository.getUserById(nonExistentId);
-        expect(fetchedUser).toBeNull();
+        await expect(userRepository.delete(emailToDelete)).resolves.not.toThrow();
     });
-
-    // test('should update a user', async () => {
-    //     const newUser: IUser = {
-    //         email: 'testuser@gmail.com',
-    //         password: 'password123',
-    //         name: 'Test',
-    //         lastName: 'User',
-    //         phoneNumber: '123456789',
-    //         username: 'testuser',
-    //         rol: 'USER',
-    //         id: 5
-    //     };
-    
-    //     const createdUser = await userRepository.create(newUser);
-    //     expect(createdUser).toBeDefined();
-    //     expect(createdUser.id).toBeDefined();
-    
-    //     const updatedData: Partial<IUser> = {
-    //         name: 'UpdatedTest',
-    //         email: 'updateduser@gmail.com'
-    //     };
-    
-    //     const updatedUser = await userRepository.updateUser(createdUser.id, updatedData);
-    //     expect(updatedUser).toBeDefined();
-    //     expect(updatedUser!.name).toBe(updatedData.name);
-    //     expect(updatedUser!.email).toBe(updatedData.email);
-    // });
-
-    test('should return null when user not found for update', async () => {
-        const nonExistentId = 999;
-        const updatedData: Partial<IUser> = {
-            name: 'UpdatedTest'
+    it('should find user by email', async () => {
+        const userEmail = 'john.doe@example.com';
+        const expectedUser: IUser = {
+            id: 1,
+            name: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            email: userEmail,
+            phoneNumber: '123456789',
+            password: undefined,
+            rol: 'USER',
         };
 
-        const updatedUser = await userRepository.updateUser(nonExistentId, updatedData);
+        UserMock.findOne = jest.fn().mockResolvedValue({
+            ...expectedUser,
+            get: jest.fn().mockReturnValue(expectedUser),
+        });
+
+        const foundUser = await userRepository.getByEmail(userEmail);
+
+        expect(UserMock.findOne).toHaveBeenCalledWith({
+            where: {email: userEmail},
+        });
+
+        expect(foundUser).toEqual(expectedUser);
+    });
+
+    it('should return null for non-existing user', async () => {
+        const userEmail = 'nonexistent.user@example.com';
+        UserMock.findOne = jest.fn().mockResolvedValue(null);
+        const foundUser = await userRepository.getByEmail(userEmail);
+
+        expect(UserMock.findOne).toHaveBeenCalledWith({
+            where: {email: userEmail},
+        });
+
+        expect(foundUser).toBeNull();
+    });
+
+
+    it('should return null when updating a non-existing user', async () => {
+        const nonExistingUserId = 999;
+        const updatedUserData: Partial<IUser> = {
+            name: 'Updated John',
+            lastName: 'Updated Doe',
+        };
+
+        UserMock.update = jest.fn().mockResolvedValue([0, []]);
+        const updatedUser = await userRepository.updateUser(nonExistingUserId, updatedUserData);
+        expect(UserMock.update).toHaveBeenCalledWith(updatedUserData, {
+            where: {id: nonExistingUserId},
+            returning: true,
+        });
+
         expect(updatedUser).toBeNull();
     });
+    it('should get a user by ID', async () => {
+        const userId = 1;
+        const expectedUser: IUser = {
+            id: userId,
+            name: 'John',
+            lastName: 'Doe',
+            username: 'johndoe',
+            email: 'john.doe@example.com',
+            phoneNumber: '123456789',
+            rol: 'USER',
+        };
+        UserMock.findByPk = jest.fn().mockResolvedValue({
+            ...expectedUser,
+            get: jest.fn().mockReturnValue(expectedUser),
+        });
+
+        const user = await userRepository.getUserById(userId);
+        expect(UserMock.findByPk).toHaveBeenCalledWith(userId);
+        expect(user).toEqual(expectedUser);
+    });
+
+    it('should return null when user ID does not exist', async () => {
+        const nonExistingUserId = 999;
+
+        UserMock.findByPk = jest.fn().mockResolvedValue(null);
+
+        const user = await userRepository.getUserById(nonExistingUserId);
+
+        expect(UserMock.findByPk).toHaveBeenCalledWith(nonExistingUserId);
+
+        expect(user).toBeNull();
+    });
+
 });

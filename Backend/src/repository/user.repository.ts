@@ -1,29 +1,28 @@
 import User from "./entities/User";
-import { IUser } from "../models/user.interface";
-import { ModelCtor } from "sequelize";
-import { IUserRepository } from "./interface/user.repository.interface";
+import {IUser} from "../models/user.interface";
+import {ModelCtor} from "sequelize";
+import {IUserRepository} from "./interface/user.repository.interface";
 
 
 class UserRepository implements IUserRepository<IUser> {
 
     private userModal: ModelCtor<User>
 
-    constructor({ User }: { User: ModelCtor<User> }) {
+    constructor({User}: { User: ModelCtor<User> }) {
         this.userModal = User;
     }
 
     async create(user: IUser) {
         const newUser = await this.userModal.create({
-            name: user.name,
-            lastName: user.lastName,
-            email: user.email,
-            phoneNumber: user.phoneNumber,
-            username: user.username,
-            rol: user.rol,
-        }
+                name: user.name,
+                lastName: user.lastName,
+                email: user.email,
+                phoneNumber: user.phoneNumber,
+                username: user.username,
+                rol: user.rol,
+            }
         );
-
-        return newUser.get({ plain: true }) as IUser;
+        return newUser.get({plain: true}) as IUser;
     }
 
     async delete(email: string) {
@@ -43,7 +42,7 @@ class UserRepository implements IUserRepository<IUser> {
         if (userSearched === null) {
             return null;
         }
-        return userSearched.get({ plain: true }) as IUser;
+        return userSearched.get({plain: true}) as IUser;
     }
 
     async getByUserName(userName: string): Promise<IUser | null> {
@@ -55,7 +54,7 @@ class UserRepository implements IUserRepository<IUser> {
         if (userSearched === null) {
             return null;
         }
-        return userSearched.get({ plain: true }) as IUser;
+        return userSearched.get({plain: true}) as IUser;
     }
 
     async getUserById(id: number): Promise<IUser | null> {
@@ -63,12 +62,12 @@ class UserRepository implements IUserRepository<IUser> {
         if (userSearched === null) {
             return null;
         }
-        return userSearched.get({ plain: true }) as IUser;
+        return userSearched.get({plain: true}) as IUser;
     }
 
     async updateUser(id: number, userData: Partial<IUser>): Promise<IUser | null> {
         const [updatedRowsCount, updatedUsers] = await this.userModal.update(userData, {
-            where: { id: id },
+            where: {id: id},
             returning: true,
         });
 
@@ -77,7 +76,7 @@ class UserRepository implements IUserRepository<IUser> {
         }
 
         const updatedUser = updatedUsers[0];
-        return updatedUser.get({ plain: true }) as IUser;
+        return updatedUser.get({plain: true}) as IUser;
     }
 }
 
