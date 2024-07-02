@@ -1,7 +1,7 @@
 import { Modal, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-function Modal_AT({ title, message, showModal, setShowModal, url }) {
+function ConfirmationModal({ title, message, showModal, setShowModal, url, onConfirm }) {
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -10,6 +10,11 @@ function Modal_AT({ title, message, showModal, setShowModal, url }) {
   };
 
   const handleCancel = () => {
+    setShowModal(false);
+  };
+
+  const handleConfirm = () => {
+    onConfirm(); 
     setShowModal(false);
   };
 
@@ -23,7 +28,7 @@ function Modal_AT({ title, message, showModal, setShowModal, url }) {
         <Button variant="danger" onClick={handleCancel}>
           Cancelar
         </Button>
-        <Button variant="success" onClick={handleClose}>
+        <Button variant="success" onClick={handleConfirm}>
           Continuar
         </Button>
       </Modal.Footer>
@@ -31,4 +36,4 @@ function Modal_AT({ title, message, showModal, setShowModal, url }) {
   );
 }
 
-export default Modal_AT;
+export default ConfirmationModal;

@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  getGroupById,
-  removeUserFromGroup,
-  deleteGroup,
-} from "@services/groupService";
+import {getGroupById,removeUserFromGroup,deleteGroup,notificationRemoveUser,} from "@services/groupService";
 import { getUserByUsername } from "@services/userService";
-import { fetchReportsByGroup } from "@services/getReportByGroup";
+import ConfirmationModal from "@components/modal/ConfirmationModal"; 
 import { userStore } from "@store";
 import { Col, Container, Row } from "react-bootstrap";
 import Header from "@components/header/Header";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuButton from "../Map/MenuButton";
-import Report from "@components/report/Report";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
@@ -21,7 +15,7 @@ import { reverseGeocode } from "@services/getGeoAdress";
 import { useStore } from "@store";
 import { sendSOS } from "@services/groupService";
 import SliderAT from "../slider/SliderAT";
-import ModalAT from "@components/modal/ModalAT"; 
+import ModalAT from "@components/modal/ModalAT";
 
 function GroupDetail() {
   const { id } = useParams();
@@ -34,7 +28,11 @@ function GroupDetail() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sosDisable, setSosDisable] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false); 
+  const [showRemoveModal, setShowRemoveModal] = useState(false); 
   const navigate = useNavigate();
+  const [userToRemoveId, setUserToRemoveId] = useState(null);
   const { user } = userStore();
   const userId = user?.id;
 
@@ -45,7 +43,9 @@ function GroupDetail() {
         const details = await getGroupById(Number(id));
         setGroupDetails(details);
       } catch (error) {
-        setError("No se pudo cargar los detalles del grupo. Inténtalo de nuevo más tarde.");
+        setError(
+          "No se pudo cargar los detalles del grupo. Inténtalo de nuevo más tarde."
+        );
       } finally {
         setLoading(false);
       }
@@ -56,7 +56,6 @@ function GroupDetail() {
         const groupReports = await fetchReportsByGroup(id);
         setReports(groupReports);
       } catch (error) {
-        setError("No se pudieron cargar los reportes del grupo. Por favor, recarga la página.");
       }
     };
 
@@ -69,7 +68,9 @@ function GroupDetail() {
       const userFound = await getUserByUsername(username);
       setFoundUser(userFound);
     } catch (error) {
-      setError("No se encontró al usuario. Por favor, verifica el nombre de usuario ingresado.");
+      setError(
+        "No se encontró al usuario. Por favor, verifica el nombre de usuario ingresado."
+      );
     }
   };
 
@@ -96,7 +97,32 @@ function GroupDetail() {
 
       navigate(`/grupos/${groupDetails.id}`);
     } catch (error) {
-      setError("Hubo un problema al enviar la invitación por WhatsApp. Por favor, inténtalo de nuevo.");
+      setError(
+        "Hubo un problema al enviar la invitación por WhatsApp. Por favor, inténtalo de nuevo."
+      );
+    }
+  };
+
+  const handleInviteUsers = async () => {
+    const inviteMessage = `Te informamos que ${user.name} te ha invitado a unirte al grupo "${groupDetails.name}".\n\nÚnete al grupo aquí:`;
+
+    try {
+      const appUrl = "https://altanto.vercel.app/join-group";
+      const groupLink = `${appUrl}?groupId=${groupDetails.id}&groupCode=${groupDetails.groupCode}`;
+      const whatsappMessage = `${inviteMessage}\n${groupLink}`;
+
+      window.open(
+        `https://api.whatsapp.com/send?text=${encodeURIComponent(
+          whatsappMessage
+        )}`,
+        "_blank"
+      );
+
+      navigate(`/grupos/${groupDetails.id}`);
+    } catch (error) {
+      setError(
+        "Hubo un problema al enviar la invitación por WhatsApp. Por favor, inténtalo de nuevo."
+      );
     }
   };
 
@@ -105,12 +131,15 @@ function GroupDetail() {
       await removeUserFromGroup({ groupId, userId: userIdToRemove });
       navigate("/");
     } catch (error) {
-      setError("No se pudo salir del grupo. Intenta nuevamente más tarde.");
+      setError(
+        "No se pudo salir del grupo. Intenta nuevamente más tarde."
+      );
     }
   };
 
   const handleRemoveUser = async (groupId, userIdToRemove) => {
     try {
+      console.log(userIdToRemove)
       await removeUserFromGroup({ groupId, userId: userIdToRemove });
       setGroupDetails((prevDetails) => ({
         ...prevDetails,
@@ -118,9 +147,11 @@ function GroupDetail() {
           (member) => member.id !== userIdToRemove
         ),
       }));
-      navigate("/");
+      await notificationRemoveUser({groupId, userId: userIdToRemove});
     } catch (error) {
-      setError("No se pudo remover al usuario del grupo. Por favor, intenta de nuevo.");
+      setError(
+        "No se pudo remover al usuario del grupo. Por favor, intenta de nuevo."
+      );
     }
   };
 
@@ -129,7 +160,9 @@ function GroupDetail() {
       await deleteGroup(groupId);
       navigate("/");
     } catch (error) {
-      setError("No se pudo eliminar el grupo. Intenta nuevamente más tarde.");
+      setError(
+        "No se pudo eliminar el grupo. Intenta nuevamente más tarde."
+      );
     }
   };
 
@@ -140,6 +173,19 @@ function GroupDetail() {
     });
     await sendSOS(id, userId, address);
     setSosDisable(true);
+  };
+
+  const showDeleteConfirmation = () => {
+    setShowDeleteModal(true);
+  };
+
+  const showLeaveConfirmation = () => {
+    setShowLeaveModal(true);
+  };
+
+  const showRemoveConfirmation = (userIdToRemove) => {
+    setUserToRemoveId(userIdToRemove);
+    setShowRemoveModal(true);
   };
 
   return (
@@ -188,6 +234,13 @@ function GroupDetail() {
                 </button>
               </div>
 
+              <button
+                className="btn btn-sm btn-primary mt-2"
+                onClick={handleInviteUsers}
+              >
+                Invitar usuarios
+              </button>
+
               {foundUser && (
                 <article className="d-flex align-items-center bg-primary-subtle p-3 my-3 rounded">
                   <h6 className="text-black mb-0">
@@ -221,18 +274,14 @@ function GroupDetail() {
                   {userId === member.id && groupDetails.ownerId !== userId && (
                     <PersonRemoveIcon
                       className="ms-2 mt-3 text-danger"
-                      onClick={() =>
-                        handleRemoveUser(groupDetails.id, member.id)
-                      }
+                      onClick={() => showLeaveConfirmation()}
                     />
                   )}
                   {groupDetails.ownerId === userId &&
                     member.id !== groupDetails.ownerId && (
                       <DeleteForeverIcon
                         className="ms-2 mt-3 text-danger"
-                        onClick={() =>
-                          handleLeaveGroup(groupDetails.id, member.id)
-                        }
+                        onClick={() => showRemoveConfirmation(member.id)}
                       />
                     )}
                 </li>
@@ -243,7 +292,7 @@ function GroupDetail() {
             <div className="text-end">
               <button
                 className="btn btn-sm btn-danger"
-                onClick={() => handleDeleteGroup(groupDetails.id)}
+                onClick={() => showDeleteConfirmation()}
               >
                 <DeleteForeverIcon />
                 Borrar Grupo
@@ -268,6 +317,30 @@ function GroupDetail() {
               setShowModal={() => setError(null)}
             />
           )}
+
+          <ConfirmationModal
+            title="Confirmación de Eliminación"
+            message="¿Estás seguro de que quieres eliminar este grupo?"
+            showModal={showDeleteModal}
+            setShowModal={setShowDeleteModal}
+            onConfirm={() => handleDeleteGroup(groupDetails?.id)}
+          />
+
+          <ConfirmationModal
+            title="Confirmación de Salida"
+            message="¿Estás seguro de que quieres salir de este grupo?"
+            showModal={showLeaveModal}
+            setShowModal={setShowLeaveModal}
+            onConfirm={() => handleLeaveGroup(groupDetails?.id, userId)}
+          />
+
+          <ConfirmationModal
+            title="Confirmación de Eliminación"
+            message="¿Estás seguro de que quieres remover a este usuario del grupo?"
+            showModal={showRemoveModal}
+            setShowModal={setShowRemoveModal}
+            onConfirm={() => handleRemoveUser(groupDetails?.id, userToRemoveId)}
+          />
         </Container>
       </Col>
     </Row>
@@ -275,3 +348,4 @@ function GroupDetail() {
 }
 
 export default GroupDetail;
+
