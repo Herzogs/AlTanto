@@ -1,5 +1,5 @@
 import MockSequelize from 'sequelize-mock';
-import {DataTypes, DATE, where} from 'sequelize';
+import {DataTypes} from 'sequelize';
 import { UserMock } from './user.mock';
 import GroupMock from './group.mock';
 import { LocationMock } from './zone.mock';
@@ -53,7 +53,7 @@ ReportMock.Location = LocationMock;
 ReportMock.Group = GroupMock;
 ReportMock.User = UserMock;
 
-// Opcional: Mockear el método `belongsTo`
+
 ReportMock.belongsTo = jest.fn();
 const reportResponse = {
     id: 1,

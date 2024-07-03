@@ -143,8 +143,7 @@ class ReportRepository implements IReportRepository<IReportDto> {
     async scoringReport(id: number, vote: number, _userId: number): Promise<void> {
         try {
             const report = await this.reportModel.findByPk(id);
-
-            if (!report) {
+            if (report === null) {
                 return;
             }
             if (vote === 1) {

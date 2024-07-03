@@ -1,16 +1,18 @@
-import { Location } from "./entities/Location";
+import {Location} from "./entities/Location";
 import Road from "./entities/Road";
-import { IRoadDto } from "../models/road.interfaces";
-import { IRoadRepository } from "./interface/road.repository.interface";
-import { ModelCtor } from "sequelize";
+import {IRoadDto} from "../models/road.interfaces";
+import {IRoadRepository} from "./interface/road.repository.interface";
+import {ModelCtor} from "sequelize";
 
 
 class RoadRepository implements IRoadRepository<IRoadDto> {
 
     private roadModel: ModelCtor<Road>;
+    private locationModel:  ModelCtor<Location>;
 
-    constructor({ Road }: { Road: ModelCtor<Road> }) {
+    constructor({ Road , Location}: { Road: ModelCtor<Road>, Location :ModelCtor<Location> }) {
         this.roadModel = Road;
+        this.locationModel= Location;
     }
 
     async getAll(): Promise<IRoadDto[]> {
@@ -26,8 +28,8 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
 
         for (const Route of listOfRoads) {
 
-            const coordinatesOrigin = await Location.findByPk(Route.origin);
-            const coordinatesDestiny = await Location.findByPk(Route.destination);
+            const coordinatesOrigin = await this.locationModel.findByPk(Route.origin);
+            const coordinatesDestiny = await this.locationModel.findByPk(Route.destination);
 
             aux.push({
                 id: Route.id,
@@ -64,8 +66,8 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
             return null;
         }
         const road = roadSearched.get({ plain: true });
-        const coordinatesOrigin = await Location.findByPk(road.origin);
-        const coordinatesDestiny = await Location.findByPk(road.destination);
+        const coordinatesOrigin = await this.locationModel.findByPk(road.origin);
+        const coordinatesDestiny = await this.locationModel.findByPk(road.destination);
         return {
             id: road.id,
             name: road.name,
@@ -88,24 +90,24 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
     async create(road: IRoadDto): Promise<IRoadDto | null> {
         
         try {
-            const routeSearched = await this.roadModel.findOne({
-                where: {
-                    addressOrigin: road.addressOrigin,
-                    addressDestiny: road.addressDestiny,
-                
-                }
-            })
+            // const routeSearched = await this.roadModel.findOne({
+            //     where: {
+            //         addressOrigin: road.addressOrigin,
+            //         addressDestiny: road.addressDestiny,
+            //         user:road.user
+            //     }
+            // })
             
-            if (routeSearched) {
-                console.log("ya existe")
-                return null
-            }
+            // if (routeSearched) {
+            //     console.log("ya existe")
+            //     return null
+            // }
     
-            const locationSearchedOrigin = await Location.findOrCreate({
+            const locationSearchedOrigin = await this.locationModel.findOrCreate({
                 where: { latitude: road.origin.lat, longitude: road.origin.lng }
             })
             
-            const locationSearchedDestiny = await Location.findOrCreate({
+            const locationSearchedDestiny = await this.locationModel.findOrCreate({
                 where: { latitude: road.destination.lat, longitude: road.destination.lng },
             })
             
@@ -124,10 +126,10 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
                 duration: road.duration,
                 user: road.user,
             });
+
             
             if (!roadCreated) return null
-            const savedRoad = roadCreated.get({ plain: true });
-            console.log(savedRoad)
+            const savedRoad = await roadCreated.get({ plain: true });
             return {
                 id: savedRoad.id,
                 name: savedRoad.name,
@@ -139,6 +141,8 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
                 duration: savedRoad.duration,
                 user: savedRoad.user
             };
+
+
         
         } catch (error) {
             console.log(error);
@@ -159,8 +163,8 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
         const listOfRoads = listOfRoad.map((Road) => Road.get({ plain: true }));
         for (const Route of listOfRoads) {
 
-            const coordinatesOrigin = await Location.findByPk(Route.origin);
-            const coordinatesDestiny = await Location.findByPk(Route.destination);
+            const coordinatesOrigin = await this.locationModel.findByPk(Route.origin);
+            const coordinatesDestiny = await this.locationModel.findByPk(Route.destination);
 
             aux.push({
                 id: Route.id,
