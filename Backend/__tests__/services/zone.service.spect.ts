@@ -2,7 +2,6 @@ import { Lifetime } from 'awilix';
 import container from '../../src/container';
 import ZoneService from '../../src/services/zone.service';
 import ZoneRepository from '../../src/repository/zone.repository';
-import UserRepository from '../../src/repository/user.repository';
 import { config } from 'dotenv';
 import { IZoneDto} from '../../src/models/zone.interface';
 import { IReportDto } from '../../src/models/reports.interface';
@@ -22,7 +21,7 @@ jest.mock('../../src/repository/zone.repository', () => {
 
 describe('Zone Service', () => {
     let zoneService: ZoneService;
-    let userRepository: UserRepository;
+
     let zoneRepository: jest.Mocked<ZoneRepository>;
 
     beforeAll(() => {
@@ -56,17 +55,6 @@ describe('Zone Service', () => {
 
     beforeEach(async () => {
         zoneService = container.resolve<ZoneService>('zoneService');
-        userRepository = container.resolve<UserRepository>('userRepository');
-        
-        await userRepository.create({
-            email: 'crisefeld@gmail.com',
-            password: '123456',
-            name: 'Cristian',
-            lastName: 'Esfeld',
-            phoneNumber: '123456',
-            username: 'crisefeld',
-            id: 1,
-        });
     });
 
     test('should create a zone', async () => {

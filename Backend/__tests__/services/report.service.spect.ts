@@ -2,7 +2,6 @@ import { Lifetime } from 'awilix';
 import container from '../../src/container';
 import ReportService from '../../src/services/report.service';
 import ReportRepository from '../../src/repository/reports.repository';
-import UserRepository from '../../src/repository/user.repository';
 import { config } from 'dotenv';
 import { IReportDto } from '../../src/models/reports.interface';
 
@@ -22,7 +21,6 @@ jest.mock('../../src/repository/reports.repository', () => {
 describe('Report Service', () => {
     let reportService: ReportService;
     let reportRepository: jest.Mocked<ReportRepository>;
-    let userRepository: jest.Mocked<UserRepository>;
 
     beforeAll(() => {
         config();
@@ -31,7 +29,6 @@ describe('Report Service', () => {
             ['../../src/services/*.service.ts', Lifetime.SCOPED],
         ]);
         reportRepository = container.resolve<ReportRepository>('reportRepository') as jest.Mocked<ReportRepository>;
-        userRepository = container.resolve<UserRepository>('userRepository') as jest.Mocked<UserRepository>;
     });
 
     beforeEach(async () => {
@@ -39,15 +36,6 @@ describe('Report Service', () => {
     });
 
     test('should create a report', async () => {
-        await userRepository.create({
-            email: 'crisefeld@gmail.com',
-            password: '123456',
-            name: 'Cristian',
-            lastName: 'Esfeld',
-            phoneNumber: '123456',
-            username: 'crisefeld',
-            id: 1,
-        });
         const reportData: IReportDto = {
             id: 1,
             content: 'Test Report',
@@ -73,15 +61,7 @@ describe('Report Service', () => {
     });
 
     test('should get report by id', async () => {
-        await userRepository.create({
-            email: 'crisefeld@gmail.com',
-            password: '123456',
-            name: 'Cristian',
-            lastName: 'Esfeld',
-            phoneNumber: '123456',
-            username: 'crisefeld',
-            id: 1,
-        });
+
         const reportData: IReportDto = {
             id: 1,
             content: 'Test Report',
@@ -139,15 +119,7 @@ describe('Report Service', () => {
     });
 
     test('should get all reports by group', async () => {
-        await userRepository.create({
-            email: 'crisefeld@gmail.com',
-            password: '123456',
-            name: 'Cristian',
-            lastName: 'Esfeld',
-            phoneNumber: '123456',
-            username: 'crisefeld',
-            id: 1,
-        });
+
         const reportData: IReportDto = {
             id: 1,
             content: 'Test Report',
@@ -174,15 +146,7 @@ describe('Report Service', () => {
     });
 
     test('should get all reports', async () => {
-        await userRepository.create({
-            email: 'crisefeld@gmail.com',
-            password: '123456',
-            name: 'Cristian',
-            lastName: 'Esfeld',
-            phoneNumber: '123456',
-            username: 'crisefeld',
-            id: 1,
-        });
+
         const reportData: IReportDto = {
             id: 1,
             content: 'Test Report',

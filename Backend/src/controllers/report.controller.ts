@@ -32,7 +32,7 @@ class ReportController {
             const { id } = validationResult.data as { id: string };
             const report = await this.reportService.getById(+id);
             if (report) {
-                return res.json(report);
+                return res.status(STATUS_CODE.SUCCESS).json(report);
             }
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
@@ -47,7 +47,7 @@ class ReportController {
         try {
             const { userId } = validData.data as { userId: string };
             const reports = await this.reportService.getByUser(+userId);
-            return res.json(reports);
+            return res.status(STATUS_CODE.SUCCESS).json(reports);
         } catch (error) {
             return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
         }

@@ -1,7 +1,7 @@
+import ReportRepository from '../../src/repository/reports.repository';
 import {ReportMock} from '../mocks/report.mock';
 import {CategoryMock} from '../mocks/category.mock';
 import {LocationMock} from '../mocks/location.mock';
-import ReportRepository from '../../src/repository/reports.repository';
 import {IReportDto} from '../../src/models/reports.interface';
 
 describe('ReportRepositiry', () => {

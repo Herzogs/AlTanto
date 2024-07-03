@@ -14,11 +14,11 @@ class GroupUserRepository implements IGroupUserRepository<IGroupUser> {
         if (search) {
             return null;
         }
-        console.log(groupUser);
         const groupUserCreated = await this.model.create({
             groupId: groupUser.groupId,
             userId: groupUser.userId
         });
+
         if (groupUserCreated)
             return groupUserCreated.get({ plain: true }) as IGroupUser;
 

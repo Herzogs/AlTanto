@@ -1,160 +1,161 @@
-import ReportRepository from "../../src/repository/reports.repository";
-import { IReportDto } from "../../src/models/reports.interface";
-import container from "../../src/container";
-import { config } from "dotenv";
 import { Lifetime } from "awilix";
-import GroupRepository from "../../src/repository/group.repository";
-import UserRepository from "../../src/repository/user.repository";
-import { IGroup } from "../../src/models/group.interface";
+import container from "../../src/container";
+import ReportService from "../../src/services/report.service";
+import ReportController from "../../src/controllers/report.controller";
+import * as validationReports from "../../src/validator/report.validator";
+import { Request, Response, NextFunction } from "express";
+import NotificationService from "../../src/services/notification.service";
+import { IReportDto } from "../../src/models/reports.interface";
 
-describe('Report Repository', () => {
-    let reportRepository: ReportRepository;
-    let userRepository: UserRepository;
-    let groupRepository: GroupRepository;
+jest.mock("../../src/services/report.service", () => {
+    return jest.fn().mockImplementation(() => {
+        return {
+            createReport: jest.fn(),
+            getAll: jest.fn(),
+            getById: jest.fn(),
+            getByUser: jest.fn(),
+            getReportsByGroup: jest.fn(),
+            scoringReport: jest.fn(),
+        };
+    });
+});
 
-    beforeAll(async () => {
-        config();
+jest.mock("../../src/validator/report.validator", () => {
+    return {
+        createReportValidator: {
+            safeParseAsync: jest.fn(),
+        },
+        getReportByIdValidator: {
+            safeParseAsync: jest.fn(),
+        },
+        getReportByUserIDValidator: {
+            safeParseAsync: jest.fn(),
+        },
+        scoringReportValidator: {
+            safeParseAsync: jest.fn(),
+        },
+    };
+});
+
+jest.mock("../../src/services/notification.service", () => {
+    return jest.fn().mockImplementation(() => {
+        return {
+            sendNotificationToZone: jest.fn(),
+            sendNotificationToGroup: jest.fn(),
+        };
+    });
+});
+
+describe("ReportController", () => {
+    let reportController: ReportController;
+    let reportService: jest.Mocked<ReportService>;
+    let notificationService: jest.Mocked<NotificationService>;
+
+    beforeAll(() => {
         container.loadModules([
-            ['../../src/models/*.model.ts', Lifetime.SCOPED]
+            ["../../src/services/*.service.ts", Lifetime.SCOPED],
         ]);
-        reportRepository = container.resolve<ReportRepository>('reportRepository');
-        userRepository = container.resolve<UserRepository>('userRepository');
-        groupRepository = container.resolve<GroupRepository>('groupRepository');
+        reportService = container.resolve<ReportService>("reportService") as jest.Mocked<ReportService>;
+        notificationService = container.resolve<NotificationService>("notificationService") as jest.Mocked<NotificationService>;
+        reportController = new ReportController({ reportService, notificationService });
     });
 
-    test('should create a report', async () => {
-        await userRepository.create({
-            email: 'test@example.com',
-            password: 'password',
-            name: 'John',
-            lastName: 'Doe',
-            phoneNumber: '123456789',
-            username: 'johndoe',
-            id: 1,
-        });
+    const reportData: IReportDto = {
+        id: 1,
+        content: "Test",
+        createAt: new Date(),
+        image: "image",
+        positiveScore: 1,
+        negativeScore: 1,
+        category: "Test",
+        location: {
+            latitude: 1,
+            longitude: 1,
+        },
+        userId: 1,
+    };
 
-        const newReport: IReportDto = {
-            content: 'Test report content',
-            category: '1',
-            location: { latitude: 10.0, longitude: 20.0 },
-            image: 'test.jpg',
-            userId: 1,
-        };
+    test("should create a report", async () => {
+        const req = { body: reportData } as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
 
-        const createdReport = await reportRepository.create(newReport);
-        expect(createdReport).toBeDefined();
-        expect(createdReport!.content).toBe(newReport.content);
+        (validationReports.createReportValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: reportData });
+
+        reportService.createReport.mockResolvedValue(reportData);
+
+        await reportController.createReport(req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.json).toHaveBeenCalledWith(reportData);
     });
 
-    test('should get a report by id', async () => {
-        await userRepository.create({
-            email: 'test@example.com',
-            password: 'password',
-            name: 'John',
-            lastName: 'Doe',
-            phoneNumber: '123456789',
-            username: 'johndoe',
-            id: 1,
-        });
+    test("should get all reports", async () => {
+        const req = {} as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as unknown as NextFunction;
 
-        const newReport: IReportDto = {
-            content: 'Another test report content',
-            category: '2',
-            location: { latitude: 11.0, longitude: 21.0 },
-            image: 'test2.jpg',
-            userId: 1,
-        };
+        reportService.getAll.mockResolvedValue([reportData]);
 
-        const createdReport = await reportRepository.create(newReport);
+        await reportController.getAllReports(req, res, next);
 
-        expect(createdReport).toBeDefined();
-
-        const fetchedReport = await reportRepository.getById(createdReport!.id as number);
-        expect(fetchedReport).toBeDefined();
-        expect(fetchedReport!.content).toBe(newReport.content);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith([reportData]);
     });
 
-    test('should get all reports', async () => {
-        await userRepository.create({
-            email: 'test@example.com',
-            password: 'password',
-            name: 'John',
-            lastName: 'Doe',
-            phoneNumber: '123456789',
-            username: 'johndoe',
-            id: 1,
-        });
+    test("should get report by id", async () => {
+        const req = { params: { id: 1 } } as unknown as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
 
-        const newReport1: IReportDto = {
-            content: 'Test report 1 content',
-            category: '1',
-            location: { latitude: 12.0, longitude: 22.0 },
-            image: 'test3.jpg',
-            userId: 1,
-        };
+        (validationReports.getReportByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { id: 1 } });
 
-        const newReport2: IReportDto = {
-            content: 'Test report 2 content',
-            category: '2',
-            location: { latitude: 13.0, longitude: 23.0 },
-            image: 'test4.jpg',
-            userId: 1,
-        };
+        reportService.getById.mockResolvedValue(reportData);
 
-        await reportRepository.create(newReport1);
-        await reportRepository.create(newReport2);
+        await reportController.getReportById(req, res, next);
 
-        const reports = await reportRepository.getAll();
-
-        expect(reports).toBeDefined();
-        expect(reports.length).toBeGreaterThanOrEqual(2);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith(reportData);
     });
 
-    test('should get reports by group id', async () => {
-        await userRepository.create({
-            email: 'test@example.com',
-            password: 'password',
-            name: 'John',
-            lastName: 'Doe',
-            phoneNumber: '123456789',
-            username: 'johndoe',
-            id: 1,
-        });
+    test("should return 500 if report not found", async () => {
+        const req = { params: { id: 1 } } as unknown as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
 
-        const newGroup: IGroup = {
-            name: 'Test Group',
-            ownerId: 1,
-        };
+        (validationReports.getReportByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { id: 1 } });
 
-        await groupRepository.create(newGroup);
+        reportService.getById.mockRejectedValue(new Error("Report not found"));
 
-        const newReport1: IReportDto = {
-            content: 'Group specific report 1',
-            category: '1',
-            location: { latitude: 15.0, longitude: 25.0 },
-            image: 'test6.jpg',
-            groupId: 1,
-            userId: 1,
+        await reportController.getReportById(req, res, next);
 
-        };
-
-        const newReport2: IReportDto = {
-            content: 'Group specific report 2',
-            category: '2',
-            location: { latitude: 16.0, longitude: 26.0 },
-            image: 'test7.jpg',
-            groupId: 1,
-            userId: 1,
-        };
-
-        await reportRepository.create(newReport1);
-        await reportRepository.create(newReport2);
-
-        const groupReports = await reportRepository.getByGroup(1);
-
-
-        expect(groupReports).toBeDefined();
-        expect(groupReports.length).toBeGreaterThanOrEqual(1);
-        expect(groupReports[0].groupId).toBe(1);
+        expect(next).toHaveBeenCalledWith({ message: "Report not found", statusCode: 500 });
     });
-})
+
+    test("should return 400 if validation fails", async () => {
+        const req = { params: { id: "invalid" } } as unknown as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
+
+        (validationReports.getReportByIdValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: false, error: { errors: [{ message: "Invalid id" }] } });
+
+        await reportController.getReportById(req, res, next);
+
+        expect(next).toHaveBeenCalledWith({ message: "Invalid id", statusCode: 400 });
+    });
+
+    test("should get report by user", async () => {
+        const req = { body: { userId: 1 } } as unknown as Request;
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+        const next = jest.fn() as NextFunction;
+
+        (validationReports.getReportByUserIDValidator.safeParseAsync as jest.Mock).mockResolvedValue({ success: true, data: { userId: 1 } });
+
+        reportService.getByUser.mockResolvedValue([reportData]);
+
+        await reportController.getReportByUser(req, res, next);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith([reportData]);
+    });
+});

@@ -2,7 +2,7 @@ import { Lifetime } from 'awilix';
 import container from '../../src/container';
 import RoadService from '../../src/services/road.service';
 import RoadRepository from '../../src/repository/road.repository';
-import UserRepository from '../../src/repository/user.repository';
+
 
 import { config } from 'dotenv';
 import { IRoadDto } from '../../src/models/road.interfaces';
@@ -20,7 +20,6 @@ jest.mock('../../src/repository/road.repository', () => {
 
 describe('Road Service', () => {
     let roadService: RoadService;
-    let userRepository: UserRepository;
     let roadRepository: jest.Mocked<RoadRepository>;
 
     beforeAll(() => {
@@ -34,20 +33,10 @@ describe('Road Service', () => {
 
     beforeEach(async () => {
         roadService = container.resolve<RoadService>('roadService');
-        userRepository = container.resolve<UserRepository>('userRepository');    
+
     });
 
     test('should create a road', async () => {
-        await userRepository.create({
-            email: 'crisefeld@gmail.com',
-            password: '123456',
-            name: 'Cristian',
-            lastName: 'Esfeld',
-            phoneNumber: '123456',
-            username: 'crisefeld',
-            id: 1,
-        });
-
         const roadData: IRoadDto = {
             name: 'Test Road',
             addressOrigin: '123 Test St',
@@ -59,7 +48,7 @@ describe('Road Service', () => {
             user: 1,
         };
 
-        // Mock the create method of the roadRepository
+
         roadRepository.create.mockResolvedValue(roadData);
         
         const createdRoad = await roadService.createRoad(roadData);
@@ -84,15 +73,7 @@ describe('Road Service', () => {
     })
 
     test('should get road by id', async () => {
-        await userRepository.create({
-            email: 'crisefeld@gmail.com',
-            password: '123456',
-            name: 'Cristian',
-            lastName: 'Esfeld',
-            phoneNumber: '123456',
-            username: 'crisefeld',
-            id: 1,
-        });
+
         const roadData: IRoadDto = {
             name: 'Test Road',
             addressOrigin: '123 Test St',
@@ -119,15 +100,7 @@ describe('Road Service', () => {
     });
 
     test('should get all roads del usuario', async () => {
-        await userRepository.create({
-            email: 'crisefeld@gmail.com',
-            password: '123456',
-            name: 'Cristian',
-            lastName: 'Esfeld',
-            phoneNumber: '123456',
-            username: 'crisefeld',
-            id: 1,
-        });
+
         const roadData: IRoadDto = {
             name: 'Test Road',
             addressOrigin: '123 Test St',
