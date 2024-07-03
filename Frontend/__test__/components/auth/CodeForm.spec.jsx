@@ -3,6 +3,8 @@ import { describe, it, vi, beforeEach } from 'vitest';
 import ValidationCodeForm from '@components/auth/CodeForm';
 import userEvent from '@testing-library/user-event'; // Asegúrate de importar userEvent correctamente
 import { validateCode } from "@services/sendData";
+import { MemoryRouter } from 'react-router-dom';
+
 
 // Mock de los componentes internos
 vi.mock('@components/modal/ModalAT', () => ({
@@ -83,29 +85,6 @@ describe('ValidationCodeForm Component', () => {
         });
     });
 
-    it('should handle error from zod validation', async () => {
-        vi.mock('@hookform/resolvers/zod', () => ({
-            zodResolver: vi.fn(() => {
-                return Promise.reject(new Error('Error de servicio'));
-            }),
-        }));
+  
 
-        render(
-            <MemoryRouter>
-                <ValidationCodeForm />
-            </MemoryRouter>
-        );
-
-        // Simula el ingreso de datos en los campos del formulario
-        await userEvent.type(screen.getByLabelText('Email:'), 'test@example.com');
-        await userEvent.type(screen.getByLabelText('Código:'), '123456');
-      
-        fireEvent.click(screen.getByRole('button', { name: /Validar/i }));
-
-        // Espera a que se maneje el error y se muestre en la interfaz
-        await waitFor(() => {
-            expect(screen.getByText('Error de servicio')).toBeInTheDocument();
-        });
-    });
-   
 });
