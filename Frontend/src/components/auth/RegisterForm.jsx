@@ -71,6 +71,7 @@ function RegisterForm() {
                 Nombre:
               </label>
               <input
+                id="name"
                 type="text"
                 {...register("name")}
                 className={`form-control ${errors.name ? "is-invalid" : ""}`}
@@ -84,11 +85,12 @@ function RegisterForm() {
                 Apellido:
               </label>
               <input
+                id="lastName"
+
                 type="text"
                 {...register("lastName")}
-                className={`form-control ${
-                  errors.lastName ? "is-invalid" : ""
-                }`}
+                className={`form-control ${errors.lastName ? "is-invalid" : ""
+                  }`}
               />
               {errors.lastName && (
                 <div className="invalid-feedback">
@@ -101,11 +103,12 @@ function RegisterForm() {
                 Nombre de usuario:
               </label>
               <input
+                id="username"
+
                 type="text"
                 {...register("username")}
-                className={`form-control ${
-                  errors.username ? "is-invalid" : ""
-                }`}
+                className={`form-control ${errors.username ? "is-invalid" : ""
+                  }`}
               />
               {errors.username && (
                 <div className="invalid-feedback">
@@ -118,11 +121,11 @@ function RegisterForm() {
                 Contraseña:
               </label>
               <input
+                id="password"
                 type="password"
                 {...register("password")}
-                className={`form-control ${
-                  errors.password ? "is-invalid" : ""
-                }`}
+                className={`form-control ${errors.password ? "is-invalid" : ""
+                  }`}
               />
               {errors.password && (
                 <div className="invalid-feedback">
@@ -135,11 +138,11 @@ function RegisterForm() {
                 Ingrese nuevamente la contraseña:
               </label>
               <input
+                id="rePassword"
                 type="password"
                 {...register("rePassword")}
-                className={`form-control ${
-                  errors.rePassword ? "is-invalid" : ""
-                }`}
+                className={`form-control ${errors.rePassword ? "is-invalid" : ""
+                  }`}
               />
               {errors.rePassword && (
                 <div className="invalid-feedback">
@@ -152,11 +155,11 @@ function RegisterForm() {
                 Numero de telefono:
               </label>
               <input
+                    id="phoneNumber"
                 type="text"
                 {...register("phoneNumber")}
-                className={`form-control ${
-                  errors.phoneNumber ? "is-invalid" : ""
-                }`}
+                className={`form-control ${errors.phoneNumber ? "is-invalid" : ""
+                  }`}
               />
               {errors.phoneNumber && (
                 <div className="invalid-feedback">
@@ -169,6 +172,8 @@ function RegisterForm() {
                 Email:
               </label>
               <input
+                    id="email"
+
                 type="text"
                 {...register("email")}
                 className={`form-control ${errors.email ? "is-invalid" : ""}`}

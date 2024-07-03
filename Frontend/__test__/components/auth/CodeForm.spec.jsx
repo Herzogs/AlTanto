@@ -83,20 +83,26 @@ describe('ValidationCodeForm Component', () => {
         });
     });
 
-    it('should handle error from validateCode', async () => {
-        vi.mock('@services/sendData', () => ({
-            validateCode: vi.fn(() => {
+    it('should handle error from zod validation', async () => {
+        vi.mock('@hookform/resolvers/zod', () => ({
+            zodResolver: vi.fn(() => {
                 return Promise.reject(new Error('Error de servicio'));
             }),
         }));
-        
-        render(<ValidationCodeForm />);
-        
+
+        render(
+            <MemoryRouter>
+                <ValidationCodeForm />
+            </MemoryRouter>
+        );
+
+        // Simula el ingreso de datos en los campos del formulario
         await userEvent.type(screen.getByLabelText('Email:'), 'test@example.com');
         await userEvent.type(screen.getByLabelText('Código:'), '123456');
       
         fireEvent.click(screen.getByRole('button', { name: /Validar/i }));
-        
+
+        // Espera a que se maneje el error y se muestre en la interfaz
         await waitFor(() => {
             expect(screen.getByText('Error de servicio')).toBeInTheDocument();
         });

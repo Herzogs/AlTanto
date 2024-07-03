@@ -54,6 +54,7 @@ function LoginForm() {
             Correo Electrónico:
           </label>
           <input
+          id='email'
             type="email"
             {...register("email")}
             className={`form-control ${errors.email ? "is-invalid" : ""}`}
@@ -67,6 +68,7 @@ function LoginForm() {
             Contraseña:
           </label>
           <input
+          id='password'
             type="password"
             {...register("password")}
             className={`form-control ${errors.password ? "is-invalid" : ""}`}
