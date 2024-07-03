@@ -5,6 +5,9 @@ const config: Config.InitialOptions = {
   testEnvironment: 'node',
   setupFiles: ['dotenv/config'],
   passWithNoTests:true,
+  testPathIgnorePatterns: [
+      '/mocks/'
+  ],
   //setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   reporters: ["jest-console-group-reporter"],
 };

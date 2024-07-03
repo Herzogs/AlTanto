@@ -1,8 +1,8 @@
 import MockSequelize from 'sequelize-mock';
 import {DataTypes} from 'sequelize';
 import { UserMock } from './user.mock';
-import GroupMock from './group.mock';
-import { LocationMock } from './zone.mock';
+import {GroupMock} from './group.mock';
+import {LocationMock} from './zone.mock';
 import { CategoryMock } from './category.mock';
 
 const sequelizeMock = new MockSequelize();
