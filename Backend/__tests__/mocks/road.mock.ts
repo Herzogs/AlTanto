@@ -59,8 +59,8 @@ RoadMock.belongsTo(LocationMock, { foreignKey: 'destination' });
 RoadMock.belongsTo(UserMock, { foreignKey: 'user' });
 
 // Mock del método create
-RoadMock.create = jest.fn().mockResolvedValue({
-    get: jest.fn().mockResolvedValue( RoadMock.build({id: 1,
+RoadMock.create = jest.fn().mockResolvedValue(
+        RoadMock.build({id: 1,
         name: 'Test Road',            // Aquí deberías establecer el nombre esperado
         addressOrigin: '123 Test St', // Aquí deberías establecer la dirección de origen esperada
         addressDestiny: '456 Test Ave', // Aquí deberías establecer la dirección de destino esperada
@@ -70,7 +70,30 @@ RoadMock.create = jest.fn().mockResolvedValue({
         duration: 200,                // Aquí deberías establecer la duración esperada
         user: 1,                      // Aquí deberías establecer el id de usuario esperado
         createdAt: new Date(), }))
+
+const response= {
+     id:1,
+    name:'test1',
+    addressOrigin:'Origin test1',
+    addressDestiny: 'Destini test1',
+    origin:1,
+    destination:1,
+    distance: 500,
+    duration: 200,
+    user: 1,
+    createdAt: new Date(),
+}
+
+RoadMock.findByPk= jest.fn((id) => {
+    if (id === 1) {
+        return Promise.resolve({
+            get: jest.fn().mockReturnValue(response),
+        });
+    }
+    return Promise.resolve(null);
 });
+
+
 
 export { RoadMock };
 

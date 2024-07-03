@@ -129,7 +129,7 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
 
             
             if (!roadCreated) return null
-            const savedRoad = await roadCreated.get({ plain: true });
+            const savedRoad =  roadCreated.get({ plain: true });
             return {
                 id: savedRoad.id,
                 name: savedRoad.name,
@@ -142,10 +142,7 @@ class RoadRepository implements IRoadRepository<IRoadDto> {
                 user: savedRoad.user
             };
 
-
-        
         } catch (error) {
-            console.log(error);
             return null;            
         }
         

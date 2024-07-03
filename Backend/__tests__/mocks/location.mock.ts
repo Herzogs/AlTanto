@@ -6,6 +6,16 @@ const LocationMock = sequelizeMock.define('Location', {
     id: 1,
     latitude: 10,
     longitude: 20
+}, {
+
+    instanceMethods: {
+        /* get: function (key: string): string {
+            return this.getDataValue(key);
+        }, */
+        getDataValue: function (key: string): string {
+            return '20';
+        }
+    }
 });
 
 // Simular método findOrCreate
