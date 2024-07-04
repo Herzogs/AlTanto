@@ -26,12 +26,10 @@ vi.mock('@components/modal/ModalAT', () => ({
     default: () => <div>ModalAT</div>,
   }));
 
-// Configurar los mocks para los hooks y servicios
 vi.mock('@store');
 vi.mock('@hook/useReports');
 vi.mock('@services/getZone');
 
-// Mockear useParams y useNavigate de react-router-dom
 vi.mock('react-router-dom', () => ({
   useParams: vi.fn(),
   useNavigate: vi.fn(),
@@ -39,7 +37,6 @@ vi.mock('react-router-dom', () => ({
 
 describe('ZoneHome component', () => {
   beforeEach(() => {
-    // Configurar el retorno de valores para useStore y useReports
     useStore.mockReturnValue({
       userLocation: { lat: 40.7128, lng: -74.0060 },
       radiusZone: 500,
@@ -53,7 +50,6 @@ describe('ZoneHome component', () => {
       fetchReports: vi.fn(),
     });
 
-    // Configurar el mock de getZone para que retorne datos simulados
     getZone.mockResolvedValue({
       rad: '500',
       location: { lat: 40.7128, lon: -74.0060 },
