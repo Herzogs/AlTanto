@@ -130,7 +130,7 @@ h6 {
   background-color: var(--color-at-white);
   color: var(--color-at-black);
   border-radius: 8px;
-  padding: 12px;
+  padding: 16px 32px;
 }
 
 .zonas-item h5 {
