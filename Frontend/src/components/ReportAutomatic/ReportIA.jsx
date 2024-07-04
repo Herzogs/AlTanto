@@ -75,7 +75,7 @@ function ReportIA() {
     setFile(null);
     setPreviewUrl(null);
     setIsCameraOpen(true);
-    const facingMode = useRearCamera ? { exact: "environment" } : "user";
+    const facingMode = useRearCamera ? { exact: "user" } : "environment";
 
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode } })
@@ -194,7 +194,9 @@ function ReportIA() {
       <Container className="container-md_stop h-100 pt-4 pt-lg-5">
         <p className="text-end">
           <Link to="/">
-            <ArrowBackIcon /> Regresar
+            <ArrowBackIcon onClick={()=> {
+              videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+            }} /> Regresar
           </Link>
         </p>
         <h2>Generar reporte automático</h2>
@@ -208,7 +210,7 @@ function ReportIA() {
           label="Seleccionar imagen"
           onChange={handleFileChange}
           accept="image/*"
-          capture="environment"
+          //capture="environment"
           disabled={isCameraOpen}
         />
 
@@ -224,7 +226,7 @@ function ReportIA() {
         {isCameraOpen && (
           <div>
             <video ref={videoRef} style={{ width: "100%" }}></video>
-            <Button  className="mt-3" variant="danger" onClick={handleCancelCamera}>
+            <Button className="mt-3" variant="danger" onClick={handleCancelCamera}>
               Cancelar
             </Button>
             <Button
