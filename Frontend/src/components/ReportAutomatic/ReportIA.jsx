@@ -230,7 +230,7 @@ function ReportIA() {
             <Button
               variant="secondary"
               onClick={toggleCamera}
-              className="mt-3"
+              className="d-md-none mt-3"
             >
               Cambiar a {useRearCamera ? "frontal" : "trasera"}
             </Button>
