@@ -1,73 +1,75 @@
-import { useState, useEffect } from 'react';
-import { updateUser, getUserById } from '../services/userService';
+import { useState, useEffect } from "react";
+import { getUserById } from "../services/userService";
 import { userStore } from "@store";
-import { Container, Button } from "react-bootstrap";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import EditIcon from '@mui/icons-material/Edit';
+import { Container, Row, Col } from "react-bootstrap";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Header from "@components/header/Header";
 import { Link } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 function UserProfile({ handleClose }) {
-    const { user } = userStore();
-    const userId = user?.id;
-    const [userData, setUserData] = useState(null);
+  const { user } = userStore();
+  const userId = user?.id;
+  const [userData, setUserData] = useState(null);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const userData = await getUserById(userId);
-                console.log(userData)
-                setUserData(userData);
-            } catch (error) {
-                console.error('Error fetching user:', error);
-            }
-        };
-
-        if (userId) {
-            fetchUser();
-        }
-    }, [userId]);
-
-    const handleUpdateUser = async () => {
-        const updatedUserData = {
-        };
-
-        try {
-            const updatedUser = await updateUser(userId, updatedUserData);
-            setUserData(updatedUser);
-        } catch (error) {
-            console.error('Error updating user:', error);
-        }
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getUserById(userId);
+        setUserData(userData);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
     };
 
-    if (!userData) {
-        return <div>Loading...</div>;
+    if (userId) {
+      fetchUser();
     }
+  }, [userId]);
 
-    return (
-        <Container fluid className="pb-footer">
-            <div className="text-center">
-                <h1>
-                    <AccountCircleIcon /> Perfil de Usuario
-                </h1>
-                <Button variant="success" className="mt-3" onClick={handleUpdateUser}>
-                    <EditIcon /> Guardar
-                </Button>
-            </div>
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
 
-            <div className="mt-5">
-                <h4 className="text-center">Detalles del Usuario</h4>
-                <div className="container_zonas-item container">
-                    <div className="zonas-item">
-                        <h5>Nombre de usuario: {userData.username}</h5>
-                        <p>Nombre: {userData.name}</p>
-                        <p>Apellido: {userData.lastName}</p>
-                        <p>Email: {userData.email}</p>
-                        {/* Agrega más detalles según sea necesario */}
-                    </div>
-                </div>
+  return (
+    <Row className="justify-content-center">
+      <Col lg={6} className="at-desk_form">
+        <Header />
+        <Container className="container-md_stop pt-4 pt-lg-5">
+          <p className="text-end">
+            <Link to="/">
+              <ArrowBackIcon /> Regresar
+            </Link>
+          </p>
+          <div className="text-center">
+            <h3>
+              <AccountCircleIcon /> Perfil de Usuario
+            </h3>
+          </div>
+
+          <div className="mt-3">
+            <div className="container_zonas-item container">
+              <div className="zonas-item">
+                <h5>Usuario {userData.username}</h5>
+                <p>
+                  <strong>Nombre</strong> {userData.name}
+                </p>
+                <p>
+                  <strong>Apellido</strong> {userData.lastName}
+                </p>
+                <p>
+                  <strong>Email</strong> {userData.email}
+                </p>
+                <p>
+                  <strong>Teléfono</strong> {userData.phoneNumber}
+                </p>
+              </div>
             </div>
+          </div>
         </Container>
-    );
+      </Col>
+    </Row>
+  );
 }
 
 export default UserProfile;
