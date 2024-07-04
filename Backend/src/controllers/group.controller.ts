@@ -160,6 +160,17 @@ class GroupController {
         }
     }
 
+    async notificationRemoveUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const { groupId, userId } = req.body;
+
+        try {
+            const response = await this.notificationService.sendNotificationRemoveUser(groupId, userId);
+            return res.json(response);
+        } catch (error) {
+            return next({ message: (error as Error).message, statusCode: STATUS_CODE.SERVER_ERROR });
+        }
+    }
+
 }
 
 export default GroupController;

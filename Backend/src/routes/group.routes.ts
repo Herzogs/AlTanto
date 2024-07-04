@@ -16,6 +16,7 @@ groupRouter.get('/find/:name', auth, api('findGroupsByName'));
 groupRouter.get('/members/:id', auth, api('getGroupDetailsById'));
 groupRouter.get('/notifications/:id', auth, api('getGroupNotifications'));
 groupRouter.post('/sos', auth, api('sendSOS'));
+groupRouter.post('/notification', auth, api('notificationRemoveUser'));
 
 
 export default groupRouter;

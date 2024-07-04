@@ -2,13 +2,16 @@ import { IGroupUser } from "../models/group.interface";
 import { IGroupUserRepository } from "../repository/interface/groupUser.repository.interface";
 import { UserNotFoundException } from "../exceptions/users.exceptions";
 import { IGroupUserService } from "./interfaces/groupUser.service.interface";
+import { INotificationService } from "./interfaces/notification.service.interface";
 
 class GroupUserService implements IGroupUserService<IGroupUser>{
     
         private groupUserRepository: IGroupUserRepository<IGroupUser>;
+        private notificationService: INotificationService;
     
-        constructor({ groupUserRepository }: { groupUserRepository: IGroupUserRepository<IGroupUser> }) {
+        constructor({ groupUserRepository, notificationService }: { groupUserRepository: IGroupUserRepository<IGroupUser>, notificationService: INotificationService }) {
             this.groupUserRepository = groupUserRepository;
+            this.notificationService= notificationService;
         }
     
         async addUser(groupUser: IGroupUser): Promise<IGroupUser> {
@@ -18,9 +21,13 @@ class GroupUserService implements IGroupUserService<IGroupUser>{
         }
     
         async removeUser(groupUser: IGroupUser): Promise<boolean> {
-            const removed = await this.groupUserRepository.remove(groupUser);
-            if (!removed) throw new UserNotFoundException('User not found in group');
-            return removed;
+            const notificationSend = await this.notificationService.sendNotificationRemoveUser(groupUser.groupId, groupUser.userId!)
+            if(notificationSend){
+                const removed = await this.groupUserRepository.remove(groupUser);
+                if (!removed) throw new UserNotFoundException('User not found in group');
+                return removed;
+            }
+            return false;
         }
 
         async findAllByUserId(userId: number): Promise<IGroupUser[]> {

@@ -101,4 +101,4 @@ export const sendSOS = async (groupId, userId, address) => {
     console.error("Error SOS:", error);
     throw new Error("Failed to SOS Group.");
   }
-};
+}
