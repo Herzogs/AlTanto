@@ -235,6 +235,15 @@ a {
   padding-top: 60px;
 }
 
+/* MODA INDEX */
+
+.modal-backdrop {
+  z-index: 9995 !important;
+}
+
+.modal {
+  z-index: 9996 !important;
+}
 
 @media only screen and (min-width: 996px) {
 /* FORM DESK */
