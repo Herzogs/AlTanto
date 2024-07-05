@@ -142,16 +142,17 @@ function ZoneForm() {
     <section className="h-100">
       <HeaderHome />
       <article className="at-form-flotante">
-        <h4>Buscar zonas</h4>
         <Form onSubmit={handleSubmit(onSubmit)} className="h-100">
           <Form.Group as={Row} controlId="address">
-            <Form.Label column>
-              Dirección: <br />
-              <small>Calle, Número y Localidad</small>
-            </Form.Label>
-            <Col sm={12}>
+            <Col xs={12}>
+              <Form.Label column>
+                Dirección:
+              </Form.Label>
+            </Col>
+            <Col xs={9} md={12}>
               <Form.Control
                 type="text"
+                placeholder="Calle, Número y Localidad"
                 isInvalid={!!errors.address}
                 {...register("address", {
                   required: "Campo requerido",
@@ -167,23 +168,21 @@ function ZoneForm() {
                 </Form.Control.Feedback>
               )}
             </Col>
-          </Form.Group>
-          <Form.Group className="my-3" as={Row} controlId="search">
-            <Col sm={12}>
+            <Col xs={3} md={12}>
               <Button
                 type="button"
-                className="btn btn-sm btn-primary px-md-5"
+                className="btn btn-sm btn-primary px-md-5 mt-md-3"
                 onClick={handleSearch}
                 disabled={disabled}
               >
-                Buscar dirección
+                Buscar
               </Button>
               {error && <p style={{ color: "red" }}>{error}</p>}
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="radio">
             <Form.Label column>Radio asignado a la zona:</Form.Label>
-            <Col sm={12} className="d-flex d-lg-block">
+            <Col sm={12} className="d-flex d-md-block">
               {["250", "500", "1000"].map((value) => (
                 <FormCheck
                   key={value}
@@ -198,11 +197,11 @@ function ZoneForm() {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} controlId="name">
-            <Form.Label column>Nombre:</Form.Label>
-            <Col sm={12}>
+          <Form.Group as={Row} className="mt-2" controlId="name">
+            <Col xs={9} md={12}>
               <Form.Control
                 type="text"
+                placeholder="Nombre"
                 isInvalid={!!errors.name}
                 {...register("name", {
                   required: "Campo requerido",
@@ -222,16 +221,10 @@ function ZoneForm() {
                 </Form.Control.Feedback>
               )}
             </Col>
-          </Form.Group>
-          <Form.Group
-            className="mt-2 mt-md-0 my-md-4"
-            as={Row}
-            controlId="submit"
-          >
-            <Col sm={12}>
+            <Col xs={3} md={12}>
               {visible && userLocation && (
                 <Button
-                  className="btn btn-sm btn-success px-md-5"
+                  className="btn btn-sm btn-success px-md-5 my-md-3"
                   type="submit"
                   disabled={disabled}
                 >
