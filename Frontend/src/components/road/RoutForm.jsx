@@ -59,8 +59,6 @@ function RoutForm() {
     try {
       const startCoords = await geocodeAddress(startAddress);
       const endCoords = await geocodeAddress(endAddress);
-      console.log("gooo")
-      /*  setUserLocation({ lat: startCoords.lat, lng: startCoords.lon }); */
       setStartPoint(startCoords);
       setEndPoint(endCoords);
       setError(false);
