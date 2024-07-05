@@ -4,7 +4,7 @@ const ZoneFormScheme = z.object({
     name: z.string({
         required_error: 'El nombre es requerido'
     })
-    .min(5, 'Mínimo debe contener 10 caracteres')
+    .min(3, 'Mínimo debe contener 3 caracteres')
     .max(100, 'Máximo 100 caracteres'),
     address: z.string({
         required_error: 'La dirección es requerida'

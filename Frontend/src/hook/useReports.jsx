@@ -8,7 +8,6 @@ function useReports() {
     if (userLocation) {
       try {
         const response = await getReportsBy(userLocation, radiusZone);
-        console.log(response);
         setReports(response);
       } catch (error) {
         console.error("Error fetching reports:", error);

@@ -6,7 +6,7 @@ import Aside from "@components/aside/Aside";
 import SliderButton from "@components/slider/SliderButton";
 import useReports from "@hook/useReports";
 import { useStore, userStore } from "@store";
-import Spinner from 'react-bootstrap/Spinner';
+import Spinner from "react-bootstrap/Spinner";
 
 function Home() {
   const {
@@ -19,7 +19,7 @@ function Home() {
     setDistance,
     radiusZone,
     setRadiusZone,
-    setMarkerPosition
+    setMarkerPosition,
   } = useStore();
 
   const { id } = userStore.getState().user;
@@ -28,15 +28,14 @@ function Home() {
   const [loading, setLoading] = useState(true); // Estado de carga
 
   useEffect(() => {
+    setUserLocation(null);
     setMarkerPosition(null);
     setLoading(false);
-
   }, []);
-  
+
   useEffect(() => {
     if (userLocation) {
-      fetchReports()
-
+      fetchReports();
       setRadiusZone("500");
     }
   }, [userLocation, radiusZone]);
@@ -49,7 +48,6 @@ function Home() {
     setRouteCoordinates(null);
     setMarkerPosition(null);
   }, [setRoutingMode]);
-
 
   return (
     <section className="w-100 h-100">

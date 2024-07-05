@@ -158,6 +158,10 @@ a {
   max-width: 996px !important;
 }
 
+.container-xl_stop {
+  max-width: 1140px !important;
+}
+
 .pb-footer {
   padding-bottom: 76px;
 }
@@ -235,6 +239,15 @@ a {
   padding-top: 60px;
 }
 
+/* MODA INDEX */
+
+.modal-backdrop {
+  z-index: 9995 !important;
+}
+
+.modal {
+  z-index: 9996 !important;
+}
 
 @media only screen and (min-width: 996px) {
 /* FORM DESK */
@@ -280,6 +293,7 @@ a {
 @media only screen and (min-width: 1400px) {
   .float-title {
     font-size: 32px;
+    top: 120px;
   }
 
   .float-box {

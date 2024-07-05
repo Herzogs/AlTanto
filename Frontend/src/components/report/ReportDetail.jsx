@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Container, Image } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Col, Container, Image, Row } from "react-bootstrap";
+import { Link, useParams } from "react-router-dom";
 import Header from "@components/header/Header";
 import Map from "@components/Map/Map";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useStore } from "@store";
 import { fetchReportById } from "@services/getReport";
 import { format } from "date-fns";
@@ -38,27 +39,34 @@ function ReportDetail() {
   const formattedDate = format(new Date(createAt), "HH:mm - dd/MM/yyyy");
 
   return (
-    <section className="container_home">
-      <Header />
-      <Container fluid className="h-100">
-        <article className="text-center mb-5">
-          <h2 className="my-4">Detalle del reporte</h2>
-          <h5>Descripción: {content}</h5>
-          <h5>Fecha: {formattedDate}</h5>
+    <Row className="justify-content-center">
+      <Col lg={6} className="at-desk_form">
+        <Header />
+        <Container className="container-md_stop pt-4 pt-lg-5">
+          <p className="text-end">
+            <Link to="/">
+              <ArrowBackIcon /> Regresar
+            </Link>
+          </p>
+          <article className="text-center mb-3">
+            <h2 className="my-4">Detalle del reporte</h2>
+            <h5>Descripción: {content}</h5>
+            <h6>Fecha: {formattedDate}</h6>
 
-          {images && (
-            <Image
-              src={images}
-              style={{ width: "100%", maxWidth: "600px" }}
-              alt="Imagen del reporte"
-            />
-          )}
-        </article>
-        <div className="h-map pb-footer">
+            {images && (
+              <Image
+                src={images}
+                style={{ width: "100%" }}
+                alt="Imagen del reporte"
+              />
+            )}
+          </article>
+          <div style={{height: "50vh"}}>
           <Map userLocation={userLocation} zoneMode={true} />
-        </div>
-      </Container>
-    </section>
+          </div>
+        </Container>
+      </Col>
+    </Row>
   );
 }
 

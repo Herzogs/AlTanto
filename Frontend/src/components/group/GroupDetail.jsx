@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   getGroupById,
   removeUserFromGroup,
@@ -8,7 +8,7 @@ import {
 import { getUserByUsername } from "@services/userService";
 import ConfirmationModal from "@components/modal/ConfirmationModal";
 import { userStore } from "@store";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Dropdown, Row } from "react-bootstrap";
 import Header from "@components/header/Header";
 import MenuButton from "../Map/MenuButton";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
@@ -21,6 +21,8 @@ import { sendSOS } from "@services/groupService";
 import SliderAT from "../slider/SliderAT";
 import ModalAT from "@components/modal/ModalAT";
 import { fetchReportsByGroup } from "@services/getReportByGroup";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 function GroupDetail() {
   const { id } = useParams();
@@ -216,28 +218,34 @@ function GroupDetail() {
             <div className="mt-3 mt-lg-4">
               <h4>Invitar Usuario</h4>
 
-              <div className="d-flex">
-                <input
-                  className="form-control"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-                <button
-                  style={{ textWrap: "nowrap" }}
-                  className="btn btn-sm btn-primary"
-                  onClick={handleSearchUser}
-                >
-                  Buscar Usuario
-                </button>
+              <div className="row">
+                <div className="col-6">
+                  <button
+                    className="btn btn-success"
+                    onClick={handleInviteUsers}
+                  >
+                    <WhatsAppIcon /> Compartir
+                  </button>
+                </div>
+                <div className="col-6">
+                  <div className="d-flex">
+                    <input
+                      placeholder="Ingresar usuario"
+                      className="form-control"
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <button
+                      style={{ textWrap: "nowrap" }}
+                      className="btn btn-sm btn-primary ms-2"
+                      onClick={handleSearchUser}
+                    >
+                      Buscar
+                    </button>
+                  </div>
+                </div>
               </div>
-
-              <button
-                className="btn btn-sm btn-primary mt-2"
-                onClick={handleInviteUsers}
-              >
-                Invitar usuarios
-              </button>
 
               {foundUser && (
                 <article className="d-flex align-items-center bg-primary-subtle p-3 my-3 rounded">
@@ -298,7 +306,23 @@ function GroupDetail() {
             </div>
           )}
 
-          <MenuButton groupId={groupDetails?.id} />
+          <Dropdown className="grupo-reporte">
+            <Dropdown.Toggle id="dropdown-basic" as="button">
+              <AddCircleIcon className="menu-button_icon" />{" "}
+              <span className="h5 text-white">Crear reporte de grupo</span>
+            </Dropdown.Toggle>
+            <Dropdown.Menu align="end">
+              <Dropdown.Item as={Link} to={`/form/reporte/${groupDetails?.id}`}>
+                Reporte Manual
+              </Dropdown.Item>
+              <Dropdown.Item
+                as={Link}
+                to={`/form/reporte/automatico/${groupDetails?.id}`}
+              >
+                Reporte Automático
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
 
           {reports.length > 0 && (
             <>

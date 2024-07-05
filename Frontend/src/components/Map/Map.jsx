@@ -60,7 +60,7 @@ const Map = ({
         center={userLocation ? [userLocation.lat, userLocation.lng] : [0, 0]}
         zoom={15}
         minZoom={14}
-        maxZoom={18}
+        maxZoom={20}
         markerZoomAnimation={true}
       >
         <TileLayer

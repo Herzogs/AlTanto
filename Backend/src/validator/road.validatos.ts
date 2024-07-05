@@ -14,12 +14,12 @@ const createRoadValidator = z.object({
         message: 'Name must be a string',
         required_error: 'Name is required'
     }).min(1, { message: 'Name must be at least 1 character long' })
-        .max(30, { message: 'Name must be at most 30 characters long' }),
+        .max(120, { message: 'Name must be at most 120 characters long' }),
     addressOrigin: z.string({
         message: 'Address must be a string',
         required_error: 'Address is required'
     }).min(1, { message: 'Address must be at least 1 character long' })
-        .max(50, { message: 'Address must be at most 3 characters long' }),
+        .max(120, { message: 'Address must be at most 120 characters long' }),
     addressDestiny: z.string({
         message: 'Address must be a string',
         required_error: 'Address is required',

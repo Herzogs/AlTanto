@@ -109,114 +109,116 @@ function ReportForm() {
   };
 
   return (
-    <>
-      <Header />
-      <Container className="pt-4 pt-lg-5">
-        <p className="text-end">
-          <Link to="/">
-            <ArrowBackIcon /> Regresar
-          </Link>
-        </p>
-        <h2>Crear Reporte</h2>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group as={Row}>
-            <Form.Label htmlFor="category" className="mt-3 mb-2">
-              Categoría:
-            </Form.Label>
-            <Col sm={12}>
-              <Form.Control
-                as="select"
-                isInvalid={errors.category}
-                {...register("category", {
-                  onChange: (e) =>
-                    setFormData({ ...formData, category: e.target.value }),
-                })}
-              >
-                <option value="">Seleccione una categoría</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </Form.Control>
-              <Form.Control.Feedback type="invalid">
-                {errors.category?.message}
-              </Form.Control.Feedback>
-            </Col>
-          </Form.Group>
+    <Row className="justify-content-center">
+      <Col lg={6} className="at-desk_form">
+        <Header />
+        <Container className="container-md_stop pt-4 pt-lg-5">
+          <p className="text-end">
+            <Link to="/">
+              <ArrowBackIcon /> Regresar
+            </Link>
+          </p>
+          <h2>Crear Reporte</h2>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form.Group as={Row}>
+              <Form.Label htmlFor="category" className="mt-3 mb-2">
+                Categoría:
+              </Form.Label>
+              <Col sm={12}>
+                <Form.Control
+                  as="select"
+                  isInvalid={errors.category}
+                  {...register("category", {
+                    onChange: (e) =>
+                      setFormData({ ...formData, category: e.target.value }),
+                  })}
+                >
+                  <option value="">Seleccione una categoría</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {errors.category?.message}
+                </Form.Control.Feedback>
+              </Col>
+            </Form.Group>
 
-          <Form.Group as={Row}>
-            <Form.Label htmlFor="content" className="mt-3 mb-2">
-              Descripción:
-            </Form.Label>
-            <Col sm={12}>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                isInvalid={errors.content}
-                {...register("content", {
-                  onChange: (e) =>
-                    setFormData({ ...formData, content: e.target.value }),
-                })}
-                value={formData.content}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.content?.message}
-              </Form.Control.Feedback>
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row}>
-            <Form.Label htmlFor="image" className="mt-3 mb-2">
-              Imagen:
-            </Form.Label>
-            <Col sm={12}>
-              <Form.Control type="file" onChange={handleImageChange} />
-            </Col>
-          </Form.Group>
-
-          {userLocation && (
-            <>
-              <Form.Group as={Row}>
-                <Form.Label htmlFor="address" className="mt-3">
-                  Ubicación:
-                </Form.Label>
-                <Col sm={12}>
-                  <Form.Control
-                    type="text"
-                    id="address"
-                    className="mb-2 w-100"
-                    value={address}
-                    readOnly
-                  />
-                </Col>
-              </Form.Group>
-
-              <div style={{ height: "300px", marginTop: "16px" }}>
-                <Map
-                  userLocation={userLocation}
-                  zoneMode={true}
-                  mapClick={true}
-                  noCircle={true}
+            <Form.Group as={Row}>
+              <Form.Label htmlFor="content" className="mt-3 mb-2">
+                Descripción:
+              </Form.Label>
+              <Col sm={12}>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  isInvalid={errors.content}
+                  {...register("content", {
+                    onChange: (e) =>
+                      setFormData({ ...formData, content: e.target.value }),
+                  })}
+                  value={formData.content}
                 />
-              </div>
-            </>
-          )}
+                <Form.Control.Feedback type="invalid">
+                  {errors.content?.message}
+                </Form.Control.Feedback>
+              </Col>
+            </Form.Group>
 
-          <Button type="submit" variant="success" className="my-4 px-4">
-            Guardar
-          </Button>
-        </Form>
+            <Form.Group as={Row}>
+              <Form.Label htmlFor="image" className="mt-3 mb-2">
+                Imagen:
+              </Form.Label>
+              <Col sm={12}>
+                <Form.Control type="file" onChange={handleImageChange} />
+              </Col>
+            </Form.Group>
 
-        <ModalAT
-          title="Reporte guardado"
-          message="Se registraron correctamente los datos."
-          showModal={showModal}
-          setShowModal={setShowModal}
-          url={"/"}
-        />
-      </Container>
-    </>
+            {userLocation && (
+              <>
+                <Form.Group as={Row}>
+                  <Form.Label htmlFor="address" className="mt-3">
+                    Ubicación:
+                  </Form.Label>
+                  <Col sm={12}>
+                    <Form.Control
+                      type="text"
+                      id="address"
+                      className="mb-2 w-100"
+                      value={address}
+                      readOnly
+                    />
+                  </Col>
+                </Form.Group>
+
+                <div style={{ height: "70vh", marginTop: "16px" }}>
+                  <Map
+                    userLocation={userLocation}
+                    zoneMode={true}
+                    mapClick={true}
+                    noCircle={true}
+                  />
+                </div>
+              </>
+            )}
+
+            <Button type="submit" variant="success" className="my-4 px-4">
+              Guardar
+            </Button>
+          </Form>
+
+          <ModalAT
+            title="Reporte guardado"
+            message="Se registraron correctamente los datos."
+            showModal={showModal}
+            setShowModal={setShowModal}
+            url={"/"}
+          />
+        </Container>
+      </Col>
+    </Row>
   );
 }
 export default ReportForm;

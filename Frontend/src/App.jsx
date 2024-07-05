@@ -5,7 +5,6 @@ import Spinner from 'react-bootstrap/Spinner';
 
 const Home = lazy(() => import("@pages/Home"));
 const Roads = lazy(() => import("@pages/Roads"));
-const Zones = lazy(() => import("@pages/Zones"));
 const Notifications = lazy(() => import("@pages/Notifications"));
 const ReportForm = lazy(() => import("@components/report/ReportForm"));
 const CategoryForm = lazy(() => import("@components/category/CategoryForm"));
@@ -46,7 +45,6 @@ const protectedRoutes = [
   { path: "/form/reporte/:groupId?", element: <ReportForm /> },
   { path: "/form/categoria", element: <CategoryForm /> },
   { path: "/form/reporte/automatico/:groupId?", element: <ReportIA /> },
-  { path: "/zonas", element: <Zones /> },
   { path: "/form/zona", element: <ZoneForm /> },
   { path: "/zonas/:id", element: <ZoneID /> },
   { path: "/notificaciones", element: <Notifications /> },
