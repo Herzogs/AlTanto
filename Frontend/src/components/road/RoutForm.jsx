@@ -4,13 +4,15 @@ import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
 import { useForm } from "react-hook-form";
 import { Container, Button, Form, Row, Col } from "react-bootstrap";
-import Header from "@components/header/Header";
+import HeaderHome from "@components/header/HeaderHome";
 import Map from "@components/Map/Map";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link } from "react-router-dom";
 import { sendRoute } from "@services/sendData";
 import { fetchReports } from "@services/getReportsInRoutings";
 import ModalAT from "@components/modal/ModalAT";
+import { reverseGeocode } from "@services/getGeoAdress";
+import "./styles.css";
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
@@ -18,6 +20,7 @@ function RoutForm() {
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true); // Estado de carga
 
   const {
     userLocation,
@@ -29,15 +32,14 @@ function RoutForm() {
     time,
   } = useStore();
 
-  const {
-    user
-  } = userStore();
+  const { user } = userStore();
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: {
       name: "",
@@ -49,6 +51,21 @@ function RoutForm() {
   useEffect(() => {
     setReports([]);
     setRouteCoordinates([]);
+
+    const reverse = async () => {
+      const data = await reverseGeocode({
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+      });
+      return data;
+    };
+    reverse().then((data) => {
+      setValue("origin", data);
+    });
+    setLoading(false);
+
+    console.log(startPoint);
+    console.log(endPoint);
   }, []);
 
   const startAddress = watch("origin");
@@ -56,11 +73,10 @@ function RoutForm() {
 
   const setPoints = useCallback(async () => {
     setVisible(false);
+    setLoading(true);
     try {
       const startCoords = await geocodeAddress(startAddress);
       const endCoords = await geocodeAddress(endAddress);
-      console.log("gooo")
-      /*  setUserLocation({ lat: startCoords.lat, lng: startCoords.lon }); */
       setStartPoint(startCoords);
       setEndPoint(endCoords);
       setError(false);
@@ -68,6 +84,10 @@ function RoutForm() {
     } catch (error) {
       setError(true);
       setVisible(false);
+      setStartPoint(userLocation)
+      setEndPoint(false);
+    } finally {
+      setLoading(false);
     }
   }, [startAddress, endAddress]);
 
@@ -85,7 +105,7 @@ function RoutForm() {
           setError(false);
         })
         .catch((error) => {
-          console.log(error)
+          console.log(error);
           setError(true);
         });
     }
@@ -110,18 +130,12 @@ function RoutForm() {
   };
 
   return (
-    <>
-      <Header />
-      <Container className="h-100 pt-4 pt-lg-5">
-        <p className="text-end">
-          <Link to="/">
-            <ArrowBackIcon /> Regresar
-          </Link>
-        </p>
-        <h2>Crear Ruta</h2>
+    <section className="h-100">
+      <HeaderHome />
+      <article className="at-form-flotante">
         <Form onSubmit={handleSubmit(onSubmit)} className="h-100">
           <Form.Group as={Row} controlId="origin">
-            <Form.Label className="mt-3 mb-2" column>
+            <Form.Label className="mt-md-3" column>
               Dirección origen:
             </Form.Label>
             <Col sm={12}>
@@ -144,7 +158,7 @@ function RoutForm() {
             </Col>
           </Form.Group>
           <Form.Group as={Row} controlId="destination">
-            <Form.Label className="mt-3 mb-2" column>
+            <Form.Label className="mt-md-3" column>
               Dirección destino:
             </Form.Label>
             <Col sm={12}>
@@ -170,42 +184,29 @@ function RoutForm() {
             <p className="text-danger">* Error al obtener coordenadas</p>
           )}
 
-          <Form.Group className="my-4" as={Row} controlId="search">
+          <Form.Group className="mt-2 mb-3 my-md-3" as={Row} controlId="search">
             <Col sm={12}>
               <Button
                 type="button"
-                className="px-5"
+                className="btn btn-sm btn-primary px-md-5 my-md-3"
                 onClick={handleSetPoints}
                 disabled={startAddress === "" || endAddress === ""}
               >
                 Ver Ruta
               </Button>
-              {error && <p style={{ color: "red" }}>* Error al procesar los datos</p>}
+              {error && (
+                <p style={{ color: "red" }}>* Error al procesar los datos</p>
+              )}
             </Col>
           </Form.Group>
-
-          {visible && userLocation && (
-            <div className="h-50 mt-2">
-              <Map
-                userLocation={userLocation}
-                radiusZone={500}
-                startPoint={startPoint}
-                endPoint={endPoint}
-                zoneMode={true}
-                routingMode={true}
-              />
-            </div>
-          )}
 
           {visible && (
             <>
               <Form.Group as={Row} controlId="name">
-                <Form.Label className="mt-3 mb-2" column>
-                  Nombre:
-                </Form.Label>
-                <Col sm={12}>
+                <Col xs={9} md={12}>
                   <Form.Control
                     type="text"
+                    placeholder="Nombre"
                     isInvalid={!!errors.name}
                     {...register("name", {
                       required: "Campo requerido",
@@ -225,32 +226,38 @@ function RoutForm() {
                     </Form.Control.Feedback>
                   )}
                 </Col>
-              </Form.Group>
-              <Form.Group className="my-4" as={Row} controlId="submit">
-                <Col sm={12}>
+                <Col xs={3} md={12}>
                   <Button
-                    className="btn-success px-5"
+                    className="btn btn-sm btn-success px-md-5 my-md-3"
                     type="submit"
                   >
                     Guardar
                   </Button>
-
                 </Col>
               </Form.Group>
             </>
           )}
-
         </Form>
+      </article>
 
-        <ModalAT
-          title="Recorrido guardado"
-          message="Se registraron correctamente los datos."
-          showModal={showModal}
-          setShowModal={setShowModal}
-          url={"/"}
+      {!loading && (
+        <Map
+          userLocation={userLocation}
+          startPoint={startPoint}
+          endPoint={endPoint}
+          zoneMode={true}
+          routingMode={true}
         />
-      </Container>
-    </>
+      )}
+
+      <ModalAT
+        title="Recorrido guardado"
+        message="Se registraron correctamente los datos."
+        showModal={showModal}
+        setShowModal={setShowModal}
+        url={"/"}
+      />
+    </section>
   );
 }
 
