@@ -23,7 +23,7 @@ function ReportIA() {
   const [categories, setCategories] = useState([]);
   const videoRef = useRef(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [useRearCamera, setUseRearCamera] = useState(true);
+  const [useReactCamera, setUseReactCamera] = useState(true);
   const { id } = userStore.getState().user;
   const { userLocation, setReports, markerPosition } = useStore();
   const [showModal, setShowModal] = useState(false);
@@ -75,7 +75,7 @@ function ReportIA() {
     setFile(null);
     setPreviewUrl(null);
     setIsCameraOpen(true);
-    const facingMode = useRearCamera ? { exact: "user" } : "environment";
+    const facingMode = useReactCamera ? { exact: "environment" } : "user";
 
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode } })
@@ -86,8 +86,8 @@ function ReportIA() {
       .catch((err) => {
         console.error("Error accessing camera: ", err);
         // Intentar con la otra cámara si falla
-        if (useRearCamera) {
-          setUseRearCamera(false);
+        if (useReactCamera) {
+          setUseReactCamera(false);
           navigator.mediaDevices
             .getUserMedia({ video: { facingMode: "user" } })
             .then((stream) => {
@@ -181,10 +181,17 @@ function ReportIA() {
 
 
   const toggleCamera = () => {
-    setUseRearCamera((prev) => !prev);
+    setUseReactCamera(!useReactCamera);
     if (isCameraOpen) {
       videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-      handleOpenCamera();
+      const facingMode = useReactCamera ? { exact: "environment" } : "user";
+
+      navigator.mediaDevices
+        .getUserMedia({ video: { facingMode } })
+        .then((stream) => {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play();
+        })
     }
   };
 
@@ -194,9 +201,7 @@ function ReportIA() {
       <Container className="container-md_stop h-100 pt-4 pt-lg-5">
         <p className="text-end">
           <Link to="/">
-            <ArrowBackIcon onClick={()=> {
-              videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-            }} /> Regresar
+            <ArrowBackIcon onClick={handleCancelCamera} /> Regresar
           </Link>
         </p>
         <h2>Generar reporte automático</h2>
@@ -234,7 +239,7 @@ function ReportIA() {
               onClick={toggleCamera}
               className="d-md-none mt-3"
             >
-              Cambiar a {useRearCamera ? "frontal" : "trasera"}
+              Cambiar Camara
             </Button>
             <Button variant="primary" onClick={handleCapture} className="mt-3">
               Capturar foto
