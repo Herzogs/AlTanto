@@ -2,36 +2,39 @@
   display: none !important;
 }
 
+
+.leaflet-right .leaflet-routing-container.leaflet-routing-container-hide {
+  display: none !important;
+}
+
 .at-form-flotante {
   position: absolute;
-  top: 60px;
-  right: 16px;
-  min-width: 320px;
+  bottom: 0px;
+  left: auto;
+  min-width: 100%;
+  width: 100%;
   font-size: 14px !important;
   color: var(--color-at-white);
   background-color: #393e46;
-  padding: 6px 12px;
-  border-radius: 12px;
+  padding: 8px 12px;
+  border-radius: 12px 12px 0px 0px;
   z-index: 9990;
 }
 
-@media only screen and (max-width: 380px) {
-  .at-form-flotante {
-    position: absolute;
-    top: auto;
-    right: auto;
-    bottom: 0px;
-    min-width: 100%;
-    width: 100%;
-    font-size: 14px !important;
-    color: var(--color-at-white);
-    background-color: #393e46;
-    padding: 6px 12px;
-    border-radius: 12px 12px 0px 0px;
-    z-index: 9990;
-  }
+.at-form-flotante .form-control {
+  padding: 0.15rem .5rem;
+}
 
-  .leaflet-right .leaflet-routing-container.leaflet-routing-container-hide {
-    display: none !important;
+
+@media only screen and (min-width: 768px) {
+  .at-form-flotante {
+    bottom: 4px;
+    left: 16px;
+    min-width: 320px;
+    width:auto;
+    font-size: 14px !important;
+    padding: 12px;
+    border-radius: 12px;
   }
 }
+

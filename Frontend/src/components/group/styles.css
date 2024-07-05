@@ -24,3 +24,45 @@
 .list-member li svg {
   cursor: pointer;
 }
+
+/* MENU BUTTON REPORTE */
+.grupo-reporte {
+  max-width: 60px;
+  margin-right: 4px;
+  cursor: pointer;
+
+}
+
+.grupo-reporte svg{
+  font-size: 60px;
+  color: #fd7014;
+}
+
+.grupo-reporte button {
+  border: none !important;
+  padding-inline-start: 0px !important;
+  background: transparent !important;
+}
+
+.grupo-reporte_icon {
+  font-size: 64px !important;
+  color: var(--color-at-orange);
+  transition: 0.3s ease-in-out;
+}
+
+.grupo-reporte_icon:hover {
+  color: #f8863a;
+}
+
+.grupo-reporte a:hover {
+  background-color: var(--color-at-orange);
+  color: var(--color-white) !important;
+}
+
+.grupo-reporte .dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-toggle::after {
+  color: transparent;
+}

@@ -2,14 +2,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { Container, Form, Button, Row, Col, FormCheck } from "react-bootstrap";
-import Header from "@components/header/Header";
 import Map from "@components/Map/Map.jsx";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
 import { saveZone } from "@services/sendData";
 import ModalAT from "@components/modal/ModalAT";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Link } from "react-router-dom";
+import Aside from "@components/aside/Aside";
 import { zodResolver } from "@hookform/resolvers/zod";
 import zoneScheme from "@schemes/zoneScheme";
 import { reverseGeocode } from "@services/getGeoAdress";
@@ -145,11 +143,9 @@ function ZoneForm() {
         <Form onSubmit={handleSubmit(onSubmit)} className="h-100">
           <Form.Group as={Row} controlId="address">
             <Col xs={12}>
-              <Form.Label column>
-                Dirección:
-              </Form.Label>
+              <Form.Label>Dirección:</Form.Label>
             </Col>
-            <Col xs={9} md={12}>
+            <Col xs={9}>
               <Form.Control
                 type="text"
                 placeholder="Calle, Número y Localidad"
@@ -168,10 +164,10 @@ function ZoneForm() {
                 </Form.Control.Feedback>
               )}
             </Col>
-            <Col xs={3} md={12}>
+            <Col xs={3}>
               <Button
                 type="button"
-                className="btn btn-sm btn-primary px-md-5 mt-md-3"
+                className="btn btn-sm btn-primary"
                 onClick={handleSearch}
                 disabled={disabled}
               >
@@ -180,13 +176,13 @@ function ZoneForm() {
               {error && <p style={{ color: "red" }}>{error}</p>}
             </Col>
           </Form.Group>
-          <Form.Group as={Row} controlId="radio">
-            <Form.Label column>Radio asignado a la zona:</Form.Label>
-            <Col sm={12} className="d-flex d-md-block">
+          <Form.Group as={Row} className="mt-3" controlId="radio">
+            <Form.Label>Radio asignado a la zona:</Form.Label>
+            <Col sm={12} className="d-flex">
               {["250", "500", "1000"].map((value) => (
                 <FormCheck
                   key={value}
-                  className="pe-3 pe-md-0"
+                  className="pe-3"
                   type="checkbox"
                   label={`${value} mts`}
                   value={value}
@@ -197,11 +193,11 @@ function ZoneForm() {
             </Col>
           </Form.Group>
 
-          <Form.Group as={Row} className="mt-2" controlId="name">
-            <Col xs={9} md={12}>
+          <Form.Group as={Row} className="mt-3" controlId="name">
+            <Col xs={9}>
               <Form.Control
                 type="text"
-                placeholder="Nombre"
+                placeholder="Nombre de zona"
                 isInvalid={!!errors.name}
                 {...register("name", {
                   required: "Campo requerido",
@@ -221,10 +217,10 @@ function ZoneForm() {
                 </Form.Control.Feedback>
               )}
             </Col>
-            <Col xs={3} md={12}>
+            <Col xs={3}>
               {visible && userLocation && (
                 <Button
-                  className="btn btn-sm btn-success px-md-5 my-md-3"
+                  className="btn btn-sm btn-success"
                   type="submit"
                   disabled={disabled}
                 >
@@ -240,10 +236,13 @@ function ZoneForm() {
         <Map
           userLocation={userLocation}
           radiusZone={selectedRadio}
+          showFilters={true}
           zoneMode={true}
           mapClick={true}
         />
       )}
+
+      <Aside />
 
       <ModalAT
         title="Zona guardada"

@@ -3,15 +3,15 @@ import { useCallback, useState, useEffect } from "react";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
 import { useForm } from "react-hook-form";
-import { Container, Button, Form, Row, Col } from "react-bootstrap";
+import { Button, Form, Row, Col } from "react-bootstrap";
 import HeaderHome from "@components/header/HeaderHome";
+import Aside from "@components/aside/Aside";
 import Map from "@components/Map/Map";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Link } from "react-router-dom";
 import { sendRoute } from "@services/sendData";
 import { fetchReports } from "@services/getReportsInRoutings";
 import ModalAT from "@components/modal/ModalAT";
 import { reverseGeocode } from "@services/getGeoAdress";
+import Spinner from "react-bootstrap/Spinner";
 import "./styles.css";
 
 function RoutForm() {
@@ -49,9 +49,10 @@ function RoutForm() {
   });
 
   useEffect(() => {
+    setValue("origin", "");
+    setUserLocation(null);
     setReports([]);
     setRouteCoordinates([]);
-
     const reverse = async () => {
       const data = await reverseGeocode({
         lat: userLocation.lat,
@@ -63,9 +64,6 @@ function RoutForm() {
       setValue("origin", data);
     });
     setLoading(false);
-
-    console.log(startPoint);
-    console.log(endPoint);
   }, []);
 
   const startAddress = watch("origin");
@@ -84,7 +82,7 @@ function RoutForm() {
     } catch (error) {
       setError(true);
       setVisible(false);
-      setStartPoint(userLocation)
+      setStartPoint(userLocation);
       setEndPoint(false);
     } finally {
       setLoading(false);
@@ -135,9 +133,7 @@ function RoutForm() {
       <article className="at-form-flotante">
         <Form onSubmit={handleSubmit(onSubmit)} className="h-100">
           <Form.Group as={Row} controlId="origin">
-            <Form.Label className="mt-md-3" column>
-              Dirección origen:
-            </Form.Label>
+            <Form.Label>Dirección origen:</Form.Label>
             <Col sm={12}>
               <Form.Control
                 type="text"
@@ -188,7 +184,7 @@ function RoutForm() {
             <Col sm={12}>
               <Button
                 type="button"
-                className="btn btn-sm btn-primary px-md-5 my-md-3"
+                className="btn btn-sm btn-primary"
                 onClick={handleSetPoints}
                 disabled={startAddress === "" || endAddress === ""}
               >
@@ -203,10 +199,10 @@ function RoutForm() {
           {visible && (
             <>
               <Form.Group as={Row} controlId="name">
-                <Col xs={9} md={12}>
+                <Col xs={9}>
                   <Form.Control
                     type="text"
-                    placeholder="Nombre"
+                    placeholder="Nombre del recorrido"
                     isInvalid={!!errors.name}
                     {...register("name", {
                       required: "Campo requerido",
@@ -226,11 +222,8 @@ function RoutForm() {
                     </Form.Control.Feedback>
                   )}
                 </Col>
-                <Col xs={3} md={12}>
-                  <Button
-                    className="btn btn-sm btn-success px-md-5 my-md-3"
-                    type="submit"
-                  >
+                <Col xs={3}>
+                  <Button className="btn btn-sm btn-success" type="submit">
                     Guardar
                   </Button>
                 </Col>
@@ -240,7 +233,13 @@ function RoutForm() {
         </Form>
       </article>
 
-      {!loading && (
+      {loading ? (
+        <div className="text-center mt-5">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      ) : (
         <Map
           userLocation={userLocation}
           startPoint={startPoint}
@@ -249,6 +248,8 @@ function RoutForm() {
           routingMode={true}
         />
       )}
+
+      <Aside />
 
       <ModalAT
         title="Recorrido guardado"

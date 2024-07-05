@@ -1,4 +1,4 @@
-import { Container, Accordion } from "react-bootstrap";
+import { Container, Accordion, Row, Col } from "react-bootstrap";
 import Header from "@components/header/Header";
 import Report from "@components/report/Report";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -45,10 +45,10 @@ function Notifications() {
   }, [user.id]);
 
   return (
-    <>
-      <Header />
-      <Container className="pt-4 pt-lg-5">
-        <section className="text-center">
+    <Row className="justify-content-center">
+      <Col lg={10} xxl={8}  className="at-desk_form">
+        <Header />
+        <Container className="container-xl_stop pt-4 pt-lg-5">
           <p className="text-end">
             <Link to="/">
               <ArrowBackIcon /> Regresar
@@ -125,9 +125,9 @@ function Notifications() {
               )}
             </div>
           )}
-        </section>
-      </Container>
-    </>
+        </Container>
+      </Col>
+    </Row>
   );
 }
 

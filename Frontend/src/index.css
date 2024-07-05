@@ -158,6 +158,10 @@ a {
   max-width: 996px !important;
 }
 
+.container-xl_stop {
+  max-width: 1140px !important;
+}
+
 .pb-footer {
   padding-bottom: 76px;
 }
