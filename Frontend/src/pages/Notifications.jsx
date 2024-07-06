@@ -49,7 +49,7 @@ function Notifications() {
       <Col lg={10} xxl={8}  className="at-desk_form">
         <Header />
         <Container className="container-xl_stop pt-4 pt-lg-5">
-          <p className="text-end">
+          <p className="text-start">
             <Link to="/">
               <ArrowBackIcon /> Regresar
             </Link>

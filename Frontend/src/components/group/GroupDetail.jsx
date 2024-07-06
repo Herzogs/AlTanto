@@ -23,6 +23,7 @@ import ModalAT from "@components/modal/ModalAT";
 import { fetchReportsByGroup } from "@services/getReportByGroup";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 function GroupDetail() {
   const { id } = useParams();
@@ -193,9 +194,14 @@ function GroupDetail() {
       <Col lg={6} className="at-desk_form">
         <Header />
         <Container className="container-md_stop pt-4 pt-lg-5">
+        <p className="text-start">
+            <Link to="/">
+              <ArrowBackIcon /> Regresar
+            </Link>
+          </p>
           <article className="d-flex w-100 justify-content-between">
             <div>
-              <h2>{groupDetails?.name}</h2>
+              <h2 className="text-at-orange ">{groupDetails?.name}</h2>
               {sosDisable && (
                 <p className="text-warning">
                   * <strong>SOS Enviado</strong>. Todos los miembros fueron
@@ -216,10 +222,10 @@ function GroupDetail() {
 
           {groupDetails?.ownerId === userId && (
             <div className="mt-3 mt-lg-4">
-              <h4>Invitar Usuario</h4>
+              <h5>Invitar Usuario</h5>
 
               <div className="row">
-                <div className="col-6">
+                <div className="col-12 col-md-6 mb-3 mb-md-0'">
                   <button
                     className="btn btn-success"
                     onClick={handleInviteUsers}
@@ -227,7 +233,7 @@ function GroupDetail() {
                     <WhatsAppIcon /> Compartir
                   </button>
                 </div>
-                <div className="col-6">
+                <div className="col-12 col-md-6">
                   <div className="d-flex">
                     <input
                       placeholder="Ingresar usuario"
@@ -307,8 +313,8 @@ function GroupDetail() {
           )}
 
           <Dropdown className="grupo-reporte">
-            <Dropdown.Toggle id="dropdown-basic" as="button">
-              <AddCircleIcon className="menu-button_icon" />{" "}
+            <Dropdown.Toggle id="dropdown-basic" as="button" className="mt-5">
+              <AddCircleIcon className="menu-button_icon" />
               <span className="h5 text-white">Crear reporte de grupo</span>
             </Dropdown.Toggle>
             <Dropdown.Menu align="end">
