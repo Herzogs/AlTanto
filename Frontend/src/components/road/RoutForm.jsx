@@ -14,7 +14,7 @@ import { reverseGeocode } from "@services/getGeoAdress";
 import Spinner from "react-bootstrap/Spinner";
 import "./styles.css";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { routSchema } from "@schemas/routSchema";
+import roadScheme from "@schemes/roadScheme";
 
 function RoutForm() {
   const [startPoint, setStartPoint] = useState(null);
@@ -48,7 +48,7 @@ function RoutForm() {
       origin: "",
       destination: "",
     },
-    resolver: zodResolver(routSchema),
+    resolver: zodResolver(roadScheme),
   });
 
   useEffect(() => {
