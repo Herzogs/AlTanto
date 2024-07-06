@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Container, Form, Button, Row, Col, FormCheck } from "react-bootstrap";
+import { Form, Button, Row, Col, FormCheck } from "react-bootstrap";
 import Map from "@components/Map/Map.jsx";
 import { geocodeAddress } from "@services/getGeoAdress";
 import { useStore, userStore } from "@store";
